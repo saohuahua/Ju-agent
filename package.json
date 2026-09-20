@@ -1,0 +1,43 @@
+{
+  "name": "after-sales-copilot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "可评测 可恢复的电商售后 Agent 平台",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @aftersales/api dev",
+    "dev:web": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{ts,tsx,css,md,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,css,md,json}\"",
+    "test": "pnpm -r test",
+    "db:reset": "tsx scripts/db-reset.ts",
+    "eval": "tsx packages/eval/src/cli.ts",
+    "eval:dataset": "tsx scripts/export-dataset.ts",
+    "demo": "tsx scripts/demo.ts"
+  },
+  "dependencies": {
+    "@aftersales/agent": "workspace:*",
+    "@aftersales/contracts": "workspace:*",
+    "@aftersales/domain": "workspace:*",
+    "@aftersales/eval": "workspace:*",
+    "@aftersales/persistence": "workspace:*",
+    "@aftersales/runtime": "workspace:*",
+    "@aftersales/tools": "workspace:*"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0",
+    "vitest": "^3.0.5"
+  }
+}
