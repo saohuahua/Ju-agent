@@ -1,0 +1,27 @@
+{
+  "name": "@aftersales/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aftersales/agent": "workspace:*",
+    "@aftersales/contracts": "workspace:*",
+    "@aftersales/domain": "workspace:*",
+    "@aftersales/eval": "workspace:*",
+    "@aftersales/persistence": "workspace:*",
+    "@aftersales/runtime": "workspace:*",
+    "@aftersales/tools": "workspace:*",
+    "@aftersales/workflow": "workspace:*",
+    "@hono/node-server": "^1.13.5",
+    "hono": "^4.6.14"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.5"
+  }
+}
