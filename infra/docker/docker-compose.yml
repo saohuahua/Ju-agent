@@ -1,0 +1,25 @@
+# 生产路径基础设施
+# 本地开发不需要这些 默认 SQLite 零依赖运行
+# 切换 PostgreSQL 时提供此编排
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: aftersales
+      POSTGRES_PASSWORD: aftersales
+      POSTGRES_DB: aftersales
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql:ro
+
+  # 横向扩展时启用 替换 SSE 轮询与数据库租约
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+
+volumes:
+  pgdata:
