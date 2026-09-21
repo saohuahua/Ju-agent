@@ -8,8 +8,13 @@ coverage/
 # 本地数据与报告
 data/
 eval/reports/
+eval/failures/
 *.db
 *.db-journal
+
+# 技能安装目录（skills-lock.json 记录来源与哈希，可重装）
+.agents/
+.claude/skills/
 
 # 环境变量
 .env
