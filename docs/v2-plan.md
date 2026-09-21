@@ -174,6 +174,19 @@
 - 补偿类型 仅现金红包 复用退款链路基础设施
 - 叠加规则 不可叠加 同一订单同一原因仅一次 重复请求幂等拒绝
 
+**执行记录 2026-09-21 功能 6 补偿流程 commit 9be8da3 + 前端收尾**
+
+- 契约层 compensation 意图 工具 create_compensation execute_compensation 幂等键 compensation:<no> 槽位 schema 评测类别第九类 compensation
+- 领域层 Compensation 实体十态状态机含 executing 中间态（网关失败回 failed 可重试 与退款状态机平行）政策纯函数分级 C1_auto_small C2_large_approval POLICY_VERSION 2026.09-v2
+- CompensationService 独立副作用守护层 金额校验 归属校验 同订单同原因 occupied 状态幂等拒绝（rejected/expired/cancelled 不占位 可换原因重试）审批令牌闸门 幂等双防线（幂等记录 + 网关幂等键）
+- 持久化 compensations 表 requires_approval 0/1 乐观锁仓储 评测断言查询表白名单加入
+- 工作流 compensationSteps 四步 verify_order create_compensation request_approval execute_compensation 审批恢复 resumeAfterApproval 按 state.approvalResourceType 分发（旧断点默认 return_request 兼容）拒绝/过期文案按资源类型区分
+- 评测用例 8 条 cp_* 阈值恰好 5000 分边界 重复请求拦截 大额审批三态 金额补问确认 愤怒情绪安抚 judgeRubric 每用例独立夹具补偿单号 CP-2026-0001 起 L1 脚本回归 88/88 全绿
+- 实现中修复 create_compensation 工具输出丢 amountCents 致审批记录创建失败 大额三例断言暴露 契约 schema 与工具返回同步补齐
+- 前端审批中心与工作台卡片按 resourceType 区分中文展示（补偿单/售后单 批准发放/批准退款）评测看板抽样档 p0 26 p1 23 p2 4 all 88 与 selectCases 对齐
+- 校验 pnpm typecheck 全绿 pnpm test 全过 pnpm eval 88/88
+- 注意 本阶段文件改动触发 tsx watch 重启 L2 后台评测进程内任务表已清空（simTasks 重启即清）已落库的 L2 报告 evr_61839c00 不受影响（p0 档 22 条 9 通过 40.9% 旧 80 条用例集 不含补偿用例）功能 6 完成后需重新触发 L2 覆盖新用例
+
 #### 3.2 物流推送 约 2-3 天
 
 做什么

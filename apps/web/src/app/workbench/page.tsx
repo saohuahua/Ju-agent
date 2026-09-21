@@ -113,7 +113,7 @@ export default function WorkbenchPage() {
             <div className="mx-auto max-w-xl pt-16 text-center">
               <div className="text-2xl font-semibold tracking-tight">您好 我是售后专员 Copilot</div>
               <p className="mt-2 text-sm text-stone-500">
-                可以查订单 查物流 解释政策 也可以直接发起退货退款
+                可以查订单 查物流 解释政策 也可以直接发起退货退款或现金红包补偿
                 <br />
                 试试 订单 SO-2026-0003 不想要了 退货
               </p>
@@ -121,6 +121,7 @@ export default function WorkbenchPage() {
                 {[
                   '订单 SO-2026-0002 到哪了',
                   '订单 SO-2026-0009 没发货 申请退款',
+                  '订单 SO-2026-0003 快递迟到了 我要补偿',
                   '退货政策是什么',
                 ].map((sample) => (
                   <button

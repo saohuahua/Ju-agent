@@ -33,6 +33,7 @@ export interface ToolItem {
 
 export interface ApprovalItem {
   approvalId: string
+  resourceType: string
   resourceId: string
   amountCents: number
   reason: string
@@ -212,6 +213,7 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
         ...state.approvals,
         {
           approvalId: String(payload.approvalId),
+          resourceType: String(payload.resourceType ?? 'return_request'),
           resourceId: String(payload.resourceId),
           amountCents: Number(payload.amountCents ?? 0),
           reason: String(payload.reason ?? ''),

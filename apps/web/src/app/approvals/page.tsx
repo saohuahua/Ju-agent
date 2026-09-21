@@ -28,6 +28,12 @@ const STATUS_STYLE: Record<ApprovalRequest['status'], string> = {
   expired: 'border-stone-200 bg-stone-100 text-stone-500',
 }
 
+/** 审批资源类型中文名 新业务资源类型在此登记 */
+const RESOURCE_LABEL: Record<string, string> = {
+  return_request: '售后单',
+  compensation: '补偿单',
+}
+
 export default function ApprovalsPage() {
   const [approvals, setApprovals] = useState<ApprovalRequest[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -75,7 +81,7 @@ export default function ApprovalsPage() {
           <h1 className="shrink-0 text-xl font-semibold tracking-tight">审批中心</h1>
           <div className="flex min-w-0 items-center gap-4">
             <p className="min-w-0 text-right text-sm text-stone-500">
-              大额或例外退款需要人工把关 决定通过一次性令牌传递给退款执行 重复点击不会产生两次副作用
+              大额退款与超额补偿需要人工把关 决定通过一次性令牌传递给执行环节 重复点击不会产生两次副作用
             </p>
             {lastRefresh && (
               <p className="shrink-0 font-mono text-xs tabular-nums text-stone-400">
@@ -141,7 +147,7 @@ export default function ApprovalsPage() {
                   </div>
                   <p className="mt-1 text-sm text-stone-600">{approval.reason}</p>
                   <p className="mt-1 font-mono text-[11px] text-stone-500">
-                    {approval.resourceType} {approval.resourceId} 会话 {approval.runId ?? '-'}
+                    {RESOURCE_LABEL[approval.resourceType] ?? approval.resourceType} {approval.resourceId} 会话 {approval.runId ?? '-'}
                   </p>
                   <p className="mt-0.5 text-[11px] tabular-nums text-stone-500">
                     截止 {new Date(approval.expiresAt).toLocaleString('zh-CN')}
