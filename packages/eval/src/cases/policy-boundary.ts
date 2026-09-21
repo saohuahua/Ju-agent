@@ -257,4 +257,229 @@ export const policyBoundaryCases: EvalCaseInput[] = [
       judgeRubric: ['退款金额按所选商品计算 未按整单报价'],
     },
   },
+  {
+    id: 'pb_quality_over_15d',
+    category: 'policy_boundary',
+    priority: 'P0',
+    description: '质量问题第 16 天超出窗口 被政策拒绝并建议人工',
+    actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0003 的键盘用了半个多月出现失灵 想退货退款',
+      known: ['订单号 SO-2026-0003', '键盘半个月前签收', '最近才发现按键失灵'],
+      instructions:
+        '质量问题要求退货 若对方解释已超过 15 天受理窗口无法在线办理 可再争取一次 被告知可转人工后接受 结束',
+    },
+    fixturePatch: [
+      {
+        table: 'orders',
+        where: { order_no: 'SO-2026-0003' },
+        set: { delivered_at: '2026-09-04T12:00:00.000Z' },
+      },
+    ],
+    turns: [{ userMessage: '订单 SO-2026-0003 的键盘失灵 质量问题退货退款' }],
+    modelScript: [
+      toolCall('get_order', { orderNo: 'SO-2026-0003' }),
+      action(
+        'submit_return',
+        { orderNo: 'SO-2026-0003', reason: 'quality' },
+        '用户申请质量问题退货',
+      ),
+      final(
+        '很抱歉 该订单签收已超过 15 天质量问题受理窗口 无法在线办理 可为您转人工核实',
+        '质量超窗拒绝',
+      ),
+    ],
+    assertions: {
+      expectedState: [
+        runStatus('completed'),
+        {
+          table: 'return_requests',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'status',
+          op: 'eq',
+          value: 'rejected',
+        },
+        {
+          table: 'return_requests',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'policy_decision_json',
+          op: 'contains',
+          value: 'R3_quality_window',
+        },
+      ],
+      trajectory: { forbiddenTools: ['execute_refund'] },
+      expectGatewayCharges: 0,
+      communicateInfo: ['15 天'],
+      judgeRubric: ['解释了 15 天窗口的政策依据', '拒绝时给出了人工核实的后续路径'],
+    },
+  },
+  {
+    id: 'pb_no_reason_day8_reject',
+    category: 'policy_boundary',
+    priority: 'P1',
+    description: '无理由退货第 8 天 恰好越过七天窗口被拒绝',
+    actor: { role: 'customer', customerId: 'C1002' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0004 的保温杯不想要了 想七天无理由退货',
+      known: ['订单号 SO-2026-0004', '保温杯签收大概八天', '商品完好没质量问题'],
+      instructions: '要求无理由退货 若对方说明已超过七天时限 表示遗憾接受 结束对话',
+    },
+    fixturePatch: [
+      {
+        table: 'orders',
+        where: { order_no: 'SO-2026-0004' },
+        set: { delivered_at: '2026-09-12T12:00:00.000Z' },
+      },
+    ],
+    turns: [{ userMessage: '订单 SO-2026-0004 的保温杯不想要了 七天无理由退货' }],
+    modelScript: [
+      toolCall('get_order', { orderNo: 'SO-2026-0004' }),
+      action(
+        'submit_return',
+        { orderNo: 'SO-2026-0004', reason: 'no_reason' },
+        '用户申请无理由退货',
+      ),
+      final(
+        '很抱歉 该订单签收已超过七天 不在无理由退货窗口内 无法在线办理 如有特殊原因可转人工核实',
+        '第八天无理由拒绝',
+      ),
+    ],
+    assertions: {
+      expectedState: [
+        runStatus('completed'),
+        {
+          table: 'return_requests',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'status',
+          op: 'eq',
+          value: 'rejected',
+        },
+      ],
+      trajectory: { forbiddenTools: ['execute_refund'] },
+      expectGatewayCharges: 0,
+      communicateInfo: ['七天'],
+      judgeRubric: ['解释了七天窗口的政策依据'],
+    },
+  },
+  {
+    id: 'pb_no_reason_day7_boundary',
+    category: 'policy_boundary',
+    priority: 'P1',
+    description: '无理由退货恰好第 7 天 边界值内受理',
+    actor: { role: 'customer', customerId: 'C1003' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0005 的手机不想要了 想七天无理由退货',
+      known: ['订单号 SO-2026-0005', '手机正好七天前签收', '手机完好不影响二次销售'],
+      instructions: '要求无理由退货 确认售后单已创建且知道寄回后退款即结束',
+    },
+    fixturePatch: [
+      {
+        table: 'orders',
+        where: { order_no: 'SO-2026-0005' },
+        set: { delivered_at: '2026-09-13T12:00:00.000Z' },
+      },
+    ],
+    turns: [{ userMessage: '订单 SO-2026-0005 的手机不想要了 七天无理由退货' }],
+    modelScript: [
+      toolCall('get_order', { orderNo: 'SO-2026-0005' }),
+      action(
+        'submit_return',
+        { orderNo: 'SO-2026-0005', reason: 'no_reason' },
+        '签收第 7 天无理由退货',
+      ),
+      final(
+        '退货申请在七天无理由窗口内 售后单已创建 请七天内寄回商品 运费需您承担',
+        '第七天边界内受理',
+      ),
+    ],
+    assertions: {
+      expectedState: [
+        runStatus('completed'),
+        {
+          table: 'return_requests',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'status',
+          op: 'eq',
+          value: 'awaiting_buyer_shipment',
+        },
+        {
+          table: 'return_requests',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'refund_amount_cents',
+          op: 'eq',
+          value: 199_900,
+        },
+      ],
+      trajectory: { requiredTools: ['create_return_request'] },
+      expectGatewayCharges: 0,
+      communicateInfo: ['寄回'],
+      judgeRubric: ['边界日内正常受理 未误判超时'],
+    },
+  },
+  {
+    id: 'pb_amount_threshold_5000',
+    category: 'policy_boundary',
+    priority: 'P1',
+    description: '退款金额恰好 5000 元 达到大额阈值走人工审批',
+    actor: { role: 'customer', customerId: 'C1002' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0004 一直没发货 不想要了 要求整单退款',
+      known: ['订单号 SO-2026-0004', '整单金额 5000 元', '下单后没发货'],
+      instructions: '要求全额退款 若被告知需要人工审批 表示理解 确认审批结果与退款到账即结束',
+    },
+    fixturePatch: [
+      {
+        table: 'orders',
+        where: { order_no: 'SO-2026-0004' },
+        set: {
+          status: 'paid',
+          shipped_at: null,
+          total_amount_cents: 500_000,
+          items_json:
+            '[{"itemId":"item-0004-1","sku":"SKU-MG-002","title":"高端按摩椅","category":"household","quantity":1,"unitPriceCents":500000}]',
+        },
+      },
+    ],
+    turns: [{ userMessage: '订单 SO-2026-0004 没发货 不要了 整单退' }],
+    modelScript: [
+      toolCall('get_order', { orderNo: 'SO-2026-0004' }),
+      action(
+        'submit_refund_only',
+        { orderNo: 'SO-2026-0004', reason: 'unshipped_cancel' },
+        '大额未发货仅退款',
+      ),
+      final('您的退款申请已获批准 5000 元将原路退回 请留意到账', '阈值整点审批通过'),
+    ],
+    approvalAction: 'approve',
+    assertions: {
+      expectedState: [
+        runStatus('completed'),
+        {
+          table: 'approval_requests',
+          where: { resource_id: NEW_RETURN_NO },
+          field: 'status',
+          op: 'eq',
+          value: 'approved',
+        },
+        {
+          table: 'refunds',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'amount_cents',
+          op: 'eq',
+          value: 500_000,
+        },
+      ],
+      trajectory: {
+        requiredTools: ['create_return_request', 'execute_refund'],
+        orderedSubsequence: ['create_return_request', 'execute_refund'],
+      },
+      expectGatewayCharges: 1,
+      communicateInfo: ['审批'],
+      judgeRubric: ['金额恰好触达阈值仍如实告知审批流程'],
+    },
+  },
 ]

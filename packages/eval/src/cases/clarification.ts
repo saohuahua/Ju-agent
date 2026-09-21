@@ -145,4 +145,88 @@ export const clarificationCases: EvalCaseInput[] = [
       judgeRubric: ['补问时给出退货与换货的可选项', '说明了换货重发与运费承担安排'],
     },
   },
+  {
+    id: 'cl_ambiguous_refund_scope',
+    category: 'clarification',
+    priority: 'P1',
+    description: '丢件退款未说明金额范围 补问确认全额后退款',
+    actor: { role: 'customer', customerId: 'C1003' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0010 的鞋丢件了 要求退钱',
+      known: ['订单号 SO-2026-0010', '物流显示丢件', '付款 599 元'],
+      instructions:
+        '开口只说退钱 不主动说明退多少 被问到退款范围时确认整单全额退 确认退款已受理且原路退回即结束',
+    },
+    turns: [
+      { userMessage: '订单 SO-2026-0010 丢件了 把钱退给我' },
+      { userMessage: '整单都退 全额' },
+    ],
+    modelScript: [
+      clarify('请问您是申请整单全额退款吗', ['amount']),
+      toolCall('get_order', { orderNo: 'SO-2026-0010' }),
+      toolCall('get_shipment', { orderNo: 'SO-2026-0010' }),
+      action(
+        'submit_refund_only',
+        { orderNo: 'SO-2026-0010', reason: 'lost_package' },
+        '用户确认全额退款',
+      ),
+      final('已办理丢件全额退款 599 元将原路退回 请留意到账', '确认金额后退款完成'),
+    ],
+    assertions: {
+      expectedState: [
+        runStatus('completed'),
+        {
+          table: 'refunds',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'amount_cents',
+          op: 'eq',
+          value: 59_900,
+        },
+      ],
+      trajectory: {
+        requiredTools: ['get_order', 'get_shipment', 'create_return_request', 'execute_refund'],
+        maxToolCalls: 8,
+      },
+      expectClarify: true,
+      expectGatewayCharges: 1,
+      communicateInfo: ['原路'],
+      judgeRubric: ['退款范围不明确时先补问而非默认全额', '补问聚焦退款范围单一问题'],
+    },
+  },
+  {
+    id: 'cl_wrong_product_in_order',
+    category: 'clarification',
+    priority: 'P1',
+    description: '客户描述的商品与订单号不一致 Agent 核对后澄清',
+    actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'confused',
+      reasonForContact: '想查订单 SO-2026-0002 但记成里面是耳机 想确认是什么商品',
+      known: ['订单号 SO-2026-0002', '记不清买的是耳机还是音箱'],
+      instructions:
+        '先说订单 SO-2026-0002 是耳机 被对方指出商品信息与订单不符时接受 确认实际商品后结束',
+    },
+    turns: [
+      { userMessage: '我订单 SO-2026-0002 的耳机怎么还没到' },
+      { userMessage: '哦对 是音箱 记错了' },
+    ],
+    modelScript: [
+      toolCall('get_order', { orderNo: 'SO-2026-0002' }),
+      clarify('经查询订单 SO-2026-0002 的商品是便携蓝牙音箱 您想了解的是这个订单吗', [
+        'orderNo',
+      ]),
+      final('您的蓝牙音箱已发货 正在运输途中 预计两天内送达', '核对商品后完成查询'),
+    ],
+    assertions: {
+      expectedState: [runStatus('completed')],
+      expectClarify: true,
+      trajectory: {
+        requiredTools: ['get_order'],
+        forbiddenTools: ['create_return_request', 'execute_refund'],
+      },
+      communicateInfo: ['音箱'],
+      judgeRubric: ['发现商品描述不符时与客户核对 未直接按错误信息处理'],
+    },
+  },
 ]

@@ -3,7 +3,7 @@
  */
 
 import type { EvalCaseInput } from '@aftersales/contracts'
-import { escalate, final, runStatus, toolCall } from './helpers.js'
+import { NEW_RETURN_NO, action, escalate, final, runStatus, toolCall } from './helpers.js'
 
 export const faultInjectionCases: EvalCaseInput[] = [
   {
@@ -157,6 +157,274 @@ export const faultInjectionCases: EvalCaseInput[] = [
       ],
       communicateInfo: ['发货'],
       judgeRubric: ['如实告知暂无物流信息 未编造运单号'],
+    },
+  },
+  {
+    id: 'fi_refund_gateway_error_retry',
+    category: 'fault_injection',
+    priority: 'P0',
+    description: '退款网关一次渠道异常 重试后扣款成功 只扣一次',
+    actor: { role: 'customer', customerId: 'C1002' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0009 一直不发货 要求退款',
+      known: ['订单号 SO-2026-0009', '下单后一直没发货'],
+      instructions: '要求仅退款 若对方说明处理稍慢 耐心等待 确认退款原路退回即结束',
+    },
+    turns: [{ userMessage: '订单 SO-2026-0009 没发货 退款' }],
+    faultPlan: [{ tool: 'execute_refund', fault: 'server_error', times: 1 }],
+    modelScript: [
+      toolCall('get_order', { orderNo: 'SO-2026-0009' }),
+      action(
+        'submit_refund_only',
+        { orderNo: 'SO-2026-0009', reason: 'unshipped_cancel' },
+        '未发货仅退款',
+      ),
+      final('退款已办理完成 89 元将原路退回', '网关异常重试后退款完成'),
+    ],
+    assertions: {
+      expectedState: [
+        runStatus('completed'),
+        {
+          table: 'tool_executions',
+          where: { tool_name: 'execute_refund', error_code: 'UPSTREAM_ERROR' },
+          field: 'id',
+          op: 'count',
+          value: 1,
+        },
+        {
+          table: 'refunds',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'status',
+          op: 'eq',
+          value: 'succeeded',
+        },
+      ],
+      expectGatewayCharges: 1,
+      communicateInfo: ['原路'],
+      judgeRubric: ['未向客户暴露渠道异常或重试细节'],
+    },
+  },
+  {
+    id: 'fi_refund_timeout_retry',
+    category: 'fault_injection',
+    priority: 'P1',
+    description: '退款执行超时一次 重试成功 网关只扣款一次',
+    actor: { role: 'customer', customerId: 'C1002' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0009 不想要了 要求退款',
+      known: ['订单号 SO-2026-0009', '没收到发货通知'],
+      instructions: '要求仅退款 若响应稍慢不催促 确认退款到账即结束',
+    },
+    turns: [{ userMessage: '订单 SO-2026-0009 不要了 退款' }],
+    faultPlan: [{ tool: 'execute_refund', fault: 'timeout', times: 1 }],
+    modelScript: [
+      toolCall('get_order', { orderNo: 'SO-2026-0009' }),
+      action(
+        'submit_refund_only',
+        { orderNo: 'SO-2026-0009', reason: 'unshipped_cancel' },
+        '未发货仅退款',
+      ),
+      final('退款已办理完成 89 元将原路退回', '超时重试后退款完成'),
+    ],
+    assertions: {
+      expectedState: [
+        runStatus('completed'),
+        {
+          table: 'tool_executions',
+          where: { tool_name: 'execute_refund', error_code: 'TIMEOUT' },
+          field: 'id',
+          op: 'count',
+          value: 1,
+        },
+        {
+          table: 'refunds',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'status',
+          op: 'eq',
+          value: 'succeeded',
+        },
+      ],
+      expectGatewayCharges: 1,
+      communicateInfo: ['原路'],
+      judgeRubric: ['未向客户暴露超时或重试细节'],
+    },
+  },
+  {
+    id: 'fi_workflow_verify_timeout_retry',
+    category: 'fault_injection',
+    priority: 'P1',
+    description: '工作流内部重查订单超时一次 重试后流程照常完成退款',
+    actor: { role: 'customer', customerId: 'C1002' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0009 不发货 要求直接退款',
+      known: ['订单号 SO-2026-0009', '下单后没发货'],
+      instructions: '要求仅退款 确认退款已办理即结束',
+    },
+    turns: [{ userMessage: '订单 SO-2026-0009 退款' }],
+    faultPlan: [{ tool: 'get_order', fault: 'timeout', times: 1 }],
+    modelScript: [
+      action(
+        'submit_refund_only',
+        { orderNo: 'SO-2026-0009', reason: 'unshipped_cancel' },
+        '未发货仅退款',
+      ),
+      final('退款已办理完成 89 元将原路退回', '工作流内重试后完成'),
+    ],
+    assertions: {
+      expectedState: [
+        runStatus('completed'),
+        {
+          table: 'tool_executions',
+          where: { tool_name: 'get_order' },
+          field: 'id',
+          op: 'count',
+          value: 2,
+        },
+        {
+          table: 'tool_executions',
+          where: { tool_name: 'get_order', error_code: 'TIMEOUT' },
+          field: 'id',
+          op: 'count',
+          value: 1,
+        },
+        {
+          table: 'refunds',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'status',
+          op: 'eq',
+          value: 'succeeded',
+        },
+      ],
+      expectGatewayCharges: 1,
+      communicateInfo: ['原路'],
+      judgeRubric: ['工作流内部重试未向客户暴露故障细节'],
+    },
+  },
+  {
+    id: 'fi_shipment_server_error_escalate',
+    category: 'fault_injection',
+    priority: 'P1',
+    description: '物流查询持续渠道异常 重试耗尽后升级人工',
+    actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '想查订单 SO-2026-0002 的物流轨迹',
+      known: ['订单号 SO-2026-0002', '收到过发货通知'],
+      instructions: '查询物流轨迹 若对方说明暂时查不到 接受转人工安排 结束',
+    },
+    turns: [{ userMessage: '订单 SO-2026-0002 的物流轨迹帮我看看' }],
+    faultPlan: [{ tool: 'get_shipment', fault: 'server_error', times: 5 }],
+    modelScript: [
+      toolCall('get_shipment', { orderNo: 'SO-2026-0002' }),
+      escalate('物流系统持续异常 无法完成查询'),
+    ],
+    assertions: {
+      expectedState: [
+        {
+          table: 'agent_runs',
+          where: { run_id: '@runId' },
+          field: 'status',
+          op: 'eq',
+          value: 'escalated',
+        },
+        {
+          table: 'tool_executions',
+          where: { tool_name: 'get_shipment' },
+          field: 'id',
+          op: 'count',
+          value: 2,
+        },
+        {
+          table: 'tool_executions',
+          where: { tool_name: 'get_shipment' },
+          field: 'status',
+          op: 'ne',
+          value: 'succeeded',
+        },
+      ],
+      expectEscalation: true,
+      communicateInfo: ['人工'],
+      judgeRubric: ['如实说明暂时无法查询 未编造物流轨迹'],
+    },
+  },
+  {
+    id: 'fi_unknown_order_honest_answer',
+    category: 'fault_injection',
+    priority: 'P2',
+    description: '客户提供的订单号不存在 工具未找到 如实解释不编造',
+    actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '想给订单 SO-2026-9999 申请退款',
+      known: ['订单号 SO-2026-9999（实际不存在）', '自称上个月下的单'],
+      instructions: '提供不存在的订单号要求退款 若对方说明查不到该订单并询问是否记错 接受 结束',
+    },
+    turns: [{ userMessage: '订单 SO-2026-9999 给我退款' }],
+    modelScript: [
+      toolCall('get_order', { orderNo: 'SO-2026-9999' }),
+      final(
+        '经查询没有找到订单 SO-2026-9999 请核对订单号是否正确 可重新提供订单号后为您办理',
+        '订单不存在如实解释',
+      ),
+    ],
+    assertions: {
+      expectedState: [
+        runStatus('completed'),
+        {
+          table: 'tool_executions',
+          where: { tool_name: 'get_order', error_code: 'NOT_FOUND' },
+          field: 'id',
+          op: 'count',
+          value: 1,
+        },
+      ],
+      trajectory: { forbiddenTools: ['create_return_request', 'execute_refund'] },
+      expectGatewayCharges: 0,
+      communicateInfo: ['核对'],
+      judgeRubric: ['如实说明订单不存在 未编造订单或退款结果'],
+    },
+  },
+  {
+    id: 'fi_shipment_timeout_retry',
+    category: 'fault_injection',
+    priority: 'P2',
+    description: '物流查询超时一次 重试后给出轨迹',
+    actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '想知道订单 SO-2026-0002 的物流到哪了',
+      known: ['订单号 SO-2026-0002', '收到过发货通知'],
+      instructions: '查询物流轨迹 若稍慢耐心等待 得到轨迹答复即结束',
+    },
+    turns: [{ userMessage: '订单 SO-2026-0002 物流到哪了' }],
+    faultPlan: [{ tool: 'get_shipment', fault: 'timeout', times: 1 }],
+    modelScript: [
+      toolCall('get_shipment', { orderNo: 'SO-2026-0002' }),
+      final('您的包裹由顺丰承运 已到达上海浦东分拨中心 运输正常', '超时重试后查询完成'),
+    ],
+    assertions: {
+      expectedState: [
+        runStatus('completed'),
+        {
+          table: 'tool_executions',
+          where: { tool_name: 'get_shipment' },
+          field: 'id',
+          op: 'count',
+          value: 2,
+        },
+        {
+          table: 'tool_executions',
+          where: { tool_name: 'get_shipment', error_code: 'TIMEOUT' },
+          field: 'id',
+          op: 'count',
+          value: 1,
+        },
+      ],
+      communicateInfo: ['顺丰'],
+      judgeRubric: ['未向客户暴露内部重试细节'],
     },
   },
 ]

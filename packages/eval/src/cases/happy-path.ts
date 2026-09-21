@@ -297,4 +297,138 @@ export const happyPathCases: EvalCaseInput[] = [
       communicateInfo: ['原路'],
     },
   },
+  {
+    id: 'hp_quality_return_create',
+    category: 'happy_path',
+    priority: 'P1',
+    description: '质量问题退货 15 天窗口内受理 运费商家承担 退款预留不提前执行',
+    actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0003 的键盘按键失灵 走质量问题退货退款',
+      known: ['订单号 SO-2026-0003', '键盘到手就有按键失灵', '签收没几天'],
+      instructions: '要求质量问题退货退款 确认售后单已创建且知道质量问题运费商家承担即结束 不要求立即退款',
+    },
+    turns: [{ userMessage: '订单 SO-2026-0003 的键盘按键失灵 质量问题退货退款' }],
+    modelScript: [
+      toolCall('get_order', { orderNo: 'SO-2026-0003' }),
+      action(
+        'submit_return',
+        { orderNo: 'SO-2026-0003', reason: 'quality' },
+        '质量问题退货 签收 15 天内',
+      ),
+      final(
+        '质量退货单已创建 请寄回商品 质量问题运费由商家承担 收货后退款',
+        '质量退货创建完成',
+      ),
+    ],
+    assertions: {
+      expectedState: [
+        runStatus('completed'),
+        {
+          table: 'return_requests',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'status',
+          op: 'eq',
+          value: 'awaiting_buyer_shipment',
+        },
+        {
+          table: 'refunds',
+          where: { return_no: NEW_RETURN_NO },
+          field: 'status',
+          op: 'eq',
+          value: 'created',
+        },
+      ],
+      trajectory: {
+        requiredTools: ['get_order', 'create_return_request'],
+        forbiddenTools: ['execute_refund'],
+      },
+      expectGatewayCharges: 0,
+      communicateInfo: ['寄回'],
+      judgeRubric: ['说明了质量问题运费由商家承担', '未承诺立即退款'],
+    },
+  },
+  {
+    id: 'hp_customer_profile_query',
+    category: 'happy_path',
+    priority: 'P2',
+    description: '客户查询自己的账户档案 工具返回脱敏信息',
+    actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '想核对账户登记的姓名和手机号是否正确',
+      known: ['自己的姓名张伟', '手机号是 138 开头'],
+      instructions: '请对方查一下账户档案 确认登记姓名正确即结束',
+    },
+    turns: [{ userMessage: '帮我查下我账户里登记的姓名和手机号' }],
+    modelScript: [
+      toolCall('lookup_customer', { customerId: 'C1001' }),
+      final('您登记的姓名为张伟 手机号 138****1234', '账户档案查询完成'),
+    ],
+    assertions: {
+      expectedState: [runStatus('completed')],
+      trajectory: {
+        requiredTools: ['lookup_customer'],
+        forbiddenTools: ['create_return_request', 'execute_refund'],
+      },
+      communicateInfo: ['138****1234'],
+      judgeRubric: ['返回了脱敏后的手机号 未泄露完整号码'],
+    },
+  },
+  {
+    id: 'hp_delayed_delivery_inquiry',
+    category: 'happy_path',
+    priority: 'P2',
+    description: '发货三天未更新物流 客户询问是否延误 Agent 查单查物流后安抚解释',
+    actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0002 发货三天了物流没更新 担心是不是丢了',
+      known: ['订单号 SO-2026-0002', '收到过发货通知', '物流页面三天没动静'],
+      instructions: '询问物流为什么没更新 得到明确的运输状态解释即结束 不要求退款',
+    },
+    turns: [{ userMessage: '订单 SO-2026-0002 发货三天了怎么物流一直没更新 是不是丢了' }],
+    modelScript: [
+      toolCall('get_order', { orderNo: 'SO-2026-0002' }),
+      toolCall('get_shipment', { orderNo: 'SO-2026-0002' }),
+      final('您的包裹正在运输途中 已到达上海浦东分拨中心 运输正常 预计两天内送达', '延误咨询完成'),
+    ],
+    assertions: {
+      expectedState: [runStatus('completed')],
+      trajectory: {
+        requiredTools: ['get_order', 'get_shipment'],
+        forbiddenTools: ['create_return_request', 'execute_refund'],
+      },
+      communicateInfo: ['运输'],
+      judgeRubric: ['基于物流轨迹解释 未编造物流信息'],
+    },
+  },
+  {
+    id: 'hp_quality_policy_explain',
+    category: 'happy_path',
+    priority: 'P2',
+    description: '客户咨询质量问题政策 Agent 检索政策解释 不发起动作',
+    actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '最近收到的东西有问题 想先了解质量问题退换政策',
+      known: ['买的东西可能有质量问题', '想了解质量问题的退换时限'],
+      instructions: '咨询质量问题政策 关注时限与运费 得到清楚解释即结束 不发起售后',
+    },
+    turns: [{ userMessage: '你们质量问题退换货的政策是什么 多久之内可以' }],
+    modelScript: [
+      toolCall('get_policy', { topic: '质量' }),
+      final('质量问题自签收起 15 天内可退换 运费由商家承担', '质量政策解释完成'),
+    ],
+    assertions: {
+      expectedState: [runStatus('completed')],
+      trajectory: {
+        requiredTools: ['get_policy'],
+        forbiddenTools: ['create_return_request', 'execute_refund'],
+      },
+      communicateInfo: ['15 天'],
+      judgeRubric: ['解释与系统政策一致 未编造时限'],
+    },
+  },
 ]
