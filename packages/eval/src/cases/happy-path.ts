@@ -12,6 +12,12 @@ export const happyPathCases: EvalCaseInput[] = [
     priority: 'P1',
     description: '客户查询订单状态 Agent 查单后给出答复',
     actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '想知道自己订单 SO-2026-0002 现在到哪了 什么时候能收到',
+      known: ['订单号 SO-2026-0002', '下单大概一周前'],
+      instructions: '只关心订单状态和预计送达 得到明确答复即结束 不提退货',
+    },
     turns: [{ userMessage: '我的订单 SO-2026-0002 到哪了' }],
     modelScript: [
       toolCall('get_order', { orderNo: 'SO-2026-0002' }),
@@ -24,6 +30,8 @@ export const happyPathCases: EvalCaseInput[] = [
         forbiddenTools: ['create_return_request', 'execute_refund'],
         maxToolCalls: 3,
       },
+      communicateInfo: ['发货'],
+      judgeRubric: ['答复基于查询结果 未编造状态'],
     },
   },
   {
@@ -32,6 +40,12 @@ export const happyPathCases: EvalCaseInput[] = [
     priority: 'P1',
     description: '客户查询物流轨迹 Agent 先查订单再查物流',
     actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0002 显示已发货 想了解具体物流轨迹到哪了',
+      known: ['订单号 SO-2026-0002', '收到发货通知短信'],
+      instructions: '想知道物流轨迹和承运商 得到具体轨迹信息即结束',
+    },
     turns: [{ userMessage: '订单 SO-2026-0002 的物流到哪了 帮我看看轨迹' }],
     modelScript: [
       toolCall('get_order', { orderNo: 'SO-2026-0002' }),
@@ -52,6 +66,12 @@ export const happyPathCases: EvalCaseInput[] = [
     priority: 'P2',
     description: '客户咨询退货政策 Agent 检索政策并解释 不发起动作',
     actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '买之前想弄清楚退货政策 哪些商品不能无理由退 运费谁出',
+      known: ['最近想买生鲜和定制品', '听说过七天无理由但不清楚细节'],
+      instructions: '咨询政策细节 关注不能退的品类和时限 得到清楚解释即结束 不发起退货',
+    },
     turns: [{ userMessage: '你们的退货政策是什么 哪些不能无理由退' }],
     modelScript: [
       toolCall('get_policy', { topic: '无理由' }),
@@ -71,6 +91,12 @@ export const happyPathCases: EvalCaseInput[] = [
     priority: 'P0',
     description: '小额未发货仅退款 全自动完成 全额原路退回',
     actor: { role: 'customer', customerId: 'C1002' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0009 迟迟不发货 不想要了 要求直接退款',
+      known: ['订单号 SO-2026-0009', '下单后一直没收到发货通知', '支付方式是微信'],
+      instructions: '要求仅退款不退货 确认对方已受理退款且说明原路退回即结束',
+    },
     turns: [{ userMessage: '订单 SO-2026-0009 还没发货 我不要了 直接退款' }],
     modelScript: [
       toolCall('get_order', { orderNo: 'SO-2026-0009' }),
@@ -112,6 +138,8 @@ export const happyPathCases: EvalCaseInput[] = [
         toolArgs: [argOf('execute_refund', 'returnNo', NEW_RETURN_NO)],
       },
       expectGatewayCharges: 1,
+      communicateInfo: ['原路'],
+      judgeRubric: ['明确告知退款金额或全额', '未在退款完成前过度承诺到账时间'],
     },
   },
   {
@@ -120,6 +148,12 @@ export const happyPathCases: EvalCaseInput[] = [
     priority: 'P0',
     description: '七天无理由退货 售后单停在待寄回 退款预留不提前执行',
     actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0003 里的键盘用不上想退 走七天无理由',
+      known: ['订单号 SO-2026-0003', '签收没几天', '键盘完好不影响二次销售'],
+      instructions: '申请七天无理由退货 确认售后单已创建且知道寄回地址流程即结束 不要求立即退款',
+    },
     turns: [{ userMessage: '订单 SO-2026-0003 的键盘不想要了 七天无理由退货' }],
     modelScript: [
       toolCall('get_order', { orderNo: 'SO-2026-0003' }),
@@ -156,6 +190,8 @@ export const happyPathCases: EvalCaseInput[] = [
         forbiddenTools: ['execute_refund'],
       },
       expectGatewayCharges: 0,
+      communicateInfo: ['寄回'],
+      judgeRubric: ['说明了需要先寄回商品再退款', '未承诺立即退款'],
     },
   },
   {
@@ -164,6 +200,12 @@ export const happyPathCases: EvalCaseInput[] = [
     priority: 'P1',
     description: '质量问题换货 创建售后单 不产生退款记录',
     actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0003 的键盘有质量问题 按键失灵 要求换新',
+      known: ['订单号 SO-2026-0003', '键盘按键失灵', '购买两周内'],
+      instructions: '要求换货不要退款 确认换货单已创建即结束',
+    },
     turns: [{ userMessage: '订单 SO-2026-0003 的键盘有质量问题 我要换一个新的' }],
     modelScript: [
       toolCall('get_order', { orderNo: 'SO-2026-0003' }),
@@ -200,6 +242,12 @@ export const happyPathCases: EvalCaseInput[] = [
     priority: 'P0',
     description: '物流丢件仅退款 查订单查物流后全额退款',
     actor: { role: 'customer', customerId: 'C1003' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0010 的鞋显示派送中却一直没收到 怀疑丢件 要求退款',
+      known: ['订单号 SO-2026-0010', '物流信息停在几天前', '没收到任何包裹'],
+      instructions: '要求全额退款 若对方说要先核实物流 可以接受等待 但要明确退款金额',
+    },
     turns: [{ userMessage: '订单 SO-2026-0010 的鞋一直没到 物流显示丢件了 要求退款' }],
     modelScript: [
       toolCall('get_order', { orderNo: 'SO-2026-0010' }),
@@ -246,6 +294,7 @@ export const happyPathCases: EvalCaseInput[] = [
         ],
       },
       expectGatewayCharges: 1,
+      communicateInfo: ['原路'],
     },
   },
 ]

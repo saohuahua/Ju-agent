@@ -100,6 +100,20 @@ export default function EvalPage() {
   }
 
   const latest = reports[0]
+  const latestIsL2 = latest?.level === 'L2'
+  const l2Cases = latest?.report.caseResults ?? []
+  const avgTurns =
+    l2Cases.length > 0
+      ? l2Cases.reduce((sum, c) => sum + (c.turns ?? 0), 0) / l2Cases.length
+      : 0
+  const agentTokens = l2Cases.reduce(
+    (sum, c) => sum + (c.agentInputTokens ?? 0) + (c.agentOutputTokens ?? 0),
+    0,
+  )
+  const simulatorTokens = l2Cases.reduce(
+    (sum, c) => sum + (c.simulatorInputTokens ?? 0) + (c.simulatorOutputTokens ?? 0),
+    0,
+  )
   const groupedKeys = new Set(METRIC_GROUPS.flatMap((group) => group.keys))
 
   return (
@@ -109,7 +123,9 @@ export default function EvalPage() {
           <h1 className="shrink-0 text-xl font-semibold tracking-tight">评测看板</h1>
           <div className="flex min-w-0 items-center gap-5">
             <p className="min-w-0 text-sm text-stone-500">
-              以数据库终态与工具轨迹为准的确定性评测 LLM 判分不参与任务成败
+              {latestIsL2
+                ? 'L2 用户模拟评测 LLM 扮演客户与真实模型多轮对话'
+                : '以数据库终态与工具轨迹为准的确定性评测 LLM 判分不参与任务成败'}
             </p>
             <button
               onClick={trigger}
@@ -282,6 +298,85 @@ export default function EvalPage() {
               </section>
             )}
 
+            {latestIsL2 && l2Cases.length > 0 && (
+              <section className="mt-8">
+                <h2 className="mb-2 text-sm font-medium text-stone-700">模拟对话开销</h2>
+                <div className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-4">
+                  <div>
+                    <div className="text-xs text-stone-500">平均对话轮次</div>
+                    <div className="mt-0.5 text-2xl font-semibold tabular-nums tracking-tight text-stone-900">
+                      {avgTurns.toFixed(1)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-stone-500">Agent token</div>
+                    <div className="mt-0.5 text-2xl font-semibold tabular-nums tracking-tight text-stone-900">
+                      {agentTokens.toLocaleString()}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-stone-500">模拟器 token</div>
+                    <div className="mt-0.5 text-2xl font-semibold tabular-nums tracking-tight text-stone-900">
+                      {simulatorTokens.toLocaleString()}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-stone-500">模拟器模型</div>
+                    <div className="mt-0.5 truncate font-mono text-sm text-stone-700">
+                      {latest.userModel ?? '-'}
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {latestIsL2 && l2Cases.length > 0 && (
+              <section className="mt-8">
+                <h2 className="mb-2 text-sm font-medium text-stone-700">用例明细</h2>
+                <div className="overflow-x-auto rounded-container border border-hairline bg-white">
+                  <table className="w-full text-sm">
+                    <thead className="text-left text-xs text-stone-500">
+                      <tr className="border-b border-hairline">
+                        <th className="px-3 py-2 font-medium">用例</th>
+                        <th className="px-3 py-2 font-medium">优先级</th>
+                        <th className="px-3 py-2 font-medium">轮次</th>
+                        <th className="px-3 py-2 font-medium">Agent token</th>
+                        <th className="px-3 py-2 font-medium">结果</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-hairline">
+                      {l2Cases.map((result) => (
+                        <tr
+                          key={result.caseId}
+                          className="transition-colors duration-200 hover:bg-stone-50"
+                        >
+                          <td className="px-3 py-1.5 font-mono text-xs text-stone-700">
+                            {result.caseId}
+                          </td>
+                          <td className="px-3 py-1.5 text-xs text-stone-600">{result.priority}</td>
+                          <td className="px-3 py-1.5 tabular-nums text-stone-700">
+                            {result.turns ?? '-'}
+                          </td>
+                          <td className="px-3 py-1.5 tabular-nums text-stone-700">
+                            {((result.agentInputTokens ?? 0) + (result.agentOutputTokens ?? 0)).toLocaleString()}
+                          </td>
+                          <td className="px-3 py-1.5">
+                            {result.passed ? (
+                              <span className="text-xs text-emerald-700">通过</span>
+                            ) : (
+                              <span className="text-xs text-red-700" title={result.failures.join('\n')}>
+                                失败 {result.failures.length} 项
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+
             <section className="mt-8">
               <h2 className="mb-2 text-sm font-medium text-stone-700">历史报告</h2>
               <div className="overflow-x-auto">
@@ -304,8 +399,17 @@ export default function EvalPage() {
                         <td className="px-4 py-2.5 font-mono text-xs text-stone-600">
                           {report.reportId}
                         </td>
-                        <td className="px-4 py-2.5 font-mono text-xs text-stone-600">
-                          {report.model}
+                        <td className="px-4 py-2.5">
+                          <span
+                            className={`mr-2 inline-flex items-center rounded-badge border px-1.5 py-0.5 text-[10px] font-medium ${
+                              report.level === 'L2'
+                                ? 'border-teal-200 bg-teal-50 text-teal-800'
+                                : 'border-stone-200 bg-stone-50 text-stone-600'
+                            }`}
+                          >
+                            {report.level === 'L2' ? 'L2 模拟' : 'L1 脚本'}
+                          </span>
+                          <span className="font-mono text-xs text-stone-600">{report.model}</span>
                         </td>
                         <td className="px-4 py-2.5 tabular-nums text-stone-700">
                           {report.passed}/{report.total}

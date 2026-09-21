@@ -19,7 +19,8 @@
     "db:reset": "tsx scripts/db-reset.ts",
     "eval": "tsx packages/eval/src/cli.ts",
     "eval:dataset": "tsx scripts/export-dataset.ts",
-    "demo": "tsx scripts/demo.ts"
+    "demo": "tsx scripts/demo.ts",
+    "eval:sim": "tsx packages/eval/src/sim-cli.ts"
   },
   "dependencies": {
     "@aftersales/agent": "workspace:*",

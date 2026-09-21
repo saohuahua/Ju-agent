@@ -25,6 +25,10 @@ export interface ReportInput {
   /** 每轮的耗时毫秒 */
   roundDurationsMs: number[]
   cases: EvalCase[]
+  /** L2 用户模拟的报告元数据 */
+  level?: 'L1' | 'L2'
+  userModel?: string
+  judgeModel?: string
 }
 
 export function buildReport(input: ReportInput): EvalReport {
@@ -37,7 +41,10 @@ export function buildReport(input: ReportInput): EvalReport {
   const report: EvalReport = {
     reportId: `evr_${randomUUID().slice(0, 8)}`,
     startedAt: new Date().toISOString(),
+    level: input.level ?? 'L1',
     model: input.model,
+    userModel: input.userModel,
+    judgeModel: input.judgeModel,
     promptVersion: input.promptVersion,
     total: details.length,
     passed: details.filter((d) => d.passed).length,
@@ -53,10 +60,22 @@ export function buildReport(input: ReportInput): EvalReport {
       passed: d.passed,
       failures: d.failures,
       durationMs: d.durationMs,
+      turns: d.turns,
+      agentInputTokens: d.agentInputTokens,
+      agentOutputTokens: d.agentOutputTokens,
+      agentCostUsd: d.agentCostUsd,
+      simulatorInputTokens: d.simulatorInputTokens,
+      simulatorOutputTokens: d.simulatorOutputTokens,
+      simulatorCostUsd: d.simulatorCostUsd,
+      judge: d.judge ? toContractJudge(d.judge) : undefined,
     })),
     gatePassed: gate.passed,
   }
   return report
+}
+
+function toContractJudge(failures: CaseDetail['judge']): NonNullable<CaseDetail['judge']> {
+  return failures?.map((failure) => ({ rubric: failure.rubric, reason: failure.reason })) ?? []
 }
 
 /** Pass@k 至少一次通过 用于与 Pass^k 对照展示观察能力上限 */
@@ -83,7 +102,12 @@ export function renderMarkdownReport(
   lines.push('')
   lines.push(`- 报告编号 ${report.reportId}`)
   lines.push(`- 生成时间 ${report.startedAt}`)
-  lines.push(`- 模型 ${report.model} 提示词版本 ${report.promptVersion}`)
+  lines.push(
+    `- 层级 ${report.level} 模型 ${report.model} 提示词版本 ${report.promptVersion}`,
+  )
+  if (report.level === 'L2') {
+    lines.push(`- 用户模拟器 ${report.userModel} judge ${report.judgeModel ?? '未启用'}`)
+  }
   lines.push(`- 重复轮次 ${extra.repeat} 总耗时 ${(extra.durationMs / 1000).toFixed(1)}s`)
   lines.push(`- P0 门禁 ${report.gatePassed ? '通过' : '未通过'}`)
   lines.push('')
@@ -97,6 +121,23 @@ export function renderMarkdownReport(
   }
   for (const [key, value] of Object.entries(report.passAtK ?? {})) {
     lines.push(`- ${key} ${percent(value)}`)
+  }
+  if (report.level === 'L2') {
+    const withTurns = report.caseResults.filter((c) => c.turns !== undefined)
+    if (withTurns.length > 0) {
+      const avgTurns =
+        withTurns.reduce((sum, c) => sum + (c.turns ?? 0), 0) / withTurns.length
+      const agentTokens = report.caseResults.reduce(
+        (sum, c) => sum + (c.agentInputTokens ?? 0) + (c.agentOutputTokens ?? 0),
+        0,
+      )
+      const simTokens = report.caseResults.reduce(
+        (sum, c) => sum + (c.simulatorInputTokens ?? 0) + (c.simulatorOutputTokens ?? 0),
+        0,
+      )
+      lines.push(`- 平均对话轮次 ${avgTurns.toFixed(1)}`)
+      lines.push(`- Agent token ${agentTokens} 模拟器 token ${simTokens}`)
+    }
   }
   lines.push('')
   lines.push('## 核心指标')

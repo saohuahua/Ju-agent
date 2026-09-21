@@ -6,6 +6,17 @@
 数据库里的退款金额 状态 审计 记录 网关的扣款次数 才是成败依据
 LLM Judge 只用于回复质量解释 且永远不参与任务成败
 
+## 两级评测体系
+
+| 层级 | 命令 | 被测对象 | 成本 | 运行时机 |
+| --- | --- | --- | --- | --- |
+| L1 脚本化回归 | `pnpm eval` | 运行时与治理层（模型为脚本） | 零成本 约 1 秒 | 每次提交 CI 门禁 |
+| L2 用户模拟 | `pnpm eval:sim` | 真实模型的完整智能链路 | 每用例数秒与数千 token | 发版前 |
+
+L1 用 ScriptedModel 回放理想轨迹 证明管道与治理正确性
+L2 用 tau2-bench 范式的用户模拟器与真实模型多轮对话 证明 Agent 智能层表现
+两层成绩分开表述 L2 无密钥时诚实跳过 不输出模拟成绩
+
 ## 用例契约
 
 每条用例是一个完整任务定义 位于 packages/eval/src/cases
@@ -15,8 +26,13 @@ id category priority
 fixture 基线夹具名
 fixturePatch 定向补丁 修改订单时间 状态 类目
 actor 发起身份 决定归属校验走向
-turns 用户回合序列
-modelScript 脚本化模型输出 按调用顺序消耗 与轨迹一一对应
+turns 用户回合序列 L1 使用
+modelScript 脚本化模型输出 按调用顺序消耗 与轨迹一一对应 L1 使用
+scenario 模拟客户场景 L2 使用
+  persona 人设 normal 平缓 impatient 急躁 confused 迷糊
+  reasonForContact 来电原因
+  known 已知信息 未列出的客户不可知 实现选择性信息隐藏
+  instructions 行为剧本 接受什么 拒绝什么 何时终止
 faultPlan 故障注入 timeout rate_limited server_error crash
 approvalAction 审批处理 approve reject expire
 operatorActions 运行后的运营动作 寄回 收货
@@ -26,22 +42,42 @@ assertions
   trajectory 必选工具 禁止工具 有序子序列 参数匹配 步数上限
   expectEscalation expectClarify 升级与补问预期
   expectGatewayCharges 网关成功扣款次数
+  communicateInfo 回复必须说到的关键信息 子串匹配 代码判定
+  judgeRubric 主观判据 二元可从 transcript 验证 仅走 LLM judge
 ```
 
-## 当前数据集 32 条
+## 用户模拟器设计 tau2-bench 范式
+
+- 模拟器与被测模型强制分离 模拟器默认 Haiku 被测为任意真实模型
+- 角色翻转 Agent 发言以 user 角色注入 模拟器以 assistant 角色生成客户发言
+- 一回合一条消息 改述不背诵 信息渐进披露
+- 终止哨兵 客户目标达成输出 ###STOP### 要求人工输出 ###TRANSFER###
+- 三档人设 急躁客户会施压 迷糊客户会答非所问 压力测试 Agent 的收敛能力
+
+## 判定三层
+
+1. 终态断言 代码判定 数据库状态 网关扣款 零偏差
+2. 轨迹与沟通断言 代码判定 工具轨迹 communicateInfo 子串匹配
+3. LLM judge 仅 judgeRubric 主观项 judge 模型与被测模型分离 判据二元化
+   判定失败或输出无法解析时保守计入失败
+
+## 当前数据集 40 条
 
 | 分类            | 数量 | 覆盖                                       |
 | --------------- | ---- | ------------------------------------------ |
 | happy_path      | 7    | 查单 查物流 政策解释 仅退款 退货 换货 丢件 |
 | clarification   | 3    | 缺订单号 缺原因 换退选择                   |
 | policy_boundary | 5    | 超时 生鲜 定制 15 天边界 部分退款金额      |
-| approval        | 3    | 批准 拒绝 过期                             |
-| rejection       | 2    | 重复申请 不退货仅退款                      |
-| fault_injection | 4    | 超时重试 限流重试 持续故障升级 无物流记录  |
+| approval        | 4    | 批准 拒绝 过期 大额催压                    |
+| rejection       | 4    | 重复申请 不退货仅退款 超时发火 怒要人工    |
+| fault_injection | 5    | 超时重试 限流重试 持续故障升级 无物流记录 急躁遇超时 |
 | security        | 4    | 越权 提示词注入 虚构承诺 PII 脱敏          |
-| recovery        | 4    | 中断恢复 重复提交 退货全闭环 换货全闭环    |
+| recovery        | 5    | 中断恢复 重复提交 退货全闭环 换货全闭环 迷糊重复提交 |
+| sim-hard 变体   | 8    | 急躁施压 迷糊说不清 中途改主意 冒充管理员 情绪对抗 |
 
-优先级 P0 14 条 P1 13 条 P2 5 条 P0 全过才过门禁
+sim-hard 变体是 L2 的核心场景 人设压力与行为曲折 模型脚本只作 L1 理想轨迹
+
+优先级 P0 17 条 P1 15 条 P2 8 条 P0 全过才过门禁
 
 安全类用例刻意让脚本化模型扮演被误导的弱模型 验证系统层纵深防御
 这个设计的含义是 即使换一个更差的模型 系统依然不出资金事故
@@ -49,13 +85,19 @@ assertions
 ## 运行方式
 
 ```bash
-pnpm eval                      # 单轮 全量
-pnpm eval -- --repeat 3        # 三轮 输出 Pass^3
-pnpm eval -- --model anthropic # 真实模型模式 需要 ANTHROPIC_API_KEY
-pnpm eval:dataset              # 导出公开数据集 JSON
+pnpm eval                                # L1 单轮 全量 零成本
+pnpm eval -- --repeat 3                  # L1 三轮 输出 Pass^3
+pnpm eval:dataset                        # 导出公开数据集 JSON
+pnpm eval:sim                            # L2 P0 全量 用户模拟 需要密钥
+pnpm eval:sim -- --repeat 3              # L2 三轮 输出 Pass^3
+pnpm eval:sim -- --sample all            # L2 全部带场景用例
+pnpm eval:sim -- --sample p1             # L2 分层抽样 P1 抽一半 P2 抽五分之一
+pnpm eval:sim -- --case hp_refund_only_small    # 单用例调试
+pnpm eval:sim -- --agent-model claude-sonnet-5  # 指定被测模型
 ```
 
-脚本套件全量一轮约 1 秒 三轮约 3 秒 具备每次提交都跑的条件
+L2 成本控制 分层抽样 P0 全量 P1 P2 按比例抽 失败用例自动导出
+eval/failures/ 含场景与完整 transcript 人工归因后可提升为正式回归用例
 
 ## 指标定义
 

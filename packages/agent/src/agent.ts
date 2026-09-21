@@ -127,12 +127,35 @@ export class AgentRunner {
     return outcome
   }
 
-  /** 断点恢复 续跑未完成的工作流步骤后继续生成答复 */
+  /**
+   * 断点恢复 续跑未完成的工作流步骤后继续生成答复
+   *
+   * 模型调用无状态可重放 进程中断卡在 running 且无工作流断点的运行
+   * 直接从事件重建上下文续跑 上下文已落的步骤不会重复执行
+   */
   async resumeFromCheckpoint(runId: string, toolContext: ToolContext): Promise<RunOutcome> {
     const run = await this.deps.runs.get(runId)
-    const result = await this.deps.workflow.resumeFromCheckpoint(runId, toolContext)
-    const outcome = await this.handleWorkflowResult(runId, result)
+    let outcome: RunOutcome | 'continue'
+    try {
+      const result = await this.deps.workflow.resumeFromCheckpoint(runId, toolContext)
+      outcome = await this.handleWorkflowResult(runId, result)
+    } catch (error) {
+      // 无工作流断点 属于模型调用阶段中断 直接续跑循环
+      if (
+        error instanceof DomainError &&
+        (error as DomainError & { shape?: { code?: string } }).shape?.code === 'NOT_FOUND'
+      ) {
+        outcome = 'continue'
+      } else {
+        throw error
+      }
+    }
     if (outcome === 'continue') {
+      // 崩溃恢复的运行本就停在 running 无需迁移 中断于其他状态才回到运行态
+      if (run.status !== 'running') {
+        await this.deps.runs.transition(runId, 'running')
+        await this.deps.runs.emit(runId, 'run.resumed', { resumePoint: 'checkpoint' })
+      }
       return this.processLoop(runId, run.customerId, toolContext)
     }
     return outcome

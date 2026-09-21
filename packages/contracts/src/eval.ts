@@ -79,6 +79,38 @@ export const FaultPlan = z.object({
 })
 export type FaultPlan = z.infer<typeof FaultPlan>
 
+/** 用户模拟人设 三档难度 对应 tau2-bench 的 persona 分层 */
+export const SIM_PERSONAS = ['normal', 'impatient', 'confused'] as const
+export const SimPersona = z.enum(SIM_PERSONAS)
+export type SimPersona = z.infer<typeof SimPersona>
+
+/**
+ * 模拟客户场景 tau2-bench 风格
+ *
+ * known 实现选择性信息隐藏 未列出的信息客户不可知 不许编造
+ * instructions 是客户的行为剧本 模拟器按剧本即兴发挥
+ */
+export const UserScenario = z.object({
+  persona: SimPersona.default('normal'),
+  /** 人设补充描述 如 第三次联系 已不耐烦 */
+  personaNotes: z.string().optional(),
+  /** 来电原因 客户的目标 */
+  reasonForContact: z.string().min(1),
+  /** 客户已知信息 未列出的视为不可知 */
+  known: z.array(z.string()).default([]),
+  /** 行为指令 例如 坚持要退款 若给出明确时限可接受查物流 */
+  instructions: z.string().min(1),
+  /** 最大对话轮次 超过判失败 */
+  maxTurns: z.number().int().positive().default(8),
+})
+export type UserScenario = z.infer<typeof UserScenario>
+
+export const SimJudgeFailure = z.object({
+  rubric: z.string(),
+  reason: z.string(),
+})
+export type SimJudgeFailure = z.infer<typeof SimJudgeFailure>
+
 /** 单条评测用例 */
 export const EvalCase = z.object({
   id: z.string().min(1),
@@ -102,10 +134,12 @@ export const EvalCase = z.object({
     role: z.enum(['customer', 'operator', 'supervisor']),
     customerId: z.string().optional(),
   }),
-  /** 用户回合顺序输入 */
+  /** 用户回合顺序输入 Level 1 脚本化回归使用 */
   turns: z.array(z.object({ userMessage: z.string().min(1) })),
-  /** 脚本化模型输出 按调用顺序消耗 */
+  /** 脚本化模型输出 按调用顺序消耗 Level 1 使用 */
   modelScript: z.array(z.record(z.string(), z.unknown())),
+  /** 模拟客户场景 Level 2 真实模型评测使用 有 scenario 的用例可跑用户模拟 */
+  scenario: UserScenario.optional(),
   faultPlan: z.array(FaultPlan).optional(),
   /** 审批环节的处理方式 approve reject 或等待过期 */
   approvalAction: z.enum(['approve', 'reject', 'expire']).optional(),
@@ -130,6 +164,10 @@ export const EvalCase = z.object({
     expectClarify: z.boolean().optional(),
     /** 幂等专项断言 网关成功扣款次数 */
     expectGatewayCharges: z.number().int().nonnegative().optional(),
+    /** 回复必须说到的关键信息 子串匹配 代码判定 零偏差 */
+    communicateInfo: z.array(z.string()).optional(),
+    /** 主观项判据 仅此项走 LLM judge 判据须二元可从 transcript 验证 */
+    judgeRubric: z.array(z.string()).optional(),
   }),
 })
 export type EvalCase = z.infer<typeof EvalCase>
@@ -145,6 +183,18 @@ export const EvalCaseResult = z.object({
   passed: z.boolean(),
   failures: z.array(z.string()),
   durationMs: z.number().int().nonnegative(),
+  /** Level 2 用户模拟的对话轮次 */
+  turns: z.number().int().nonnegative().optional(),
+  /** 被测 Agent 消耗的 token 与成本 */
+  agentInputTokens: z.number().int().nonnegative().optional(),
+  agentOutputTokens: z.number().int().nonnegative().optional(),
+  agentCostUsd: z.number().optional(),
+  /** 用户模拟器消耗的 token 与成本 */
+  simulatorInputTokens: z.number().int().nonnegative().optional(),
+  simulatorOutputTokens: z.number().int().nonnegative().optional(),
+  simulatorCostUsd: z.number().optional(),
+  /** LLM judge 判定详情 */
+  judge: z.array(SimJudgeFailure).optional(),
 })
 export type EvalCaseResult = z.infer<typeof EvalCaseResult>
 
@@ -167,7 +217,12 @@ export type MetricKey = (typeof METRIC_KEYS)[number]
 export const EvalReport = z.object({
   reportId: z.string(),
   startedAt: z.string(),
+  /** L1 脚本化回归 或 L2 真实模型加用户模拟 */
+  level: z.enum(['L1', 'L2']).default('L1'),
   model: z.string(),
+  /** L2 的用户模拟器与 judge 模型 */
+  userModel: z.string().optional(),
+  judgeModel: z.string().optional(),
   promptVersion: z.string(),
   total: z.number().int(),
   passed: z.number().int(),

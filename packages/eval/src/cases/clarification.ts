@@ -12,6 +12,13 @@ export const clarificationCases: EvalCaseInput[] = [
     priority: 'P0',
     description: '未提供订单号 先补问一次 用户答复后完成退款',
     actor: { role: 'customer', customerId: 'C1002' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '有个订单不想要了 想直接退款',
+      known: ['自己最近下过一个单 没收到发货通知', '当时用微信支付的'],
+      instructions:
+        '开口只说要退款 不主动报订单号 被问到订单号时提供 SO-2026-0009 确认退款已受理并说明退回方式即结束',
+    },
     turns: [
       { userMessage: '我有个订单不想要了 帮我退款' },
       { userMessage: '订单号是 SO-2026-0009' },
@@ -50,6 +57,8 @@ export const clarificationCases: EvalCaseInput[] = [
       },
       expectClarify: true,
       expectGatewayCharges: 1,
+      communicateInfo: ['原路'],
+      judgeRubric: ['信息不足时先补问而非猜测订单', '补问聚焦单一缺口 未连环盘问'],
     },
   },
   {
@@ -58,6 +67,13 @@ export const clarificationCases: EvalCaseInput[] = [
     priority: 'P1',
     description: '退货缺少原因 补问后按七天无理由受理',
     actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0003 的东西不想要了 想退货',
+      known: ['订单号 SO-2026-0003', '签收没几天 商品完好'],
+      instructions:
+        '先只说想退货 不主动说明原因 被问到原因时回答没什么问题 就是不想要了 确认退货单已创建并知道寄回后退款即结束',
+    },
     turns: [
       { userMessage: '订单 SO-2026-0003 我想退货' },
       { userMessage: '没什么问题 就是不想要了' },
@@ -85,6 +101,8 @@ export const clarificationCases: EvalCaseInput[] = [
       ],
       expectClarify: true,
       expectGatewayCharges: 0,
+      communicateInfo: ['寄回'],
+      judgeRubric: ['按用户答复的原因正确归类 未二次追问'],
     },
   },
   {
@@ -93,6 +111,13 @@ export const clarificationCases: EvalCaseInput[] = [
     priority: 'P1',
     description: '质量问题处理方式不明 补问换货还是退货',
     actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0003 的键盘到手就有问题 想知道怎么处理',
+      known: ['订单号 SO-2026-0003', '键盘到手就有按键失灵'],
+      instructions:
+        '先描述问题询问怎么处理 不主动指定退还是换 被问到处理方式时选择换货 确认换货单已创建即结束',
+    },
     turns: [
       { userMessage: '订单 SO-2026-0003 的键盘到手就有问题 怎么处理' },
       { userMessage: '换一个吧' },
@@ -116,6 +141,8 @@ export const clarificationCases: EvalCaseInput[] = [
       ],
       expectClarify: true,
       expectGatewayCharges: 0,
+      communicateInfo: ['换货', '寄回'],
+      judgeRubric: ['补问时给出退货与换货的可选项', '说明了换货重发与运费承担安排'],
     },
   },
 ]

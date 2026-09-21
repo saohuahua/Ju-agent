@@ -161,7 +161,7 @@ export async function runCase(
 }
 
 /** 单个回合 首回合与补问走不同入口 crash 时先走断点恢复 */
-async function driveTurn(
+export async function driveTurn(
   system: ComposedSystem,
   runId: string,
   message: string,
@@ -184,7 +184,7 @@ async function driveTurn(
 }
 
 /** 审批决定驱动 */
-async function driveApproval(
+export async function driveApproval(
   system: ComposedSystem,
   runId: string,
   clock: FrozenClock,
@@ -218,7 +218,7 @@ async function driveApproval(
 }
 
 /** 断言收集 数据库终态 轨迹 升级 补问 网关扣款 */
-async function collectAssertions(
+export async function collectAssertions(
   evalCase: EvalCase,
   system: ComposedSystem,
   runId: string,

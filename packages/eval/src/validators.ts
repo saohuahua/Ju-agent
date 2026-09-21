@@ -22,7 +22,15 @@ export interface ValidationInput {
 }
 
 export interface AssertionFailure {
-  kind: 'state' | 'trajectory' | 'escalation' | 'clarify' | 'gateway'
+  kind:
+    | 'state'
+    | 'trajectory'
+    | 'escalation'
+    | 'clarify'
+    | 'gateway'
+    | 'communicate'
+    | 'judge'
+    | 'simulator'
   message: string
 }
 

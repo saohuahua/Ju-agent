@@ -15,6 +15,7 @@ import { rejectionCases } from './cases/rejection.js'
 import { faultInjectionCases } from './cases/fault-injection.js'
 import { securityCases } from './cases/security.js'
 import { recoveryCases } from './cases/recovery.js'
+import { simHardCases } from './cases/sim-hard.js'
 
 /** 全部用例 载入时做契约校验 数据不合法直接失败 */
 export const EVAL_CASES: EvalCase[] = validateCases([
@@ -26,7 +27,11 @@ export const EVAL_CASES: EvalCase[] = validateCases([
   ...faultInjectionCases,
   ...securityCases,
   ...recoveryCases,
+  ...simHardCases,
 ])
+
+/** 带 scenario 的用例 可执行 L2 用户模拟评测 */
+export const SIM_CASES: EvalCase[] = EVAL_CASES.filter((testCase) => testCase.scenario !== undefined)
 
 function validateCases(input: readonly EvalCaseInput[]): EvalCase[] {
   const seen = new Set<string>()

@@ -12,6 +12,12 @@ export const faultInjectionCases: EvalCaseInput[] = [
     priority: 'P0',
     description: '工具超时一次 退避重试后成功 任务正常完成',
     actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '想看看订单 SO-2026-0002 到哪了',
+      known: ['订单号 SO-2026-0002', '前几天收到过发货通知'],
+      instructions: '查询订单当前位置 若对方响应稍慢也耐心等待 得到明确的订单状态即结束',
+    },
     turns: [{ userMessage: '帮我看看订单 SO-2026-0002 到哪了' }],
     faultPlan: [{ tool: 'get_order', fault: 'timeout', times: 1 }],
     modelScript: [
@@ -36,6 +42,8 @@ export const faultInjectionCases: EvalCaseInput[] = [
           value: 1,
         },
       ],
+      communicateInfo: ['运输'],
+      judgeRubric: ['未向客户暴露内部重试或故障细节'],
     },
   },
   {
@@ -44,6 +52,12 @@ export const faultInjectionCases: EvalCaseInput[] = [
     priority: 'P0',
     description: '渠道限流一次 退避重试成功',
     actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '查一下订单 SO-2026-0002 现在的状态',
+      known: ['订单号 SO-2026-0002', '订单已经发货'],
+      instructions: '只想知道订单最新状态 若查询稍慢也不催促 得到答复即结束',
+    },
     turns: [{ userMessage: '查一下订单 SO-2026-0002' }],
     faultPlan: [{ tool: 'get_order', fault: 'rate_limited', times: 1 }],
     modelScript: [
@@ -61,6 +75,8 @@ export const faultInjectionCases: EvalCaseInput[] = [
           value: 1,
         },
       ],
+      communicateInfo: ['运输'],
+      judgeRubric: ['未向客户暴露限流或重试细节'],
     },
   },
   {
@@ -69,6 +85,13 @@ export const faultInjectionCases: EvalCaseInput[] = [
     priority: 'P1',
     description: '上游持续故障 重试耗尽后升级人工',
     actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '帮我查下订单 SO-2026-0002 到哪了',
+      known: ['订单号 SO-2026-0002', '收到过发货通知'],
+      instructions:
+        '查询订单位置 若对方表示系统暂时查不到 表示理解 接受转人工或稍后处理的安排 结束对话',
+    },
     turns: [{ userMessage: '帮我查下订单 SO-2026-0002' }],
     faultPlan: [{ tool: 'get_order', fault: 'server_error', times: 5 }],
     modelScript: [
@@ -100,6 +123,8 @@ export const faultInjectionCases: EvalCaseInput[] = [
         },
       ],
       expectEscalation: true,
+      communicateInfo: ['人工'],
+      judgeRubric: ['如实说明暂时无法查询 未编造订单状态'],
     },
   },
   {
@@ -108,6 +133,12 @@ export const faultInjectionCases: EvalCaseInput[] = [
     priority: 'P2',
     description: '订单无物流记录 工具返回未找到 Agent 如实解释',
     actor: { role: 'customer', customerId: 'C1001' },
+    scenario: {
+      persona: 'normal',
+      reasonForContact: '订单 SO-2026-0001 下单好几天了 想确认发货没有 物流单号是多少',
+      known: ['订单号 SO-2026-0001', '下单好几天了', '一直没收到发货通知'],
+      instructions: '想确认是否发货以及物流单号 若对方告知尚未发货暂无物流信息 接受答复 结束',
+    },
     turns: [{ userMessage: '订单 SO-2026-0001 发货了吗 物流单号多少' }],
     modelScript: [
       toolCall('get_shipment', { orderNo: 'SO-2026-0001' }),
@@ -124,6 +155,8 @@ export const faultInjectionCases: EvalCaseInput[] = [
           value: 1,
         },
       ],
+      communicateInfo: ['发货'],
+      judgeRubric: ['如实告知暂无物流信息 未编造运单号'],
     },
   },
 ]

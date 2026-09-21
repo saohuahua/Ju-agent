@@ -390,17 +390,23 @@ export function listEvalReports(db: SqliteDatabase, limit = 20): Array<Record<st
   const rows = db
     .prepare('SELECT * FROM eval_reports ORDER BY started_at DESC LIMIT ?')
     .all(limit) as Array<Record<string, unknown>>
-  return rows.map((row) => ({
-    reportId: row.report_id,
-    startedAt: row.started_at,
-    model: row.model,
-    promptVersion: row.prompt_version,
-    total: row.total,
-    passed: row.passed,
-    failed: row.failed,
-    gatePassed: row.gate_passed === 1,
-    report: JSON.parse(row.report_json as string) as Record<string, unknown>,
-  }))
+  return rows.map((row) => {
+    const report = JSON.parse(row.report_json as string) as Record<string, unknown>
+    return {
+      reportId: row.report_id,
+      startedAt: row.started_at,
+      model: row.model,
+      promptVersion: row.prompt_version,
+      level: report.level,
+      userModel: report.userModel,
+      judgeModel: report.judgeModel,
+      total: row.total,
+      passed: row.passed,
+      failed: row.failed,
+      gatePassed: row.gate_passed === 1,
+      report,
+    }
+  })
 }
 
 /** 供校验器使用的原始行查询 按表白名单访问 */

@@ -47,11 +47,27 @@ export interface ApprovalRequest {
   createdAt: string
 }
 
+export interface EvalCaseResultView {
+  caseId: string
+  priority: string
+  passed: boolean
+  failures: string[]
+  turns?: number
+  agentInputTokens?: number
+  agentOutputTokens?: number
+  simulatorInputTokens?: number
+  simulatorOutputTokens?: number
+  judge?: Array<{ rubric: string; reason: string }>
+}
+
 export interface EvalReportSummary {
   reportId: string
   startedAt: string
   model: string
   promptVersion: string
+  level?: 'L1' | 'L2'
+  userModel?: string
+  judgeModel?: string
   total: number
   passed: number
   failed: number
@@ -60,5 +76,6 @@ export interface EvalReportSummary {
     metrics?: Record<string, number>
     byCategory?: Record<string, { total: number; passed: number }>
     passPowerK?: number
+    caseResults?: EvalCaseResultView[]
   }
 }
