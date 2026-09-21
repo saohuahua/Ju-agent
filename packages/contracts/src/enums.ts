@@ -62,10 +62,35 @@ export const INTENTS = [
   'submit_refund_only',
   'submit_exchange',
   'cancel_return',
+  'compensation',
   'escalate',
 ] as const
 export const Intent = z.enum(INTENTS)
 export type Intent = z.infer<typeof Intent>
+
+/**
+ * 补偿原因 有限集合保证同订单同原因的幂等拦截可比较
+ * 扩展新原因需同步评测用例与提示词描述
+ */
+export const COMPENSATION_REASONS = ['late_delivery', 'service_apology'] as const
+export const CompensationReason = z.enum(COMPENSATION_REASONS)
+export type CompensationReason = z.infer<typeof CompensationReason>
+
+/** 补偿单状态 分级审批与执行交织的确定性状态机 */
+export const COMPENSATION_STATUSES = [
+  'created',
+  'auto_approved',
+  'awaiting_approval',
+  'approved',
+  'rejected',
+  'expired',
+  'executing',
+  'succeeded',
+  'failed',
+  'cancelled',
+] as const
+export const CompensationStatus = z.enum(COMPENSATION_STATUSES)
+export type CompensationStatus = z.infer<typeof CompensationStatus>
 
 /** 售后类型 退货退款 走物流 仅退款 不走物流 换货 */
 export const RETURN_TYPES = ['return', 'refund_only', 'exchange'] as const
@@ -172,4 +197,17 @@ export const APPROVAL_TRANSITIONS: Readonly<Record<ApprovalStatus, readonly Appr
   approved: [],
   rejected: [],
   expired: [],
+}
+
+export const COMPENSATION_TRANSITIONS: Readonly<Record<CompensationStatus, readonly CompensationStatus[]>> = {
+  created: ['auto_approved', 'awaiting_approval', 'cancelled'],
+  auto_approved: ['executing', 'cancelled'],
+  awaiting_approval: ['approved', 'rejected', 'expired', 'cancelled'],
+  approved: ['executing', 'cancelled'],
+  rejected: [],
+  expired: [],
+  executing: ['succeeded', 'failed'],
+  succeeded: [],
+  failed: ['executing', 'cancelled'],
+  cancelled: [],
 }

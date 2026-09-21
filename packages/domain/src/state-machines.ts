@@ -7,10 +7,12 @@
 
 import {
   APPROVAL_TRANSITIONS,
+  COMPENSATION_TRANSITIONS,
   REFUND_TRANSITIONS,
   RETURN_TRANSITIONS,
   RUN_TRANSITIONS,
   type ApprovalStatus,
+  type CompensationStatus,
   type RefundStatus,
   type ReturnStatus,
   type RunStatus,
@@ -55,6 +57,13 @@ export function assertRefundTransition(from: RefundStatus, to: RefundStatus): vo
 
 export function assertApprovalTransition(from: ApprovalStatus, to: ApprovalStatus): void {
   assertTransition('Approval', APPROVAL_TRANSITIONS, from, to)
+}
+
+export function assertCompensationTransition(
+  from: CompensationStatus,
+  to: CompensationStatus,
+): void {
+  assertTransition('Compensation', COMPENSATION_TRANSITIONS, from, to)
 }
 
 /** 判断迁移是否合法 供工作流做前置检查而不抛错 */

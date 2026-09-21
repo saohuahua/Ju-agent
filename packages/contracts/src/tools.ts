@@ -9,7 +9,7 @@
  */
 
 import { z } from 'zod'
-import { ErrorCode, RiskLevel, ReturnType, ReturnReason } from './enums.js'
+import { CompensationReason, ErrorCode, RiskLevel, ReturnType, ReturnReason } from './enums.js'
 
 /** 金额统一用分表示的整数 避免浮点误差 */
 export const MoneyCents = z.number().int().nonnegative()
@@ -127,6 +127,34 @@ export const ToolIO = {
     input: z.object({ returnNo: z.string().min(1) }),
     output: z.object({ returnNo: z.string(), status: z.string() }),
   },
+  create_compensation: {
+    input: z.object({
+      orderNo: z.string().min(1),
+      reason: CompensationReason,
+      /** 补偿金额 与顾客协商确认后的数值 分级判定由确定性政策执行 */
+      amountCents: MoneyCents,
+    }),
+    output: z.object({
+      compensationNo: z.string(),
+      status: z.string(),
+      requiresApproval: z.boolean(),
+      policyExplanation: z.string(),
+      amountCents: MoneyCents,
+    }),
+  },
+  execute_compensation: {
+    input: z.object({
+      compensationNo: z.string().min(1),
+      /** 大额路径必须携带一次性审批令牌 */
+      approvalToken: z.string().optional(),
+    }),
+    output: z.object({
+      compensationNo: z.string(),
+      status: z.string(),
+      amountCents: MoneyCents,
+      idempotencyKey: z.string(),
+    }),
+  },
   escalate_to_human: {
     input: z.object({ reason: z.string().min(1) }),
     output: z.object({ escalated: z.literal(true), reason: z.string() }),
@@ -239,6 +267,22 @@ export const TOOL_CATALOG: readonly ToolDescriptor[] = [
     timeoutMs: 3000,
     idempotent: false,
     description: '取消售后单 由工作流调用',
+  },
+  {
+    name: 'create_compensation',
+    risk: 'medium',
+    exposedTo: 'workflow',
+    timeoutMs: 3000,
+    idempotent: false,
+    description: '创建补偿单并完成分级判定 小额自动发放 大额转人工审批 同订单同原因仅一次 由工作流调用',
+  },
+  {
+    name: 'execute_compensation',
+    risk: 'high',
+    exposedTo: 'workflow',
+    timeoutMs: 5000,
+    idempotent: true,
+    description: '执行现金红包补偿 原路退回支付渠道 幂等键绑定补偿单 重试不会重复发放 由工作流调用 大额路径需审批令牌',
   },
   {
     name: 'escalate_to_human',

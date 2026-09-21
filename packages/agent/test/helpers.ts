@@ -8,6 +8,7 @@ import {
   AfterSaleService,
   ApprovalService,
   AuditService,
+  CompensationService,
   FrozenClock,
   RunService,
   testing,
@@ -40,12 +41,23 @@ export function composeAgentSystem(script: AgentOutput[], maxSteps = 8) {
     clock,
   )
   const runService = new RunService(repos.runRepo, repos.eventRepo, clock)
+  const compensationService = new CompensationService(
+    repos.orderRepo,
+    repos.compensationRepo,
+    repos.idempotencyRepo,
+    repos.gateway,
+    repos.noGenerator,
+    approvalService,
+    auditService,
+    clock,
+  )
   const registry = buildToolRegistry({
     customerRepo: repos.customerRepo,
     orderRepo: repos.orderRepo,
     shipmentRepo: repos.shipmentRepo,
     policyRepo: repos.policyRepo,
     afterSaleService,
+    compensationService,
     auditService,
   })
   const executor = new ToolExecutor({
@@ -57,6 +69,7 @@ export function composeAgentSystem(script: AgentOutput[], maxSteps = 8) {
   })
   const engine = new WorkflowEngine({
     afterSaleService,
+    compensationService,
     approvalService,
     runService,
     executor,

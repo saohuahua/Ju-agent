@@ -10,6 +10,7 @@ import {
   AfterSaleService,
   ApprovalService,
   AuditService,
+  CompensationService,
   RunService,
   type Actor,
   type Clock,
@@ -23,6 +24,7 @@ import {
   SqliteAuditRepository,
   SqliteBusinessNoGenerator,
   SqliteCheckpointRepository,
+  SqliteCompensationRepository,
   SqliteCustomerRepository,
   SqliteEventRepository,
   SqliteIdempotencyRepository,
@@ -68,6 +70,7 @@ export interface ComposedSystem {
   runService: RunService
   approvalService: ApprovalService
   afterSaleService: AfterSaleService
+  compensationService: CompensationService
   executor: ToolExecutor
   engine: WorkflowEngine
   runner: AgentRunner
@@ -101,6 +104,16 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     auditService,
     clock,
   )
+  const compensationService = new CompensationService(
+    new SqliteOrderRepository(db),
+    new SqliteCompensationRepository(db),
+    new SqliteIdempotencyRepository(db),
+    gateway,
+    new SqliteBusinessNoGenerator(db),
+    approvalService,
+    auditService,
+    clock,
+  )
   const runService = new RunService(
     new SqliteAgentRunRepository(db),
     new SqliteEventRepository(db),
@@ -114,6 +127,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     shipmentRepo: new SqliteShipmentRepository(db),
     policyRepo: new SqlitePolicyRepository(db),
     afterSaleService,
+    compensationService,
     auditService,
   })
   const executor = new ToolExecutor({
@@ -125,6 +139,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
   })
   const engine = new WorkflowEngine({
     afterSaleService,
+    compensationService,
     approvalService,
     runService,
     executor,
@@ -149,6 +164,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     runService,
     approvalService,
     afterSaleService,
+    compensationService,
     executor,
     engine,
     runner,

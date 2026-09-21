@@ -1,7 +1,7 @@
 /**
  * 评测数据集
  *
- * 八类风险面共 32 条任务契约
+ * 九类风险面（八类调研风险面 + 补偿新能力）用例合集
  * 扩展指引见 docs/evaluation.md 每条用例必须满足任务契约完整性
  */
 
@@ -15,6 +15,7 @@ import { rejectionCases } from './cases/rejection.js'
 import { faultInjectionCases } from './cases/fault-injection.js'
 import { securityCases } from './cases/security.js'
 import { recoveryCases } from './cases/recovery.js'
+import { compensationCases } from './cases/compensation.js'
 import { simHardCases } from './cases/sim-hard.js'
 
 /** 全部用例 载入时做契约校验 数据不合法直接失败 */
@@ -27,6 +28,7 @@ export const EVAL_CASES: EvalCase[] = validateCases([
   ...faultInjectionCases,
   ...securityCases,
   ...recoveryCases,
+  ...compensationCases,
   ...simHardCases,
 ])
 

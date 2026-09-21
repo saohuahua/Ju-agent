@@ -415,6 +415,7 @@ const QUERYABLE_TABLES = new Set([
   'shipments',
   'return_requests',
   'refunds',
+  'compensations',
   'approval_requests',
   'audit_logs',
   'tool_executions',

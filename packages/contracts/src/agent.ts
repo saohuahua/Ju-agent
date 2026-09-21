@@ -7,7 +7,8 @@
 
 import { z } from 'zod'
 import { Intent, RunStatus } from './enums.js'
-import { ToolIO } from './tools.js'
+import { CompensationReason } from './enums.js'
+import { ToolIO, MoneyCents } from './tools.js'
 import type { ToolName } from './tools.js'
 
 /** 模型可调用的只读工具名 提示词目录与运行时白名单都来自这里 */
@@ -108,6 +109,11 @@ export const INTENT_SLOT_SCHEMAS = {
     itemIds: z.array(z.string()).optional(),
   }),
   cancel_return: z.object({ returnNo: z.string().min(1) }),
+  compensation: z.object({
+    orderNo: z.string().min(1),
+    reason: CompensationReason,
+    amountCents: MoneyCents,
+  }),
   escalate: z.object({ reason: z.string().min(1) }),
 } as const
 

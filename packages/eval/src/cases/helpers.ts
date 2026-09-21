@@ -10,6 +10,9 @@ import type { AgentOutput, EvalCase, ToolArgAssertion } from '@aftersales/contra
 /** 首个新生成售后单号 夹具历史记录占用 0001 */
 export const NEW_RETURN_NO = 'RT-2026-0002'
 
+/** 首个新生成补偿单号 每用例独立夹具从 0001 起 */
+export const NEW_COMPENSATION_NO = 'CP-2026-0001'
+
 /** 模型输出构造器 */
 export function toolCall(
   tool: 'get_order' | 'get_shipment' | 'get_policy' | 'lookup_customer',
@@ -24,7 +27,13 @@ export function clarify(question: string, missingSlots: string[]): AgentOutput {
 }
 
 export function action(
-  intent: 'submit_return' | 'submit_refund_only' | 'submit_exchange' | 'cancel_return' | 'escalate',
+  intent:
+    | 'submit_return'
+    | 'submit_refund_only'
+    | 'submit_exchange'
+    | 'cancel_return'
+    | 'escalate'
+    | 'compensation',
   slots: Record<string, unknown>,
   reason: string,
 ): AgentOutput {

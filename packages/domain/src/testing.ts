@@ -11,6 +11,7 @@ import type {
   ApprovalRequest,
   AuditLog,
   Checkpoint,
+  Compensation,
   Customer,
   Order,
   PolicyRule,
@@ -25,6 +26,7 @@ import type {
   AuditRepository,
   BusinessNoGenerator,
   CheckpointRepository,
+  CompensationRepository,
   CustomerRepository,
   EventRepository,
   IdempotencyRepository,
@@ -102,8 +104,26 @@ export class InMemoryRefundRepository implements RefundRepository {
   }
 }
 
+export class InMemoryCompensationRepository implements CompensationRepository {
+  readonly compensations = new Map<string, Compensation>()
+  async create(record: Compensation): Promise<void> {
+    this.compensations.set(record.compensationNo, { ...record })
+  }
+  async findByCompensationNo(compensationNo: string): Promise<Compensation | null> {
+    const found = this.compensations.get(compensationNo)
+    return found ? { ...found } : null
+  }
+  async listByOrderNo(orderNo: string): Promise<Compensation[]> {
+    return [...this.compensations.values()].filter((c) => c.orderNo === orderNo).map((c) => ({ ...c }))
+  }
+  async update(record: Compensation): Promise<void> {
+    this.compensations.set(record.compensationNo, { ...record })
+  }
+}
+
 export class InMemoryApprovalRepository implements ApprovalRepository {
   readonly approvals = new Map<string, ApprovalRequest>()
+
   async create(record: ApprovalRequest): Promise<void> {
     this.approvals.set(record.approvalId, { ...record })
   }
@@ -307,6 +327,7 @@ export function createInMemoryRepositories() {
     shipmentRepo: new InMemoryShipmentRepository(),
     returnRepo: new InMemoryReturnRepository(),
     refundRepo: new InMemoryRefundRepository(),
+    compensationRepo: new InMemoryCompensationRepository(),
     approvalRepo: new InMemoryApprovalRepository(),
     policyRepo: new InMemoryPolicyRepository(),
     auditRepo: new InMemoryAuditRepository(),

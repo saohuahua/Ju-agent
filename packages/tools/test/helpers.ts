@@ -8,6 +8,7 @@
 import { AfterSaleService } from '@aftersales/domain'
 import { ApprovalService } from '@aftersales/domain'
 import { AuditService } from '@aftersales/domain'
+import { CompensationService } from '@aftersales/domain'
 import { FrozenClock } from '@aftersales/domain'
 import { testing } from '@aftersales/domain'
 import type { Actor } from '@aftersales/domain'
@@ -36,12 +37,23 @@ export function composeTestSystem(faults: FaultPlanEntry[] = [], timeoutOverride
     auditService,
     clock,
   )
+  const compensationService = new CompensationService(
+    repos.orderRepo,
+    repos.compensationRepo,
+    repos.idempotencyRepo,
+    repos.gateway,
+    repos.noGenerator,
+    approvalService,
+    auditService,
+    clock,
+  )
   const registry: ToolRegistry = buildToolRegistry({
     customerRepo: repos.customerRepo,
     orderRepo: repos.orderRepo,
     shipmentRepo: repos.shipmentRepo,
     policyRepo: repos.policyRepo,
     afterSaleService,
+    compensationService,
     auditService,
   })
   const executor = new ToolExecutor({

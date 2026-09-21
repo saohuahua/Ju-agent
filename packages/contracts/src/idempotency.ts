@@ -15,6 +15,11 @@ export function receiveGoodsIdempotencyKey(returnNo: string): string {
   return `receive-goods:${returnNo}`
 }
 
+/** 补偿发放幂等键 绑定补偿单号 同一补偿无论重试多少次只发放一次 */
+export function compensationIdempotencyKey(compensationNo: string): string {
+  return `compensation:${compensationNo}`
+}
+
 /** 事件回放查询的游标语义 返回应补发的最小序号 */
 export function nextSequenceAfter(lastEventId: number | null): number {
   return (lastEventId ?? 0) + 1

@@ -10,8 +10,8 @@ import type { PolicyDecisionRecord, Order, Shipment } from './entities.js'
 import type { Clock } from './clock.js'
 import type { ReturnType, ReturnReason } from '@aftersales/contracts'
 
-/** 政策常量 与政策表数据同源 修改时必须同步 bump 版本号 */
-export const POLICY_VERSION = '2026.09-v1'
+/** 政策常量 与政策表数据同源 修改规则语义时必须同步 bump 版本号 */
+export const POLICY_VERSION = '2026.09-v2'
 
 /** 无理由退货窗口天数 */
 export const NO_REASON_WINDOW_DAYS = 7
@@ -21,6 +21,11 @@ export const QUALITY_WINDOW_DAYS = 15
 export const NO_REASON_EXCLUDED_CATEGORIES = ['fresh_food', 'customized', 'virtual']
 /** 大额退款审批阈值 单位分 500000 即 5000 元 */
 export const LARGE_REFUND_THRESHOLD_CENTS = 500_000
+/**
+ * 补偿自动发放阈值 单位分 5000 即 50 元
+ * 决策 2026-09-21 与退款大额阈值相互独立
+ */
+export const COMPENSATION_AUTO_THRESHOLD_CENTS = 5_000
 
 export interface PolicyInput {
   type: ReturnType
@@ -193,4 +198,35 @@ export function applyLargeRefundThreshold(decision: PolicyOutcome): PolicyOutcom
 /** 完整判定 政策规则叠加阈值 入口函数 */
 export function decidePolicy(input: PolicyInput): PolicyOutcome {
   return applyLargeRefundThreshold(evaluatePolicy(input))
+}
+
+export interface CompensationPolicyInput {
+  /** 与顾客协商确认后的补偿金额 */
+  amountCents: number
+}
+
+export type CompensationPolicyOutcome = {
+  outcome: 'allow' | 'needs_approval'
+  ruleId: string
+  explanation: string
+}
+
+/**
+ * 补偿分级判定 纯函数无副作用
+ * 阈值以内自动发放 以上转人工审批
+ * 金额有效性校验由领域服务负责 这里只做分级
+ */
+export function evaluateCompensationPolicy(input: CompensationPolicyInput): CompensationPolicyOutcome {
+  if (input.amountCents <= COMPENSATION_AUTO_THRESHOLD_CENTS) {
+    return {
+      outcome: 'allow',
+      ruleId: 'C1_auto_small',
+      explanation: `补偿金额 ${input.amountCents} 分 在自动发放阈值内 直接发放现金红包`,
+    }
+  }
+  return {
+    outcome: 'needs_approval',
+    ruleId: 'C2_large_approval',
+    explanation: `补偿金额 ${input.amountCents} 分 超出自动发放阈值 需人工审批`,
+  }
 }

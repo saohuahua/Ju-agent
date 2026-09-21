@@ -15,6 +15,7 @@ import type {
   ApprovalService,
   CheckpointRepository,
   Clock,
+  CompensationService,
   LeaseRepository,
   RunService,
 } from '@aftersales/domain'
@@ -66,6 +67,7 @@ export interface WorkflowRunContext {
 
 export interface WorkflowEngineDeps {
   afterSaleService: AfterSaleService
+  compensationService: CompensationService
   approvalService: ApprovalService
   runService: RunService
   executor: ToolExecutor
@@ -124,11 +126,24 @@ export class WorkflowEngine {
     const returnNo = state.returnNo as string | undefined
     const intent = state.intent as Intent
     const slots = (state.slots ?? {}) as Record<string, unknown>
+    // 审批关联的业务资源类型 旧断点无此字段 默认售后单
+    const approvalResourceType = (state.approvalResourceType as string) ?? 'return_request'
 
     await this.deps.runService.emit(runId, 'approval.decided', { approvalId, decision, decidedBy })
 
-    if (returnNo) {
-      const supervisorActor: Actor = { role: 'supervisor' }
+    // 决定先落业务状态 再续跑剩余步骤 拒绝与过期直接收尾 不再执行副作用
+    const supervisorActor: Actor = { role: 'supervisor' }
+    if (approvalResourceType === 'compensation') {
+      const compensationNo = state.compensationNo as string | undefined
+      if (compensationNo) {
+        await this.deps.compensationService.applyApprovalDecision(
+          supervisorActor,
+          compensationNo,
+          decision,
+          runId,
+        )
+      }
+    } else if (returnNo) {
       await this.deps.afterSaleService.applyApprovalDecision(
         supervisorActor,
         returnNo,
@@ -141,6 +156,8 @@ export class WorkflowEngine {
     await this.deps.runService.emit(runId, 'run.resumed', { resumePoint: 'approval' })
 
     if (decision !== 'approved') {
+      const closedText =
+        approvalResourceType === 'compensation' ? '补偿单已关闭' : '售后单已关闭'
       return {
         status: 'completed',
         outcome: 'rejected',
@@ -149,8 +166,8 @@ export class WorkflowEngine {
           decision,
           explanation:
             decision === 'rejected'
-              ? '审批已拒绝 售后单已关闭'
-              : '审批已过期 售后单已关闭 可重新发起',
+              ? `审批已拒绝 ${closedText}`
+              : `审批已过期 ${closedText} 可重新发起`,
         },
       }
     }
@@ -293,6 +310,8 @@ export class WorkflowEngine {
         return this.returnSteps('exchange')
       case 'cancel_return':
         return this.cancelSteps()
+      case 'compensation':
+        return this.compensationSteps()
       case 'escalate':
         return this.escalateSteps()
       default:
@@ -353,6 +372,7 @@ export class WorkflowEngine {
             requestedBy: 'workflow',
           })
           context.state.approvalId = approval.approvalId
+          context.state.approvalResourceType = 'return_request'
           // 令牌只存在断点与服务端 不经过模型
           context.state.approvalToken = approval.oneTimeToken
           await this.deps.runService.emit(context.runId, 'approval.required', {
@@ -443,6 +463,7 @@ export class WorkflowEngine {
             requestedBy: 'workflow',
           })
           context.state.approvalId = approval.approvalId
+          context.state.approvalResourceType = 'return_request'
           context.state.approvalToken = approval.oneTimeToken
           await this.deps.runService.emit(context.runId, 'approval.required', {
             approvalId: approval.approvalId,
@@ -454,6 +475,96 @@ export class WorkflowEngine {
             expiresAt: approval.expiresAt,
           })
           return { pauseForApproval: true, approvalId: approval.approvalId }
+        },
+      },
+    ]
+  }
+
+  /**
+   * 现金红包补偿 分级审批后原路发放
+   * 小额自动 大额经审批 同一订单同一原因由领域层幂等拦截
+   */
+  private compensationSteps(): WorkflowStep[] {
+    return [
+      {
+        id: 'verify_order',
+        name: '校验订单归属与状态',
+        execute: async (context) => {
+          // 工作流不信任 Agent 的查询结果 自行重查一遍
+          const order = await this.deps.executor.execute(
+            'get_order',
+            { orderNo: context.slots.orderNo as string },
+            context.toolContext,
+          )
+          context.state.orderStatus = order.status
+        },
+      },
+      {
+        id: 'create_compensation',
+        name: '创建补偿单并完成分级判定',
+        execute: async (context) => {
+          const result = await this.deps.executor.execute(
+            'create_compensation',
+            {
+              orderNo: context.slots.orderNo as string,
+              reason: context.slots.reason as never,
+              amountCents: context.slots.amountCents as number,
+            },
+            context.toolContext,
+          )
+          context.state.compensationNo = result.compensationNo
+          context.state.requiresApproval = result.requiresApproval
+          context.state.policyExplanation = result.policyExplanation
+          context.state.amountCents = result.amountCents
+        },
+      },
+      {
+        id: 'request_approval',
+        name: '发起大额补偿审批',
+        execute: async (context) => {
+          if (context.state.requiresApproval !== true) {
+            return
+          }
+          const approval = await this.deps.approvalService.create({
+            runId: context.runId,
+            resourceType: 'compensation',
+            resourceId: context.state.compensationNo as string,
+            reason: context.state.policyExplanation as string,
+            amountCents: context.state.amountCents as number,
+            requestedBy: 'workflow',
+          })
+          context.state.approvalId = approval.approvalId
+          context.state.approvalResourceType = 'compensation'
+          // 令牌只存在断点与服务端 不经过模型
+          context.state.approvalToken = approval.oneTimeToken
+          await this.deps.runService.emit(context.runId, 'approval.required', {
+            approvalId: approval.approvalId,
+            riskLevel: 'high',
+            resourceType: 'compensation',
+            resourceId: context.state.compensationNo as string,
+            amountCents: approval.amountCents,
+            reason: approval.reason,
+            expiresAt: approval.expiresAt,
+          })
+          return { pauseForApproval: true, approvalId: approval.approvalId }
+        },
+      },
+      {
+        id: 'execute_compensation',
+        name: '执行现金红包发放',
+        execute: async (context) => {
+          const args: Record<string, unknown> = {
+            compensationNo: context.state.compensationNo as string,
+          }
+          if (context.state.approvalToken) {
+            args.approvalToken = context.state.approvalToken
+          }
+          const result = await this.deps.executor.execute(
+            'execute_compensation',
+            args,
+            context.toolContext,
+          )
+          context.state.compensationStatus = result.status
         },
       },
     ]
@@ -521,6 +632,9 @@ export class WorkflowEngine {
       policyExplanation: context.state.policyExplanation ?? null,
       refundAmountCents: context.state.refundAmountCents ?? null,
       refundStatus: context.state.refundStatus ?? null,
+      compensationNo: context.state.compensationNo ?? null,
+      compensationStatus: context.state.compensationStatus ?? null,
+      amountCents: context.state.amountCents ?? null,
     }
   }
 }

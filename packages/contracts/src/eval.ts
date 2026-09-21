@@ -7,7 +7,7 @@
 
 import { z } from 'zod'
 
-/** 用例分类 对应调研中的八类风险面 */
+/** 用例分类 对应调研中的八类风险面 业务新能力单独成类 */
 export const EVAL_CATEGORIES = [
   'happy_path',
   'clarification',
@@ -17,6 +17,7 @@ export const EVAL_CATEGORIES = [
   'fault_injection',
   'security',
   'recovery',
+  'compensation',
 ] as const
 export const EvalCategory = z.enum(EVAL_CATEGORIES)
 export type EvalCategory = z.infer<typeof EvalCategory>
@@ -28,6 +29,7 @@ export const StateAssertion = z.object({
     'shipments',
     'return_requests',
     'refunds',
+    'compensations',
     'approval_requests',
     'audit_logs',
     'tool_executions',

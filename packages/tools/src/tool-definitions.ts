@@ -10,6 +10,7 @@ import { DomainError } from '@aftersales/domain'
 import type {
   AfterSaleService,
   AuditService,
+  CompensationService,
   CustomerRepository,
   OrderRepository,
   PolicyRepository,
@@ -26,6 +27,7 @@ export interface ToolDependencies {
   shipmentRepo: ShipmentRepository
   policyRepo: PolicyRepository
   afterSaleService: AfterSaleService
+  compensationService: CompensationService
   auditService: AuditService
 }
 
@@ -258,6 +260,48 @@ export function buildToolRegistry(deps: ToolDependencies): ToolRegistry {
     },
   )
 
+  registry.register(
+    'create_compensation',
+    async (input: ToolInput<'create_compensation'>, context) => {
+      const result = await deps.compensationService.createCompensation(
+        context.actor,
+        {
+          orderNo: input.orderNo,
+          reason: input.reason,
+          amountCents: input.amountCents,
+        },
+        context.runId ?? undefined,
+      )
+      return {
+        compensationNo: result.compensationNo,
+        status: result.status,
+        requiresApproval: result.requiresApproval,
+        policyExplanation: result.policyExplanation,
+        amountCents: result.amountCents,
+      }
+    },
+  )
+
+  registry.register(
+    'execute_compensation',
+    async (input: ToolInput<'execute_compensation'>, context) => {
+      const result = await deps.compensationService.executeCompensation(
+        context.actor,
+        {
+          compensationNo: input.compensationNo,
+          approvalToken: input.approvalToken,
+        },
+        context.runId ?? undefined,
+      )
+      return {
+        compensationNo: result.compensationNo,
+        status: result.status,
+        amountCents: result.amountCents,
+        idempotencyKey: result.idempotencyKey,
+      }
+    },
+  )
+
   registry.register('escalate_to_human', async (input: ToolInput<'escalate_to_human'>, context) => {
     await deps.auditService.record(
       context.actor,
@@ -287,5 +331,7 @@ export const ALL_TOOL_NAMES: ToolName[] = [
   'receive_return_goods',
   'execute_refund',
   'cancel_return_request',
+  'create_compensation',
+  'execute_compensation',
   'escalate_to_human',
 ]

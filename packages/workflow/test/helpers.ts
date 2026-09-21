@@ -9,6 +9,7 @@ import {
   AfterSaleService,
   ApprovalService,
   AuditService,
+  CompensationService,
   FrozenClock,
   RunService,
   testing,
@@ -40,12 +41,23 @@ export function composeWorkflowSystem(timeoutOverrideMs?: number) {
     clock,
   )
   const runService = new RunService(repos.runRepo, repos.eventRepo, clock)
+  const compensationService = new CompensationService(
+    repos.orderRepo,
+    repos.compensationRepo,
+    repos.idempotencyRepo,
+    repos.gateway,
+    repos.noGenerator,
+    approvalService,
+    auditService,
+    clock,
+  )
   const registry = buildToolRegistry({
     customerRepo: repos.customerRepo,
     orderRepo: repos.orderRepo,
     shipmentRepo: repos.shipmentRepo,
     policyRepo: repos.policyRepo,
     afterSaleService,
+    compensationService,
     auditService,
   })
   const executor = new ToolExecutor({
@@ -57,6 +69,7 @@ export function composeWorkflowSystem(timeoutOverrideMs?: number) {
   })
   const engine = new WorkflowEngine({
     afterSaleService,
+    compensationService,
     approvalService,
     runService,
     executor,
@@ -64,7 +77,16 @@ export function composeWorkflowSystem(timeoutOverrideMs?: number) {
     leaseRepo: repos.leaseRepo,
     clock,
   })
-  return { repos, clock, runService, engine, afterSaleService, approvalService, auditService }
+  return {
+    repos,
+    clock,
+    runService,
+    engine,
+    afterSaleService,
+    compensationService,
+    approvalService,
+    auditService,
+  }
 }
 
 /** 建一条运行记录 并返回其工具上下文 */

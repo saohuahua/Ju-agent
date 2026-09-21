@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import { decidePolicy } from '../src/policy.js'
+import { decidePolicy, evaluateCompensationPolicy } from '../src/policy.js'
 import { FrozenClock } from '../src/clock.js'
 import { makeTestOrder } from '../src/testing.js'
 import type { Shipment } from '../src/entities.js'
@@ -239,6 +239,35 @@ describe('部分退货金额计算', () => {
       clock,
     })
     expect(decision.refundAmountCents).toBe(7_800)
+  })
+})
+
+describe('补偿分级阈值', () => {
+  it('不超过 50 元自动发放', () => {
+    expect(evaluateCompensationPolicy({ amountCents: 3_000 })).toEqual({
+      outcome: 'allow',
+      ruleId: 'C1_auto_small',
+      explanation: expect.stringContaining('自动发放'),
+    })
+  })
+
+  it('恰好 50 元 5000 分落在自动发放侧', () => {
+    const decision = evaluateCompensationPolicy({ amountCents: 5_000 })
+    expect(decision.outcome).toBe('allow')
+    expect(decision.ruleId).toBe('C1_auto_small')
+  })
+
+  it('超过 50 元转人工审批', () => {
+    const decision = evaluateCompensationPolicy({ amountCents: 5_001 })
+    expect(decision.outcome).toBe('needs_approval')
+    expect(decision.ruleId).toBe('C2_large_approval')
+  })
+
+  it('补偿阈值与退款大额阈值相互独立', () => {
+    // 退款大额阈值 5000 元 此处 60 元补偿就走审批
+    // 反向 3000 元退款若走 R6 审批 与补偿 30 元自动发放互不影响
+    expect(evaluateCompensationPolicy({ amountCents: 6_000 }).outcome).toBe('needs_approval')
+    expect(evaluateCompensationPolicy({ amountCents: 3_000 }).outcome).toBe('allow')
   })
 })
 

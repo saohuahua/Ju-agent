@@ -7,6 +7,7 @@
 
 import type {
   ApprovalRequest,
+  Compensation,
   Customer,
   Order,
   PolicyRule,
@@ -16,6 +17,7 @@ import type {
 } from '@aftersales/domain'
 import type {
   ApprovalRepository,
+  CompensationRepository,
   CustomerRepository,
   OrderRepository,
   PolicyRepository,
@@ -324,6 +326,93 @@ export class SqliteRefundRepository implements RefundRepository {
       )
     if (result.changes === 0) {
       throw new Error(`退款单乐观锁冲突 ${record.refundNo}`)
+    }
+  }
+}
+
+interface CompensationRow {
+  compensation_no: string
+  order_no: string
+  customer_id: string
+  reason: string
+  status: string
+  amount_cents: number
+  currency: string
+  requires_approval: number
+  policy_version: string
+  created_at: string
+  updated_at: string
+  version: number
+}
+
+function rowToCompensation(row: CompensationRow): Compensation {
+  return {
+    compensationNo: row.compensation_no,
+    orderNo: row.order_no,
+    customerId: row.customer_id,
+    reason: row.reason as Compensation['reason'],
+    status: row.status as Compensation['status'],
+    amountCents: row.amount_cents,
+    currency: row.currency,
+    requiresApproval: row.requires_approval === 1,
+    policyVersion: row.policy_version,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    version: row.version,
+  }
+}
+
+export class SqliteCompensationRepository implements CompensationRepository {
+  constructor(private readonly db: SqliteDatabase) {}
+
+  async create(record: Compensation): Promise<void> {
+    this.db
+      .prepare(
+        `INSERT INTO compensations
+         (compensation_no, order_no, customer_id, reason, status, amount_cents, currency,
+          requires_approval, policy_version, created_at, updated_at, version)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      )
+      .run(
+        record.compensationNo,
+        record.orderNo,
+        record.customerId,
+        record.reason,
+        record.status,
+        record.amountCents,
+        record.currency,
+        record.requiresApproval ? 1 : 0,
+        record.policyVersion,
+        record.createdAt,
+        record.updatedAt,
+        record.version,
+      )
+  }
+
+  async findByCompensationNo(compensationNo: string): Promise<Compensation | null> {
+    const row = this.db
+      .prepare('SELECT * FROM compensations WHERE compensation_no = ?')
+      .get(compensationNo) as CompensationRow | undefined
+    return row ? rowToCompensation(row) : null
+  }
+
+  async listByOrderNo(orderNo: string): Promise<Compensation[]> {
+    const rows = this.db
+      .prepare('SELECT * FROM compensations WHERE order_no = ?')
+      .all(orderNo) as CompensationRow[]
+    return rows.map(rowToCompensation)
+  }
+
+  async update(record: Compensation): Promise<void> {
+    const result = this.db
+      .prepare(
+        `UPDATE compensations
+         SET status = ?, updated_at = ?, version = version + 1
+         WHERE compensation_no = ? AND version = ?`,
+      )
+      .run(record.status, record.updatedAt, record.compensationNo, record.version)
+    if (result.changes === 0) {
+      throw new Error(`补偿单乐观锁冲突 ${record.compensationNo}`)
     }
   }
 }

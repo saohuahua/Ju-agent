@@ -6,6 +6,8 @@
  */
 
 import type {
+  CompensationReason,
+  CompensationStatus,
   ReturnType,
   ReturnReason,
   ReturnStatus,
@@ -111,6 +113,22 @@ export interface ApprovalRequest {
   decidedAt: string | null
   expiresAt: string
   createdAt: string
+}
+
+/** 补偿单 现金红包安抚 分级审批 与售后单相互独立 */
+export interface Compensation {
+  compensationNo: string
+  orderNo: string
+  customerId: string
+  reason: CompensationReason
+  status: CompensationStatus
+  amountCents: number
+  currency: string
+  requiresApproval: boolean
+  policyVersion: string
+  createdAt: string
+  updatedAt: string
+  version: number
 }
 
 export interface PolicyRule {

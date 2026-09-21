@@ -11,6 +11,7 @@ import type {
   ApprovalRequest,
   AuditLog,
   Checkpoint,
+  Compensation,
   Customer,
   Order,
   PolicyRule,
@@ -59,6 +60,13 @@ export interface ApprovalRepository {
   findByResource(resourceType: string, resourceId: string): Promise<ApprovalRequest | null>
   listPending(): Promise<ApprovalRequest[]>
   update(record: ApprovalRequest): Promise<void>
+}
+
+export interface CompensationRepository {
+  create(record: Compensation): Promise<void>
+  findByCompensationNo(compensationNo: string): Promise<Compensation | null>
+  listByOrderNo(orderNo: string): Promise<Compensation[]>
+  update(record: Compensation): Promise<void>
 }
 
 export interface PolicyRepository {

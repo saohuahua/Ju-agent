@@ -18,6 +18,7 @@ export const ACTION_TOOLS: Intent[] = [
   'submit_refund_only',
   'submit_exchange',
   'cancel_return',
+  'compensation',
   'escalate',
 ]
 
@@ -53,6 +54,8 @@ export function buildActionToolDefinitions(available: Intent[]): ToolDefinition[
     submit_refund_only: '发起仅退款申请 适用未发货取消或丢件等场景',
     submit_exchange: '发起换货申请',
     cancel_return: '取消已创建的售后申请',
+    compensation:
+      '发起现金红包补偿 需与顾客确认补偿金额 系统自动执行分级 50 元内自动发放 超出转人工审批 同一订单同一原因仅一次',
     escalate: '升级人工客服',
   }
   return available.map((intent) => ({
