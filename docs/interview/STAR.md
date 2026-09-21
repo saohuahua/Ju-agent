@@ -20,16 +20,21 @@
 
 ## Action 关键设计与实现
 
-### 混合架构 模型决策与确定性执行分离
+### 原生 Agent 循环 模型决策与确定性执行分离
 
-- Agent 只输出五种结构化形状 tool_call clarify action final escalate
-  由 Zod 严格校验 packages/agent/src/agent.ts
-- 模型可见工具只有四个只读查询 白名单写进输出契约的枚举
-  packages/contracts/src/agent.ts
+- 模型走原生 tool calling 工具以目录下发 tool_use 块与 input_json_delta 增量流式
+  消息重建符合原生协议 assistant 携带 tool_use user 携带 tool_result
+  packages/agent/src/anthropic-model.ts packages/agent/src/model.ts
+- ask_user 协议工具承接多轮澄清 用户回复绑定到对应 tool_call 构成 tool_result
+  packages/agent/src/agent.ts
+- 能力门控 未查过订单前业务动作工具不进每步工具目录 结构性防盲提交
+  这借鉴 Sierra 的 defense in depth 能力不出现在目录里 模型无法被说服去用它
 - 副作用由确定性工作流执行 工作流不信任模型查询结果 自行重查
   packages/workflow/src/engine.ts
 
 讲法 模型擅长理解和异常路径 资金安全必须由代码保证 这个边界是整个系统的地基
+上下文工程是 Anthropic 官方反复强调的 Agent 核心工程 我实现了三段式
+working memory 状态便签 最近消息 超限确定性工具结果清理 压缩前后 token 落事件可量化
 
 ### 三道幂等防线杜绝重复退款
 
@@ -48,15 +53,22 @@
 - 前端纯函数 reducer 从事件推导状态 不依赖内存
   packages/contracts/src/events.ts apps/web/src/lib/runReducer.ts
 
-### 四层确定性评测体系
+### 两级评测体系 L1 治理回归加 L2 用户模拟
 
-- 32 条任务契约 八类风险面 每条含夹具补丁 冻结时钟 脚本模型 故障计划 断言集
-- 数据库终态 轨迹 参数 网关扣款四类断言 无主观打分
-- P0 门禁失败 CI 非零退出
-- Pass^k 稳定性指标 生产 Agent 不能靠碰运气
+- L1 40 条任务契约 八类风险面 脚本模型回放理想轨迹 零成本每次提交跑 P0 门禁
+  packages/eval/src/runner.ts
+- L2 tau2-bench 范式用户模拟 Haiku 扮演客户与被测真实模型多轮对话
+  三档人设 选择性信息隐藏 哨兵终止 模拟器与被测模型强制分离
+  packages/eval/src/simulator.ts packages/eval/src/sim-runner.ts
+- 判定三层 终态与轨迹代码判定 communicateInfo 子串代码判定
+  LLM judge 只兜底语气类主观项 且判据二元化可从 transcript 验证
+- Pass^k 稳定性指标 分层抽样控成本 失败用例导出场景与 transcript 回流
   packages/eval/src/cases
 
-讲法 评测是这个项目的一级功能不是附属品
+讲法 TS 生态没有成熟的 tau-bench 等价物 这套用户模拟评测本身就是差异化卖点
+Cresta 的真实案例 LLM judge 给 94% 加工具轨迹断言掉到 71% 说明只看回复不够
+我的评测以终态与轨迹为准 judge 只做主观兜底 这正是生产公司的共识做法
+
 评测首轮就抓到一个真实缺陷 领域服务在乐观锁下连续更新会版本冲突
 内存仓储测不出来 SQLite 实现暴露了它 这正是终态断言的价值
 
@@ -75,14 +87,16 @@
 
 | 结果                       | 证据                     | 复现命令                           |
 | -------------------------- | ------------------------ | ---------------------------------- |
-| 评测集 32 条 全过          | 报告 eval/reports        | pnpm eval                          |
-| Pass^3 100%                | 报告字段 passPowerK      | pnpm eval -- --repeat 3            |
-| 单元与契约测试 100+ 条全绿 | 各包 test 目录           | pnpm test                          |
+| L1 评测 40 条 全过         | 报告 eval/reports        | pnpm eval                          |
+| L1 Pass^3                  | 报告字段 passPowerK      | pnpm eval -- --repeat 3            |
+| L2 用户模拟评测闭环        | L2 报告 evr_             | pnpm eval:sim -- --case hp_refund_only_small |
+| 单元与契约测试 120+ 条全绿 | 各包 test 目录           | pnpm test                          |
 | P0 门禁接入 CI             | .github/workflows/ci.yml | CI 状态                            |
 | 离线全场景演示             | scripts/demo.ts          | pnpm demo                          |
 | 断线补发与状态重建         | API 测试 SSE 用例        | pnpm --filter @aftersales/api test |
+| 真流式逐 token 事件        | message.delta 每字符级   | 工作台对话 运行详情事件时间线      |
 
-真实模型模式 pnpm eval -- --model anthropic 配置密钥后可测模型真实水平
+L2 全量成绩 pnpm eval:sim 获取 报告含平均轮次 token 成本与 judge 分项
 数据集与指标体系支持模型 提示词 工具描述的版本对比实验
 
 ## 高频追问与回答要点
@@ -119,6 +133,7 @@ Pass@k 和 Pass^k 的区别
 
 ## 数字诚实声明
 
-当前 32/32 与 Pass^3 100% 是脚本化模型下的系统正确性证明
+L1 的 40/40 与 Pass^3 是脚本化模型下的系统正确性证明
 它证明的是运行时 工作流 工具 治理层的正确性 不代表真实模型的成绩
-真实模型成绩需要配置密钥后跑 anthropic 模式获得 简历中两者必须分开表述
+L2 用户模拟 `pnpm eval:sim` 才是真实模型的智能层成绩 无密钥时诚实跳过
+简历中 L1 与 L2 成绩必须分开表述 L2 数字写实际跑出来的值 不预设不美化

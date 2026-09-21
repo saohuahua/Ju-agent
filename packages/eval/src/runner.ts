@@ -141,7 +141,6 @@ export async function runCase(
   }
 
   const stateFailures = failures.filter((f) => f.kind === 'state')
-  const trajectoryFailures = failures.filter((f) => f.kind === 'trajectory')
   return {
     caseId: evalCase.id,
     category: evalCase.category,
@@ -151,8 +150,8 @@ export async function runCase(
     durationMs: Date.now() - startedAt,
     layer: {
       stateOk: stateFailures.length === 0,
-      trajectoryOk: trajectoryFailures.filter((f) => !f.message.includes('参数')).length === 0,
-      argsOk: trajectoryFailures.filter((f) => f.message.includes('参数')).length === 0,
+      trajectoryOk: !failures.some((f) => f.kind === 'trajectory'),
+      argsOk: !failures.some((f) => f.kind === 'args'),
       escalationOk: !failures.some((f) => f.kind === 'escalation'),
       clarifyOk: !failures.some((f) => f.kind === 'clarify'),
       gatewayOk: !failures.some((f) => f.kind === 'gateway'),

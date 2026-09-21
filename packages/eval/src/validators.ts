@@ -25,6 +25,7 @@ export interface AssertionFailure {
   kind:
     | 'state'
     | 'trajectory'
+    | 'args'
     | 'escalation'
     | 'clarify'
     | 'gateway'
@@ -183,7 +184,7 @@ export function checkTrajectory(
     const target = input.executions.find((execution) => execution.toolName === argAssertion.tool)
     if (!target) {
       failures.push({
-        kind: 'trajectory',
+        kind: 'args',
         message: `断言失败 工具 ${argAssertion.tool} 未执行 无法校验参数`,
       })
       continue
@@ -193,7 +194,7 @@ export function checkTrajectory(
       argAssertion.op === 'eq' ? actual === argAssertion.value : actual !== argAssertion.value
     if (!matches) {
       failures.push({
-        kind: 'trajectory',
+        kind: 'args',
         message: `断言失败 ${argAssertion.tool} 参数 ${argAssertion.argPath} 期望 ${argAssertion.op} ${JSON.stringify(argAssertion.value)} 实际 ${JSON.stringify(actual)}`,
       })
     }

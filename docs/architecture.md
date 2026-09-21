@@ -45,14 +45,14 @@ packages/agent      packages/workflow   packages/tools
 ```text
 用户消息
    ▼
-AgentRunner 重建上下文 从事件表归约 不依赖内存
+AgentRunner 重建上下文 从事件表归约 加 working memory 便签与超限压缩
    ▼
-模型结构化输出 五种形状 Zod 校验 非法输出一轮修复
-   ├── tool_call    只读工具 白名单四项 执行后结果回上下文 继续
-   ├── clarify      补问 运行暂停 awaiting_input 等用户答复
-   ├── action       意图加槽位 交给工作流
-   ├── final        脱敏落事件 运行完成
-   └── escalate     升级人工 运行终态
+模型原生 tool calling tool_use 块与参数增量流式先落事件再执行
+   ├── 只读工具     get_order 等 白名单四项 执行后 tool_result 回灌
+   ├── ask_user     协议工具 补问 运行暂停 awaiting_input 用户回复构成 tool_result
+   ├── 业务动作工具 submit_* 槽位校验后路由工作流 能力门控 未查单不可见
+   ├── escalate     升级人工 运行终态
+   └── 纯文本轮     end_turn 即最终答复 脱敏落事件 运行完成
    ▼
 WorkflowEngine 确定性执行
    每步 先发事件 再执行 后存断点
