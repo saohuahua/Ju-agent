@@ -52,7 +52,8 @@ function resolveModel(): { model: ChatModel; available: boolean; label: string }
   return { model: new ScriptedModel([]), available: false, label: '未配置 使用脚本化占位' }
 }
 
-const dbPath = process.env.DB_PATH ?? './data/app.db'
+// DB_PATH 相对路径锚定仓库根 与评测 CLI 落库位置一致 避免 cwd 差异写出两个库
+const dbPath = resolve(repoRoot, process.env.DB_PATH ?? 'data/app.db')
 const db = openDatabase(dbPath)
 
 // 首次启动自动载入演示夹具 已有数据的库不重复覆盖

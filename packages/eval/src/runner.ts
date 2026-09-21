@@ -135,18 +135,18 @@ export async function runCase(
     await collectAssertions(evalCase, system, run.runId, failures)
   } catch (error) {
     failures.push({
-      kind: 'state',
+      kind: 'exception',
       message: `用例执行异常 ${error instanceof Error ? `${error.name} ${error.message}` : String(error)}`,
     })
   }
 
-  const stateFailures = failures.filter((f) => f.kind === 'state')
+  const stateFailures = failures.filter((f) => f.kind === 'state' || f.kind === 'exception')
   return {
     caseId: evalCase.id,
     category: evalCase.category,
     priority: evalCase.priority,
     passed: failures.length === 0,
-    failures: failures.map((f) => f.message),
+    failures: failures.map((f) => ({ kind: f.kind, message: f.message })),
     durationMs: Date.now() - startedAt,
     layer: {
       stateOk: stateFailures.length === 0,

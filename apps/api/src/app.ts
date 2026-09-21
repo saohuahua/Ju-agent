@@ -19,7 +19,16 @@ import type { Actor } from '@aftersales/domain'
 import { PROMPT_VERSION } from '@aftersales/agent'
 import { runCase } from '@aftersales/eval'
 import { EVAL_CASES, buildReport } from '@aftersales/eval'
-import { listEvalReports } from '@aftersales/persistence'
+import {
+  runSimSuite,
+  selectCases,
+  estimateSuiteTokens,
+  DEFAULT_AGENT_MODEL,
+  DEFAULT_USER_MODEL,
+  DEFAULT_JUDGE_MODEL,
+  type SimSuiteProgress,
+} from '@aftersales/eval'
+import { listEvalReports, saveEvalReport } from '@aftersales/persistence'
 import type { ComposedSystem } from '@aftersales/runtime'
 import { ToolExecutionError } from '@aftersales/tools'
 import { createAuthEnv, requireActor, requireRole, type AuthEnv } from './auth.js'
@@ -78,6 +87,19 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
   const app = new Hono<AppEnv>()
   const authEnv = deps.authEnv ?? createAuthEnv()
   const { system } = deps
+
+  // L2 模拟评测后台任务表 进程内状态 重启即清空
+  // 单实例部署假设下足够 任务串行推进避免中转站限流叠加
+  const simTasks = new Map<
+    string,
+    {
+      status: 'running' | 'done' | 'error'
+      progress: SimSuiteProgress | null
+      reportId: string | null
+      error: string | null
+      startedAt: string
+    }
+  >()
 
   app.use('*', async (context, next) => {
     context.set('authEnv', authEnv)
@@ -346,12 +368,128 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
       roundDurationsMs: [0],
       cases: EVAL_CASES,
     })
+    // 与 CLI 一致落库 看板对比列与历史表即时可见
+    saveEvalReport(system.db, {
+      reportId: report.reportId,
+      startedAt: report.startedAt,
+      model: report.model,
+      promptVersion: report.promptVersion,
+      total: report.total,
+      passed: report.passed,
+      failed: report.failed,
+      gatePassed: report.gatePassed,
+      report,
+    })
     return context.json({
       reportId: report.reportId,
       total: report.total,
       passed: report.passed,
       gatePassed: report.gatePassed,
     })
+  })
+
+  // L2 用户模拟评测 后台任务 启动后轮询进度
+  app.post('/api/eval/run-sim', async (context) => {
+    if (!requireRole(context, ['operator', 'supervisor'])) {
+      return context.json({ error: 'AUTHORIZATION_DENIED', message: '仅内部人员可触发评测' }, 403)
+    }
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return context.json(
+        {
+          error: 'MODEL_UNAVAILABLE',
+          message: '未配置 ANTHROPIC_API_KEY 无法运行 L2 用户模拟评测 诚实原则不输出模拟成绩',
+        },
+        503,
+      )
+    }
+    const body = await context.req.json().catch(() => ({})) as {
+      sample?: 'p0' | 'p1' | 'p2' | 'all'
+      repeat?: number
+      agentModel?: string
+      userModel?: string
+      judgeModel?: string
+    }
+    const options = {
+      sample: body.sample ?? 'p0',
+      repeat: Math.min(Math.max(1, Number(body.repeat ?? 1)), 5),
+      agentModel: body.agentModel ?? process.env.ANTHROPIC_MODEL ?? DEFAULT_AGENT_MODEL,
+      userModel: body.userModel ?? process.env.SIM_USER_MODEL ?? DEFAULT_USER_MODEL,
+      judgeModel: body.judgeModel ?? process.env.SIM_JUDGE_MODEL ?? DEFAULT_JUDGE_MODEL,
+    }
+    if (options.sample !== 'p0' && options.sample !== 'p1' && options.sample !== 'p2' && options.sample !== 'all') {
+      return context.json({ error: 'BAD_REQUEST', message: 'sample 参数需为 p0 p1 p2 all 之一' }, 400)
+    }
+
+    // 已有任务在跑 拒绝并发启动 避免中转站限流叠加
+    for (const task of simTasks.values()) {
+      if (task.status === 'running') {
+        return context.json({ error: 'CONFLICT', message: '已有 L2 评测任务运行中 请等待完成' }, 409)
+      }
+    }
+
+    const taskId = `sim_${Date.now().toString(36)}`
+    const cases = selectCases(options.sample, undefined)
+    const startedAt = new Date().toISOString()
+    simTasks.set(taskId, {
+      status: 'running',
+      progress: null,
+      reportId: null,
+      error: null,
+      startedAt,
+    })
+
+    // 后台执行 不阻塞响应 失败落任务表 供轮询读取
+    void (async () => {
+      try {
+        const report = await runSimSuite({
+          ...options,
+          onProgress: (progress) => {
+            const task = simTasks.get(taskId)
+            if (task) task.progress = progress
+          },
+        })
+        saveEvalReport(system.db, {
+          reportId: report.reportId,
+          startedAt: report.startedAt,
+          model: report.model,
+          promptVersion: report.promptVersion,
+          total: report.total,
+          passed: report.passed,
+          failed: report.failed,
+          gatePassed: report.gatePassed,
+          report,
+        })
+        const task = simTasks.get(taskId)
+        if (task) {
+          task.status = 'done'
+          task.reportId = report.reportId
+        }
+      } catch (error) {
+        const task = simTasks.get(taskId)
+        if (task) {
+          task.status = 'error'
+          task.error = error instanceof Error ? error.message : String(error)
+        }
+      }
+    })()
+
+    return context.json({
+      taskId,
+      totalCases: cases.length,
+      estimatedTokens: estimateSuiteTokens(cases.length, options.repeat),
+      startedAt,
+    })
+  })
+
+  app.get('/api/eval/sim-tasks/:taskId', async (context) => {
+    if (!requireRole(context, ['operator', 'supervisor'])) {
+      return context.json({ error: 'AUTHORIZATION_DENIED', message: '仅内部人员可查看评测' }, 403)
+    }
+    const task = simTasks.get(context.req.param('taskId'))
+    if (!task) {
+      return context.json({ error: 'NOT_FOUND', message: '任务不存在或服务已重启' }, 404)
+    }
+    return context.json({ task })
   })
 
   // 统一领域错误出口

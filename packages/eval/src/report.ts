@@ -13,6 +13,7 @@ import {
   computePassPowerK,
   gateCheck,
   summarizeByCategory,
+  wilson95,
   type MetricSummary,
 } from './metrics.js'
 
@@ -38,6 +39,29 @@ export function buildReport(input: ReportInput): EvalReport {
   const gate = gateCheck(details, input.cases)
   const passPowerK = input.rounds.length > 1 ? computePassPowerK(input.rounds) : undefined
 
+  // Wilson 95% 区间仅 L2 抽样评测计算 L1 脚本回放无采样方差
+  const confidenceIntervals =
+    input.level === 'L2'
+      ? {
+          task_success_rate: wilson95(
+            details.filter((d) => d.passed).length,
+            details.length,
+          ),
+          ...(passPowerK !== undefined
+            ? {
+                passPowerK: wilson95(
+                  input.rounds[0]!.filter((detail) =>
+                    input.rounds.every((round) =>
+                      round.some((d) => d.caseId === detail.caseId && d.passed),
+                    ),
+                  ).length,
+                  input.rounds[0]!.length,
+                ),
+              }
+            : {}),
+        }
+      : undefined
+
   const report: EvalReport = {
     reportId: `evr_${randomUUID().slice(0, 8)}`,
     startedAt: new Date().toISOString(),
@@ -51,6 +75,7 @@ export function buildReport(input: ReportInput): EvalReport {
     failed: details.filter((d) => !d.passed).length,
     passAtK: passAtK(input.rounds),
     passPowerK,
+    confidenceIntervals,
     metrics: metrics as unknown as Record<string, number>,
     byCategory,
     caseResults: details.map((d) => ({
@@ -68,6 +93,7 @@ export function buildReport(input: ReportInput): EvalReport {
       simulatorOutputTokens: d.simulatorOutputTokens,
       simulatorCostUsd: d.simulatorCostUsd,
       judge: d.judge ? toContractJudge(d.judge) : undefined,
+      runId: d.runId,
     })),
     gatePassed: gate.passed,
   }
@@ -122,6 +148,20 @@ export function renderMarkdownReport(
   for (const [key, value] of Object.entries(report.passAtK ?? {})) {
     lines.push(`- ${key} ${percent(value)}`)
   }
+  const ci = report.confidenceIntervals
+  if (ci) {
+    const tsr = ci['task_success_rate']
+    if (tsr) {
+      lines.push(
+        `- 任务成功率 95% Wilson 区间 [${percent(tsr.lower)}, ${percent(tsr.upper)}] 样本 ${report.total} 条`,
+      )
+    }
+    const pk = ci['passPowerK']
+    if (pk) {
+      lines.push(`- Pass^${extra.repeat} 95% Wilson 区间 [${percent(pk.lower)}, ${percent(pk.upper)}]`)
+    }
+    lines.push(`- 置信区间仅 L2 抽样评测计算 L1 脚本回放无采样方差不计算`)
+  }
   if (report.level === 'L2') {
     const withTurns = report.caseResults.filter((c) => c.turns !== undefined)
     if (withTurns.length > 0) {
@@ -165,7 +205,7 @@ export function renderMarkdownReport(
       lines.push(`### ${result.caseId} [${result.priority}]`)
       lines.push('')
       for (const failure of result.failures) {
-        lines.push(`- ${failure}`)
+        lines.push(`- [${failure.kind}] ${failure.message}`)
       }
       lines.push('')
     }

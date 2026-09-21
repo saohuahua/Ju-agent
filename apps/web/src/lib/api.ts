@@ -4,7 +4,7 @@
  * 统一注入身份令牌与错误处理 组件不直接拼 fetch
  */
 
-import type { AgentEvent, ApprovalRequest, EvalReportSummary, RunSummary } from './types'
+import type { AgentEvent, ApprovalRequest, EvalReportSummary, RunSummary, SimTaskView } from './types'
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8787'
 
@@ -113,4 +113,23 @@ export const api = {
         method: 'POST',
       },
     ),
+
+  startSimEval: (body: {
+    sample: string
+    repeat: number
+    /** 空串省略 由后端回退到环境默认模型 */
+    agentModel?: string
+    userModel?: string
+    judgeModel?: string
+  }) =>
+    request<{ taskId: string; totalCases: number; estimatedTokens: number; startedAt: string }>(
+      '/api/eval/run-sim',
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+      },
+    ),
+
+  getSimTask: (taskId: string) =>
+    request<{ task: SimTaskView }>(`/api/eval/sim-tasks/${taskId}`),
 }

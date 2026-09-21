@@ -32,6 +32,7 @@ export interface AssertionFailure {
     | 'communicate'
     | 'judge'
     | 'simulator'
+    | 'exception'
   message: string
 }
 

@@ -2,6 +2,8 @@
  * 评测内部类型
  */
 
+import type { AssertionFailure } from './validators.js'
+
 export interface ToolExecution {
   toolName: string
   args: Record<string, unknown>
@@ -22,7 +24,7 @@ export interface CaseDetail {
   category: string
   priority: 'P0' | 'P1' | 'P2'
   passed: boolean
-  failures: string[]
+  failures: AssertionFailure[]
   durationMs: number
   /** L2 用户模拟对话轮次 */
   turns?: number

@@ -15,5 +15,15 @@ export { checkStateAssertion, checkTrajectory, checkToolArgs } from './validator
 export { EVAL_CASES, casePrioritySummary, SIM_CASES } from './cases.js'
 export type { CaseDetail, ToolExecution, JudgeFailure } from './types.js'
 export { runSimCase, type RunSimOptions } from './sim-runner.js'
+export {
+  runSimSuite,
+  selectCases,
+  estimateSuiteTokens,
+  DEFAULT_AGENT_MODEL,
+  DEFAULT_USER_MODEL,
+  DEFAULT_JUDGE_MODEL,
+  type SimSuiteOptions,
+  type SimSuiteProgress,
+} from './sim-suite.js'
 export { UserSimulator, STOP_SENTINEL, TRANSFER_SENTINEL } from './simulator.js'
 export { judgeTranscript, type TranscriptTurn } from './judge.js'

@@ -40,6 +40,19 @@
   --radius-container: 10px; /* 卡片 面板 气泡 */
   --radius-control: 8px; /* 按钮 输入框 导航项 */
   --radius-badge: 6px; /* 徽章 pill */
+
+  /* 评测进度呼吸圆点 1.6s 全局 reduced-motion 兜底降为瞬时 */
+  --animate-breathe: breathe 1.6s ease-in-out infinite;
+
+  @keyframes breathe {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
 }
 
 :root {

@@ -59,7 +59,7 @@ async function main(): Promise<void> {
       console.log(`  [${detail.priority}] ${detail.caseId} ${mark} ${detail.durationMs}ms`)
       if (!detail.passed) {
         for (const failure of detail.failures) {
-          console.log(`      ${failure}`)
+          console.log(`      [${failure.kind}] ${failure.message}`)
         }
       }
     }

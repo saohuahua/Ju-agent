@@ -176,12 +176,35 @@ export type EvalCase = z.infer<typeof EvalCase>
 export type EvalCaseInput = z.input<typeof EvalCase>
 
 /** 单用例执行结果 */
+export const FAILURE_KINDS = [
+  'state',
+  'trajectory',
+  'args',
+  'escalation',
+  'clarify',
+  'gateway',
+  'communicate',
+  'judge',
+  'simulator',
+  'exception',
+] as const
+export const FailureKind = z.enum(FAILURE_KINDS)
+export type FailureKind = z.infer<typeof FailureKind>
+
+/** 结构化失败明细 判定四层映射 state/gateway→状态层 trajectory/escalation/clarify→轨迹层 args→参数层 communicate/judge→回复质量层 */
+export const EvalFailure = z.object({
+  kind: FailureKind,
+  message: z.string(),
+})
+export type EvalFailure = z.infer<typeof EvalFailure>
+
+/** 单用例执行结果 */
 export const EvalCaseResult = z.object({
   caseId: z.string(),
   category: EvalCategory,
   priority: z.enum(['P0', 'P1', 'P2']),
   passed: z.boolean(),
-  failures: z.array(z.string()),
+  failures: z.array(EvalFailure),
   durationMs: z.number().int().nonnegative(),
   /** Level 2 用户模拟的对话轮次 */
   turns: z.number().int().nonnegative().optional(),
@@ -195,6 +218,8 @@ export const EvalCaseResult = z.object({
   simulatorCostUsd: z.number().optional(),
   /** LLM judge 判定详情 */
   judge: z.array(SimJudgeFailure).optional(),
+  /** L2 运行标识 供前端跳转运行详情时间线回放 */
+  runId: z.string().optional(),
 })
 export type EvalCaseResult = z.infer<typeof EvalCaseResult>
 
@@ -230,6 +255,13 @@ export const EvalReport = z.object({
   passAtK: z.record(z.string(), z.number()).optional(),
   /** Pass^k 全部 k 次都通过的用例比例 */
   passPowerK: z.number().optional(),
+  /**
+   * Wilson 95% 置信区间 键为指标名（如 task_success_rate passPowerK）
+   * 仅 L2 抽样评测计算 L1 脚本回放无采样方差不计算
+   */
+  confidenceIntervals: z
+    .record(z.string(), z.object({ lower: z.number(), upper: z.number() }))
+    .optional(),
   metrics: z.record(z.string(), z.number()),
   byCategory: z.record(z.string(), z.object({ total: z.number(), passed: z.number() })),
   caseResults: z.array(EvalCaseResult),

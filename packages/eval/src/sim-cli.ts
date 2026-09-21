@@ -11,18 +11,23 @@
  *
  * 需要 ANTHROPIC_API_KEY 未配置时输出跳过说明并以零码退出 不伪装成绩
  * 模拟器与被测模型分离 judge 与两者分离
+ * 套件核心逻辑在 sim-suite.ts 与 API 端点共用
  */
 
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { AnthropicModel, PROMPT_VERSION } from '@aftersales/agent'
 import { openDatabase, saveEvalReport } from '@aftersales/persistence'
-import { SIM_CASES } from './index.js'
-import { runSimCase } from './index.js'
-import { buildReport, renderMarkdownReport } from './index.js'
-import type { CaseDetail } from './index.js'
-import type { ChatModel } from '@aftersales/agent'
+import {
+  DEFAULT_AGENT_MODEL,
+  DEFAULT_JUDGE_MODEL,
+  DEFAULT_USER_MODEL,
+  estimateSuiteTokens,
+  runSimSuite,
+  selectCases,
+  type SimSuiteOptions,
+} from './sim-suite.js'
+import { renderMarkdownReport } from './index.js'
 
 /** 加载仓库根目录 .env 与 API 入口同一逻辑 显式覆盖同名变量 */
 function loadEnvFile(): void {
@@ -41,19 +46,9 @@ function loadEnvFile(): void {
 }
 loadEnvFile()
 
-interface SimCliOptions {
-  repeat: number
-  sample: 'p0' | 'p1' | 'p2' | 'all'
-  agentModel: string
-  userModel: string
-  judgeModel: string
+interface SimCliOptions extends Omit<SimSuiteOptions, 'failureDir' | 'onProgress'> {
   gate: boolean
-  caseId: string | null
 }
-
-const DEFAULT_AGENT_MODEL = 'claude-sonnet-5'
-const DEFAULT_USER_MODEL = 'claude-haiku-4-5-20251001'
-const DEFAULT_JUDGE_MODEL = 'claude-sonnet-5'
 
 function parseArgs(argv: string[]): SimCliOptions {
   const options: SimCliOptions = {
@@ -63,7 +58,6 @@ function parseArgs(argv: string[]): SimCliOptions {
     userModel: process.env.SIM_USER_MODEL ?? DEFAULT_USER_MODEL,
     judgeModel: process.env.SIM_JUDGE_MODEL ?? DEFAULT_JUDGE_MODEL,
     gate: false,
-    caseId: null,
   }
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
@@ -88,72 +82,11 @@ function parseArgs(argv: string[]): SimCliOptions {
     } else if (arg === '--gate') {
       options.gate = true
     } else if (arg === '--case') {
-      options.caseId = argv[i + 1] ?? null
+      options.caseId = argv[i + 1] ?? undefined
       i += 1
     }
   }
   return options
-}
-
-/** 分层抽样 P0 全量 P1 二分之一 P2 五分之一 固定间隔保证可复现 */
-function selectCases(sample: SimCliOptions['sample'], caseId: string | null): typeof SIM_CASES {
-  if (caseId) {
-    const found = SIM_CASES.filter((testCase) => testCase.id === caseId)
-    if (found.length === 0) {
-      throw new Error(`用例 ${caseId} 不存在或缺少 scenario`)
-    }
-    return found
-  }
-  switch (sample) {
-    case 'all':
-      return SIM_CASES
-    case 'p0':
-      return SIM_CASES.filter((testCase) => testCase.priority === 'P0')
-    case 'p1':
-      return SIM_CASES.filter((testCase) => testCase.priority === 'P1').filter(
-        (_, index) => index % 2 === 0,
-      )
-    case 'p2':
-      return SIM_CASES.filter((testCase) => testCase.priority === 'P2').filter(
-        (_, index) => index % 5 === 0,
-      )
-  }
-}
-
-function buildModel(model: string): ChatModel {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error('MISSING_KEY')
-  }
-  return new AnthropicModel({ model })
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-/** 判定失败是否为模型服务瞬态错误 中转站限流与上游抖动 */
-function isTransientFailure(detail: CaseDetail): boolean {
-  return (
-    (detail.turns ?? 0) === 0 &&
-    detail.failures.some(
-      (failure) => failure.includes('模型服务异常') || failure.includes('模型服务限流'),
-    )
-  )
-}
-
-/** 用例级重试 瞬态模型服务错误不计入 Agent 成绩 */
-async function runCaseWithRetry(
-  simCase: Parameters<typeof runSimCase>[0],
-  options: Parameters<typeof runSimCase>[1],
-  maxAttempts = 3,
-): Promise<CaseDetail> {
-  let detail = await runSimCase(simCase, options)
-  for (let attempt = 2; attempt <= maxAttempts && isTransientFailure(detail); attempt++) {
-    console.log(`      ${simCase.id} 模型服务瞬态错误 第 ${attempt} 次重试`)
-    await sleep(3000)
-    detail = await runSimCase(simCase, options)
-  }
-  return detail
 }
 
 async function main(): Promise<void> {
@@ -174,68 +107,25 @@ async function main(): Promise<void> {
     return
   }
 
-  let agentModel: ChatModel
-  let userModel: ChatModel
-  let judgeModel: ChatModel
-  try {
-    agentModel = buildModel(options.agentModel)
-    userModel = buildModel(options.userModel)
-    judgeModel = buildModel(options.judgeModel)
-  } catch {
-    console.log('模型构造失败 请检查 ANTHROPIC_API_KEY 与网络')
-    process.exitCode = 1
-    return
-  }
-
   console.log(
     `L2 用户模拟评测 被测 ${options.agentModel} 模拟器 ${options.userModel} judge ${options.judgeModel}\n` +
-      `用例 ${cases.length} 条 重复 ${options.repeat} 轮 抽样 ${options.sample}`,
+      `用例 ${cases.length} 条 重复 ${options.repeat} 轮 抽样 ${options.sample}\n` +
+      `估算 token 约 ${(estimateSuiteTokens(cases.length, options.repeat) / 10000).toFixed(1)} 万`,
   )
 
   const failureDir = resolve(process.cwd(), 'eval', 'failures')
-  const rounds: CaseDetail[][] = []
-  const roundDurationsMs: number[] = []
-  for (let round = 1; round <= options.repeat; round++) {
-    const startedAt = Date.now()
-    const details: CaseDetail[] = []
-    for (const simCase of cases) {
-      const detail = await runCaseWithRetry(simCase, {
-        agentModel,
-        userModel,
-        judgeModel,
-        failureDir,
-      })
-      details.push(detail)
-      const mark = detail.passed ? '通过' : '失败'
-      const turns = detail.turns ?? 0
-      const tokens = (detail.agentInputTokens ?? 0) + (detail.agentOutputTokens ?? 0)
+  const startedAt = Date.now()
+  const report = await runSimSuite({
+    ...options,
+    failureDir,
+    onProgress: (progress) => {
       console.log(
-        `  [${detail.priority}] ${detail.caseId} ${mark} ${detail.durationMs}ms ${turns}轮 ${tokens}tok`,
+        `  [${progress.round}-${progress.caseIndex}] ${progress.caseId} 通过 ${progress.passed} 失败 ${progress.failed} 第 ${progress.round}/${progress.repeat} 轮 用例 ${progress.caseIndex}/${progress.totalCases} ${(progress.elapsedMs / 1000).toFixed(0)}s`,
       )
-      if (!detail.passed) {
-        for (const failure of detail.failures) {
-          console.log(`      ${failure}`)
-        }
+      for (const failure of progress.failures) {
+        console.log(`      [${failure.kind}] ${failure.message}`)
       }
-      // 用例间节流 缓解中转站突发限流 评测测 Agent 不测基建
-      await sleep(1500)
-    }
-    rounds.push(details)
-    roundDurationsMs.push(Date.now() - startedAt)
-    const passed = details.filter((d) => d.passed).length
-    console.log(`第 ${round} 轮完成 通过 ${passed}/${details.length}`)
-  }
-
-  const report = buildReport({
-    model: options.agentModel,
-    promptVersion: PROMPT_VERSION,
-    rounds,
-    repeat: options.repeat,
-    roundDurationsMs,
-    cases,
-    level: 'L2',
-    userModel: options.userModel,
-    judgeModel: options.judgeModel,
+    },
   })
 
   const reportDir = resolve(process.cwd(), 'eval', 'reports')
@@ -247,7 +137,7 @@ async function main(): Promise<void> {
     markdownPath,
     renderMarkdownReport(report, {
       repeat: options.repeat,
-      durationMs: roundDurationsMs.reduce((a, b) => a + b, 0),
+      durationMs: Date.now() - startedAt,
     }),
     'utf-8',
   )
@@ -271,6 +161,15 @@ async function main(): Promise<void> {
   )
   if (report.passPowerK !== undefined) {
     console.log(`Pass^${options.repeat} ${(report.passPowerK * 100).toFixed(1)}%`)
+  }
+  const ci = report.confidenceIntervals
+  if (ci) {
+    const tsr = ci['task_success_rate']
+    if (tsr) {
+      console.log(
+        `任务成功率 95% Wilson 区间 [${(tsr.lower * 100).toFixed(1)}%, ${(tsr.upper * 100).toFixed(1)}%]`,
+      )
+    }
   }
   const failedCases = report.caseResults.filter((c) => !c.passed).length
   if (failedCases > 0) {

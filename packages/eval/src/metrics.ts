@@ -98,6 +98,25 @@ export function computePassPowerK(rounds: CaseDetail[][]): number {
   return ratio(stable.length, first.length)
 }
 
+/**
+ * Wilson 95% 置信区间
+ *
+ * 二项比例区间 小样本下比正态近似更稳 不会越过 0 或 1
+ * passed 与 total 均为 0 时返回 [0, 1] 表示完全未知
+ */
+export function wilson95(passed: number, total: number): { lower: number; upper: number } {
+  if (total === 0) return { lower: 0, upper: 1 }
+  const z = 1.96
+  const z2 = z * z
+  const p = passed / total
+  const n = total
+  const center = (p + z2 / (2 * n)) / (1 + z2 / n)
+  const half = (z * Math.sqrt((p * (1 - p)) / n + z2 / (4 * n * n))) / (1 + z2 / n)
+  const lower = Math.max(0, center - half)
+  const upper = Math.min(1, center + half)
+  return { lower, upper }
+}
+
 /** P0 门禁 全部 P0 用例通过才放行 */
 export function gateCheck(
   details: CaseDetail[],

@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest'
 import type { StateAssertion, TrajectoryAssertions } from '@aftersales/contracts'
 import { checkStateAssertion, checkTrajectory } from '../src/validators.js'
 import type { ValidationInput } from '../src/validators.js'
-import { computeMetrics, computePassPowerK, gateCheck } from '../src/metrics.js'
+import { computeMetrics, computePassPowerK, gateCheck, wilson95 } from '../src/metrics.js'
 import type { CaseDetail } from '../src/types.js'
 
 function makeInput(overrides: Partial<ValidationInput> = {}): ValidationInput {
@@ -158,7 +158,7 @@ describe('指标计算', () => {
     category,
     priority,
     passed,
-    failures: passed ? [] : ['失败'],
+    failures: passed ? [] : [{ kind: 'state', message: '失败' }],
     durationMs: 1,
     layer: {
       stateOk: passed,
@@ -190,6 +190,20 @@ describe('指标计算', () => {
     const round2 = [detail('a', 'happy_path', true), detail('b', 'happy_path', false)]
     expect(computePassPowerK([round1, round2])).toBe(0.5)
     expect(computePassPowerK([round1, round1])).toBe(1)
+  })
+
+  it('Wilson 95% 区间小样本稳定且不越界', () => {
+    // 全通过 区间上界不越 1 下界显著小于 1 小样本置信不足
+    const all = wilson95(40, 40)
+    expect(all.upper).toBe(1)
+    expect(all.lower).toBeCloseTo(0.912, 2)
+    // 半通过 区间对称围绕 0.5 样本越大越窄
+    const half = wilson95(20, 40)
+    expect(half.lower).toBeLessThan(0.5)
+    expect(half.upper).toBeGreaterThan(0.5)
+    expect(half.lower + half.upper).toBeCloseTo(1, 5)
+    // 零样本 完全未知
+    expect(wilson95(0, 0)).toEqual({ lower: 0, upper: 1 })
   })
 
   it('P0 门禁失败列出编号', () => {
