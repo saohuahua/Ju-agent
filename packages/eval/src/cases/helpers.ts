@@ -18,7 +18,7 @@ export const NEW_PRICE_PROTECTION_NO = 'PP-2026-0001'
 
 /** 模型输出构造器 */
 export function toolCall(
-  tool: 'get_order' | 'get_shipment' | 'get_policy' | 'lookup_customer',
+  tool: 'get_order' | 'get_shipment' | 'get_policy' | 'lookup_customer' | 'search_policy',
   args: Record<string, unknown>,
   reason = '查询信息',
 ): AgentOutput {

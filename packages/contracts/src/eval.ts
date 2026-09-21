@@ -20,6 +20,7 @@ export const EVAL_CATEGORIES = [
   'recovery',
   'compensation',
   'price_protection',
+  'policy_rag',
 ] as const
 export const EvalCategory = z.enum(EVAL_CATEGORIES)
 export type EvalCategory = z.infer<typeof EvalCategory>

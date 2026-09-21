@@ -79,6 +79,26 @@ export const ToolIO = {
       ),
     }),
   },
+  search_policy: {
+    input: z.object({
+      /** 客户问题原文 检索打分以此为准 */
+      query: z.string().min(1),
+      /** 返回条数上限 缺省 3 */
+      limit: z.number().int().min(1).max(5).optional(),
+    }),
+    output: z.object({
+      articles: z.array(
+        z.object({
+          articleId: z.string(),
+          title: z.string(),
+          content: z.string(),
+          score: z.number().int().nonnegative(),
+          reason: z.string(),
+        }),
+      ),
+      count: z.number().int().nonnegative(),
+    }),
+  },
   create_return_request: {
     input: z.object({
       orderNo: z.string().min(1),
@@ -266,6 +286,15 @@ export const TOOL_CATALOG: readonly ToolDescriptor[] = [
     timeoutMs: 2000,
     idempotent: false,
     description: '查询当前版本售后政策规则 用于向用户解释依据',
+  },
+  {
+    name: 'search_policy',
+    risk: 'low',
+    exposedTo: 'agent',
+    timeoutMs: 30000,
+    idempotent: false,
+    description:
+      '按客户问题检索平台政策条款 逐条打分召回最相关的条款 解释政策前调用 引用条款原文作答 语料中没有相关条款时如实说明需人工确认 不得编造政策',
   },
   {
     name: 'create_return_request',

@@ -14,6 +14,7 @@ import type {
   CustomerRepository,
   OrderRepository,
   PolicyRepository,
+  PolicySearchService,
   PriceProtectionService,
   ShipmentRepository,
 } from '@aftersales/domain'
@@ -30,6 +31,7 @@ export interface ToolDependencies {
   afterSaleService: AfterSaleService
   compensationService: CompensationService
   priceProtectionService: PriceProtectionService
+  policySearchService: PolicySearchService
   auditService: AuditService
 }
 
@@ -173,6 +175,28 @@ export function buildToolRegistry(deps: ToolDependencies): ToolRegistry {
           timeWindowDays: rule.timeWindowDays,
           excludedCategories: rule.excludedCategories,
         })),
+      }
+    },
+  )
+
+  registry.register(
+    'search_policy',
+    async (input: ToolInput<'search_policy'>, context) => {
+      const result = await deps.policySearchService.search(
+        context.actor,
+        input.query,
+        input.limit,
+        context.runId ?? undefined,
+      )
+      return {
+        articles: result.articles.map((article) => ({
+          articleId: article.articleId,
+          title: article.title,
+          content: article.content,
+          score: article.score,
+          reason: article.reason,
+        })),
+        count: result.count,
       }
     },
   )
@@ -371,6 +395,7 @@ export const ALL_TOOL_NAMES: ToolName[] = [
   'get_order',
   'get_shipment',
   'get_policy',
+  'search_policy',
   'create_return_request',
   'record_return_shipment',
   'receive_return_goods',

@@ -18,6 +18,7 @@ import { recoveryCases } from './cases/recovery.js'
 import { compensationCases } from './cases/compensation.js'
 import { logisticsCases } from './cases/logistics.js'
 import { priceProtectionCases } from './cases/price-protection.js'
+import { policyRagCases } from './cases/policy-rag.js'
 import { simHardCases } from './cases/sim-hard.js'
 
 /** 全部用例 载入时做契约校验 数据不合法直接失败 */
@@ -33,6 +34,7 @@ export const EVAL_CASES: EvalCase[] = validateCases([
   ...compensationCases,
   ...logisticsCases,
   ...priceProtectionCases,
+  ...policyRagCases,
   ...simHardCases,
 ])
 

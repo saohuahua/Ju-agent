@@ -10,6 +10,7 @@ import type {
   Compensation,
   Customer,
   Order,
+  PolicyArticle,
   PolicyRule,
   PriceProtection,
   Refund,
@@ -22,6 +23,7 @@ import type {
   CompensationRepository,
   CustomerRepository,
   OrderRepository,
+  PolicyArticleRepository,
   PolicyRepository,
   PriceProtectionRepository,
   RefundRepository,
@@ -561,6 +563,34 @@ export class SqliteSkuPriceRepository implements SkuPriceRepository {
       sku: row.sku,
       currentUnitPriceCents: row.current_unit_price_cents,
       updatedAt: row.updated_at,
+    }))
+  }
+}
+
+interface PolicyArticleRow {
+  article_id: string
+  policy_version: string
+  title: string
+  content: string
+  source: string
+  created_at: string
+}
+
+/** 政策语料条款仓储 只读 语料随政策版本由夹具载入 */
+export class SqlitePolicyArticleRepository implements PolicyArticleRepository {
+  constructor(private readonly db: SqliteDatabase) {}
+
+  async listByVersion(version: string): Promise<PolicyArticle[]> {
+    const rows = this.db
+      .prepare('SELECT * FROM policy_articles WHERE policy_version = ?')
+      .all(version) as PolicyArticleRow[]
+    return rows.map((row) => ({
+      articleId: row.article_id,
+      policyVersion: row.policy_version,
+      title: row.title,
+      content: row.content,
+      source: row.source,
+      createdAt: row.created_at,
     }))
   }
 }

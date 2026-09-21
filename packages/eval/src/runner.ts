@@ -12,7 +12,7 @@ import { ScriptedModel, PROMPT_VERSION } from '@aftersales/agent'
 import type { ChatModel } from '@aftersales/agent'
 import type { AgentOutput, EvalCase } from '@aftersales/contracts'
 import { APPROVAL_TTL_MS } from '@aftersales/domain'
-import { FrozenClock } from '@aftersales/domain'
+import { FrozenClock, KeywordPolicyScorer } from '@aftersales/domain'
 import type { Actor } from '@aftersales/domain'
 import { BASELINE_FROZEN_TIME, composeSystem, type ComposedSystem } from '@aftersales/runtime'
 import type { CaseDetail, ToolExecution } from './types.js'
@@ -70,6 +70,8 @@ export async function runCase(
     model,
     timeoutOverrideMs: EVAL_TIMEOUT_MS,
     maxSteps: evalCase.maxSteps,
+    // 评测用确定性关键词打分器 保证检索结果同构可复现 不依赖 LLM
+    policyScorer: new KeywordPolicyScorer(),
     // 契约层 table 为宽字符串 持久层类型更窄 校验已在契约层完成
     fixturePatch: evalCase.fixturePatch as never,
   })

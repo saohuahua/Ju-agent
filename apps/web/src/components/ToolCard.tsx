@@ -30,6 +30,10 @@ const STATUS_TEXT = {
 
 export function ToolCard({ tool }: { tool: ToolItem }) {
   const summaryEntries = Object.entries(tool.resultSummary ?? {}).slice(0, 4)
+  const policyArticles =
+    tool.toolName === 'search_policy'
+      ? ((tool.resultSummary?.articles as PolicyArticleSummary[] | undefined) ?? [])
+      : []
   return (
     <div className="relative rounded-container border border-hairline bg-white px-3 py-2 text-xs">
       <span
@@ -56,8 +60,23 @@ export function ToolCard({ tool }: { tool: ToolItem }) {
           {tool.inputJson}
         </div>
       )}
+      {policyArticles.length > 0 && (
+        <ul className="mt-1.5 space-y-1.5">
+          {policyArticles.map((article) => (
+            <li key={article.articleId} className="rounded-md bg-stone-50 px-2 py-1.5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium text-stone-800">{article.title}</span>
+                <span className="shrink-0 font-mono text-stone-400">
+                  {article.articleId} · {article.score} 分
+                </span>
+              </div>
+              <p className="mt-0.5 leading-relaxed text-stone-600">{article.content}</p>
+            </li>
+          ))}
+        </ul>
+      )}
       {tool.errorCode && <div className="mt-1 font-mono text-red-700">{tool.errorCode}</div>}
-      {summaryEntries.length > 0 && (
+      {summaryEntries.length > 0 && policyArticles.length === 0 && (
         <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-stone-500">
           {summaryEntries.map(([key, value]) => (
             <div key={key} className="col-span-2 flex gap-3 truncate">
@@ -69,6 +88,14 @@ export function ToolCard({ tool }: { tool: ToolItem }) {
       )}
     </div>
   )
+}
+
+interface PolicyArticleSummary {
+  articleId: string
+  title: string
+  content: string
+  score: number
+  reason: string
 }
 
 function formatValue(value: unknown): string {

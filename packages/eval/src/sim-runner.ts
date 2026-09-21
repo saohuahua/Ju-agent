@@ -9,7 +9,7 @@
 import type { ChatModel } from '@aftersales/agent'
 import { PROMPT_VERSION } from '@aftersales/agent'
 import type { EvalCase } from '@aftersales/contracts'
-import { FrozenClock } from '@aftersales/domain'
+import { FrozenClock, KeywordPolicyScorer } from '@aftersales/domain'
 import type { Actor } from '@aftersales/domain'
 import { FaultController } from '@aftersales/tools'
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -129,6 +129,8 @@ export async function runSimCase(
     model: tally,
     timeoutOverrideMs: SIM_TIMEOUT_MS,
     maxSteps: simCase.maxSteps,
+    // 评测用确定性关键词打分器 与 L1 同构 检索结果不依赖 LLM
+    policyScorer: new KeywordPolicyScorer(),
     fixturePatch: simCase.fixturePatch as never,
   })
   const actor: Actor = { role: simCase.actor.role, customerId: simCase.actor.customerId }

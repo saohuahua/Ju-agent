@@ -11,6 +11,8 @@ import {
   AuditService,
   CompensationService,
   FrozenClock,
+  KeywordPolicyScorer,
+  PolicySearchService,
   PriceProtectionService,
   RunService,
   testing,
@@ -64,6 +66,11 @@ export function composeWorkflowSystem(timeoutOverrideMs?: number) {
     auditService,
     clock,
   )
+  const policySearchService = new PolicySearchService(
+    repos.policyArticleRepo,
+    new KeywordPolicyScorer(),
+    auditService,
+  )
   const registry = buildToolRegistry({
     customerRepo: repos.customerRepo,
     orderRepo: repos.orderRepo,
@@ -72,6 +79,7 @@ export function composeWorkflowSystem(timeoutOverrideMs?: number) {
     afterSaleService,
     compensationService,
     priceProtectionService,
+    policySearchService,
     auditService,
   })
   const executor = new ToolExecutor({

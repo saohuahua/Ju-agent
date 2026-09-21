@@ -16,7 +16,7 @@ import { serve } from '@hono/node-server'
 import { AnthropicModel } from '@aftersales/agent'
 import { ScriptedModel } from '@aftersales/agent'
 import type { ChatModel } from '@aftersales/agent'
-import { openDatabase, loadFixture } from '@aftersales/persistence'
+import { openDatabase, loadFixture, loadPolicyArticles } from '@aftersales/persistence'
 import { composeSystem } from '@aftersales/runtime'
 import { SystemClock } from '@aftersales/domain'
 import { createApp } from './app.js'
@@ -61,6 +61,15 @@ const hasOrders = db.prepare('SELECT COUNT(*) AS count FROM orders').get() as { 
 if (hasOrders.count === 0) {
   loadFixture(db, [])
   console.log('已载入演示数据 客户令牌 cust-token-1001 cust-token-1002 cust-token-1003')
+}
+
+// 政策语料为空时补种 老演示库升级到政策检索功能后仍可用
+const hasArticles = db
+  .prepare('SELECT COUNT(*) AS count FROM policy_articles')
+  .get() as { count: number }
+if (hasArticles.count === 0) {
+  loadPolicyArticles(db)
+  console.log('已补种政策条款语料')
 }
 
 const { model, available, label } = resolveModel()

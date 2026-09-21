@@ -184,6 +184,17 @@ export interface PolicyRule {
   excludedCategories: string[] | null
 }
 
+/** 政策语料条款 检索辅助解释 终判仍由确定性引擎负责 */
+export interface PolicyArticle {
+  articleId: string
+  policyVersion: string
+  title: string
+  content: string
+  /** rules 引擎规则扩写 platform 平台常见政策条款 干扰项 */
+  source: string
+  createdAt: string
+}
+
 export interface AuditLog {
   id: number
   occurredAt: string

@@ -17,7 +17,8 @@ export const AGENT_TOOLS: ToolName[] = (Object.keys(ToolIO) as ToolName[]).filte
     name === 'lookup_customer' ||
     name === 'get_order' ||
     name === 'get_shipment' ||
-    name === 'get_policy',
+    name === 'get_policy' ||
+    name === 'search_policy',
 )
 
 /** 模型结构化输出判别联合 */

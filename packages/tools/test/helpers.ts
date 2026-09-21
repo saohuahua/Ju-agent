@@ -9,6 +9,8 @@ import { AfterSaleService } from '@aftersales/domain'
 import { ApprovalService } from '@aftersales/domain'
 import { AuditService } from '@aftersales/domain'
 import { CompensationService } from '@aftersales/domain'
+import { KeywordPolicyScorer } from '@aftersales/domain'
+import { PolicySearchService } from '@aftersales/domain'
 import { PriceProtectionService } from '@aftersales/domain'
 import { FrozenClock } from '@aftersales/domain'
 import { testing } from '@aftersales/domain'
@@ -60,6 +62,11 @@ export function composeTestSystem(faults: FaultPlanEntry[] = [], timeoutOverride
     auditService,
     clock,
   )
+  const policySearchService = new PolicySearchService(
+    repos.policyArticleRepo,
+    new KeywordPolicyScorer(),
+    auditService,
+  )
   const registry: ToolRegistry = buildToolRegistry({
     customerRepo: repos.customerRepo,
     orderRepo: repos.orderRepo,
@@ -68,6 +75,7 @@ export function composeTestSystem(faults: FaultPlanEntry[] = [], timeoutOverride
     afterSaleService,
     compensationService,
     priceProtectionService,
+    policySearchService,
     auditService,
   })
   const executor = new ToolExecutor({

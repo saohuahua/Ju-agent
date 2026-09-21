@@ -14,6 +14,7 @@ import type {
   Compensation,
   Customer,
   Order,
+  PolicyArticle,
   PolicyRule,
   PriceProtection,
   Refund,
@@ -35,6 +36,7 @@ import type {
   LeaseRepository,
   OrderRepository,
   PaymentGatewayPort,
+  PolicyArticleRepository,
   PolicyRepository,
   PriceProtectionRepository,
   RefundRepository,
@@ -187,6 +189,15 @@ export class InMemoryPolicyRepository implements PolicyRepository {
   readonly rules: PolicyRule[] = []
   async listRules(version: string): Promise<PolicyRule[]> {
     return this.rules.filter((r) => r.policyVersion === version)
+  }
+}
+
+export class InMemoryPolicyArticleRepository implements PolicyArticleRepository {
+  readonly articles = new Map<string, PolicyArticle>()
+  async listByVersion(version: string): Promise<PolicyArticle[]> {
+    return [...this.articles.values()]
+      .filter((a) => a.policyVersion === version)
+      .map((a) => ({ ...a }))
   }
 }
 
@@ -370,6 +381,7 @@ export function createInMemoryRepositories() {
     skuPriceRepo: new InMemorySkuPriceRepository(),
     approvalRepo: new InMemoryApprovalRepository(),
     policyRepo: new InMemoryPolicyRepository(),
+    policyArticleRepo: new InMemoryPolicyArticleRepository(),
     auditRepo: new InMemoryAuditRepository(),
     eventRepo: new InMemoryEventRepository(),
     toolExecutionRepo: new InMemoryToolExecutionRepository(),

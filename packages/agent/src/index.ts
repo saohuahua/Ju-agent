@@ -16,6 +16,7 @@ export {
 } from './model.js'
 export { ScriptedModel, SCRIPTED_MODEL_INFO, convertScriptTurn } from './scripted-model.js'
 export { AnthropicModel, type AnthropicModelOptions } from './anthropic-model.js'
+export { ChatModelPolicyScorer } from './policy-scorer.js'
 export { buildSystemPrompt, PROMPT_VERSION, type PromptContext } from './prompt.js'
 export {
   AgentRunner,

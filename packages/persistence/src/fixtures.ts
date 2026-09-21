@@ -44,6 +44,14 @@ export interface FixtureShipment {
   delivered_at: string | null
 }
 
+export interface FixturePolicyArticle {
+  article_id: string
+  title: string
+  content: string
+  /** rules 引擎规则扩写 platform 平台常见政策条款 干扰项 */
+  source: 'rules' | 'platform'
+}
+
 export interface FixturePatch {
   table: 'orders' | 'shipments'
   where: Record<string, unknown>
@@ -484,6 +492,126 @@ export const BASELINE_FIXTURE = {
     { sku: 'SKU-WA-001', current_unit_price_cents: 380_000, updated_at: '2026-09-18T00:00:00.000Z' },
     { sku: 'SKU-MG-001', current_unit_price_cents: 39_900, updated_at: '2026-09-17T00:00:00.000Z' },
   ],
+  /**
+   * 政策语料 检索辅助解释 终判仍由确定性引擎负责
+   * rules 为引擎规则扩写 platform 为平台常见政策条款 干扰项用于验证检索相关性
+   */
+  policyArticles: [
+    {
+      article_id: 'R1_unshipped_cancel',
+      title: '未发货订单仅退款',
+      content: '订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款',
+      source: 'rules',
+    },
+    {
+      article_id: 'R2_lost_package',
+      title: '物流丢件仅退款',
+      content: '物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关',
+      source: 'rules',
+    },
+    {
+      article_id: 'R3_quality_window',
+      title: '质量问题退换窗口',
+      content: '商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理',
+      source: 'rules',
+    },
+    {
+      article_id: 'R4_no_reason_7d',
+      title: '七天无理由退货',
+      content: '自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用',
+      source: 'rules',
+    },
+    {
+      article_id: 'R5_no_match',
+      title: '无匹配政策的处理',
+      content: '没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款',
+      source: 'rules',
+    },
+    {
+      article_id: 'R6_large_amount',
+      title: '大额退款人工审批',
+      content: '退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全',
+      source: 'rules',
+    },
+    {
+      article_id: 'PP1_not_delivered',
+      title: '价保需签收后申请',
+      content: '订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价',
+      source: 'rules',
+    },
+    {
+      article_id: 'PP2_window_expired',
+      title: '价保窗口时限',
+      content: '价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准',
+      source: 'rules',
+    },
+    {
+      article_id: 'PP3_active_return',
+      title: '进行中售后与价保互斥',
+      content: '订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张',
+      source: 'rules',
+    },
+    {
+      article_id: 'PP4_no_price_drop',
+      title: '价保需有降价事实',
+      content: '订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准',
+      source: 'rules',
+    },
+    {
+      article_id: 'PP5_price_drop',
+      title: '价保差价退还规则',
+      content: '自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次',
+      source: 'rules',
+    },
+    {
+      article_id: 'D1_fresh_food_no_return',
+      title: '生鲜食品售后规则',
+      content: '生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请',
+      source: 'platform',
+    },
+    {
+      article_id: 'D2_customized_no_return',
+      title: '定制商品售后规则',
+      content: '定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理',
+      source: 'platform',
+    },
+    {
+      article_id: 'D3_virtual_activated',
+      title: '虚拟商品售后规则',
+      content: '虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款',
+      source: 'platform',
+    },
+    {
+      article_id: 'D4_cross_border_customs',
+      title: '跨境商品售后规则',
+      content: '跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准',
+      source: 'platform',
+    },
+    {
+      article_id: 'D5_large_item_install',
+      title: '大件商品售后规则',
+      content: '大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先',
+      source: 'platform',
+    },
+    {
+      article_id: 'D6_pre_order_deposit',
+      title: '预售商品定金规则',
+      content: '预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理',
+      source: 'platform',
+    },
+    {
+      article_id: 'D7_second_hand_quality',
+      title: '二手商品售后规则',
+      content: '二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准',
+      source: 'platform',
+    },
+    {
+      article_id: 'D8_gift_card_rules',
+      title: '礼品卡使用规则',
+      content: '礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款',
+      source: 'platform',
+    },
+  ],
   /** 历史已完成售后 用于重复申请冲突场景 */
   historicalReturns: [
     {
@@ -511,6 +639,29 @@ export const BASELINE_FIXTURE = {
       },
     },
   ],
+}
+
+/**
+ * 载入政策条款语料
+ *
+ * 独立于全量夹具 供已有演示库补种新功能表数据
+ * 语料与检索服务共用 POLICY_VERSION 快照
+ */
+export function loadPolicyArticles(db: SqliteDatabase): void {
+  const insert = db.prepare(
+    `INSERT INTO policy_articles (article_id, policy_version, title, content, source, created_at)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+  )
+  for (const article of BASELINE_FIXTURE.policyArticles) {
+    insert.run(
+      article.article_id,
+      POLICY_VERSION,
+      article.title,
+      article.content,
+      article.source,
+      '2026-09-01T00:00:00.000Z',
+    )
+  }
 }
 
 /**
@@ -595,6 +746,8 @@ export function loadFixture(db: SqliteDatabase, patch: FixturePatch[] = []): voi
   for (const price of BASELINE_FIXTURE.skuPrices) {
     insertSkuPrice.run(price.sku, price.current_unit_price_cents, price.updated_at)
   }
+
+  loadPolicyArticles(db)
 
   const insertReturn = db.prepare(
     `INSERT INTO return_requests

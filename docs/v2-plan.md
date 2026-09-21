@@ -269,6 +269,27 @@
 
 决策点 检索方式 embedding vs LLM 打分 政策语料规模
 
+执行记录 已完成
+
+- 决策 检索方式 = LLM 打分检索 走现有 Anthropic 兼容代理 不依赖 embedding 接口
+- 决策 语料规模 = 扩写 + 干扰条款 6 条规则扩写 + 2 条平台条款 + 8 条干扰条款 共 19 篇
+  政策版本 2026.09-v3 老演示库启动时语料空表自动补种
+- 决策 生产检索链路 = 关键词预筛 + LLM 精排
+  19 篇全量一次交给 LLM 实测被代理静默返回空 且单次约 30 秒
+  故先用确定性关键词打分召回前 8 篇 再单次 LLM 精排 实测约 15-20 秒
+  工具超时 8000ms 上调至 30000ms 超时或解析失败如实降级为空 不编造
+- 评测链路不变 用确定性 KeywordPolicyScorer 保证可复现 L1 105/105
+- 各层落点
+  - contracts search_policy 工具契约 + 目录超时 30s
+  - domain PolicySearchService + PolicyArticleScorer 端口 + KeywordPolicyScorer
+  - persistence policy_articles 表 + 19 篇语料夹具
+  - agent ChatModelPolicyScorer 两级检索 流式打分 解析失败返回全零
+  - runtime composeSystem 注入 policyScorer 端口 生产默认 ChatModelPolicyScorer
+  - eval policy_rag 3 条用例 含引用原文 审计留痕 未检索到不编造
+  - web 工作台 search_policy 工具卡渲染条款列表 示例话术与评测看板分类
+- 验证 typecheck 通过 单测 181 通过 L1 评测 105/105
+  实机链路 生鲜问题检索返回 D1/R4 条款 前端工具卡可见 审计留痕含条款 ID
+
 ### W4 材料层与架构叙事
 
 #### 4.1 失败 Trace 根因分析

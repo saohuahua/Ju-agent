@@ -12,12 +12,14 @@ import {
   AuditService,
   CompensationService,
   LogisticsEventService,
+  PolicySearchService,
   PriceProtectionService,
   RunService,
   type Actor,
   type Clock,
+  type PolicyArticleScorer,
 } from '@aftersales/domain'
-import { AgentRunner } from '@aftersales/agent'
+import { AgentRunner, ChatModelPolicyScorer } from '@aftersales/agent'
 import type { ChatModel } from '@aftersales/agent'
 import {
   BASELINE_FROZEN_TIME,
@@ -32,6 +34,7 @@ import {
   SqliteIdempotencyRepository,
   SqliteLeaseRepository,
   SqliteOrderRepository,
+  SqlitePolicyArticleRepository,
   SqlitePolicyRepository,
   SqlitePriceProtectionRepository,
   SqliteRefundRepository,
@@ -64,6 +67,11 @@ export interface ComposeOptions {
   withFixture?: boolean
   /** 夹具补丁 */
   fixturePatch?: FixturePatch[]
+  /**
+   * 政策检索打分器 缺省用 LLM 打分 走现有代理
+   * 评测传入确定性打分器 保证检索结果同构可复现
+   */
+  policyScorer?: PolicyArticleScorer
 }
 
 /** 装配完成的系统句柄 */
@@ -76,6 +84,7 @@ export interface ComposedSystem {
   afterSaleService: AfterSaleService
   compensationService: CompensationService
   priceProtectionService: PriceProtectionService
+  policySearchService: PolicySearchService
   logisticsService: LogisticsEventService
   executor: ToolExecutor
   engine: WorkflowEngine
@@ -144,6 +153,11 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     auditService,
     clock,
   )
+  const policySearchService = new PolicySearchService(
+    new SqlitePolicyArticleRepository(db),
+    options.policyScorer ?? new ChatModelPolicyScorer(options.model),
+    auditService,
+  )
 
   const registry = buildToolRegistry({
     customerRepo: new SqliteCustomerRepository(db),
@@ -153,6 +167,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     afterSaleService,
     compensationService,
     priceProtectionService,
+    policySearchService,
     auditService,
   })
   const executor = new ToolExecutor({
@@ -192,6 +207,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     afterSaleService,
     compensationService,
     priceProtectionService,
+    policySearchService,
     logisticsService,
     executor,
     engine,

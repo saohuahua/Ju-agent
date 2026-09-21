@@ -121,6 +121,16 @@ CREATE TABLE IF NOT EXISTS sku_prices (
   updated_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS policy_articles (
+  article_id TEXT PRIMARY KEY,
+  policy_version TEXT NOT NULL,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  source TEXT NOT NULL DEFAULT 'rules',
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_policy_articles_version ON policy_articles(policy_version);
+
 CREATE TABLE IF NOT EXISTS approval_requests (
   approval_id TEXT PRIMARY KEY,
   run_id TEXT,

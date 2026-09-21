@@ -21,6 +21,7 @@ export {
   SqliteCompensationRepository,
   SqlitePriceProtectionRepository,
   SqliteSkuPriceRepository,
+  SqlitePolicyArticleRepository,
   SqliteApprovalRepository,
   SqlitePolicyRepository,
 } from './business-repositories.js'
@@ -41,5 +42,6 @@ export {
   BASELINE_FIXTURE,
   BASELINE_FROZEN_TIME,
   loadFixture,
+  loadPolicyArticles,
   type FixturePatch,
 } from './fixtures.js'

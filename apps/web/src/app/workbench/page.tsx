@@ -125,6 +125,7 @@ export default function WorkbenchPage() {
                   '订单 SO-2026-0003 快递迟到了 我要补偿',
                   '订单 SO-2026-0011 的音箱降价了 退差价',
                   '退货政策是什么',
+                  '生鲜食品可以七天无理由退货吗',
                 ].map((sample) => (
                   <button
                     key={sample}

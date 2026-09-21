@@ -57,6 +57,7 @@ export function clearBusinessData(db: SqliteDatabase): void {
     'compensations',
     'price_protections',
     'sku_prices',
+    'policy_articles',
     'shipments',
     'orders',
     'customers',

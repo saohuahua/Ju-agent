@@ -14,6 +14,7 @@ import type {
   Compensation,
   Customer,
   Order,
+  PolicyArticle,
   PolicyRule,
   PriceProtection,
   Refund,
@@ -87,6 +88,11 @@ export interface SkuPriceRepository {
 
 export interface PolicyRepository {
   listRules(version: string): Promise<PolicyRule[]>
+}
+
+/** 政策语料条款仓储 检索打分前的全量读取 */
+export interface PolicyArticleRepository {
+  listByVersion(version: string): Promise<PolicyArticle[]>
 }
 
 export interface AuditRepository {
