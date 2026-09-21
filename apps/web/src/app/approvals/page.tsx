@@ -6,6 +6,7 @@
  * 主管视角的待办审批列表 决定按钮有重复提交保护
  */
 
+import { Tray } from '@phosphor-icons/react'
 import { useCallback, useEffect, useState } from 'react'
 import { AppShell } from '@/components/AppShell'
 import { api, ApiError } from '@/lib/api'
@@ -30,12 +31,14 @@ export default function ApprovalsPage() {
   const [approvals, setApprovals] = useState<ApprovalRequest[]>([])
   const [error, setError] = useState<string | null>(null)
   const [busyId, setBusyId] = useState<string | null>(null)
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null)
 
   const load = useCallback(async () => {
     try {
       const body = await api.listApprovals()
       setApprovals(body.approvals)
       setError(null)
+      setLastRefresh(new Date())
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.message : '加载失败')
     }
@@ -66,9 +69,22 @@ export default function ApprovalsPage() {
       <div className="mx-auto max-w-4xl px-6 py-8">
         <div className="flex items-center justify-between gap-6">
           <h1 className="shrink-0 text-xl font-semibold tracking-tight">审批中心</h1>
-          <p className="min-w-0 text-right text-sm text-stone-500">
-            大额或例外退款需要人工把关 决定通过一次性令牌传递给退款执行 重复点击不会产生两次副作用
-          </p>
+          <div className="flex min-w-0 items-center gap-4">
+            <p className="min-w-0 text-right text-sm text-stone-500">
+              大额或例外退款需要人工把关 决定通过一次性令牌传递给退款执行 重复点击不会产生两次副作用
+            </p>
+            {lastRefresh && (
+              <p className="shrink-0 font-mono text-xs tabular-nums text-stone-400">
+                最后刷新{' '}
+                {lastRefresh.toLocaleTimeString('zh-CN', {
+                  hour12: false,
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                })}
+              </p>
+            )}
+          </div>
         </div>
         {error && (
           <p className="mt-4 rounded-control border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -78,8 +94,9 @@ export default function ApprovalsPage() {
 
         <div className="mt-6 space-y-3">
           {approvals.length === 0 && (
-            <div className="rounded-container border border-dashed border-stone-300 px-6 py-12 text-center text-sm text-stone-500">
-              暂无待处理审批
+            <div className="flex flex-col items-center gap-2 rounded-container border border-dashed border-stone-300 px-6 py-12 text-sm text-stone-500">
+              <Tray size={28} className="text-stone-300" aria-hidden="true" />
+              <span>暂无待处理审批</span>
             </div>
           )}
           {approvals.map((approval) => (
@@ -90,7 +107,7 @@ export default function ApprovalsPage() {
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium tabular-nums text-stone-900">
+                    <span className="text-lg font-semibold font-mono text-stone-900">
                       {formatAmount(approval.amountCents)}
                     </span>
                     <span
