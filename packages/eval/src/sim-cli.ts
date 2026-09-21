@@ -127,6 +127,35 @@ function buildModel(model: string): ChatModel {
   return new AnthropicModel({ model })
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/** 判定失败是否为模型服务瞬态错误 中转站限流与上游抖动 */
+function isTransientFailure(detail: CaseDetail): boolean {
+  return (
+    (detail.turns ?? 0) === 0 &&
+    detail.failures.some(
+      (failure) => failure.includes('模型服务异常') || failure.includes('模型服务限流'),
+    )
+  )
+}
+
+/** 用例级重试 瞬态模型服务错误不计入 Agent 成绩 */
+async function runCaseWithRetry(
+  simCase: Parameters<typeof runSimCase>[0],
+  options: Parameters<typeof runSimCase>[1],
+  maxAttempts = 3,
+): Promise<CaseDetail> {
+  let detail = await runSimCase(simCase, options)
+  for (let attempt = 2; attempt <= maxAttempts && isTransientFailure(detail); attempt++) {
+    console.log(`      ${simCase.id} 模型服务瞬态错误 第 ${attempt} 次重试`)
+    await sleep(3000)
+    detail = await runSimCase(simCase, options)
+  }
+  return detail
+}
+
 async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2))
 
@@ -170,7 +199,7 @@ async function main(): Promise<void> {
     const startedAt = Date.now()
     const details: CaseDetail[] = []
     for (const simCase of cases) {
-      const detail = await runSimCase(simCase, {
+      const detail = await runCaseWithRetry(simCase, {
         agentModel,
         userModel,
         judgeModel,
@@ -188,6 +217,8 @@ async function main(): Promise<void> {
           console.log(`      ${failure}`)
         }
       }
+      // 用例间节流 缓解中转站突发限流 评测测 Agent 不测基建
+      await sleep(1500)
     }
     rounds.push(details)
     roundDurationsMs.push(Date.now() - startedAt)
