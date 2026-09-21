@@ -1,22 +1,33 @@
 /**
- * Anthropic 真实模型适配器
+ * Anthropic 真实模型适配器 原生 tool calling 加流式
  *
- * 结构化输出走系统提示词约束加运行时 Zod 校验失败一轮修复
- * 不使用各家私有的结构化输出参数 保证与 ScriptedModel 行为对称
- * 错误映射为统一错误码 上层重试与转人工策略不感知具体 SDK
+ * 工具走 messages API 的 tools 参数 工具参数经 input_json_delta 增量流出
+ * 上下文消息以原生内容块回传 assistant 轮带 tool_use user 轮带 tool_result
+ * 停止原因与用量来自 finalMessage 错误映射沿用统一错误码
  */
 
 import Anthropic from '@anthropic-ai/sdk'
 import { createToolError } from '@aftersales/contracts'
 import { DomainError } from '@aftersales/domain'
-import type { ChatModel, ModelInfo, ModelRequest, ModelResult } from './model.js'
+import type {
+  ChatModel,
+  ContextBlock,
+  ModelInfo,
+  ModelMessage,
+  ModelRequest,
+  ModelStreamEvent,
+  ModelUsage,
+  ToolDefinition,
+} from './model.js'
 
-/** 默认使用 claude-opus-5 可通过环境变量切换模型做成本与质量对比 */
-const DEFAULT_MODEL = 'claude-opus-5'
+/** 默认使用 claude-sonnet-5 售后对话不需要 opus 级推理 可通过环境变量切换 */
+const DEFAULT_MODEL = 'claude-sonnet-5'
 const MAX_TOKENS = 8192
 
 export interface AnthropicModelOptions {
   apiKey?: string
+  /** 自定义服务地址 用于代理或中转站 缺省官方 api.anthropic.com */
+  baseUrl?: string
   model?: string
 }
 
@@ -34,47 +45,107 @@ export class AnthropicModel implements ChatModel {
         ),
       )
     }
-    this.client = new Anthropic({ apiKey })
+    const baseUrl = options.baseUrl ?? process.env.ANTHROPIC_BASE_URL
+    this.client = new Anthropic({ apiKey, baseURL: baseUrl })
     this.info = {
       provider: 'anthropic',
       model: options.model ?? process.env.ANTHROPIC_MODEL ?? DEFAULT_MODEL,
     }
   }
 
-  async complete(request: ModelRequest): Promise<ModelResult> {
+  async *stream(request: ModelRequest): AsyncIterable<ModelStreamEvent> {
+    const stream = this.client.messages.stream({
+      model: this.info.model,
+      max_tokens: request.maxTokens ?? MAX_TOKENS,
+      system: request.system,
+      messages: request.messages.map((message) => this.toProviderMessage(message)),
+      tools: request.tools.map((tool) => this.toProviderTool(tool)),
+    })
+
     try {
-      const response = await this.client.messages.create({
-        model: this.info.model,
-        max_tokens: request.maxTokens ?? MAX_TOKENS,
-        system: request.system,
-        messages: request.messages.map((message) => this.toProviderMessage(message)),
-      })
-      const text = response.content
-        .filter((block): block is Anthropic.TextBlock => block.type === 'text')
-        .map((block) => block.text)
-        .join('')
-      return {
-        raw: text,
-        usage: {
-          inputTokens: response.usage.input_tokens,
-          outputTokens: response.usage.output_tokens,
-          costUsd: null,
-        },
+      // block index 到 tool_use id 的映射 input_json_delta 事件只带 index
+      const toolCallIdByIndex = new Map<number, string>()
+      for await (const event of stream) {
+        if (event.type === 'content_block_start' && event.content_block.type === 'tool_use') {
+          toolCallIdByIndex.set(event.index, event.content_block.id)
+          yield {
+            type: 'tool_call_start',
+            toolCallId: event.content_block.id,
+            toolName: event.content_block.name,
+          }
+        } else if (event.type === 'content_block_delta') {
+          if (event.delta.type === 'text_delta') {
+            yield { type: 'text_delta', text: event.delta.text }
+          } else if (event.delta.type === 'input_json_delta') {
+            const toolCallId = toolCallIdByIndex.get(event.index)
+            if (toolCallId) {
+              yield {
+                type: 'tool_input_delta',
+                toolCallId,
+                partialJson: event.delta.partial_json,
+              }
+            }
+          }
+        }
       }
+
+      const final = await stream.finalMessage()
+      yield { type: 'turn_completed', stopReason: this.mapStopReason(final.stop_reason), usage: this.toUsage(final.usage) }
     } catch (error) {
       throw this.mapError(error)
     }
   }
 
-  /** 内部消息映射到 Anthropic 协议 tool_result 以用户消息承载并明确标注来源 */
-  private toProviderMessage(message: ModelRequest['messages'][number]): Anthropic.MessageParam {
-    if (message.role === 'tool_result') {
+  private mapStopReason(
+    reason: Anthropic.Message['stop_reason'],
+  ): 'end_turn' | 'tool_use' | 'max_tokens' {
+    if (reason === 'tool_use') return 'tool_use'
+    if (reason === 'max_tokens') return 'max_tokens'
+    return 'end_turn'
+  }
+
+  private toUsage(usage: Anthropic.Message['usage']): ModelUsage {
+    return {
+      inputTokens: usage.input_tokens ?? 0,
+      outputTokens: usage.output_tokens ?? 0,
+      costUsd: null,
+    }
+  }
+
+  /** 原生内容块映射 text 与 tool_use tool_result 由 user 消息承载 */
+  private toProviderMessage(message: ModelMessage): Anthropic.MessageParam {
+    const content: Anthropic.ContentBlockParam[] = message.content.map((block) =>
+      this.toProviderBlock(block),
+    )
+    return { role: message.role, content }
+  }
+
+  private toProviderBlock(block: ContextBlock): Anthropic.ContentBlockParam {
+    if (block.type === 'text') {
+      return { type: 'text', text: block.text }
+    }
+    if (block.type === 'tool_use') {
       return {
-        role: 'user',
-        content: `[系统工具结果 ${message.toolName ?? 'tool'}] ${message.content}`,
+        type: 'tool_use',
+        id: block.toolCallId,
+        name: block.toolName,
+        input: block.input,
       }
     }
-    return { role: message.role, content: message.content }
+    return {
+      type: 'tool_result',
+      tool_use_id: block.toolCallId,
+      content: block.content,
+      is_error: block.isError || undefined,
+    }
+  }
+
+  private toProviderTool(tool: ToolDefinition): Anthropic.Tool {
+    return {
+      name: tool.name,
+      description: tool.description,
+      input_schema: tool.inputSchema as Anthropic.Tool.InputSchema,
+    }
   }
 
   /** SDK 类型化错误映射为统一错误码 具体类名从最特殊到一般 */

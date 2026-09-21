@@ -1,8 +1,9 @@
 /**
- * Provider 无关的模型接口
+ * Provider 无关的流式模型接口
  *
- * 运行时只依赖这个接口 ScriptedModel 与 AnthropicModel 同构
- * 评测离线可复现 真实模型可选接入 两者共享同一套提示词与校验
+ * 原生 tool calling 协议 工具以目录形式随请求下发 流式事件逐个产出
+ * ScriptedModel 与 AnthropicModel 同构 离线评测与真实模型共享同一循环
+ * 上下文消息采用原生内容块 assistant 轮携带 tool_use user 轮携带 tool_result
  */
 
 export interface ModelInfo {
@@ -17,28 +18,57 @@ export interface ModelUsage {
   costUsd: number | null
 }
 
-/** 模型上下文消息 tool_result 由适配层映射到目标协议 */
+/** 下发给模型的工具定义 inputSchema 为 JSON Schema */
+export interface ToolDefinition {
+  name: string
+  description: string
+  inputSchema: Record<string, unknown>
+}
+
+/** 模型轮次产出的内容块 */
+export type AssistantBlock =
+  | { type: 'text'; text: string }
+  | { type: 'tool_use'; toolCallId: string; toolName: string; input: Record<string, unknown> }
+
+/** 回灌给模型的历史内容块 */
+export type ContextBlock =
+  | { type: 'text'; text: string }
+  | { type: 'tool_use'; toolCallId: string; toolName: string; input: Record<string, unknown> }
+  | {
+      type: 'tool_result'
+      toolCallId: string
+      toolName: string
+      content: string
+      isError: boolean
+    }
+
+/** 原生协议消息 user 轮含文本与 tool_result assistant 轮含文本与 tool_use */
 export interface ModelMessage {
-  role: 'user' | 'assistant' | 'tool_result'
-  toolName?: string
-  content: string
+  role: 'user' | 'assistant'
+  content: ContextBlock[]
 }
 
 export interface ModelRequest {
   system: string
   messages: ModelMessage[]
+  tools: ToolDefinition[]
   maxTokens?: number
 }
 
-export interface ModelResult {
-  /** 模型原始输出文本 由调用方做结构化校验 */
-  raw: string
-  usage: ModelUsage
-}
+/** 模型流式事件 与提供商 SSE 语义对齐 */
+export type ModelStreamEvent =
+  | { type: 'text_delta'; text: string }
+  | { type: 'tool_call_start'; toolCallId: string; toolName: string }
+  | { type: 'tool_input_delta'; toolCallId: string; partialJson: string }
+  | {
+      type: 'turn_completed'
+      stopReason: 'end_turn' | 'tool_use' | 'max_tokens'
+      usage: ModelUsage
+    }
 
 export interface ChatModel {
   readonly info: ModelInfo
-  complete(request: ModelRequest): Promise<ModelResult>
+  stream(request: ModelRequest): AsyncIterable<ModelStreamEvent>
 }
 
 /** 脚本耗尽 评测脚本与实际调用次数不匹配时抛出 */

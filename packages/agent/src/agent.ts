@@ -1,13 +1,13 @@
 /**
- * Agent 运行循环
+ * Agent 运行循环 原生 tool calling 协议
  *
- * 模型负责理解 澄清与发起动作 运行时负责校验 执行与留痕
- * 循环的每一步都先落事件 再产生副作用 恢复时从事件重建上下文
+ * 模型每轮产出原生内容块 文本与工具参数增量先落事件再执行
+ * 只读工具直接执行 业务动作经槽位校验后路由到确定性工作流
+ * ask_user 是协议工具 把提问权交给模型 暂停等待用户回复
  * 模型永远触碰不到副作用工具 高风险动作由工作流与审批把关
  */
 
 import {
-  AgentOutput,
   INTENT_SLOT_SCHEMAS,
   type Intent,
   type ToolErrorShape,
@@ -19,8 +19,21 @@ import type { ToolExecutor } from '@aftersales/tools'
 import { ToolExecutionError } from '@aftersales/tools'
 import type { ToolContext } from '@aftersales/tools'
 import type { WorkflowEngine, WorkflowResult } from '@aftersales/workflow'
-import { type ChatModel, type ModelMessage } from './model.js'
+import {
+  type AssistantBlock,
+  type ChatModel,
+  type ContextBlock,
+  type ModelMessage,
+  type ModelStreamEvent,
+  type ToolDefinition,
+} from './model.js'
 import { buildSystemPrompt, PROMPT_VERSION } from './prompt.js'
+import {
+  ASK_USER_TOOL,
+  buildStepTools,
+  isActionTool,
+} from './tool-defs.js'
+import { buildManagedContext } from './context.js'
 
 /** 一轮处理的终态 */
 export type RunOutcome =
@@ -33,8 +46,23 @@ export interface AgentRunnerDeps {
   runs: RunService
   eventRepo: EventRepository
   clock: Clock
-  /** 单轮处理内模型调用上限 防无效循环 */
+  /** 单轮处理内模型轮次上限 防无效循环 */
   maxSteps: number
+  /** 上下文 token 预算估算值 超限触发压缩 缺省不压缩 */
+  tokenBudget?: number
+}
+
+interface ModelTurn {
+  blocks: AssistantBlock[]
+  text: string
+  stopReason: 'end_turn' | 'tool_use' | 'max_tokens'
+}
+
+interface ToolResultEntry {
+  toolCallId: string
+  toolName: string
+  content: string
+  isError: boolean
 }
 
 export class AgentRunner {
@@ -53,7 +81,7 @@ export class AgentRunner {
     return this.processLoop(runId, run.customerId, toolContext)
   }
 
-  /** 补问答复继续运行 */
+  /** 补问答复继续运行 回复绑定到挂起的 ask_user 调用构成 tool_result */
   async continueWithMessage(
     runId: string,
     userMessage: string,
@@ -65,13 +93,17 @@ export class AgentRunner {
         createToolError('CONFLICT', `运行状态 ${run.status} 不在接受补问 请先恢复或查看详情`),
       )
     }
+    const pendingAsk = await this.findPendingToolCall(runId, ASK_USER_TOOL)
     await this.deps.runs.transition(runId, 'running')
     await this.deps.runs.emit(runId, 'run.resumed', { resumePoint: 'user_message' })
-    await this.deps.runs.emit(runId, 'message.user', { text: redactText(userMessage) })
+    await this.deps.runs.emit(runId, 'message.user', {
+      text: redactText(userMessage),
+      replyToToolCallId: pendingAsk?.toolCallId,
+    })
     return this.processLoop(runId, run.customerId, toolContext)
   }
 
-  /** 审批决定后恢复 生成最终答复 */
+  /** 审批决定后恢复 工作流结果回灌为动作工具的 tool_result 再继续生成答复 */
   async resumeAfterApproval(
     runId: string,
     approvalId: string,
@@ -90,7 +122,7 @@ export class AgentRunner {
       decidedBy,
       toolContext,
     )
-    const outcome = await this.handleWorkflowResult(runId, run.customerId, result)
+    const outcome = await this.handleWorkflowResult(runId, result)
     if (outcome === 'continue') {
       return this.processLoop(runId, run.customerId, toolContext)
     }
@@ -101,7 +133,7 @@ export class AgentRunner {
   async resumeFromCheckpoint(runId: string, toolContext: ToolContext): Promise<RunOutcome> {
     const run = await this.deps.runs.get(runId)
     const result = await this.deps.workflow.resumeFromCheckpoint(runId, toolContext)
-    const outcome = await this.handleWorkflowResult(runId, run.customerId, result)
+    const outcome = await this.handleWorkflowResult(runId, result)
     if (outcome === 'continue') {
       return this.processLoop(runId, run.customerId, toolContext)
     }
@@ -111,8 +143,8 @@ export class AgentRunner {
   /**
    * 主循环
    *
-   * 每次迭代先重建上下文再调用模型 输出经 Zod 校验
-   * 非法输出走一轮修复 重试仍失败则运行失败
+   * 每轮先重建上下文再调用模型 工具参数边流边落事件
+   * 副作用动作暂停于审批或失败 结果以 tool_result 回灌模型收敛
    */
   private async processLoop(
     runId: string,
@@ -120,155 +152,249 @@ export class AgentRunner {
     toolContext: ToolContext,
   ): Promise<RunOutcome> {
     for (let step = 1; step <= this.deps.maxSteps; step++) {
-      const messages = await this.rebuildContext(runId)
+      const context = await buildManagedContext({
+        eventRepo: this.deps.eventRepo,
+        runId,
+        tokenBudget: this.deps.tokenBudget,
+      })
       const system = buildSystemPrompt({
         currentTime: this.deps.clock.now().toISOString(),
         customerId,
+        workingMemory: context.workingMemory,
+      })
+      const tools = await this.prepareStepTools(runId)
+
+      const turn = await this.runModelTurn(runId, system, context.messages, tools)
+      await this.deps.eventRepo.append(runId, 'agent.turn', {
+        blocks: turn.blocks,
+        stopReason: turn.stopReason,
       })
 
-      const output = await this.callModelWithRepair(runId, system, messages)
-      if (!output) {
-        await this.deps.runs.transition(runId, 'failed', { error: '模型输出无法解析为合法结构' })
-        await this.deps.runs.emit(runId, 'run.failed', {
-          errorCode: 'VALIDATION_ERROR',
-          message: '模型输出无法解析为合法结构',
-        })
-        return 'failed'
+      if (turn.stopReason === 'max_tokens') {
+        return this.failRun(runId, 'VALIDATION_ERROR', '模型输出因长度上限被截断')
       }
-      await this.deps.runs.emit(runId, 'agent.output', {
-        output: output as unknown as Record<string, unknown>,
-      })
+      if (turn.text) {
+        await this.emitMessageCompleted(runId, turn.text)
+      }
 
-      switch (output.kind) {
-        case 'tool_call': {
-          const outcome = await this.executeReadTool(runId, output, toolContext)
-          if (outcome === 'continue') continue
-          return outcome
+      if (turn.stopReason === 'end_turn') {
+        if (!turn.text.trim()) {
+          return this.failRun(runId, 'VALIDATION_ERROR', '模型轮次未产出任何内容')
         }
-        case 'clarify': {
-          await this.emitAssistantMessage(runId, output.question)
-          await this.deps.runs.transition(runId, 'awaiting_input')
-          await this.deps.runs.emit(runId, 'run.paused', {
-            reason: 'awaiting_input',
-            hint: output.question,
-          })
+        const answer = redactText(turn.text)
+        await this.deps.runs.transition(runId, 'completed')
+        await this.deps.runs.emit(runId, 'run.completed', {
+          summary: answer.slice(0, 120),
+          escalated: false,
+        })
+        return 'completed'
+      }
+
+      // tool_use 轮次 按序执行每个工具块
+      for (const block of turn.blocks) {
+        if (block.type !== 'tool_use') continue
+        if (block.toolName === ASK_USER_TOOL) {
+          await this.handleAskUser(runId, block)
           return 'awaiting_input'
         }
-        case 'action': {
-          const outcome = await this.handleAction(runId, output, toolContext)
-          if (outcome === 'continue') continue
+        if (isActionTool(block.toolName)) {
+          const outcome = await this.handleActionTool(runId, block, toolContext)
+          if (outcome !== 'continue') {
+            return outcome
+          }
+          continue
+        }
+        const outcome = await this.executeReadTool(runId, block, toolContext)
+        if (outcome !== 'continue') {
           return outcome
         }
-        case 'final': {
-          const answer = redactText(output.answer)
-          await this.emitAssistantMessage(runId, answer)
-          await this.deps.runs.transition(runId, 'completed')
-          await this.deps.runs.emit(runId, 'run.completed', {
-            summary: output.summary || answer.slice(0, 120),
-            escalated: output.escalated,
-          })
-          return 'completed'
-        }
-        case 'escalate': {
-          const result = await this.deps.workflow.start(
-            runId,
-            'escalate',
-            { reason: output.reason },
-            toolContext,
-          )
-          if (result.status === 'failed') {
-            await this.deps.runs.transition(runId, 'failed', { error: result.error.message })
-            await this.deps.runs.emit(runId, 'run.failed', {
-              errorCode: result.error.code,
-              message: result.error.message,
-            })
-            return 'failed'
-          }
-          await this.emitAssistantMessage(runId, `已为您升级人工客服 原因 ${output.reason} 请稍候`)
-          await this.deps.runs.transition(runId, 'escalated')
-          await this.deps.runs.emit(runId, 'run.escalated', { reason: output.reason })
-          return 'escalated'
-        }
       }
     }
 
-    await this.deps.runs.transition(runId, 'failed', { error: '达到单轮最大步骤数' })
-    await this.deps.runs.emit(runId, 'run.failed', {
-      errorCode: 'INTERNAL_ERROR',
-      message: '达到单轮最大步骤数',
-    })
-    return 'failed'
+    return this.failRun(runId, 'INTERNAL_ERROR', '达到单轮最大步骤数')
   }
 
-  /** 只读工具执行 失败结果也回给模型供其重规划 */
+  /** 消费模型流 累积文本与工具块 增量事件先落库 */
+  private async runModelTurn(
+    runId: string,
+    system: string,
+    messages: ModelMessage[],
+    tools: ToolDefinition[],
+  ): Promise<ModelTurn> {
+    const toolBlocks: AssistantBlock[] = []
+    const toolJson = new Map<string, string>()
+    let text = ''
+    let stopReason: ModelTurn['stopReason'] = 'end_turn'
+
+    for await (const event of this.deps.model.stream({ system, messages, tools })) {
+      if (event.type === 'text_delta') {
+        text += event.text
+        // 逐段脱敏 完整文本以 message.completed 为准 跨段边界的敏感串以完成事件覆盖
+        await this.deps.eventRepo.append(runId, 'message.delta', {
+          textDelta: redactText(event.text),
+        })
+      } else if (event.type === 'tool_call_start') {
+        toolBlocks.push({
+          type: 'tool_use',
+          toolCallId: event.toolCallId,
+          toolName: event.toolName,
+          input: {},
+        })
+        toolJson.set(event.toolCallId, '')
+      } else if (event.type === 'tool_input_delta') {
+        toolJson.set(
+          event.toolCallId,
+          (toolJson.get(event.toolCallId) ?? '') + event.partialJson,
+        )
+        const block = toolBlocks.find(
+          (candidate) =>
+            candidate.type === 'tool_use' && candidate.toolCallId === event.toolCallId,
+        )
+        await this.deps.eventRepo.append(runId, 'tool.input.delta', {
+          toolCallId: event.toolCallId,
+          toolName: block?.type === 'tool_use' ? block.toolName : '',
+          partialJson: event.partialJson,
+        })
+      } else {
+        stopReason = event.stopReason
+        break
+      }
+    }
+
+    // 累积的工具参数 JSON 解析为输入 解析失败以原始串落块 由执行层反馈错误
+    for (const block of toolBlocks) {
+      if (block.type !== 'tool_use') continue
+      const raw = toolJson.get(block.toolCallId) ?? ''
+      try {
+        block.input = raw.trim() ? (JSON.parse(raw) as Record<string, unknown>) : {}
+      } catch {
+        block.input = { __raw: raw }
+      }
+    }
+
+    const blocks: AssistantBlock[] = text
+      ? [{ type: 'text', text }, ...toolBlocks]
+      : toolBlocks
+    return { blocks, text, stopReason }
+  }
+
+  /** 每步工具目录 能力门控 未查过订单时动作工具不进目录 结构性防盲提交 */
+  private async prepareStepTools(runId: string): Promise<ToolDefinition[]> {
+    const events = await this.deps.eventRepo.listByRun(runId)
+    const orderLoaded = events.some(
+      (event) =>
+        event.type === 'tool.completed' &&
+        (event.payload as { toolName?: string }).toolName === 'get_order' &&
+        (event.payload as { status?: string }).status === 'succeeded',
+    )
+    return buildStepTools({ actionsAvailable: orderLoaded })
+  }
+
+  /** ask_user 提问落为助手消息并暂停 */
+  private async handleAskUser(
+    runId: string,
+    block: Extract<AssistantBlock, { type: 'tool_use' }>,
+  ): Promise<void> {
+    const question =
+      typeof block.input.question === 'string' && block.input.question.trim()
+        ? redactText(block.input.question)
+        : '请问还有什么可以帮您'
+    await this.emitMessageCompleted(runId, question)
+    await this.deps.runs.transition(runId, 'awaiting_input')
+    await this.deps.runs.emit(runId, 'run.paused', {
+      reason: 'awaiting_input',
+      hint: question,
+    })
+  }
+
+  /** 只读工具执行 成败都以 tool_result 回灌模型 失败供其重规划 */
   private async executeReadTool(
     runId: string,
-    output: Extract<AgentOutput, { kind: 'tool_call' }>,
+    block: Extract<AssistantBlock, { type: 'tool_use' }>,
     toolContext: ToolContext,
   ): Promise<RunOutcome | 'continue'> {
-    try {
-      await this.deps.executor.execute(output.tool, output.args, toolContext)
-      return 'continue'
-    } catch (error) {
-      if (error instanceof ToolExecutionError) {
-        await this.deps.eventRepo.append(runId, 'agent.output', {
-          output: {
-            kind: 'tool_error_feedback',
-            tool: error.toolName,
-            code: error.code,
-            message: error.message,
-          },
-        })
-        return 'continue'
+    let result: ToolResultEntry
+    if ('__raw' in block.input) {
+      result = {
+        toolCallId: block.toolCallId,
+        toolName: block.toolName,
+        content: '工具参数 JSON 解析失败 请重新发起调用',
+        isError: true,
       }
-      throw error
+    } else {
+      try {
+        const output = await this.deps.executor.execute(block.toolName, block.input, toolContext)
+        result = {
+          toolCallId: block.toolCallId,
+          toolName: block.toolName,
+          content: JSON.stringify(output),
+          isError: false,
+        }
+      } catch (error) {
+        if (error instanceof ToolExecutionError) {
+          result = {
+            toolCallId: block.toolCallId,
+            toolName: block.toolName,
+            content: JSON.stringify({ code: error.code, message: error.message }),
+            isError: true,
+          }
+        } else {
+          throw error
+        }
+      }
     }
+    await this.appendToolResults(runId, [result])
+    return 'continue'
   }
 
-  /** 业务动作 槽位校验后交给确定性工作流 */
-  private async handleAction(
+  /** 业务动作工具 槽位校验后交给确定性工作流 */
+  private async handleActionTool(
     runId: string,
-    output: Extract<AgentOutput, { kind: 'action' }>,
+    block: Extract<AssistantBlock, { type: 'tool_use' }>,
     toolContext: ToolContext,
   ): Promise<RunOutcome | 'continue'> {
-    const slotSchema = INTENT_SLOT_SCHEMAS[output.intent as Intent]
+    const intent = block.toolName as Intent
+    const slotSchema = INTENT_SLOT_SCHEMAS[intent]
     if (!slotSchema) {
-      await this.deps.eventRepo.append(runId, 'agent.output', {
-        output: { kind: 'action_rejected', reason: `未知意图 ${output.intent}` },
-      })
+      await this.appendToolResults(runId, [
+        {
+          toolCallId: block.toolCallId,
+          toolName: block.toolName,
+          content: `未知业务动作 ${block.toolName}`,
+          isError: true,
+        },
+      ])
       return 'continue'
     }
-    const parsedSlots = slotSchema.safeParse(output.slots)
+    const parsedSlots = slotSchema.safeParse(block.input)
     if (!parsedSlots.success) {
-      await this.deps.eventRepo.append(runId, 'agent.output', {
-        output: {
-          kind: 'action_rejected',
-          reason: `槽位校验失败 ${parsedSlots.error.issues.map((issue) => issue.path.join('.')).join(', ')}`,
+      await this.appendToolResults(runId, [
+        {
+          toolCallId: block.toolCallId,
+          toolName: block.toolName,
+          content: `槽位校验失败 ${parsedSlots.error.issues.map((issue) => issue.path.join('.')).join(', ')}`,
+          isError: true,
         },
-      })
+      ])
       return 'continue'
     }
 
-    await this.deps.runs.setIntent(runId, output.intent)
-    const run = await this.deps.runs.get(runId)
+    await this.deps.runs.setIntent(runId, intent)
 
     const result = await this.deps.workflow.start(
       runId,
-      output.intent as Intent,
+      intent,
       parsedSlots.data,
       toolContext,
     )
-    const outcome = await this.handleWorkflowResult(runId, run.customerId, result)
-    if (outcome === 'continue') {
-      return 'continue'
-    }
-    return outcome
+    return this.handleWorkflowResultForTool(runId, block.toolCallId, block.toolName, result)
   }
 
-  /** 工作流结果路由 暂停等审批 完成或失败都回给模型继续循环 由调用方决定走向 */
-  private async handleWorkflowResult(
+  /** 工作流结果路由 暂停等审批 完成或失败都以 tool_result 回灌后继续循环 */
+  private async handleWorkflowResultForTool(
     runId: string,
-    customerId: string,
+    toolCallId: string,
+    toolName: string,
     result: WorkflowResult,
   ): Promise<RunOutcome | 'continue'> {
     if (result.status === 'paused') {
@@ -276,137 +402,138 @@ export class AgentRunner {
       return 'awaiting_approval'
     }
     if (result.status === 'failed') {
-      await this.deps.eventRepo.append(runId, 'agent.output', {
-        output: {
-          kind: 'workflow_error_feedback',
-          error: result.error as unknown as Record<string, unknown>,
+      await this.appendToolResults(runId, [
+        {
+          toolCallId,
+          toolName,
+          content: JSON.stringify({ error: result.error }),
+          isError: true,
         },
-      })
+      ])
       return 'continue'
     }
-    // 完成的动作回给模型生成用户答复
-    await this.deps.eventRepo.append(runId, 'agent.output', {
-      output: { kind: 'workflow_completed', summary: result.summary },
-    })
+
+    if (toolName === 'escalate') {
+      await this.emitMessageCompleted(runId, '已为您升级人工客服 请稍候')
+      await this.deps.runs.transition(runId, 'escalated')
+      await this.deps.runs.emit(runId, 'run.escalated', { reason: '模型主动升级' })
+      return 'escalated'
+    }
+    await this.appendToolResults(runId, [
+      { toolCallId, toolName, content: JSON.stringify({ summary: result.summary }), isError: false },
+    ])
     return 'continue'
   }
 
-  /**
-   * 从事件重建模型上下文
-   *
-   * 事件是唯一事实来源 刷新与恢复后不依赖任何内存状态
-   */
-  private async rebuildContext(runId: string): Promise<ModelMessage[]> {
-    const events = await this.deps.eventRepo.listByRun(runId)
-    const messages: ModelMessage[] = []
-    for (const event of events) {
-      if (event.type === 'message.user') {
-        const payload = event.payload as { text: string }
-        messages.push({ role: 'user', content: payload.text })
-      } else if (event.type === 'agent.output') {
-        const payload = event.payload as { output: Record<string, unknown> }
-        if (
-          payload.output.kind === 'tool_error_feedback' ||
-          payload.output.kind === 'workflow_error_feedback'
-        ) {
-          messages.push({
-            role: 'tool_result',
-            toolName: 'system',
-            content: JSON.stringify(payload.output),
-          })
-        } else if (payload.output.kind === 'workflow_completed') {
-          messages.push({
-            role: 'tool_result',
-            toolName: 'workflow',
-            content: JSON.stringify(payload.output),
-          })
-        } else {
-          messages.push({ role: 'assistant', content: JSON.stringify(payload.output) })
-        }
-      } else if (event.type === 'tool.completed') {
-        const payload = event.payload as {
-          toolName: string
-          status: string
-          resultSummary?: Record<string, unknown>
-          errorCode?: string
-        }
-        messages.push({
-          role: 'tool_result',
-          toolName: payload.toolName,
-          content: JSON.stringify({
-            status: payload.status,
-            result: payload.resultSummary,
-            errorCode: payload.errorCode,
-          }),
-        })
-      }
-    }
-    return messages
-  }
-
-  /** 模型调用 非法输出追加错误反馈重试一次 */
-  private async callModelWithRepair(
+  /** 审批与断点恢复后的工作流结果 绑定到挂起的动作调用 */
+  private async handleWorkflowResult(
     runId: string,
-    system: string,
-    messages: ModelMessage[],
-  ): Promise<AgentOutput | null> {
-    const first = await this.callModel(system, messages)
-    const parsedFirst = this.parseOutput(first)
-    if (parsedFirst) {
-      return parsedFirst
+    result: WorkflowResult,
+  ): Promise<RunOutcome | 'continue'> {
+    if (result.status === 'paused') {
+      await this.deps.runs.emit(runId, 'run.paused', { reason: 'awaiting_approval' })
+      return 'awaiting_approval'
     }
-    const repaired = await this.callModel(system, [
-      ...messages,
-      { role: 'assistant', content: first },
-      {
-        role: 'tool_result',
-        toolName: 'system',
-        content: '上一次输出不是合法的结构化 JSON 请严格按照输出契约重新输出 不要包含任何其他文本',
-      },
-    ])
-    return this.parseOutput(repaired)
+    const pending = await this.findPendingActionCall(runId)
+    if (result.status === 'failed') {
+      if (pending) {
+        await this.appendToolResults(runId, [
+          {
+            toolCallId: pending.toolCallId,
+            toolName: pending.toolName,
+            content: JSON.stringify({ error: result.error }),
+            isError: true,
+          },
+        ])
+      }
+      return 'continue'
+    }
+    if (pending) {
+      await this.appendToolResults(runId, [
+        {
+          toolCallId: pending.toolCallId,
+          toolName: pending.toolName,
+          content: JSON.stringify({ summary: result.summary }),
+          isError: false,
+        },
+      ])
+    }
+    return 'continue'
   }
 
-  /** 从原始文本提取并校验结构化输出 兼容被代码围栏包裹的情况 */
-  private parseOutput(raw: string): AgentOutput | null {
-    const trimmed = raw.trim()
-    const candidates = [trimmed]
-    const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/)
-    if (fenceMatch?.[1]) {
-      candidates.unshift(fenceMatch[1].trim())
-    }
-    const firstBrace = trimmed.indexOf('{')
-    const lastBrace = trimmed.lastIndexOf('}')
-    if (firstBrace >= 0 && lastBrace > firstBrace) {
-      candidates.push(trimmed.slice(firstBrace, lastBrace + 1))
-    }
-    for (const candidate of candidates) {
-      try {
-        const obj = JSON.parse(candidate) as unknown
-        const parsed = AgentOutput.safeParse(obj)
-        if (parsed.success) {
-          return parsed.data
+  /** 查找未回灌的指定名称工具调用 供补问绑定与恢复回灌 */
+  private async findPendingToolCall(
+    runId: string,
+    toolName: string,
+  ): Promise<{ toolCallId: string; toolName: string } | null> {
+    const events = await this.deps.eventRepo.listByRun(runId)
+    const answered = new Set<string>()
+    const calls: Array<{ toolCallId: string; toolName: string }> = []
+    for (const event of events) {
+      if (event.type === 'agent.turn') {
+        const payload = event.payload as { blocks: Array<Record<string, unknown>> }
+        for (const raw of payload.blocks) {
+          if (raw.type === 'tool_use') {
+            calls.push({ toolCallId: String(raw.toolCallId), toolName: String(raw.toolName) })
+          }
         }
-      } catch {
-        // 尝试下一个候选
+      } else if (event.type === 'agent.tool_results') {
+        const payload = event.payload as { results: Array<{ toolCallId: string }> }
+        for (const result of payload.results) {
+          answered.add(result.toolCallId)
+        }
+      } else if (event.type === 'message.user') {
+        const reply = (event.payload as { replyToToolCallId?: string }).replyToToolCallId
+        if (reply) answered.add(reply)
       }
     }
-    return null
+    const candidates = calls.filter(
+      (call) => call.toolName === toolName && !answered.has(call.toolCallId),
+    )
+    return candidates[candidates.length - 1] ?? null
   }
 
-  private async callModel(system: string, messages: ModelMessage[]): Promise<string> {
-    const result = await this.deps.model.complete({ system, messages })
-    return result.raw
-  }
-
-  /** 助手消息落事件 分片 delta 加完整 completed 便于流式渲染与重放 */
-  private async emitAssistantMessage(runId: string, text: string): Promise<void> {
-    const mid = Math.ceil(text.length / 2)
-    const chunks = text.length > 2 ? [text.slice(0, mid), text.slice(mid)] : [text]
-    for (const chunk of chunks) {
-      await this.deps.runs.emit(runId, 'message.delta', { textDelta: chunk })
+  private async findPendingActionCall(runId: string): Promise<{
+    toolCallId: string
+    toolName: string
+  } | null> {
+    const events = await this.deps.eventRepo.listByRun(runId)
+    const answered = new Set<string>()
+    const calls: Array<{ toolCallId: string; toolName: string }> = []
+    for (const event of events) {
+      if (event.type === 'agent.turn') {
+        const payload = event.payload as { blocks: Array<Record<string, unknown>> }
+        for (const raw of payload.blocks) {
+          if (raw.type === 'tool_use' && isActionTool(String(raw.toolName))) {
+            calls.push({ toolCallId: String(raw.toolCallId), toolName: String(raw.toolName) })
+          }
+        }
+      } else if (event.type === 'agent.tool_results') {
+        const payload = event.payload as { results: Array<{ toolCallId: string }> }
+        for (const result of payload.results) {
+          answered.add(result.toolCallId)
+        }
+      }
     }
-    await this.deps.runs.emit(runId, 'message.completed', { role: 'assistant', text })
+    const candidates = calls.filter((call) => !answered.has(call.toolCallId))
+    return candidates[candidates.length - 1] ?? null
+  }
+
+  private async appendToolResults(runId: string, results: ToolResultEntry[]): Promise<void> {
+    await this.deps.eventRepo.append(runId, 'agent.tool_results', { results })
+  }
+
+  private async emitMessageCompleted(runId: string, text: string): Promise<void> {
+    await this.deps.eventRepo.append(runId, 'message.completed', {
+      role: 'assistant',
+      text: redactText(text),
+    })
+  }
+
+  private async failRun(runId: string, code: string, message: string): Promise<'failed'> {
+    await this.deps.runs.transition(runId, 'failed', { error: message })
+    await this.deps.runs.emit(runId, 'run.failed', { errorCode: code, message })
+    return 'failed'
   }
 }
 

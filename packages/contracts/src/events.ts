@@ -26,7 +26,11 @@ export const EVENT_PAYLOAD_SCHEMAS = {
     promptVersion: z.string(),
     model: z.string(),
   }),
-  'message.user': z.object({ text: z.string() }),
+  'message.user': z.object({
+    text: z.string(),
+    /** 用户回复针对的提问工具调用 缺省为普通消息 */
+    replyToToolCallId: z.string().optional(),
+  }),
   'message.delta': z.object({ textDelta: z.string() }),
   'message.completed': z.object({
     role: z.enum(['assistant']),
@@ -35,6 +39,44 @@ export const EVENT_PAYLOAD_SCHEMAS = {
   /** 模型结构化输出 持久化用于上下文重建与轨迹审计 */
   'agent.output': z.object({
     output: z.record(z.string(), z.unknown()),
+  }),
+  /** 模型轮次记录 原生内容块 持久化用于上下文重建与审计 */
+  'agent.turn': z.object({
+    blocks: z.array(
+      z.union([
+        z.object({ type: z.literal('text'), text: z.string() }),
+        z.object({
+          type: z.literal('tool_use'),
+          toolCallId: z.string(),
+          toolName: z.string(),
+          input: z.record(z.string(), z.unknown()),
+        }),
+      ]),
+    ),
+    stopReason: z.enum(['end_turn', 'tool_use', 'max_tokens']),
+  }),
+  /** 工具结果回灌 转为 user 轮的 tool_result 块喂回模型 */
+  'agent.tool_results': z.object({
+    results: z.array(
+      z.object({
+        toolCallId: z.string(),
+        toolName: z.string(),
+        content: z.string(),
+        isError: z.boolean(),
+      }),
+    ),
+  }),
+  /** 工具参数流式增量 前端渐进渲染工具调用 */
+  'tool.input.delta': z.object({
+    toolCallId: z.string(),
+    toolName: z.string(),
+    partialJson: z.string(),
+  }),
+  /** 上下文压缩记录 量化上下文工程效果 */
+  'context.compacted': z.object({
+    strategy: z.enum(['tool_result_clearing', 'summarization']),
+    beforeTokens: z.number().int().nonnegative(),
+    afterTokens: z.number().int().nonnegative(),
   }),
   'step.started': z.object({
     stepId: z.string(),
