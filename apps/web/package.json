@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 8790",
+    "dev": "next dev --turbopack -p 8790",
     "build": "next build",
     "start": "next start -p 8790",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "perf": "node scripts/perf-tab-switch.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
