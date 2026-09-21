@@ -22,6 +22,10 @@ const EVENT_TYPE_LABEL: Record<string, string> = {
   'message.delta': '回复片段',
   'message.completed': '回复完成',
   'agent.output': '模型输出',
+  'agent.turn': '模型轮次',
+  'agent.tool_results': '工具结果回灌',
+  'tool.input.delta': '工具参数流式',
+  'context.compacted': '上下文压缩',
   'step.started': '步骤开始',
   'step.completed': '步骤完成',
   'tool.requested': '工具调用',
@@ -143,7 +147,17 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
 
         {view.tools.length > 0 && (
           <section className="mt-6">
-            <h2 className="mb-2 text-sm font-medium text-stone-700">工具轨迹</h2>
+            <h2 className="mb-2 flex items-center gap-2 text-sm font-medium text-stone-700">
+              工具轨迹
+              {view.contextCompactions > 0 && (
+                <span
+                  className="rounded-full border border-teal-200 bg-teal-50 px-2 py-0.5 text-[11px] font-normal text-teal-700"
+                  title="长对话触发上下文压缩 早期工具结果已清理"
+                >
+                  上下文压缩 {view.contextCompactions} 次
+                </span>
+              )}
+            </h2>
             <div className="space-y-1.5">
               {view.tools.map((tool) => (
                 <ToolCard key={tool.executionId} tool={tool} />

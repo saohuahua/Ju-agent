@@ -22,9 +22,7 @@ import type { WorkflowEngine, WorkflowResult } from '@aftersales/workflow'
 import {
   type AssistantBlock,
   type ChatModel,
-  type ContextBlock,
   type ModelMessage,
-  type ModelStreamEvent,
   type ToolDefinition,
 } from './model.js'
 import { buildSystemPrompt, PROMPT_VERSION } from './prompt.js'

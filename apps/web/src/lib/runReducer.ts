@@ -15,10 +15,17 @@ export interface ChatMessage {
 }
 
 export interface ToolItem {
+  /** 工具调用标识 流式阶段为 pending 前缀 执行阶段替换为 executionId */
   executionId: string
+  /** 模型侧工具调用 id 用于流式期与执行期关联 */
+  toolCallId?: string
   toolName: string
   attempt: number
   status: 'pending' | 'succeeded' | 'failed'
+  /** 工具参数是否仍在流式生成 */
+  inputStreaming?: boolean
+  /** 已累积的工具参数 JSON 片段 */
+  inputJson?: string
   errorCode?: string
   latencyMs?: number
   resultSummary?: Record<string, unknown>
@@ -39,6 +46,8 @@ export interface RunViewState {
   tools: ToolItem[]
   approvals: ApprovalItem[]
   steps: Array<{ stepId: string; stepName: string; outcome: string }>
+  /** 上下文压缩次数 上下文工程的可视化证据 */
+  contextCompactions: number
   error: string | null
   lastSequence: number
 }
@@ -51,6 +60,7 @@ export function initialViewState(): RunViewState {
     tools: [],
     approvals: [],
     steps: [],
+    contextCompactions: 0,
     error: null,
     lastSequence: 0,
   }
@@ -118,12 +128,64 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
       )
       return next
     }
+    case 'tool.input.delta': {
+      // 模型正在流式生成工具参数 按 toolCallId 累积渐进展示
+      const toolCallId = String(payload.toolCallId ?? '')
+      const existing = state.tools.find((tool) => tool.toolCallId === toolCallId)
+      if (existing) {
+        next.tools = state.tools.map((tool) =>
+          tool.toolCallId === toolCallId
+            ? {
+                ...tool,
+                inputJson: (tool.inputJson ?? '') + String(payload.partialJson ?? ''),
+              }
+            : tool,
+        )
+      } else {
+        next.tools = [
+          ...state.tools,
+          {
+            executionId: `pending-${toolCallId}`,
+            toolCallId,
+            toolName: String(payload.toolName ?? ''),
+            attempt: 1,
+            status: 'pending',
+            inputStreaming: true,
+            inputJson: String(payload.partialJson ?? ''),
+          },
+        ]
+      }
+      return next
+    }
+    case 'context.compacted': {
+      next.contextCompactions = state.contextCompactions + 1
+      return next
+    }
     case 'tool.requested': {
+      const toolName = String(payload.toolName)
+      // 流式期的幽灵条目按工具名关联 升级为执行条目
+      const ghost = state.tools.find(
+        (tool) =>
+          tool.inputStreaming && tool.toolName === toolName && tool.executionId.startsWith('pending-'),
+      )
+      if (ghost) {
+        next.tools = state.tools.map((tool) =>
+          tool === ghost
+            ? {
+                ...tool,
+                executionId: String(payload.executionId),
+                attempt: Number(payload.attempt ?? 1),
+                inputStreaming: false,
+              }
+            : tool,
+        )
+        return next
+      }
       next.tools = [
         ...state.tools,
         {
           executionId: String(payload.executionId),
-          toolName: String(payload.toolName),
+          toolName,
           attempt: Number(payload.attempt ?? 1),
           status: 'pending',
         },
@@ -189,7 +251,7 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
       return next
     }
     default: {
-      // agent.output 等内部事件不影响视图状态
+      // agent.turn agent.tool_results 等内部事件不影响视图状态
       return next
     }
   }

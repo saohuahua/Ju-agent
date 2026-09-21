@@ -39,6 +39,11 @@ export function ToolCard({ tool }: { tool: ToolItem }) {
       <div className="flex items-center justify-between gap-2">
         <span className="font-mono text-[13px] text-stone-800">{tool.toolName}</span>
         <span className="flex items-center gap-2 text-stone-500">
+          {tool.inputStreaming && (
+            <span className="text-teal-700" aria-live="polite">
+              参数生成中
+            </span>
+          )}
           {tool.attempt > 1 && <span>第 {tool.attempt} 次尝试</span>}
           {tool.latencyMs !== undefined && (
             <span className="tabular-nums">{tool.latencyMs}ms</span>
@@ -46,6 +51,11 @@ export function ToolCard({ tool }: { tool: ToolItem }) {
           <span className={STATUS_TEXT[tool.status]}>{STATUS_LABEL[tool.status]}</span>
         </span>
       </div>
+      {tool.inputJson && (
+        <div className="mt-1.5 truncate font-mono text-stone-400" aria-label="工具参数">
+          {tool.inputJson}
+        </div>
+      )}
       {tool.errorCode && <div className="mt-1 font-mono text-red-700">{tool.errorCode}</div>}
       {summaryEntries.length > 0 && (
         <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-stone-500">
