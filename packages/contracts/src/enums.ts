@@ -109,6 +109,11 @@ export const RETURN_REASONS = [
 export const ReturnReason = z.enum(RETURN_REASONS)
 export type ReturnReason = z.infer<typeof ReturnReason>
 
+/** 物流推送事件状态 仅覆盖需要主动触达的恶化状态 已签收订单拒绝注入 */
+export const LOGISTICS_EVENT_STATUSES = ['delayed', 'lost'] as const
+export const LogisticsEventStatus = z.enum(LOGISTICS_EVENT_STATUSES)
+export type LogisticsEventStatus = z.infer<typeof LogisticsEventStatus>
+
 /** 统一错误分类 工具层 投射到用户可理解的解释 */
 export const ERROR_CODES = [
   'VALIDATION_ERROR',
@@ -150,6 +155,7 @@ export const EVENT_TYPES = [
   'run.failed',
   'run.completed',
   'run.escalated',
+  'logistics.event',
 ] as const
 export const EventType = z.enum(EVENT_TYPES)
 export type EventType = z.infer<typeof EventType>

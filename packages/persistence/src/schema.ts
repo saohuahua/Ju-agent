@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS shipments (
   status TEXT NOT NULL,
   events_json TEXT NOT NULL,
   delivered_at TEXT,
-  updated_at TEXT NOT NULL
+  updated_at TEXT NOT NULL,
+  version INTEGER NOT NULL DEFAULT 1
 );
 CREATE INDEX IF NOT EXISTS idx_shipments_order ON shipments(order_no);
 

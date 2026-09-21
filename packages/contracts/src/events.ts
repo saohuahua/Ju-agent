@@ -7,7 +7,7 @@
  */
 
 import { z } from 'zod'
-import { ErrorCode, EventType, RiskLevel } from './enums.js'
+import { ErrorCode, EventType, LogisticsEventStatus, RiskLevel } from './enums.js'
 
 /** 持久化事件行 内含自增全局 id 与 run 内单调 sequence */
 export const AgentEventRow = z.object({
@@ -124,8 +124,8 @@ export const EVENT_PAYLOAD_SCHEMAS = {
     hint: z.string().optional(),
   }),
   'run.resumed': z.object({
-    /** 恢复来源 用户补答 审批决定 或断点恢复 */
-    resumePoint: z.enum(['user_message', 'approval', 'checkpoint']),
+    /** 恢复来源 用户补答 审批决定 断点恢复 或物流事件触达 */
+    resumePoint: z.enum(['user_message', 'approval', 'checkpoint', 'logistics_event']),
   }),
   'run.failed': z.object({
     errorCode: ErrorCode,
@@ -137,6 +137,23 @@ export const EVENT_PAYLOAD_SCHEMAS = {
   }),
   'run.escalated': z.object({
     reason: z.string(),
+  }),
+  /**
+   * 物流推送事件 会话中途注入的物流状态变化
+   * 领域服务校验通过后落表 上下文重建时合成为 user 消息
+   * 会话空闲时触发主动触达回合 其余状态挂起至下一轮
+   */
+  'logistics.event': z.object({
+    orderNo: z.string(),
+    carrier: z.string(),
+    trackingNo: z.string(),
+    status: LogisticsEventStatus,
+    description: z.string(),
+    /** 事件唯一标识 重复注入按此幂等拒绝 */
+    eventId: z.string(),
+    /** 注入来源 运营端点手动注入或评测剧本触发 */
+    source: z.enum(['operator', 'simulator']),
+    injectedAt: z.string(),
   }),
 } as const
 

@@ -11,6 +11,7 @@ import {
   ApprovalService,
   AuditService,
   CompensationService,
+  LogisticsEventService,
   RunService,
   type Actor,
   type Clock,
@@ -71,6 +72,7 @@ export interface ComposedSystem {
   approvalService: ApprovalService
   afterSaleService: AfterSaleService
   compensationService: CompensationService
+  logisticsService: LogisticsEventService
   executor: ToolExecutor
   engine: WorkflowEngine
   runner: AgentRunner
@@ -120,6 +122,12 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     clock,
   )
   const eventRepo = new SqliteEventRepository(db)
+  const logisticsService = new LogisticsEventService(
+    new SqliteShipmentRepository(db),
+    new SqliteOrderRepository(db),
+    auditService,
+    clock,
+  )
 
   const registry = buildToolRegistry({
     customerRepo: new SqliteCustomerRepository(db),
@@ -165,6 +173,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     approvalService,
     afterSaleService,
     compensationService,
+    logisticsService,
     executor,
     engine,
     runner,

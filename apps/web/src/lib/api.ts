@@ -98,6 +98,20 @@ export const api = {
   resumeRun: (runId: string) =>
     request<{ outcome: string }>(`/api/runs/${runId}/resume`, { method: 'POST' }),
 
+  injectLogisticsEvent: (
+    runId: string,
+    body: { orderNo: string; status: 'delayed' | 'lost'; description: string; eventId?: string },
+  ) =>
+    request<{
+      runId: string
+      event: { orderNo: string; status: string; description: string; eventId: string; injectedAt: string }
+      delivered: boolean
+      outcome: string | null
+    }>(`/api/runs/${runId}/logistics-events`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+
   receiveGoods: (returnNo: string) =>
     request<{ result: Record<string, unknown> }>('/api/operations/receive-goods', {
       method: 'POST',

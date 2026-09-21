@@ -162,6 +162,30 @@ export async function runSimCase(
     // 对话推进 轮次上限内 模拟器与 Agent 交替
     const maxTurns = scenario.maxTurns
     while (turns < maxTurns) {
+      // 剧本回合间物流事件注入 与运营端点共用同一注入入口
+      if (outcome === 'awaiting_input') {
+        for (const event of (simCase.logisticsEvents ?? []).filter(
+          (item) => item.at === 'after_turn' && item.turnIndex === turns,
+        )) {
+          try {
+            const injected = await system.logisticsService.inject(
+              { role: 'operator' },
+              {
+                orderNo: event.orderNo,
+                status: event.status,
+                description: event.description,
+                eventId: event.eventId ?? `sim_${runId}_${event.orderNo}_${event.status}`,
+                source: 'simulator',
+                runId,
+              },
+            )
+            const result = await system.runner.processLogisticsEvent(runId, injected, toolContext)
+            if (result.outcome) outcome = result.outcome
+          } catch {
+            // 领域拒绝注入 断言层按事件与运单状态判定
+          }
+        }
+      }
       if (outcome === 'awaiting_input') {
         const question = readLastAgentMessage(system, runId)
         const reply = await simulator.replyTo(question)

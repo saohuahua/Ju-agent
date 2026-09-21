@@ -93,6 +93,7 @@ export class SqliteShipmentRepository implements ShipmentRepository {
           events_json: string
           delivered_at: string | null
           updated_at: string
+          version: number
         }
       | undefined
     if (!row) return null
@@ -105,6 +106,27 @@ export class SqliteShipmentRepository implements ShipmentRepository {
       events: JSON.parse(row.events_json) as Shipment['events'],
       deliveredAt: row.delivered_at,
       updatedAt: row.updated_at,
+      version: row.version,
+    }
+  }
+
+  async update(record: Shipment): Promise<void> {
+    const result = this.db
+      .prepare(
+        `UPDATE shipments
+         SET status = ?, events_json = ?, delivered_at = ?, updated_at = ?, version = version + 1
+         WHERE shipment_id = ? AND version = ?`,
+      )
+      .run(
+        record.status,
+        JSON.stringify(record.events),
+        record.deliveredAt,
+        record.updatedAt,
+        record.shipmentId,
+        record.version,
+      )
+    if (result.changes === 0) {
+      throw new Error(`运单乐观锁冲突 ${record.shipmentId}`)
     }
   }
 }

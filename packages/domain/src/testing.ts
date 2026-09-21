@@ -56,6 +56,13 @@ export class InMemoryShipmentRepository implements ShipmentRepository {
   async findByOrderNo(orderNo: string): Promise<Shipment | null> {
     return this.shipments.get(orderNo) ?? null
   }
+  async update(record: Shipment): Promise<void> {
+    const found = this.shipments.get(record.shipmentId)
+    if (!found || found.version !== record.version) {
+      throw new Error(`运单乐观锁冲突 ${record.shipmentId}`)
+    }
+    this.shipments.set(record.shipmentId, { ...record, version: record.version + 1 })
+  }
 }
 
 export class InMemoryCustomerRepository implements CustomerRepository {

@@ -40,12 +40,22 @@ export interface ApprovalItem {
   status: 'pending' | 'approved' | 'rejected' | 'expired'
 }
 
+export interface LogisticsItem {
+  orderNo: string
+  carrier: string
+  trackingNo: string
+  status: 'delayed' | 'lost'
+  description: string
+  injectedAt: string
+}
+
 export interface RunViewState {
   status: RunStatus
   connected: boolean
   messages: ChatMessage[]
   tools: ToolItem[]
   approvals: ApprovalItem[]
+  logistics: LogisticsItem[]
   steps: Array<{ stepId: string; stepName: string; outcome: string }>
   /** 上下文压缩次数 上下文工程的可视化证据 */
   contextCompactions: number
@@ -60,6 +70,7 @@ export function initialViewState(): RunViewState {
     messages: [],
     tools: [],
     approvals: [],
+    logistics: [],
     steps: [],
     contextCompactions: 0,
     error: null,
@@ -229,6 +240,20 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
           ? { ...approval, status: decision }
           : approval,
       )
+      return next
+    }
+    case 'logistics.event': {
+      next.logistics = [
+        ...state.logistics,
+        {
+          orderNo: String(payload.orderNo ?? ''),
+          carrier: String(payload.carrier ?? ''),
+          trackingNo: String(payload.trackingNo ?? ''),
+          status: payload.status === 'lost' ? 'lost' : 'delayed',
+          description: String(payload.description ?? ''),
+          injectedAt: String(payload.injectedAt ?? ''),
+        },
+      ]
       return next
     }
     case 'run.paused': {

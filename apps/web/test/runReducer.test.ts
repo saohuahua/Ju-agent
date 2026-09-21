@@ -92,6 +92,43 @@ describe('事件归约', () => {
     expect(state.approvals[0]?.status).toBe('approved')
   })
 
+  it('物流事件进入独立列表 延误与丢件按状态归一', () => {
+    let state = initialViewState()
+    state = reduceEvent(
+      state,
+      event(1, 'logistics.event', {
+        orderNo: 'SO-2026-0002',
+        carrier: '顺丰',
+        trackingNo: 'SF1357924680',
+        status: 'delayed',
+        description: '分拨中心积压',
+        injectedAt: '2026-09-20T12:00:00.000Z',
+      }),
+    )
+    state = reduceEvent(
+      state,
+      event(2, 'logistics.event', {
+        orderNo: 'SO-2026-0002',
+        carrier: '顺丰',
+        trackingNo: 'SF1357924680',
+        status: 'lost',
+        description: '包裹丢失',
+        injectedAt: '2026-09-20T13:00:00.000Z',
+      }),
+    )
+    expect(state.logistics).toHaveLength(2)
+    expect(state.logistics[0]).toEqual({
+      orderNo: 'SO-2026-0002',
+      carrier: '顺丰',
+      trackingNo: 'SF1357924680',
+      status: 'delayed',
+      description: '分拨中心积压',
+      injectedAt: '2026-09-20T12:00:00.000Z',
+    })
+    expect(state.logistics[1]?.status).toBe('lost')
+    expect(state.messages).toHaveLength(0)
+  })
+
   it('终态事件更新运行状态', () => {
     let state = initialViewState()
     state = reduceEvent(state, event(1, 'run.started', {}))

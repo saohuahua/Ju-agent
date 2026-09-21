@@ -87,6 +87,13 @@ export async function runCase(
     })
     const toolContext = { actor, runId: run.runId, faults }
 
+    // 会话开始前注入 首回合上下文即带出事件
+    for (const event of (evalCase.logisticsEvents ?? []).filter(
+      (item) => item.at === 'before_first_turn',
+    )) {
+      await injectLogisticsEvent(system, run.runId, event, toolContext)
+    }
+
     // 驱动首回合
     let outcome = await driveTurn(
       system,
@@ -99,6 +106,13 @@ export async function runCase(
 
     // 回合与审批的推进循环
     for (;;) {
+      // 第 turnIndex 轮之后的注入 空闲即触达 忙时挂起
+      for (const event of (evalCase.logisticsEvents ?? []).filter(
+        (item) => item.at === 'after_turn' && item.turnIndex === turnIndex,
+      )) {
+        const result = await injectLogisticsEvent(system, run.runId, event, toolContext)
+        if (result.outcome) outcome = result.outcome
+      }
       if (outcome === 'awaiting_input' && turnIndex < evalCase.turns.length) {
         outcome = await driveTurn(
           system,
@@ -121,6 +135,13 @@ export async function runCase(
         continue
       }
       break
+    }
+
+    // 全部回合结束后的注入 已完结会话仅落事件不触达
+    for (const event of (evalCase.logisticsEvents ?? []).filter(
+      (item) => item.at === 'after_all_turns',
+    )) {
+      await injectLogisticsEvent(system, run.runId, event, toolContext)
     }
 
     // 运行结束后的运营动作 收货登记等闭环
@@ -214,6 +235,37 @@ export async function driveApproval(
     'supervisor',
     toolContext,
   )
+}
+
+type ScriptedLogisticsEvent = NonNullable<EvalCase['logisticsEvents']>[number]
+
+/**
+ * 物流事件注入 与运营端点共用同一领域服务与触达入口
+ * 领域拒绝不抛出 供拒绝类用例断言注入被拒
+ */
+async function injectLogisticsEvent(
+  system: ComposedSystem,
+  runId: string,
+  event: ScriptedLogisticsEvent,
+  toolContext: { actor: Actor; runId: string; faults: FaultController | null },
+): Promise<{ rejected: boolean; outcome?: string }> {
+  try {
+    const injected = await system.logisticsService.inject(
+      { role: 'operator' },
+      {
+        orderNo: event.orderNo,
+        status: event.status,
+        description: event.description,
+        eventId: event.eventId ?? `sim_${runId}_${event.orderNo}_${event.status}`,
+        source: 'simulator',
+        runId,
+      },
+    )
+    const result = await system.runner.processLogisticsEvent(runId, injected, toolContext)
+    return { rejected: false, outcome: result.outcome }
+  } catch {
+    return { rejected: true }
+  }
 }
 
 /** 断言收集 数据库终态 轨迹 升级 补问 网关扣款 */

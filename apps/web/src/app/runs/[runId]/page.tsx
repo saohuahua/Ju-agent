@@ -5,14 +5,15 @@
  *
  * 通过事件 JSON 端点全量重建时间线
  * 运行卡在执行态时提供断点恢复入口
+ * 操作员可在此注入物流事件 空闲会话即时触达 忙时会话挂起下一轮
  */
 
-import { use, useCallback, useEffect, useState } from 'react'
+import { use, useCallback, useEffect, useState, type FormEvent } from 'react'
 import { AppShell } from '@/components/AppShell'
 import { Skeleton } from '@/components/Skeleton'
 import { StatusBadge } from '@/components/StatusBadge'
 import { ToolCard } from '@/components/ToolCard'
-import { api } from '@/lib/api'
+import { api, currentToken } from '@/lib/api'
 import { reduceEvents, initialViewState } from '@/lib/runReducer'
 import type { AgentEvent, RunSummary } from '@/lib/types'
 
@@ -32,6 +33,7 @@ const EVENT_TYPE_LABEL: Record<string, string> = {
   'tool.completed': '工具结果',
   'approval.required': '需要审批',
   'approval.decided': '审批决定',
+  'logistics.event': '物流事件',
   'run.paused': '运行暂停',
   'run.resumed': '运行恢复',
   'run.failed': '运行失败',
@@ -45,6 +47,15 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
   const [events, setEvents] = useState<AgentEvent[]>([])
   const [error, setError] = useState<string | null>(null)
   const [resuming, setResuming] = useState(false)
+
+  // 物流事件注入表单 仅操作员与主管可见
+  const isOperator = ['operator-token', 'supervisor-token'].includes(currentToken())
+  const [injectOrderNo, setInjectOrderNo] = useState('')
+  const [injectStatus, setInjectStatus] = useState<'delayed' | 'lost'>('delayed')
+  const [injectDescription, setInjectDescription] = useState('')
+  const [injecting, setInjecting] = useState(false)
+  const [injectResult, setInjectResult] = useState<string | null>(null)
+  const [injectError, setInjectError] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     try {
@@ -75,6 +86,33 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
       setError(caught instanceof Error ? caught.message : '恢复失败')
     } finally {
       setResuming(false)
+    }
+  }
+
+  const inject = async (event: FormEvent) => {
+    event.preventDefault()
+    if (injecting) return
+    setInjecting(true)
+    setInjectResult(null)
+    setInjectError(null)
+    try {
+      const result = await api.injectLogisticsEvent(runId, {
+        orderNo: injectOrderNo.trim(),
+        status: injectStatus,
+        description: injectDescription.trim(),
+      })
+      setInjectResult(
+        result.delivered
+          ? `已注入并即时触达 会话终态 ${result.outcome ?? '-'}`
+          : '已注入并落表 会话非空闲 挂起至下一轮对话',
+      )
+      setInjectOrderNo('')
+      setInjectDescription('')
+      await load()
+    } catch (caught) {
+      setInjectError(caught instanceof Error ? caught.message : '注入失败')
+    } finally {
+      setInjecting(false)
     }
   }
 
@@ -145,6 +183,66 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
           </p>
         )}
 
+        {isOperator && !loading && (
+          <section className="mt-6 rounded-container border border-hairline bg-white px-4 py-3">
+            <h2 className="text-sm font-medium text-stone-700">运营操作 物流事件注入</h2>
+            <p className="mt-0.5 text-xs text-stone-500">
+              向会话推送物流状态变化 空闲会话即时触达 忙时会话挂起至下一轮 已签收订单不可回退
+            </p>
+            <form onSubmit={inject} className="mt-3 flex flex-wrap items-center gap-2">
+              <label htmlFor="inject-order-no" className="sr-only">
+                订单号
+              </label>
+              <input
+                id="inject-order-no"
+                value={injectOrderNo}
+                onChange={(event) => setInjectOrderNo(event.target.value)}
+                placeholder="订单号 如 SO-2026-0002"
+                className="w-52 rounded-control border border-hairline bg-white px-3 py-1.5 font-mono text-xs text-stone-900 transition-colors duration-200 placeholder:text-stone-400 focus:border-sage-300 focus:outline-none"
+              />
+              <label htmlFor="inject-status" className="sr-only">
+                物流状态
+              </label>
+              <select
+                id="inject-status"
+                value={injectStatus}
+                onChange={(event) => setInjectStatus(event.target.value as 'delayed' | 'lost')}
+                className="rounded-control border border-hairline bg-white px-3 py-1.5 text-xs text-stone-900 transition-colors duration-200 focus:border-sage-300 focus:outline-none"
+              >
+                <option value="delayed">运输延误</option>
+                <option value="lost">包裹丢失</option>
+              </select>
+              <label htmlFor="inject-description" className="sr-only">
+                事件描述
+              </label>
+              <input
+                id="inject-description"
+                value={injectDescription}
+                onChange={(event) => setInjectDescription(event.target.value)}
+                placeholder="描述 如 上海浦东分拨中心积压 预计延迟两天"
+                className="min-w-64 flex-1 rounded-control border border-hairline bg-white px-3 py-1.5 text-xs text-stone-900 transition-colors duration-200 placeholder:text-stone-400 focus:border-sage-300 focus:outline-none"
+              />
+              <button
+                type="submit"
+                disabled={injecting || !injectOrderNo.trim() || !injectDescription.trim()}
+                className="shrink-0 rounded-control bg-sage-700 px-4 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-sage-800 active:scale-[0.98] disabled:opacity-50"
+              >
+                {injecting ? '注入中' : '注入'}
+              </button>
+            </form>
+            {injectResult && (
+              <p className="mt-2 rounded-control border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs text-emerald-800">
+                {injectResult}
+              </p>
+            )}
+            {injectError && (
+              <p className="mt-2 rounded-control border border-red-200 bg-red-50 px-3 py-1.5 text-xs text-red-700">
+                {injectError}
+              </p>
+            )}
+          </section>
+        )}
+
         {view.tools.length > 0 && (
           <section className="mt-6">
             <h2 className="mb-2 flex items-center gap-2 text-sm font-medium text-stone-700">
@@ -206,6 +304,10 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
 
 function summarizePayload(event: AgentEvent): string {
   const payload = event.payload as Record<string, unknown>
+  if (event.type === 'logistics.event') {
+    const statusText = payload.status === 'lost' ? '包裹丢失' : '运输延误'
+    return `订单 ${String(payload.orderNo ?? '')} ${statusText} ${String(payload.description ?? '')}`.slice(0, 100)
+  }
   const keys = Object.keys(payload)
   if (keys.length === 0) return ''
   const first = keys[0]!

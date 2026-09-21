@@ -35,6 +35,28 @@ export function rebuildMessages(events: EventRow[]): ModelMessage[] {
   const messages: ModelMessage[] = []
   let pendingResults: ContextBlock[] = []
 
+  // 尚无结果的工具调用 物流推送合成的 user 消息须先以合成 tool_result 配对
+  // 否则原生协议里 tool_use 悬空无 tool_result 中转按结构校验会拒绝
+  const unansweredCalls = new Map<string, string>()
+  for (const event of events) {
+    if (event.type === 'agent.turn') {
+      const payload = event.payload as { blocks: Array<Record<string, unknown>> }
+      for (const raw of payload.blocks) {
+        if (raw.type === 'tool_use') {
+          unansweredCalls.set(String(raw.toolCallId), String(raw.toolName))
+        }
+      }
+    } else if (event.type === 'agent.tool_results') {
+      const payload = event.payload as { results: Array<{ toolCallId: string }> }
+      for (const result of payload.results) {
+        unansweredCalls.delete(result.toolCallId)
+      }
+    } else if (event.type === 'message.user') {
+      const reply = (event.payload as { replyToToolCallId?: string }).replyToToolCallId
+      if (reply) unansweredCalls.delete(reply)
+    }
+  }
+
   const flushResults = () => {
     if (pendingResults.length > 0) {
       messages.push({ role: 'user', content: pendingResults })
@@ -88,6 +110,37 @@ export function rebuildMessages(events: EventRow[]): ModelMessage[] {
           isError: Boolean(raw.isError),
         })
       }
+    } else if (event.type === 'logistics.event') {
+      // 物流推送合成 user 消息 模型据此查证最新状态并主动告知客户
+      flushResults()
+      const payload = event.payload as {
+        orderNo?: string
+        status?: string
+        description?: string
+      }
+      const statusText =
+        payload.status === 'lost' ? '包裹丢失' : payload.status === 'delayed' ? '运输延误' : '状态更新'
+      const content: ContextBlock[] = []
+      // 挂起的调用以合成 tool_result 配对 补问未答时告知模型客户尚未回复
+      // 配对后从集合移除 多次推送不重复配对同一调用
+      for (const [toolCallId, toolName] of unansweredCalls) {
+        content.push({
+          type: 'tool_result',
+          toolCallId,
+          toolName,
+          content:
+            toolName === ASK_USER_TOOL
+              ? '（客户尚未回复该提问 请优先处理本次物流事件）'
+              : '（该调用中断未执行 无需等待结果）',
+          isError: false,
+        })
+        unansweredCalls.delete(toolCallId)
+      }
+      content.push({
+        type: 'text',
+        text: `[物流事件推送] 订单 ${String(payload.orderNo ?? '')} 物流状态更新为${statusText} ${String(payload.description ?? '')} 请查证最新物流状态并主动告知客户`,
+      })
+      messages.push({ role: 'user', content })
     }
   }
   flushResults()

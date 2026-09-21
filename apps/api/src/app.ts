@@ -12,6 +12,7 @@ import {
   ApprovalDecisionRequest,
   ContinueRunRequest,
   CreateRunRequest,
+  LogisticsEventInjectRequest,
 } from '@aftersales/contracts'
 import type { EvalReport } from '@aftersales/contracts'
 import { DomainError } from '@aftersales/domain'
@@ -316,6 +317,51 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
   })
 
   // ---------- 运营操作 ----------
+
+  // 物流事件注入 会话中途推送物流状态变化 空闲即触达 忙时挂起下一轮
+  app.post('/api/runs/:runId/logistics-events', async (context) => {
+    if (!requireRole(context, ['operator', 'supervisor'])) {
+      return context.json({ error: 'AUTHORIZATION_DENIED', message: '仅操作员可注入物流事件' }, 403)
+    }
+    const actor = context.get('actor') as Actor
+    const runId = context.req.param('runId')
+    const body = LogisticsEventInjectRequest.safeParse(await context.req.json())
+    if (!body.success) {
+      return context.json({ error: 'VALIDATION_ERROR', message: '请求体不合法' }, 400)
+    }
+    const run = await system.runService.get(runId)
+    try {
+      const event = await system.logisticsService.inject(actor, {
+        orderNo: body.data.orderNo,
+        status: body.data.status,
+        description: body.data.description,
+        eventId: body.data.eventId ?? `op_${Date.now().toString(36)}`,
+        source: 'operator',
+        runId,
+      })
+      const result = await system.runner.processLogisticsEvent(runId, event, {
+        actor: { role: 'customer', customerId: run.customerId },
+        runId,
+        faults: null,
+      })
+      return context.json({
+        runId,
+        event: {
+          orderNo: event.orderNo,
+          status: event.status,
+          description: event.description,
+          eventId: event.eventId,
+          injectedAt: event.injectedAt,
+        },
+        delivered: result.delivered,
+        outcome: result.outcome ?? null,
+      })
+    } catch (error) {
+      const mapped = errorResponse(error)
+      if (mapped) return context.json(mapped.body, mapped.status)
+      throw error
+    }
+  })
 
   app.post('/api/operations/receive-goods', async (context) => {
     if (!requireRole(context, ['operator', 'supervisor'])) {

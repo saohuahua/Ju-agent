@@ -6,7 +6,7 @@
  */
 
 import { z } from 'zod'
-import { Intent, RunStatus } from './enums.js'
+import { Intent, LogisticsEventStatus, RunStatus } from './enums.js'
 import { CompensationReason } from './enums.js'
 import { ToolIO, MoneyCents } from './tools.js'
 import type { ToolName } from './tools.js'
@@ -76,6 +76,16 @@ export const ApprovalDecisionRequest = z.object({
   decidedBy: z.string().min(1),
 })
 export type ApprovalDecisionRequest = z.infer<typeof ApprovalDecisionRequest>
+
+/** 物流事件注入请求 运营端点与评测剧本共用同一注入语义 */
+export const LogisticsEventInjectRequest = z.object({
+  orderNo: z.string().min(1),
+  status: LogisticsEventStatus,
+  description: z.string().min(1),
+  /** 事件唯一标识 缺省由服务端生成 */
+  eventId: z.string().min(1).optional(),
+})
+export type LogisticsEventInjectRequest = z.infer<typeof LogisticsEventInjectRequest>
 
 /** 运行对外摘要 */
 export const RunSummary = z.object({

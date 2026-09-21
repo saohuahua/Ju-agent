@@ -6,6 +6,7 @@
  */
 
 import { z } from 'zod'
+import { LogisticsEventStatus } from './enums.js'
 
 /** 用例分类 对应调研中的八类风险面 业务新能力单独成类 */
 export const EVAL_CATEGORIES = [
@@ -153,6 +154,24 @@ export const EvalCase = z.object({
         args: z.record(z.string(), z.unknown()),
         /** 执行身份 customer 或 operator */
         role: z.enum(['customer', 'operator']),
+      }),
+    )
+    .optional(),
+  /**
+   * 物流事件注入剧本 与运营端点共用同一注入 API
+   * before_first_turn 会话开始前注入 首回合即知晓
+   * after_turn 第 turnIndex 轮之后注入 空闲即触达 忙时挂起
+   * after_all_turns 全部回合结束后注入 已完结会话不触达
+   */
+  logisticsEvents: z
+    .array(
+      z.object({
+        at: z.enum(['before_first_turn', 'after_turn', 'after_all_turns']),
+        turnIndex: z.number().int().positive().optional(),
+        orderNo: z.string(),
+        status: LogisticsEventStatus,
+        description: z.string(),
+        eventId: z.string().optional(),
       }),
     )
     .optional(),

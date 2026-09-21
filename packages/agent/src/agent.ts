@@ -14,7 +14,13 @@ import {
 } from '@aftersales/contracts'
 import { createToolError } from '@aftersales/contracts'
 import { DomainError, redactText } from '@aftersales/domain'
-import type { Actor, Clock, EventRepository, RunService } from '@aftersales/domain'
+import type {
+  Actor,
+  Clock,
+  EventRepository,
+  InjectLogisticsEventResult,
+  RunService,
+} from '@aftersales/domain'
 import type { ToolExecutor } from '@aftersales/tools'
 import { ToolExecutionError } from '@aftersales/tools'
 import type { ToolContext } from '@aftersales/tools'
@@ -100,6 +106,38 @@ export class AgentRunner {
       replyToToolCallId: pendingAsk?.toolCallId,
     })
     return this.processLoop(runId, run.customerId, toolContext)
+  }
+
+  /**
+   * 物流事件注入
+   *
+   * 混合到达语义 事件先落表 无论会话状态 时间线始终可回放
+   * 会话空闲等待输入时事件即达即触达 驱动一轮主动告知客户的回合
+   * 其余状态仅落表挂起 下一轮对话重建上下文时自然带出
+   */
+  async processLogisticsEvent(
+    runId: string,
+    event: InjectLogisticsEventResult,
+    toolContext: ToolContext,
+  ): Promise<{ delivered: boolean; outcome?: RunOutcome }> {
+    const run = await this.deps.runs.get(runId)
+    await this.deps.eventRepo.append(runId, 'logistics.event', {
+      orderNo: event.orderNo,
+      carrier: event.carrier,
+      trackingNo: event.trackingNo,
+      status: event.status,
+      description: event.description,
+      eventId: event.eventId,
+      source: event.source,
+      injectedAt: event.injectedAt,
+    })
+    if (run.status !== 'awaiting_input') {
+      return { delivered: false }
+    }
+    await this.deps.runs.transition(runId, 'running')
+    await this.deps.runs.emit(runId, 'run.resumed', { resumePoint: 'logistics_event' })
+    const outcome = await this.processLoop(runId, run.customerId, toolContext)
+    return { delivered: true, outcome }
   }
 
   /** 审批决定后恢复 工作流结果回灌为动作工具的 tool_result 再继续生成答复 */

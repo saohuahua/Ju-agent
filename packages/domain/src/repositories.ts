@@ -38,6 +38,8 @@ export interface OrderRepository {
 
 export interface ShipmentRepository {
   findByOrderNo(orderNo: string): Promise<Shipment | null>
+  /** 乐观锁更新 物流事件注入与收货登记共用 */
+  update(record: Shipment): Promise<void>
 }
 
 export interface ReturnRepository {

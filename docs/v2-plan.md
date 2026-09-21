@@ -214,6 +214,18 @@
 - 前端 工作台事件时间线渲染物流更新卡片 运行详情加操作员注入面板
 - 夹具 SO-2026-0002 in_transit 为推送主力目标单
 
+**执行记录 2026-09-21 功能 7 物流推送 六层实施 + 前端收尾**
+
+- 契约层 LogisticsEventStatus delayed/lost 事件协议 logistics.event（orderNo carrier trackingNo status description eventId source injectedAt）run.resumed resumePoint 加 logistics_event 注入请求 LogisticsEventInjectRequest EvalCase 加 logisticsEvents 剧本字段（at before_first_turn/after_turn/after_all_turns）
+- 领域层 LogisticsEventService.inject 校验顺序 订单存在 → 运单存在 → 已 delivered 拒变 → 事件 id 重复注入幂等拒绝 → 乐观锁更新运单（shipments 加 version 列）与 events 追加 → 审计 logistics_event_injected 全链路可追溯
+- Agent 层 processLogisticsEvent 事件先落 agent_events 仅 awaiting_input 会话 transition running 后驱动触达回合 上下文重建把 logistics.event 合成为 user 文本消息 模型查证后主动告知客户 其余状态仅落表下一轮带出 提示词职责加第 9 条
+- API 层 POST /api/runs/:runId/logistics-events operator/supervisor 权限 领域注入加触达返回 delivered 与 outcome 演示路径
+- 评测层 用例 8 条 lg_*（空闲触达延误/丢件 丢件退款闭环 等待审批挂起 未知订单拒绝 重复注入拒绝 已完结不触达 已签收拒变）领域拒绝在评测钩子吞掉由断言判定 L1 96/96 全绿 报告 evr_0a0135b8 L2 剧本回合间注入与运营端点共用同一领域入口
+- 前端 工作台 LogisticsCard 延误琥珀丢件红竖条卡 SSE 事件列表加 logistics.event 运行详情事件时间线加物流事件摘要 操作员注入面板（订单号 状态下拉 描述 即时显示触达/挂起结果）归约器加 logistics 列表并补单测
+- 校验 pnpm typecheck 全绿 pnpm test 144 条全过 pnpm eval 96/96 看板抽样档与 selectCases 实测对齐 p0 29 p1 26 p2 4 all 96（p1 隔一取 新 5 条落列表尾部实际取 3 条）
+- 真实模型实测修复触达回合 400 根因 空闲会话常驻补问轮重建后悬空的 ask_user tool_use 未被物流推送合成的 user 消息配对 中转按原生协议结构校验拒绝（UPSTREAM_ERROR 400）修复为 rebuildMessages 合成 user 消息时以合成 tool_result 配对全部无结果调用（补问未答标注 客户尚未回复）多推送不重复配对 补问已被答复则不合成 新增 4 条上下文重建单测 测试总数 144→148
+- 真实模型复测 空闲会话注入延误 delivered:true 触达回合模型先查证物流（get_shipment get_order）再主动告知客户延误详情并衔接原退货意图继续补问 旧卡死运行经断点恢复同样触达成功
+
 #### 3.3 价保流程 约 1.5 天
 
 做什么

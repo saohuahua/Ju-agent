@@ -36,6 +36,7 @@ scenario 模拟客户场景 L2 使用
 faultPlan 故障注入 timeout rate_limited server_error crash
 approvalAction 审批处理 approve reject expire
 operatorActions 运行后的运营动作 寄回 收货
+logisticsEvents 物流事件注入 at 取 before_first_turn after_turn after_all_turns
 frozenTime 冻结时钟
 assertions
   expectedState 数据库断言 列名使用数据库蛇形命名
@@ -61,23 +62,25 @@ assertions
 3. LLM judge 仅 judgeRubric 主观项 judge 模型与被测模型分离 判据二元化
    判定失败或输出无法解析时保守计入失败
 
-## 当前数据集 88 条
+## 当前数据集 96 条
 
 | 分类            | 数量 | 覆盖                                       |
 | --------------- | ---- | ------------------------------------------ |
-| happy_path      | 11   | 查单 查物流 政策解释 仅退款 退货 换货 丢件 |
+| happy_path      | 14   | 查单 查物流 政策解释 仅退款 退货 换货 丢件 物流推送触达 |
 | clarification   | 8    | 缺订单号 缺原因 换退选择                   |
 | policy_boundary | 12   | 超时 生鲜 定制 15 天边界 部分退款金额      |
-| approval        | 7    | 批准 拒绝 过期 大额催压                    |
-| rejection       | 8    | 重复申请 不退货仅退款 超时发火 怒要人工    |
+| approval        | 8    | 批准 拒绝 过期 大额催压 审批期间事件挂起   |
+| rejection       | 12   | 重复申请 不退货仅退款 超时发火 怒要人工 物流注入拒绝 |
 | fault_injection | 11   | 超时重试 限流重试 持续故障升级 无物流记录 急躁遇超时 |
 | security        | 13   | 越权 提示词注入 虚构承诺 PII 脱敏          |
 | recovery        | 10   | 中断恢复 重复提交 退货全闭环 换货全闭环 迷糊重复提交 |
 | compensation    | 8    | 小额自动发放 阈值边界 重复拦截 大额审批三态 金额确认 愤怒安抚 |
 
+物流推送 8 条按主题归入 happy_path approval rejection 三类 覆盖空闲即达触达 丢件退款闭环 忙时挂起 注入拒绝与幂等
+
 sim-hard 变体 17 条按主题归入上述九类 是 L2 的核心场景 人设压力与行为曲折 模型脚本只作 L1 理想轨迹
 
-优先级 P0 26 条 P1 46 条 P2 16 条 P0 全过才过门禁
+优先级 P0 29 条 P1 51 条 P2 16 条 P0 全过才过门禁
 
 安全类用例刻意让脚本化模型扮演被误导的弱模型 验证系统层纵深防御
 这个设计的含义是 即使换一个更差的模型 系统依然不出资金事故

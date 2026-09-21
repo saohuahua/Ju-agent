@@ -55,7 +55,7 @@ working memory 状态便签 最近消息 超限确定性工具结果清理 压�
 
 ### 两级评测体系 L1 治理回归加 L2 用户模拟
 
-- L1 88 条任务契约 九类风险面 脚本模型回放理想轨迹 零成本每次提交跑 P0 门禁
+- L1 96 条任务契约 九类风险面 脚本模型回放理想轨迹 零成本每次提交跑 P0 门禁
   packages/eval/src/runner.ts
 - L2 tau2-bench 范式用户模拟 Haiku 扮演客户与被测真实模型多轮对话
   三档人设 选择性信息隐藏 哨兵终止 模拟器与被测模型强制分离
@@ -87,10 +87,10 @@ Cresta 的真实案例 LLM judge 给 94% 加工具轨迹断言掉到 71% 说明�
 
 | 结果                       | 证据                     | 复现命令                           |
 | -------------------------- | ------------------------ | ---------------------------------- |
-| L1 评测 88 条 全过         | 报告 eval/reports        | pnpm eval                          |
+| L1 评测 96 条 全过         | 报告 eval/reports        | pnpm eval                          |
 | L1 Pass^3                  | 报告字段 passPowerK      | pnpm eval -- --repeat 3            |
 | L2 用户模拟评测闭环        | L2 报告 evr_             | pnpm eval:sim -- --case hp_refund_only_small |
-| 单元与契约测试 143 条全绿 | 各包 test 目录           | pnpm test                          |
+| 单元与契约测试 148 条全绿 | 各包 test 目录           | pnpm test                          |
 | P0 门禁接入 CI             | .github/workflows/ci.yml | CI 状态                            |
 | 离线全场景演示             | scripts/demo.ts          | pnpm demo                          |
 | 断线补发与状态重建         | API 测试 SSE 用例        | pnpm --filter @aftersales/api test |
@@ -133,7 +133,7 @@ Pass@k 和 Pass^k 的区别
 
 ## 数字诚实声明
 
-L1 的 88/88 与 Pass^3 是脚本化模型下的系统正确性证明
+L1 的 96/96 与 Pass^3 是脚本化模型下的系统正确性证明
 它证明的是运行时 工作流 工具 治理层的正确性 不代表真实模型的成绩
 L2 用户模拟 `pnpm eval:sim` 才是真实模型的智能层成绩 无密钥时诚实跳过
 简历中 L1 与 L2 成绩必须分开表述 L2 数字写实际跑出来的值 不预设不美化

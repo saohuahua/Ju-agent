@@ -45,6 +45,8 @@ export interface Order {
 export interface ShipmentEventEntry {
   time: string
   description: string
+  /** 注入事件的唯一标识 同 id 重复注入按此幂等拒绝 */
+  eventId?: string
 }
 
 export interface Shipment {
@@ -52,10 +54,12 @@ export interface Shipment {
   orderNo: string
   carrier: string
   trackingNo: string
-  status: 'in_transit' | 'delivered' | 'lost' | 'exception'
+  status: 'in_transit' | 'delayed' | 'delivered' | 'lost' | 'exception'
   events: ShipmentEventEntry[]
   deliveredAt: string | null
   updatedAt: string
+  /** 乐观锁版本号 */
+  version: number
 }
 
 export interface PolicyDecisionRecord {

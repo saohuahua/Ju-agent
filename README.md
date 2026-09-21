@@ -14,8 +14,9 @@
 - **能力门控** 未查过订单前 业务动作工具不出现在模型的工具目录 结构性防盲提交 而非提示词恳求
 - **副作用安全** 业务幂等键 一次性审批令牌 网关级去重三道防线 重复退款被结构性排除
 - **现金红包补偿** 物流延误与服务道歉安抚 50 元分界分级 小额自动发放 大额人工审批 同订单同原因仅一次
+- **物流事件推送** 运营注入物流状态变化 空闲会话即达即触达主动告知 忙时挂起下一轮 已签收订单拒绝回退
 - **断点恢复** 工作流逐步存档 模型调用无状态可重放 进程中断后从事件重建续跑
-- **两级评测** L1 脚本化回归（88 条 零成本 CI 门禁）+ L2 用户模拟（τ²-bench 范式 Haiku 扮演客户与真实模型多轮对话 三层判定）
+- **两级评测** L1 脚本化回归（96 条 零成本 CI 门禁）+ L2 用户模拟（τ²-bench 范式 Haiku 扮演客户与真实模型多轮对话 三层判定）
 - **离线可复现** 脚本化模型加冻结时钟 无密钥无外部依赖 L1 全链路可跑可测
 
 ## 快速开始
@@ -46,7 +47,7 @@ pnpm dev:web         # 启动工作台 http://localhost:8790 (另开终端)
 pnpm test            # 全部单元与契约测试
 pnpm typecheck       # 类型检查
 pnpm lint            # 静态检查
-pnpm eval            # L1 脚本化回归 单轮 88 条 零成本
+pnpm eval            # L1 脚本化回归 单轮 96 条 零成本
 pnpm eval -- --repeat 3     # L1 三轮 输出 Pass^3
 pnpm eval:sim        # L2 用户模拟评测 P0 全量 需要密钥
 pnpm eval:sim -- --repeat 3       # L2 三轮 Pass^3
@@ -74,7 +75,7 @@ L2 评测用 Haiku 扮演客户与被测模型多轮对话 模拟器与被测模
 
 | 层级 | 指标 | 当前值 |
 | ---- | ---- | ------ |
-| L1 脚本化（治理回归） | 任务成功率 | 88/88 |
+| L1 脚本化（治理回归） | 任务成功率 | 96/96 |
 | L1 脚本化（治理回归） | P0 门禁 | 通过 |
 | L2 用户模拟（真实模型） | 任务成功率 | 运行 `pnpm eval:sim` 获取 |
 
@@ -92,7 +93,7 @@ packages/
   workflow/      确定性工作流引擎 审批 断点 租约
   agent/         原生 Agent 循环 tool-defs 上下文管理 Anthropic 与脚本化适配器
   runtime/       组合根 评测与 API 共用装配
-  eval/          评测运行器 用户模拟器 judge 三层判定 88 条用例数据集
+  eval/          评测运行器 用户模拟器 judge 三层判定 96 条用例数据集
 apps/
   api/           Hono HTTP 服务 REST SSE 审批 运营端点
   web/           Next.js 工作台 会话 审批中心 运行详情 评测看板
@@ -119,6 +120,7 @@ POST /api/runs                              创建售后会话
 POST /api/runs/:id/messages                 补问答复
 POST /api/runs/:id/resume                   断点恢复 操作员
 POST /api/runs/:id/approvals/:aid/decide    审批决定 主管
+POST /api/runs/:id/logistics-events         物流事件注入 操作员
 GET  /api/runs/:id/events                   SSE 事件流 Last-Event-ID 补发
 GET  /api/runs/:id/events/json              事件 JSON 查询
 GET  /api/approvals                         待审批列表

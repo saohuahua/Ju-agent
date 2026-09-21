@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AppShell } from '@/components/AppShell'
 import { ApprovalCard } from '@/components/ApprovalCard'
+import { LogisticsCard } from '@/components/LogisticsCard'
 import { Skeleton } from '@/components/Skeleton'
 import { StatusBadge } from '@/components/StatusBadge'
 import { ToolCard } from '@/components/ToolCard'
@@ -157,6 +158,10 @@ export default function WorkbenchPage() {
               {message.text}
               {message.streaming && <span className="ml-1 animate-pulse">▍</span>}
             </div>
+          ))}
+
+          {state.logistics.map((item, index) => (
+            <LogisticsCard key={`${item.orderNo}-${index}`} item={item} />
           ))}
 
           {state.tools.length > 0 && (

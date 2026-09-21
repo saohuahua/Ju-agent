@@ -75,6 +75,7 @@ export function useRunEvents(runId: string | null): SseSession {
       'tool.completed',
       'approval.required',
       'approval.decided',
+      'logistics.event',
       'run.paused',
       'run.resumed',
       'run.failed',
