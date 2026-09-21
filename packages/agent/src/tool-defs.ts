@@ -23,6 +23,9 @@ export const ACTION_TOOLS: Intent[] = [
 
 export const ASK_USER_TOOL = 'ask_user'
 
+/** 任务完结协议工具 模型显式声明最终答复 结构上区分提问与完结 */
+export const CONCLUDE_TOOL = 'conclude'
+
 function describeTool(name: string): string {
   const descriptor = TOOL_CATALOG.find((tool) => tool.name === name)
   return descriptor?.description ?? name
@@ -76,6 +79,20 @@ export function buildAskUserToolDefinition(): ToolDefinition {
   }
 }
 
+/** 完结工具定义 模型给出最终答复时显式调用 声明任务结束 */
+export function buildConcludeToolDefinition(): ToolDefinition {
+  return {
+    name: CONCLUDE_TOOL,
+    description:
+      '任务已完成或已给出最终答复时调用 结束本次售后任务 并附一句话结果摘要 未调用此工具而直接输出文本会被视为等待用户回复',
+    inputSchema: jsonSchema(
+      z.object({
+        summary: z.string().min(1).describe('一句话结果摘要 供运营与审计'),
+      }),
+    ),
+  }
+}
+
 /** 单步工具目录 prepareStep 语义 能力门控在调用方决定 action 可见性 */
 export function buildStepTools(options: { actionsAvailable: boolean }): ToolDefinition[] {
   const actions = options.actionsAvailable ? ACTION_TOOLS : []
@@ -83,6 +100,7 @@ export function buildStepTools(options: { actionsAvailable: boolean }): ToolDefi
     ...buildReadToolDefinitions(),
     ...buildActionToolDefinitions(actions),
     buildAskUserToolDefinition(),
+    buildConcludeToolDefinition(),
   ]
 }
 

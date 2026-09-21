@@ -28,6 +28,7 @@ import {
 import { buildSystemPrompt, PROMPT_VERSION } from './prompt.js'
 import {
   ASK_USER_TOOL,
+  CONCLUDE_TOOL,
   buildStepTools,
   isActionTool,
 } from './tool-defs.js'
@@ -198,25 +199,44 @@ export class AgentRunner {
         await this.emitMessageCompleted(runId, turn.text)
       }
 
-      if (turn.stopReason === 'end_turn') {
-        if (!turn.text.trim()) {
-          return this.failRun(runId, 'VALIDATION_ERROR', '模型轮次未产出任何内容')
+      const toolBlocks = turn.blocks.filter(
+        (block): block is Extract<AssistantBlock, { type: 'tool_use' }> => block.type === 'tool_use',
+      )
+
+      // 纯文本轮即等待用户回复 模型完成任务须显式调用 conclude
+      if (toolBlocks.length === 0) {
+        if (turn.stopReason === 'end_turn') {
+          if (!turn.text.trim()) {
+            return this.failRun(runId, 'VALIDATION_ERROR', '模型轮次未产出任何内容')
+          }
+          await this.deps.runs.transition(runId, 'awaiting_input')
+          await this.deps.runs.emit(runId, 'run.paused', {
+            reason: 'awaiting_input',
+            hint: redactText(turn.text).slice(0, 120),
+          })
+          return 'awaiting_input'
         }
-        const answer = redactText(turn.text)
-        await this.deps.runs.transition(runId, 'completed')
-        await this.deps.runs.emit(runId, 'run.completed', {
-          summary: answer.slice(0, 120),
-          escalated: false,
-        })
-        return 'completed'
+        return this.failRun(runId, 'VALIDATION_ERROR', '模型轮次无可执行的输出')
       }
 
-      // tool_use 轮次 按序执行每个工具块
-      for (const block of turn.blocks) {
-        if (block.type !== 'tool_use') continue
+      // 工具轮 按序执行每个工具块
+      for (const block of toolBlocks) {
         if (block.toolName === ASK_USER_TOOL) {
           await this.handleAskUser(runId, block)
           return 'awaiting_input'
+        }
+        if (block.toolName === CONCLUDE_TOOL) {
+          const answer = redactText(turn.text || '任务已完成')
+          const summary =
+            typeof block.input.summary === 'string' && block.input.summary.trim()
+              ? redactText(block.input.summary)
+              : answer.slice(0, 120)
+          await this.deps.runs.transition(runId, 'completed')
+          await this.deps.runs.emit(runId, 'run.completed', {
+            summary,
+            escalated: false,
+          })
+          return 'completed'
         }
         if (isActionTool(block.toolName)) {
           const outcome = await this.handleActionTool(runId, block, toolContext)

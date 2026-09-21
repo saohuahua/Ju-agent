@@ -7,7 +7,7 @@
  */
 
 import type { AgentOutput } from '@aftersales/contracts'
-import { ASK_USER_TOOL } from './tool-defs.js'
+import { ASK_USER_TOOL, CONCLUDE_TOOL } from './tool-defs.js'
 import {
   type ChatModel,
   type ModelInfo,
@@ -69,7 +69,13 @@ export function* convertScriptTurn(
       if (output.answer) {
         yield { type: 'text_delta', text: output.answer }
       }
-      yield { type: 'turn_completed', stopReason: 'end_turn', usage: SCRIPTED_USAGE }
+      yield { type: 'tool_call_start', toolCallId, toolName: CONCLUDE_TOOL }
+      yield {
+        type: 'tool_input_delta',
+        toolCallId,
+        partialJson: JSON.stringify({ summary: output.summary || output.answer.slice(0, 60) }),
+      }
+      yield { type: 'turn_completed', stopReason: 'tool_use', usage: SCRIPTED_USAGE }
       break
     }
     case 'escalate': {

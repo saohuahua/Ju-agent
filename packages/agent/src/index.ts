@@ -27,6 +27,7 @@ export {
 export {
   ACTION_TOOLS,
   ASK_USER_TOOL,
+  CONCLUDE_TOOL,
   buildStepTools,
   isActionTool,
 } from './tool-defs.js'
