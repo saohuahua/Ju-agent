@@ -1,12 +1,15 @@
 /**
  * Agent 运行循环测试
  *
- * 覆盖 查单 补问 动作执行 审批恢复 注入防御与步数上限
+ * 覆盖 查单 补问 动作执行 审批恢复 注入防御 步数上限与模型故障
  * 脚本化模型输出与真实轨迹一一对应 轨迹回归即刻暴露
  */
 
 import { describe, expect, it } from 'vitest'
+import { createToolError } from '@aftersales/contracts'
+import { DomainError } from '@aftersales/domain'
 import { ScriptExhaustedError } from '../src/index.js'
+import type { ChatModel, ModelInfo, ModelRequest, ModelStreamEvent } from '../src/model.js'
 import { composeAgentSystem, seedOrder, startRun } from './helpers.js'
 
 const customer = { role: 'customer' as const, customerId: 'C1001' }
@@ -226,6 +229,89 @@ describe('安全与防御', () => {
       deliveredAt: '2026-09-15T12:00:00.000Z',
     })
     await expect(startRun(system, customer, '查单')).rejects.toBeInstanceOf(ScriptExhaustedError)
+  })
+})
+
+describe('模型故障与重试', () => {
+  /** 可控故障模型 每轮消费一次行为 缺省重复最后一次 */
+  function faultyModel(
+    behaviors: Array<() => AsyncIterable<ModelStreamEvent>>,
+    info: ModelInfo = { provider: 'test', model: 'faulty' },
+  ): ChatModel & { calls: number } {
+    return {
+      info,
+      calls: 0,
+      async *stream(_request: ModelRequest): AsyncIterable<ModelStreamEvent> {
+        const behavior = behaviors[Math.min(this.calls, behaviors.length - 1)]!
+        this.calls += 1
+        yield* behavior()
+      },
+    }
+  }
+
+  const upstreamError = () => new DomainError(createToolError('UPSTREAM_ERROR', '模型服务异常 503'))
+  const throwOnRequest = () => {
+    return {
+      async *[Symbol.asyncIterator]() {
+        throw upstreamError()
+      },
+    }
+  }
+
+  it('模型持续故障 运行迁移 failed 不悬停 running', async () => {
+    const model = faultyModel([throwOnRequest])
+    const system = composeAgentSystem([], 8, model)
+    seedOrder(system.repos, {
+      orderNo: 'SO-2026-0003',
+      status: 'delivered',
+      deliveredAt: '2026-09-15T12:00:00.000Z',
+    })
+    const { runId, outcome } = await startRun(system, customer, '查单')
+    expect(outcome).toBe('failed')
+    expect(model.calls).toBe(3)
+    const run = await system.runService.get(runId)
+    expect(run.status).toBe('failed')
+    const events = await system.repos.eventRepo.listByRun(runId)
+    const failed = events.find((e) => e.type === 'run.failed')
+    expect((failed?.payload as { errorCode?: string }).errorCode).toBe('UPSTREAM_ERROR')
+  })
+
+  it('瞬态故障未产出内容前重试成功', async () => {
+    const model = faultyModel([
+      throwOnRequest,
+      async function* () {
+        yield { type: 'text_delta', text: '请提供订单号' }
+        yield {
+          type: 'turn_completed',
+          stopReason: 'end_turn',
+          usage: { inputTokens: 10, outputTokens: 5, costUsd: null },
+        }
+      },
+    ])
+    const system = composeAgentSystem([], 8, model)
+    const { runId, outcome } = await startRun(system, customer, '退款')
+    expect(outcome).toBe('awaiting_input')
+    expect(model.calls).toBe(2)
+    const run = await system.runService.get(runId)
+    expect(run.status).toBe('awaiting_input')
+    const events = await system.repos.eventRepo.listByRun(runId)
+    expect(events.some((e) => e.type === 'run.failed')).toBe(false)
+  })
+
+  it('已流出部分内容后故障不重试 直接失败', async () => {
+    const model = faultyModel([
+      async function* () {
+        yield { type: 'text_delta', text: '我来帮您' }
+        throw upstreamError()
+      },
+    ])
+    const system = composeAgentSystem([], 8, model)
+    const { runId, outcome } = await startRun(system, customer, '查单')
+    expect(outcome).toBe('failed')
+    // 已产出增量 重放会产生重复事件 不重试
+    expect(model.calls).toBe(1)
+    const events = await system.repos.eventRepo.listByRun(runId)
+    expect(events.some((e) => e.type === 'run.failed')).toBe(true)
   })
 })
 

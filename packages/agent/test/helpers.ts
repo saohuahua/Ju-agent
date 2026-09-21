@@ -21,11 +21,16 @@ import { buildToolRegistry, ToolExecutor } from '@aftersales/tools'
 import { WorkflowEngine } from '@aftersales/workflow'
 import { AgentRunner } from '../src/agent.js'
 import { ScriptedModel } from '../src/scripted-model.js'
+import type { ChatModel } from '../src/model.js'
 import type { AgentOutput } from '@aftersales/contracts'
 
 export const AGENT_TEST_TIME = '2026-09-20T12:00:00.000Z'
 
-export function composeAgentSystem(script: AgentOutput[], maxSteps = 8) {
+export function composeAgentSystem(
+  script: AgentOutput[],
+  maxSteps = 8,
+  modelOverride?: ChatModel,
+) {
   const repos = testing.createInMemoryRepositories()
   const clock = new FrozenClock(AGENT_TEST_TIME)
   const auditService = new AuditService(repos.auditRepo, clock)
@@ -100,7 +105,7 @@ export function composeAgentSystem(script: AgentOutput[], maxSteps = 8) {
     leaseRepo: repos.leaseRepo,
     clock,
   })
-  const model = new ScriptedModel(script)
+  const model = modelOverride ?? new ScriptedModel(script)
   const runner = new AgentRunner({
     model,
     executor,

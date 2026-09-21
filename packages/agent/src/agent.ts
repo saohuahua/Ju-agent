@@ -30,6 +30,7 @@ import {
   type ChatModel,
   type ModelMessage,
   type ToolDefinition,
+  ScriptExhaustedError,
 } from './model.js'
 import { buildSystemPrompt, PROMPT_VERSION } from './prompt.js'
 import {
@@ -44,6 +45,18 @@ import { buildManagedContext } from './context.js'
 /** 一轮处理的终态 */
 export type RunOutcome =
   'completed' | 'awaiting_input' | 'awaiting_approval' | 'failed' | 'escalated'
+
+/** 模型轮次最大尝试次数 上游瞬态故障在尚未产出任何字节前重试 */
+const MODEL_TURN_ATTEMPTS = 3
+/** 重试退避基数毫秒 按尝试次数线性递增 */
+const MODEL_TURN_RETRY_BACKOFF_MS = 800
+/** 可安全重试的瞬态错误码 确定性校验类错误不在其列 */
+const TRANSIENT_MODEL_ERROR_CODES = new Set(['UPSTREAM_ERROR', 'TIMEOUT', 'RATE_LIMITED'])
+
+/** 提取 DomainError 携带的错误形状 供失败迁移与重试判定复用 */
+function errorShapeOf(error: unknown): ToolErrorShape | null {
+  return (error as DomainError & { shape?: ToolErrorShape }).shape ?? null
+}
 
 export interface AgentRunnerDeps {
   model: ChatModel
@@ -225,7 +238,20 @@ export class AgentRunner {
       })
       const tools = await this.prepareStepTools(runId)
 
-      const turn = await this.runModelTurn(runId, system, context.messages, tools)
+      let turn: ModelTurn
+      try {
+        turn = await this.runModelTurn(runId, system, context.messages, tools)
+      } catch (error) {
+        // 脚本耗尽属评测脚手架信号 按既有契约抛出 评测层归为 exception 失败
+        if (error instanceof ScriptExhaustedError) throw error
+        // 模型服务异常不能悬停在 running 状态机约定 running --模型错误--> failed 事件表与客户端都可见失败
+        const shape = errorShapeOf(error)
+        return this.failRun(
+          runId,
+          shape?.code ?? 'INTERNAL_ERROR',
+          shape ? describeToolError(shape) : error instanceof Error ? error.message : String(error),
+        )
+      }
       await this.deps.eventRepo.append(runId, 'agent.turn', {
         blocks: turn.blocks,
         stopReason: turn.stopReason,
@@ -294,12 +320,50 @@ export class AgentRunner {
     return this.failRun(runId, 'INTERNAL_ERROR', '达到单轮最大步骤数')
   }
 
-  /** 消费模型流 累积文本与工具块 增量事件先落库 */
+  /**
+   * 消费模型流 累积文本与工具块 增量事件先落库
+   *
+   * 上游瞬态故障在尚未流出任何增量前重试 已产出部分内容则如实抛出
+   * 重放会向事件表写入重复增量 破坏事件回放
+   */
   private async runModelTurn(
     runId: string,
     system: string,
     messages: ModelMessage[],
     tools: ToolDefinition[],
+  ): Promise<ModelTurn> {
+    let lastError: unknown = null
+    for (let attempt = 1; attempt <= MODEL_TURN_ATTEMPTS; attempt++) {
+      const progress = { emitted: false }
+      try {
+        return await this.streamModelTurn(runId, system, messages, tools, progress)
+      } catch (error) {
+        lastError = error
+        const code = errorShapeOf(error)?.code
+        if (
+          attempt < MODEL_TURN_ATTEMPTS &&
+          !progress.emitted &&
+          code !== undefined &&
+          TRANSIENT_MODEL_ERROR_CODES.has(code)
+        ) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, MODEL_TURN_RETRY_BACKOFF_MS * attempt),
+          )
+          continue
+        }
+        throw error
+      }
+    }
+    throw lastError
+  }
+
+  /** 单次模型流消费 增量事件边流边落库 产出标记回传给重试层 */
+  private async streamModelTurn(
+    runId: string,
+    system: string,
+    messages: ModelMessage[],
+    tools: ToolDefinition[],
+    progress: { emitted: boolean },
   ): Promise<ModelTurn> {
     const toolBlocks: AssistantBlock[] = []
     const toolJson = new Map<string, string>()
@@ -307,6 +371,7 @@ export class AgentRunner {
     let stopReason: ModelTurn['stopReason'] = 'end_turn'
 
     for await (const event of this.deps.model.stream({ system, messages, tools })) {
+      progress.emitted = true
       if (event.type === 'text_delta') {
         text += event.text
         // 逐段脱敏 完整文本以 message.completed 为准 跨段边界的敏感串以完成事件覆盖
