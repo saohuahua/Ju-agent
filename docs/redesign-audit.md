@@ -3,12 +3,15 @@
 > 本文档是 AfterSales Copilot 前端重设计的总依据，由阶段 0 审计产生。
 > 后续阶段（阶段 1-4）的每一次改动都必须遵守本文档的「问题清单」与「功能红线」。
 > 审计范围：apps/web 全部页面与组件（只读审计），审计日期：2026-09-21。
+>
+> 修订记录：
+> - 2026-09-21（v2 Part 1 面 1 设计，经用户确认）：色板从「暖白 stone + sage」升级为「纯白 + 电光蓝」。原因：暖米底色 + sage 绿主色整体观感偏暗沉、过于 AI 默认味。中性色 stone 全系替换为 zinc 冷灰，主色 sage 全系替换为 blue。语义状态色 muted pastel、圆角体系、密度与动效规则不变。旧 stone/sage token 值保留于本修订记录，不再使用。
 
 ---
 
 ## 一、审计结论（诊断摘要）
 
-当前 UI 是典型的「暗色 console 风格 AI 工具默认审美」：全站深色 slate 底、高饱和实底状态色、无设计 token 体系、无 focus-visible / loading 状态、圆角与字体全站不一致。这与产品定位「可评测、可恢复、可审计的治理型售后 Agent」严重不符，也与重设计定调（暖白浅色、editorial、克制）相反。
+当前 UI 是典型的「暗色 console 风格 AI 工具默认审美」：全站深色 slate 底、高饱和实底状态色、无设计 token 体系、无 focus-visible / loading 状态、圆角与字体全站不一致。这与产品定位「可评测、可恢复、可审计的治理型售后 Agent」严重不符，也与重设计定调（亮白浅色、editorial、克制）相反。
 
 诊断分类：
 
@@ -28,13 +31,13 @@
 
 | # | 问题 | 位置 | 说明与处置 |
 | --- | --- | --- | --- |
-| A1 | 全站暗色 console 主题 | [layout.tsx:12](../../apps/web/src/app/layout.tsx#L12) `bg-slate-950 text-slate-100`；[globals.css:4](../../apps/web/src/app/globals.css#L4) `color-scheme: dark` | AI 工具默认审美。阶段 0 切换为暖白浅色（stone 系）。 |
+| A1 | 全站暗色 console 主题 | [layout.tsx:12](../../apps/web/src/app/layout.tsx#L12) `bg-slate-950 text-slate-100`；[globals.css:4](../../apps/web/src/app/globals.css#L4) `color-scheme: dark` | AI 工具默认审美。阶段 0 切换为暖白浅色（stone 系），v2 Part 1 升级为纯白亮色（zinc 中性，见修订记录）。 |
 | A2 | 无设计 token 体系 | [globals.css:1-21](../../apps/web/src/app/globals.css#L1) 仅滚动条样式 | 颜色、圆角、边框、字距全部硬编码在各组件。阶段 0 在 globals.css 以 Tailwind v4 `@theme` 建立 token。 |
 | A3 | 圆角无体系 | rounded-md/lg/2xl/full 混用：[AppShell.tsx:49](../../apps/web/src/components/AppShell.tsx#L49)、[workbench/page.tsx:122,134,166,189,194](../../apps/web/src/app/workbench/page.tsx#L122)、[approvals/page.tsx:70,77,102,109](../../apps/web/src/app/approvals/page.tsx#L70)、[runs/page.tsx:36](../../apps/web/src/app/runs/page.tsx#L36)、[runs/[runId]/page.tsx:90,98,135](../../apps/web/src/app/runs/[runId]/page.tsx#L90)、[eval/page.tsx:101,126,153,171](../../apps/web/src/app/eval/page.tsx#L101)、[StatusBadge.tsx:24](../../apps/web/src/components/StatusBadge.tsx#L24)、[ToolCard.tsx:27](../../apps/web/src/components/ToolCard.tsx#L27)、[ApprovalCard.tsx:43,59,67](../../apps/web/src/components/ApprovalCard.tsx#L43) | 锁定为容器 10px / 控件 8px / 徽章 6px（token：rounded-container / rounded-control / rounded-badge）。 |
 | A4 | 浏览器默认字体，无等宽统一 | [layout.tsx:11](../../apps/web/src/app/layout.tsx#L11) 未设 font-family | 阶段 0 在 globals.css 定义 --font-sans / --font-mono；数字与 ID 一律等宽或 tabular-nums。 |
 | A5 | 金额无千分位且未用等宽 | [runReducer.ts:208-211](../../apps/web/src/lib/runReducer.ts#L208) 输出 `¥6999.00`；[approvals/page.tsx:82-84](../../apps/web/src/app/approvals/page.tsx#L82) 金额 span 非 mono | 硬约束要求 `¥12,345.67`。阶段 0 改 formatAmount 展示层并同步测试；金额一律 tabular-nums 或 font-mono。 |
 | A6 | 高饱和实底状态徽章 | [StatusBadge.tsx:10-18](../../apps/web/src/components/StatusBadge.tsx#L10) 全部 `bg-*-600 text-white` | 阶段 0 改 muted pastel：浅底 + 深字 + 细边 pill。 |
-| A7 | 主色 sky-600 高饱和且无全站锁定 | [AppShell.tsx:50](../../apps/web/src/components/AppShell.tsx#L50)、[workbench/page.tsx:136,189,194](../../apps/web/src/app/workbench/page.tsx#L136)、[eval/page.tsx:90](../../apps/web/src/app/eval/page.tsx#L90)、[runs/page.tsx:70](../../apps/web/src/app/runs/page.tsx#L70) | 阶段 0 锁定唯一低饱和主色 sage（自定义 token），全站禁用蓝紫渐变。 |
+| A7 | 主色 sky-600 高饱和且无全站锁定 | [AppShell.tsx:50](../../apps/web/src/components/AppShell.tsx#L50)、[workbench/page.tsx:136,189,194](../../apps/web/src/app/workbench/page.tsx#L136)、[eval/page.tsx:90](../../apps/web/src/app/eval/page.tsx#L90)、[runs/page.tsx:70](../../apps/web/src/app/runs/page.tsx#L70) | 阶段 0 锁定 sage，v2 Part 1 经用户确认升级为唯一主色电光蓝 blue（自定义 token），全站禁用渐变与多主色。 |
 | A8 | 暗色滚动条硬编码 | [globals.css:8-20](../../apps/web/src/app/globals.css#L8) | 阶段 0 随浅色主题重写。 |
 | A9 | 错误条暗色底 | [workbench/page.tsx:166-168](../../apps/web/src/app/workbench/page.tsx#L166)、[approvals/page.tsx:64-66](../../apps/web/src/app/approvals/page.tsx#L64)、[runs/page.tsx:32-34](../../apps/web/src/app/runs/page.tsx#L32)、[runs/[runId]/page.tsx:118-120](../../apps/web/src/app/runs/[runId]/page.tsx#L118)、[eval/page.tsx:96-98](../../apps/web/src/app/eval/page.tsx#L96) | 阶段 0 换浅色 red-50 底 + red-700 字；后续阶段考虑抽 ErrorBanner 共享组件。 |
 
@@ -58,7 +61,7 @@
 | C3 | 空状态仅文字，无图标无引导 | [approvals/page.tsx:70-72](../../apps/web/src/app/approvals/page.tsx#L70)、[runs/page.tsx:50-53](../../apps/web/src/app/runs/page.tsx#L50)、[eval/page.tsx:101-103](../../apps/web/src/app/eval/page.tsx#L101)、[workbench/page.tsx:106-112](../../apps/web/src/app/workbench/page.tsx#L106) | 后续阶段补 phosphor 图标 + 引导文案的空状态组件。 |
 | C4 | 表格容器 overflow-hidden，窄屏截断而非滚动 | [runs/page.tsx:36](../../apps/web/src/app/runs/page.tsx#L36)、[runs/[runId]/page.tsx:135](../../apps/web/src/app/runs/[runId]/page.tsx#L135) | 后续阶段改 overflow-x-auto。 |
 | C5 | 「详情 →」使用箭头字符 | [runs/page.tsx:72](../../apps/web/src/app/runs/page.tsx#L72) | 阶段 0 换 phosphor ArrowRight 图标。 |
-| C6 | 消息气泡 rounded-2xl 与圆角体系冲突、用户气泡高饱和 | [workbench/page.tsx:134-136](../../apps/web/src/app/workbench/page.tsx#L134) | 阶段 0 用户气泡改主色 sage 深底白字；圆角改容器级。 |
+| C6 | 消息气泡 rounded-2xl 与圆角体系冲突、用户气泡高饱和 | [workbench/page.tsx:134-136](../../apps/web/src/app/workbench/page.tsx#L134) | 阶段 0 用户气泡改主色深底白字（sage-700，v2 Part 1 起为 blue-600）；圆角改容器级。 |
 | C7 | 无 skip-link、无焦点管理 | 全站 | 后续阶段加 hidden skip-link（a11y）。 |
 | C8 | SSE 连接状态仅文字颜色区分 | [workbench/page.tsx:80-82](../../apps/web/src/app/workbench/page.tsx#L80) | 阶段 1 加语义点（已连接 emerald / 重连中 amber）。 |
 | C9 | 评测指标表未展示 passPowerK | [types.ts:62](../../apps/web/src/lib/types.ts#L62) 有字段，[eval/page.tsx](../../apps/web/src/app/eval/page.tsx) 未引用 | 功能遗漏，属产品功能补充，非视觉任务，记录待产品确认。 |
@@ -103,7 +106,7 @@
 2. 图标统一 `@phosphor-icons/react`，禁止手写 SVG path；图标库已在本阶段安装。
 3. 动效只用 200-300ms CSS 过渡（hover/active/状态切换），全部遵守 prefers-reduced-motion，不装动效库。
 4. 每阶段结束必须 `pnpm --filter web typecheck` 与 `pnpm --filter web test` 通过。
-5. 单一主色 sage 全站锁定；语义状态色 muted pastel 化：浅底 + 深字（进行中 sky / 成功 emerald / 失败 red / 等待 amber / 升级 purple / 审批 orange）。
+5. 单一主色电光蓝 blue 全站锁定（v2 Part 1 起，此前为 sage，见修订记录）；语义状态色 muted pastel 化：浅底 + 深字（进行中 sky / 成功 emerald / 失败 red / 等待 amber / 升级 purple / 审批 orange）。
 
 ---
 
@@ -111,9 +114,9 @@
 
 ### 4.1 色彩 token（Tailwind v4 @theme，globals.css）
 
-- 底色 canvas `#faf9f7`（暖白）；表面 surface `#ffffff`；墨色 ink `#1c1917`（stone-900）；hairline 边框 `#e7e5e4`。
-- 主色 sage 系（唯一低饱和交互色，全站锁定）：sage-50 `#f4f7f4` / sage-100 `#e7eee7` / sage-200 `#d0ddd1` / sage-300 `#aec4b0` / sage-400 `#86a489` / sage-500 `#64876a` / sage-600 `#4c6c53` / sage-700 `#3d5743` / sage-800 `#334738` / sage-900 `#2b3b2f`。按钮实底 sage-700 白字，hover sage-800。
-- 状态色全部 muted pastel：`{色}-50` 底 + `{色}-800` 字 + `{色}-200` 边（sky=进行中、emerald=成功、red=失败、amber=等待、purple=升级、orange=审批），中性 stone-100 底 + stone-600 字。
+- 底色 canvas `#ffffff`（纯白）；表面 surface `#ffffff`；墨色 ink `#18181b`（zinc-900）；hairline 边框 `#e5e7eb`（zinc-200）。中性辅助：hover 底 `#fafafa`、弱化文本 `#a1a1aa`、次级文本 `#71717a`、虚线/禁用 `#d4d4d8`。
+- 主色 blue 系（唯一高对比交互色，全站锁定）：blue-50 `#eff6ff` / blue-100 `#dbeafe` / blue-200 `#bfdbfe` / blue-300 `#93c5fd` / blue-500 `#3b82f6` / blue-600 `#2563eb` / blue-700 `#1d4ed8` / blue-800 `#1e40af`。按钮实底 blue-600 白字（对比度 5.16:1 过 AA），hover blue-700。
+- 状态色全部 muted pastel：`{色}-50` 底 + `{色}-800` 字 + `{色}-200` 边（sky=进行中、emerald=成功、red=失败、amber=等待、purple=升级、orange=审批），中性 zinc-100 底 + zinc-600 字。
 - 禁止渐变、重阴影（阴影仅在悬浮层级使用且 < 0.05 透明度）、纯黑纯白大块面。
 
 ### 4.2 圆角体系
@@ -129,7 +132,7 @@
 
 ### 4.4 标题模式（全站强制）
 
-页面顶部 = 左对齐大标题 + 右侧一行副文本（text-sm text-stone-500），禁止居中。有操作按钮的页面（eval、运行详情）按钮与副文本同排居右。对话页（workbench）副文本保留标题下方，为唯一例外。
+页面顶部 = 左对齐大标题 + 右侧一行副文本（text-sm text-zinc-500），禁止居中。有操作按钮的页面（eval、运行详情）按钮与副文本同排居右。对话页（workbench）副文本保留标题下方，为唯一例外。
 
 ### 4.5 交互状态
 
@@ -139,7 +142,7 @@
 
 ### 4.6 AppShell 规范
 
-暖白侧边栏 + hairline 右边框；品牌区「AfterSales Copilot」+ 副标题「可评测 · 可恢复的售后 Agent」；四个导航项各配一枚 phosphor 图标；active = sage-50 浅底 + 墨字 + 左侧 2px sage 竖条 + aria-current="page"；hover、focus-visible 齐全。身份切换 select 逻辑不动。
+纯白侧边栏 + hairline 右边框；品牌区「AfterSales Copilot」+ 副标题「可评测 · 可恢复的售后 Agent」；四个导航项各配一枚 phosphor 图标；active = blue-50 浅底 + 墨字 + 左侧 2px blue-600 竖条 + aria-current="page"；hover、focus-visible 齐全。身份切换 select 逻辑不动。
 
 ---
 

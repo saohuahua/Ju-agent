@@ -4,6 +4,13 @@
     {
       "name": "web",
       "url": "http://localhost:8790"
+    },
+    {
+      "name": "mockups",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8990", "--directory", "docs/v2-ui-mockups"],
+      "port": 8990,
+      "url": "http://localhost:8990"
     }
   ]
 }
