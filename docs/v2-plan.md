@@ -105,6 +105,19 @@
 - transcript 证明审批决策应用后恢复运行 模型未产出告知决策结果的消息 approve 时只说「请耐心等待」 reject/expire 时模型自行升级人工
 - 根因 resumeFromCheckpoint 恢复时未向模型注入审批决策结果 模型无从告知 需在恢复时注入决策通知 属提示词与 runner 交互缺口
 
+**执行记录 2026-09-21 功能 5 评测看板升级 commit 27da39f**
+
+- 契约 EvalFailure 结构化 kind 十种 判定四层映射 state/gateway 状态层 trajectory/escalation/clarify 轨迹层 args 参数层 communicate/judge 回复质量层 simulator 单独标注不计入成绩 exception 归状态层
+- Wilson 95% 置信区间 confidenceIntervals 仅 L2 计算 L1 确定性回放无采样方差 看板诚实声明分列展示
+- sim-suite.ts 抽离 CLI 与 API 共用套件运行器 进度回调 用例间 1.5s 节流 瞬态重试 3 次
+- API 新增 POST /api/eval/run-sim 后台任务 GET /api/eval/sim-tasks/:taskId 轮询 单实例进程内任务表 并发 409
+- 修复 API run 端点不落库 看板 L1 报告即时可见 修复 DB_PATH 相对路径 cwd 漂移双库（API 锚定仓库根）
+- 看板七区块 L1 L2 分列对比 Wilson 区间条 相邻 L2 报告改进显著性 分层指标四层 失败明细按层分组展开（kind 徽章 判据理由 失败导出路径 运行回放） 模拟对话开销 历史表 Pass^k 列
+- 抽样档用例数 p0 22 p1 22 p2 3 all 80 前端估算与后端 selectCases 对齐 单条估算 3500 token
+- 密钥缺失 key-warn 诚实降级 L2 禁用 L1 不受影响 浏览器预览验证进度轮询与自动刷新链路
+- 旧版报告失败字符串数组运行时兼容归入状态层 无 CI 的旧 L2 报告标注功能上线前
+- 校验 pnpm typecheck 全绿 pnpm test 全过 pnpm eval 80/80
+
 
 ### W2 证据层扩量
 
