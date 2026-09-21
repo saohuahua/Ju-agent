@@ -84,8 +84,18 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     await next()
   })
   app.use('/api/*', cors())
-  app.use('/api/*', requireActor)
 
+  // 根路径返回服务引导信息 浏览器直接访问不再 404
+  app.get('/', (context) => {
+    return context.json({
+      service: 'AfterSales Copilot API',
+      message: '这是纯 API 服务 请打开工作台前端使用',
+      workbench: 'http://localhost:8790',
+      docs: 'GET /api/health 健康检查 其余接口见 README 的 API 一览 需要演示令牌',
+    })
+  })
+
+  // 健康检查公开 不要求令牌 注册在认证中间件之前
   app.get('/api/health', (context) => {
     return context.json({
       status: 'ok',
@@ -93,6 +103,8 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
       promptVersion: PROMPT_VERSION,
     })
   })
+
+  app.use('/api/*', requireActor)
 
   // ---------- 运行管理 ----------
 

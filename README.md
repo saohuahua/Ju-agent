@@ -22,7 +22,7 @@
 pnpm install
 pnpm db:reset        # 重置数据库并载入演示数据
 pnpm dev             # 启动 API http://localhost:8787
-pnpm dev:web         # 启动工作台 http://localhost:5173 (另开终端)
+pnpm dev:web         # 启动工作台 http://localhost:8790 (另开终端)
 ```
 
 演示令牌

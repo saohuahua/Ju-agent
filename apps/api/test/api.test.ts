@@ -30,6 +30,23 @@ function auth(token: string): Record<string, string> {
 }
 
 describe('基础契约', () => {
+  it('根路径返回服务引导信息 浏览器直达不再 404', async () => {
+    const { app } = makeApp([])
+    const response = await app.request('/')
+    expect(response.status).toBe(200)
+    const body = (await response.json()) as { service: string; workbench: string }
+    expect(body.service).toContain('AfterSales Copilot API')
+    expect(body.workbench).toContain('8790')
+  })
+
+  it('健康检查公开可访问 无需令牌', async () => {
+    const { app } = makeApp([])
+    const response = await app.request('/api/health')
+    expect(response.status).toBe(200)
+    const body = (await response.json()) as { status: string }
+    expect(body.status).toBe('ok')
+  })
+
   it('健康检查返回模型可用状态', async () => {
     const { app } = makeApp([])
     const response = await app.request('/api/health', { headers: auth(CUSTOMER_TOKEN) })
