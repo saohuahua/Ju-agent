@@ -51,8 +51,10 @@ export function buildReadToolDefinitions(): ToolDefinition[] {
 export function buildActionToolDefinitions(available: Intent[]): ToolDefinition[] {
   const descriptions: Record<Intent, string> = {
     query_order: '查询订单状态',
-    submit_return: '发起退货退款申请 系统将执行政策判定与后续流程',
-    submit_refund_only: '发起仅退款申请 适用未发货取消或丢件等场景',
+    submit_return:
+      '发起退货退款申请 客户需寄回商品 原因槽位按客户表述选择 no_reason(不想要了/七天无理由) quality(质量问题) damaged(商品损坏) wrong_item(错发漏发) 系统将执行政策判定与后续流程',
+    submit_refund_only:
+      '发起仅退款申请 仅适用于无需寄回商品的场景 如未发货取消(unshipped_cancel) 丢件(lost_package) 质量问题(quality) 商品损坏(damaged) 错发漏发(wrong_item) 客户要求退货退钱时不要用本工具 用 submit_return',
     submit_exchange: '发起换货申请',
     cancel_return: '取消已创建的售后申请',
     compensation:
