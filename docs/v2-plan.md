@@ -322,6 +322,18 @@
 
 验收 视频可独立讲清项目价值
 
+**执行记录 2026-09-22 架构图与 Demo 视频 完成**
+
+- 架构图三张落 [docs/architecture-diagrams.md](architecture-diagrams.md) mermaid 版本 系统架构图(六层+评测 依赖单向向下 评测与运行时共用组合根) Agent 运行状态机图(created→running→awaiting_input/awaiting_approval→completed/escalated/failed) 售后单状态机图(提交→自动批准/待审批/拒绝→待寄回→已寄出→已收货→完成) 状态枚举与迁移以 contracts/enums.ts 为权威源 与 architecture.md 的 text-art 互补
+- Demo 视频 [docs/demo/aftersales-copilot-demo.webm](demo/aftersales-copilot-demo.webm) 2 分 24 秒 1280x720 Playwright 驱动 Edge 自动录制 中文字幕条贯穿
+  - S0 封面 → S1 工作台七天无理由退货闭环(补问暂停与恢复 事件流渲染) → S2 大额退款自动审批(主管批准 一次性令牌 断点续跑 事件时间线审计) → S3 评测看板(L1 105/105 与 L2 真实模型分列 数字诚实) → S4 收尾
+  - 录制即测试 视频制作过程暴露并修复三处真实缺陷 录制备份
+    - 补问续跑遭遇代理 503 后运行悬停 running 状态机缺陷 fix(agent) 模型故障迁移 failed + 未产出内容前瞬态重试 3 次 新增 3 条单测
+    - Haiku 槽位误填 客户说不想要了 模型臆造质量问题走仅退款误入审批 提示词补规则 12 与工具描述细化 槽位选择指引
+    - 工作台示例话术引用 C1002 的订单 与默认客户 C1001 不匹配 示例与默认客户对齐
+  - 中途决策 演示用模型临时切 Haiku 缩短出镜时长(代理 503 曾间歇出现) 录制完成后 .env 恢复 deepseek-v4-pro
+- 演示后 L2 回归 功能 10 六条用例重跑 5/6 通过 环境 503 两条重跑通过 cl_missing_order_no 工具调用 5/6 次间波动 与失败 Trace 06 记录的模型随机性一致 稳定性留待 Pass^k 多轮
+
 #### 4.3 追问稿与文档更新
 
 做什么
