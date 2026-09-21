@@ -5,8 +5,10 @@
  *
  * 展示最近评测报告的分层指标与分类结果
  * 支持一键触发脚本化套件 约 2 秒
+ * 视觉：极简排版式指标 大数字加留白分层 不用框线卡片
  */
 
+import { Gauge } from '@phosphor-icons/react'
 import { useCallback, useEffect, useState } from 'react'
 import { AppShell } from '@/components/AppShell'
 import { api } from '@/lib/api'
@@ -35,6 +37,27 @@ const CATEGORY_LABEL: Record<string, string> = {
   security: '安全防御',
   recovery: '恢复幂等',
 }
+
+/** 分层指标分组 组间 hairline 分割 */
+const METRIC_GROUPS: Array<{ title: string; keys: string[] }> = [
+  {
+    title: '正确性',
+    keys: [
+      'task_success_rate',
+      'side_effect_correctness',
+      'tool_selection_accuracy',
+      'tool_argument_accuracy',
+    ],
+  },
+  {
+    title: '安全治理',
+    keys: ['policy_violation_rate', 'duplicate_side_effect_rate', 'injection_defense_rate'],
+  },
+  {
+    title: '恢复协同',
+    keys: ['checkpoint_recovery_rate', 'clarification_quality', 'escalation_correctness'],
+  },
+]
 
 function percent(value: number): string {
   return `${(value * 100).toFixed(1)}%`
@@ -73,6 +96,7 @@ export default function EvalPage() {
   }
 
   const latest = reports[0]
+  const groupedKeys = new Set(METRIC_GROUPS.flatMap((group) => group.keys))
 
   return (
     <AppShell>
@@ -100,111 +124,182 @@ export default function EvalPage() {
         )}
 
         {!latest && !running && (
-          <div className="mt-6 rounded-container border border-dashed border-stone-300 px-6 py-12 text-center text-sm text-stone-500">
-            暂无评测报告 点击右上角运行评测套件
+          <div className="mt-6 flex flex-col items-center gap-2 rounded-container border border-dashed border-stone-300 px-6 py-12 text-sm text-stone-500">
+            <Gauge size={28} className="text-stone-300" aria-hidden="true" />
+            <span>暂无评测报告 点击右上角运行评测套件</span>
           </div>
         )}
 
         {latest && (
           <>
-            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <MetricTile label="用例总数" value={String(latest.total)} />
-              <MetricTile label="通过" value={String(latest.passed)} tone="good" />
-              <MetricTile
-                label="失败"
-                value={String(latest.failed)}
-                tone={latest.failed > 0 ? 'bad' : undefined}
-              />
-              <MetricTile
-                label="P0 门禁"
-                value={latest.gatePassed ? '通过' : '未通过'}
-                tone={latest.gatePassed ? 'good' : 'bad'}
-              />
+            <div className="mt-8 flex flex-wrap items-end gap-x-12 gap-y-6 border-b border-hairline pb-8">
+              <div>
+                <div className="text-xs text-stone-500">用例总数</div>
+                <div className="mt-1 text-5xl font-semibold tabular-nums tracking-tight text-stone-900">
+                  {latest.total}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-stone-500">通过</div>
+                <div className="mt-1 text-5xl font-semibold tabular-nums tracking-tight text-emerald-700">
+                  {latest.passed}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-stone-500">失败</div>
+                <div
+                  className={`mt-1 text-5xl font-semibold tabular-nums tracking-tight ${
+                    latest.failed > 0 ? 'text-red-700' : 'text-stone-900'
+                  }`}
+                >
+                  {latest.failed}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-stone-500">P0 门禁</div>
+                <div
+                  className={`mt-1 text-5xl font-semibold tracking-tight ${
+                    latest.gatePassed ? 'text-emerald-700' : 'text-red-700'
+                  }`}
+                >
+                  {latest.gatePassed ? '通过' : '未通过'}
+                </div>
+              </div>
             </div>
 
             {latest.report.metrics && (
-              <section className="mt-6">
-                <h2 className="mb-2 text-sm font-medium text-stone-700">分层指标</h2>
-                <div className="overflow-hidden rounded-container border border-hairline bg-white">
-                  <table className="w-full text-sm">
-                    <thead className="text-left text-xs text-stone-500">
-                      <tr className="border-b border-hairline bg-stone-50">
-                        <th className="px-4 py-2 font-medium">指标</th>
-                        <th className="px-4 py-2 font-medium">数值</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-hairline">
-                      {Object.entries(latest.report.metrics).map(([key, value]) => (
-                        <tr key={key}>
-                          <td className="px-4 py-2 text-stone-700">{METRIC_LABEL[key] ?? key}</td>
-                          <td className="px-4 py-2 font-mono tabular-nums text-stone-900">
-                            {percent(value)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              <section className="mt-8">
+                <h2 className="text-sm font-medium text-stone-700">分层指标</h2>
+                <div className="mt-2">
+                  {METRIC_GROUPS.map((group, groupIndex) => {
+                    const rows = group.keys
+                      .map((key) => [key, latest.report.metrics![key]] as const)
+                      .filter((entry): entry is readonly [string, number] => entry[1] !== undefined)
+                    if (rows.length === 0) return null
+                    return (
+                      <div
+                        key={group.title}
+                        className={groupIndex > 0 ? 'mt-3 border-t border-hairline pt-2' : ''}
+                      >
+                        <div className="text-xs font-medium text-stone-500">{group.title}</div>
+                        <div className="mt-1">
+                          {rows.map(([key, value]) => (
+                            <div
+                              key={key}
+                              className="flex items-center justify-between py-1.5"
+                            >
+                              <span className="text-sm text-stone-700">
+                                {METRIC_LABEL[key] ?? key}
+                              </span>
+                              <span className="font-mono text-sm tabular-nums text-stone-900">
+                                {percent(value)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
+                  {Object.entries(latest.report.metrics)
+                    .filter(([key]) => !groupedKeys.has(key))
+                    .map(([key, value], index) => (
+                      <div
+                        key={key}
+                        className={`flex items-center justify-between py-1.5 ${
+                          index === 0 ? 'mt-3 border-t border-hairline pt-2' : ''
+                        }`}
+                      >
+                        <span className="text-sm text-stone-700">{METRIC_LABEL[key] ?? key}</span>
+                        <span className="font-mono text-sm tabular-nums text-stone-900">
+                          {percent(value)}
+                        </span>
+                      </div>
+                    ))}
                 </div>
               </section>
             )}
 
             {latest.report.byCategory && (
-              <section className="mt-6">
+              <section className="mt-8">
                 <h2 className="mb-2 text-sm font-medium text-stone-700">分类结果</h2>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  {Object.entries(latest.report.byCategory).map(([category, entry]) => (
-                    <div
-                      key={category}
-                      className="rounded-container border border-hairline bg-white px-4 py-3"
-                    >
-                      <div className="text-xs text-stone-500">
-                        {CATEGORY_LABEL[category] ?? category}
+                  {Object.entries(latest.report.byCategory).map(([category, entry]) => {
+                    const allPassed = entry.passed === entry.total
+                    return (
+                      <div
+                        key={category}
+                        className={`rounded-container border px-4 py-3 ${
+                          allPassed
+                            ? 'border-emerald-200 bg-emerald-50'
+                            : 'border-orange-200 bg-orange-50'
+                        }`}
+                      >
+                        <div
+                          className={`text-xs ${allPassed ? 'text-emerald-700' : 'text-orange-700'}`}
+                        >
+                          {CATEGORY_LABEL[category] ?? category}
+                        </div>
+                        <div
+                          className={`mt-1 text-2xl font-semibold tabular-nums tracking-tight ${
+                            allPassed ? 'text-emerald-800' : 'text-orange-800'
+                          }`}
+                        >
+                          {entry.passed}
+                          <span
+                            className={`text-base font-normal ${
+                              allPassed ? 'text-emerald-700' : 'text-orange-700'
+                            }`}
+                          >
+                            /{entry.total}
+                          </span>
+                        </div>
                       </div>
-                      <div className="mt-1 text-lg font-semibold tabular-nums tracking-tight text-stone-900">
-                        {entry.passed}
-                        <span className="text-sm font-normal text-stone-400">/{entry.total}</span>
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </section>
             )}
 
-            <section className="mt-6">
+            <section className="mt-8">
               <h2 className="mb-2 text-sm font-medium text-stone-700">历史报告</h2>
-              <div className="overflow-x-auto rounded-container border border-hairline bg-white">
+              <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="text-left text-xs text-stone-500">
-                    <tr className="border-b border-hairline bg-stone-50">
-                      <th className="px-4 py-2 font-medium">报告</th>
-                      <th className="px-4 py-2 font-medium">模型</th>
-                      <th className="px-4 py-2 font-medium">通过率</th>
-                      <th className="px-4 py-2 font-medium">门禁</th>
-                      <th className="px-4 py-2 font-medium">时间</th>
+                    <tr className="border-b border-hairline">
+                      <th className="px-4 py-2.5 font-medium">报告</th>
+                      <th className="px-4 py-2.5 font-medium">模型</th>
+                      <th className="px-4 py-2.5 font-medium">通过率</th>
+                      <th className="px-4 py-2.5 font-medium">门禁</th>
+                      <th className="px-4 py-2.5 font-medium">时间</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-hairline">
                     {reports.map((report) => (
-                      <tr key={report.reportId} className="transition-colors duration-200 hover:bg-stone-50">
-                        <td className="px-4 py-2 font-mono text-xs text-stone-600">
+                      <tr
+                        key={report.reportId}
+                        className="transition-colors duration-200 hover:bg-stone-100"
+                      >
+                        <td className="px-4 py-2.5 font-mono text-xs text-stone-600">
                           {report.reportId}
                         </td>
-                        <td className="px-4 py-2 font-mono text-xs text-stone-600">
+                        <td className="px-4 py-2.5 font-mono text-xs text-stone-600">
                           {report.model}
                         </td>
-                        <td className="px-4 py-2 tabular-nums text-stone-700">
+                        <td className="px-4 py-2.5 tabular-nums text-stone-700">
                           {report.passed}/{report.total}
                         </td>
-                        <td className="px-4 py-2">
+                        <td className="px-4 py-2.5">
                           <span
-                            className={
-                              report.gatePassed ? 'text-emerald-700' : 'text-red-700'
-                            }
+                            className={`inline-flex items-center rounded-badge border px-2 py-0.5 text-[11px] font-medium ${
+                              report.gatePassed
+                                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                                : 'border-red-200 bg-red-50 text-red-800'
+                            }`}
                           >
                             {report.gatePassed ? '通过' : '未通过'}
                           </span>
                         </td>
-                        <td className="px-4 py-2 text-xs tabular-nums text-stone-500">
+                        <td className="px-4 py-2.5 text-xs tabular-nums text-stone-500">
                           {new Date(report.startedAt).toLocaleString('zh-CN')}
                         </td>
                       </tr>
@@ -217,26 +312,5 @@ export default function EvalPage() {
         )}
       </div>
     </AppShell>
-  )
-}
-
-function MetricTile({
-  label,
-  value,
-  tone,
-}: {
-  label: string
-  value: string
-  tone?: 'good' | 'bad'
-}) {
-  const toneClass =
-    tone === 'good' ? 'text-emerald-700' : tone === 'bad' ? 'text-red-700' : 'text-stone-900'
-  return (
-    <div className="rounded-container border border-hairline bg-white px-4 py-3">
-      <div className="text-xs text-stone-500">{label}</div>
-      <div className={`mt-1 text-xl font-semibold tabular-nums tracking-tight ${toneClass}`}>
-        {value}
-      </div>
-    </div>
   )
 }
