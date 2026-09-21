@@ -105,6 +105,7 @@ infra/           PostgreSQL DDL Docker Compose 生产路径
 
 - [架构设计](docs/architecture.md) 分层图 生命周期 退款安全链 事件协议
 - [业务背景](docs/business-context.md) 为什么做售后 Agent 人机分工边界
+- [术语表](docs/CONTEXT.md) 补偿与物流推送业务概念 词汇一致
 - [评测方法论](docs/evaluation.md) 用例契约 指标定义 Pass^k Badcase 回流
 - [架构决策记录](docs/adr/DECISIONS.md) 十条关键决策与备选方案
 - [面试叙事](docs/interview/STAR.md) STAR 结构与高频追问

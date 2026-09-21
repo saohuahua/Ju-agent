@@ -186,6 +186,7 @@
 - 前端审批中心与工作台卡片按 resourceType 区分中文展示（补偿单/售后单 批准发放/批准退款）评测看板抽样档 p0 26 p1 23 p2 4 all 88 与 selectCases 对齐
 - 校验 pnpm typecheck 全绿 pnpm test 全过 pnpm eval 88/88
 - 注意 本阶段文件改动触发 tsx watch 重启 L2 后台评测进程内任务表已清空（simTasks 重启即清）已落库的 L2 报告 evr_61839c00 不受影响（p0 档 22 条 9 通过 40.9% 旧 80 条用例集 不含补偿用例）功能 6 完成后需重新触发 L2 覆盖新用例
+- L2 重触发 2026-09-21 报告 evr_922ac7fd p0 档 26 条 10 通过 38.5% Wilson 95% [22.4% 57.5%] 补偿 4 条 P0 两过两败 小额自动发放 cp_small_auto_grant 与阈值边界 cp_threshold_exact_boundary 全过 系统层补偿链路真实模型下可用 败两条均为模型行为类（cp_duplicate_reason_blocked 模型试图重复发放被系统拦截但未如实告知 系统防线生效 cp_large_amount_approve 模型未调用补偿工具）归入 W4 失败 Trace 素材
 
 #### 3.2 物流推送 约 2-3 天
 
@@ -197,6 +198,21 @@
 - 6-10 条新用例 含故障注入 中断恢复交叉场景
 
 决策点 事件到达语义 暂停等待 vs 下一轮重新规划 事件来源模拟方式
+
+**决策已确认 2026-09-21（用户拍板）**
+
+- 事件到达语义 混合 会话处于 awaiting_input 时事件即达即触达（驱动 Agent 主动发消息告知客户）会话 running 等其余状态事件落表挂起 下一轮对话时纳入上下文重新规划
+- 事件来源 L2 模拟器剧本触发 + 运营端点手动注入 两条路径共用同一注入 API 评测可复现 演示可手点
+
+**设计定稿 2026-09-21（调研代码后落定）**
+
+- 契约层 事件协议加 logistics.event（orderNo carrier trackingNo status description 注入方与时间）Shipment 状态联合加 delayed 与退运状态 保持 in_transit/delivered/lost/exception 兼容
+- 领域层 LogisticsEventService 注入即校验（订单存在 状态合法 已 delivered 拒变）更新运单 status 与 events 追加 审计落库 重复注入按事件 id 幂等拒绝
+- Agent 层 AgentRunner 加 processLogisticsEvent 状态 awaiting_input 时 transition running 并驱动触达回合（上下文重建把 logistics.event 合成为 user 消息 模型据此主动告知客户）其余状态仅落事件 下一轮 rebuild 自然带出
+- API 层 POST /api/runs/:id/logistics-events operator 权限 注入后返回触达结果 演示路径
+- 评测层 L1 用例 logistics.ts 目标 8 条（空闲触达延误/丢件 丢件触发退款闭环 运行中挂起 参数校验 未知订单 重复注入 已完结会话不触达 已签收拒变）L2 simCase 加 logisticsEvents 剧本回合间注入 断言与 L1 同契约
+- 前端 工作台事件时间线渲染物流更新卡片 运行详情加操作员注入面板
+- 夹具 SO-2026-0002 in_transit 为推送主力目标单
 
 #### 3.3 价保流程 约 1.5 天
 
