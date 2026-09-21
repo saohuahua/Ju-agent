@@ -146,6 +146,8 @@ export const EvalCase = z.object({
   modelScript: z.array(z.record(z.string(), z.unknown())),
   /** 模拟客户场景 Level 2 真实模型评测使用 有 scenario 的用例可跑用户模拟 */
   scenario: UserScenario.optional(),
+  /** 模拟器模型覆盖 安全对抗类用例中模拟器需扮演攻击者 Haiku 会拒绝扮演 此类用例显式指定更强模型 缺省沿用 CLI 全局 userModel */
+  userModel: z.string().optional(),
   faultPlan: z.array(FaultPlan).optional(),
   /** 审批环节的处理方式 approve reject 或等待过期 */
   approvalAction: z.enum(['approve', 'reject', 'expire']).optional(),

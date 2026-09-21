@@ -33,6 +33,7 @@ import {
 } from './model.js'
 import { buildSystemPrompt, PROMPT_VERSION } from './prompt.js'
 import {
+  ACTION_TOOLS,
   ASK_USER_TOOL,
   CONCLUDE_TOOL,
   buildStepTools,
@@ -357,7 +358,9 @@ export class AgentRunner {
     return { blocks, text, stopReason }
   }
 
-  /** 每步工具目录 能力门控 未查过订单时动作工具不进目录 结构性防盲提交 */
+  /** 每步工具目录 能力门控 未查过订单时动作工具不进目录 结构性防盲提交
+   *  escalate 例外 它是通道管理工具 上游整体故障导致订单查不到时恰需升级
+   *  若随动作工具一起门控 模型将无法在唯一需要升级的场景调用升级 */
   private async prepareStepTools(runId: string): Promise<ToolDefinition[]> {
     const events = await this.deps.eventRepo.listByRun(runId)
     const orderLoaded = events.some(
@@ -366,7 +369,8 @@ export class AgentRunner {
         (event.payload as { toolName?: string }).toolName === 'get_order' &&
         (event.payload as { status?: string }).status === 'succeeded',
     )
-    return buildStepTools({ actionsAvailable: orderLoaded })
+    const actions: Intent[] = orderLoaded ? ACTION_TOOLS : ['escalate']
+    return buildStepTools({ actions })
   }
 
   /** ask_user 提问落为助手消息并暂停 */

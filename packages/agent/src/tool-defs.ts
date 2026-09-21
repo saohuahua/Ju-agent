@@ -59,7 +59,8 @@ export function buildActionToolDefinitions(available: Intent[]): ToolDefinition[
       '发起现金红包补偿 需与顾客确认补偿金额 系统自动执行分级 50 元内自动发放 超出转人工审批 同一订单同一原因仅一次',
     price_protection:
       '发起价保申请 系统对比成交价与当前售价 自签收起 7 天内降价商品按单价差乘数量全额退还 差价金额由系统计算 同一订单仅可价保一次',
-    escalate: '升级人工客服',
+    escalate:
+      '升级人工客服 将本会话转交人工处理 用户明确要求转人工 情绪激烈反复要求 或订单物流等查询渠道持续故障重试后仍无法完成服务时必须调用 调用前先向客户如实说明升级原因 调用后任务立即转交人工 只在文本中说转接而不调用本工具不生效',
   }
   return available.map((intent) => ({
     name: intent,
@@ -100,11 +101,10 @@ export function buildConcludeToolDefinition(): ToolDefinition {
 }
 
 /** 单步工具目录 prepareStep 语义 能力门控在调用方决定 action 可见性 */
-export function buildStepTools(options: { actionsAvailable: boolean }): ToolDefinition[] {
-  const actions = options.actionsAvailable ? ACTION_TOOLS : []
+export function buildStepTools(options: { actions: Intent[] }): ToolDefinition[] {
   return [
     ...buildReadToolDefinitions(),
-    ...buildActionToolDefinitions(actions),
+    ...buildActionToolDefinitions(options.actions),
     buildAskUserToolDefinition(),
     buildConcludeToolDefinition(),
   ]

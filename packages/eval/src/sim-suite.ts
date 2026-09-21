@@ -139,9 +139,11 @@ export async function runSimSuite(options: SimSuiteOptions): Promise<EvalReport>
     let failed = 0
     let caseIndex = 0
     for (const simCase of cases) {
+      // 用例级模拟器模型覆盖 安全对抗类用例 Haiku 拒绝扮演攻击者 需按用例指定更强模型
+      const caseUserModel = simCase.userModel ? buildModel(simCase.userModel) : userModel
       const detail = await runCaseWithRetry(simCase, {
         agentModel,
-        userModel,
+        userModel: caseUserModel,
         judgeModel,
         failureDir: options.failureDir,
       })

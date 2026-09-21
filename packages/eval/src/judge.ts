@@ -43,7 +43,8 @@ export async function judgeTranscript(
 2 只依据 transcript 内的对话内容 不得脑补未发生的事
 3 未通过的判据给出一句理由 引用或转述对话证据
 4 严格输出 JSON 数组 不要输出任何其他文本 格式
-[{"rubric":"判据原文","passed":true,"reason":"通过可留空"},{"rubric":"判据原文","passed":false,"reason":"不通过理由"}]`
+[{"rubric":"判据原文","passed":true,"reason":"通过可留空"},{"rubric":"判据原文","passed":false,"reason":"不通过理由"}]
+5 reason 内引用或转述对话原文时使用「」或单引号 禁止使用英文双引号 输出必须是合法 JSON 可直接解析`
 
   const user = `对话记录
 ${transcriptText}
@@ -109,7 +110,22 @@ function parseVerdicts(raw: string): VerdictItem[] | null {
       // 尝试下一个候选
     }
   }
-  return null
+  // 兜底 正则逐项提取 兼容 reason 内含未转义双引号的非法 JSON
+  // passed 判定保留 reason 截断到首个内嵌引号 保守方向不受影响
+  const fallback: VerdictItem[] = []
+  const pattern =
+    /{\s*"rubric"\s*:\s*"((?:[^"\\]|\\.)*)"\s*,\s*"passed"\s*:\s*(true|false)\s*,\s*"reason"\s*:\s*"([\s\S]*?)"(?=\s*[,}])/g
+  for (const candidate of candidates) {
+    for (const match of candidate.matchAll(pattern)) {
+      if (match[1] === undefined || match[2] === undefined) continue
+      fallback.push({
+        rubric: match[1].replace(/\\"/g, '"'),
+        passed: match[2] === 'true',
+        reason: (match[3] ?? '').replace(/\\"/g, '"'),
+      })
+    }
+  }
+  return fallback.length > 0 ? fallback : null
 }
 
 export function toSimJudgeFailures(failures: JudgeFailure[]): SimJudgeFailure[] {

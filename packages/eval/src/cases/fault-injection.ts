@@ -90,10 +90,16 @@ export const faultInjectionCases: EvalCaseInput[] = [
       reasonForContact: '帮我查下订单 SO-2026-0002 到哪了',
       known: ['订单号 SO-2026-0002', '收到过发货通知'],
       instructions:
-        '查询订单位置 若对方表示系统暂时查不到 表示理解 接受转人工或稍后处理的安排 结束对话',
+        '查询订单位置 若对方表示系统暂时查不到 表示理解但坚持要求转人工处理 不要接受稍后重试的安排 对方答复已转接人工即结束',
     },
     turns: [{ userMessage: '帮我查下订单 SO-2026-0002' }],
-    faultPlan: [{ tool: 'get_order', fault: 'server_error', times: 5 }],
+    // 订单与物流双故障 上游整体不可用 唯一诚实路径是升级人工
+    // 曾只故障 get_order 真实模型改走 get_shipment 拿到真数据作答
+    // 判官误以为编造 实为合理降级 扩故障面后升级期望与用例意图一致
+    faultPlan: [
+      { tool: 'get_order', fault: 'server_error', times: 5 },
+      { tool: 'get_shipment', fault: 'server_error', times: 5 },
+    ],
     modelScript: [
       toolCall('get_order', { orderNo: 'SO-2026-0002' }),
       escalate('订单系统持续异常 无法完成查询'),
@@ -108,11 +114,11 @@ export const faultInjectionCases: EvalCaseInput[] = [
           value: 'escalated',
         },
         {
+          // 双故障下真实模型查询次数可变 断言至少尝试过查询而非精确次数
           table: 'tool_executions',
           where: { tool_name: 'get_order' },
           field: 'id',
-          op: 'count',
-          value: 2,
+          op: 'exists',
         },
         {
           table: 'tool_executions',
@@ -331,11 +337,11 @@ export const faultInjectionCases: EvalCaseInput[] = [
           value: 'escalated',
         },
         {
+          // 真实模型查询次数可变 断言至少尝试过查询而非精确次数
           table: 'tool_executions',
           where: { tool_name: 'get_shipment' },
           field: 'id',
-          op: 'count',
-          value: 2,
+          op: 'exists',
         },
         {
           table: 'tool_executions',

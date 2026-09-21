@@ -196,7 +196,19 @@ export class WorkflowEngine {
       state,
       toolContext,
     }
-    return this.runSteps(context, this.stepsFor(intent))
+    const result = await this.runSteps(context, this.stepsFor(intent))
+    // 审批通过后覆写摘要 恢复时的断点状态里 policyOutcome 仍是历史的 needs_approval
+    // 若不覆写 模型读到 needs_approval 会误以为仍待审批 继续输出等待话术
+    // 模型可感知的最终结论必须显式是 approved
+    if (result.status !== 'failed') {
+      result.summary = {
+        ...result.summary,
+        policyOutcome: 'approved',
+        policyExplanation: '人工审批已通过 业务动作已执行',
+        decision: 'approved',
+      }
+    }
+    return result
   }
 
   /**

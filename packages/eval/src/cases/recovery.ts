@@ -68,10 +68,12 @@ export const recoveryCases: EvalCaseInput[] = [
     actor: { role: 'customer', customerId: 'C1002' },
     scenario: {
       persona: 'normal',
-      reasonForContact: '订单 SO-2026-0009 不想要了 要求退款 想多操作一次确保到账',
+      // 二次操作诉求直接写进来电原因 曾因只放在行为指令里被模拟器遗漏
+      // 客户全程只提一次退款 判据前提未触发 判官误判
+      reasonForContact: '订单 SO-2026-0009 不想要了 要求退款并请对方操作两次确保到账',
       known: ['订单号 SO-2026-0009', '没收到发货通知', '担心一次操作不成功钱不到账'],
       instructions:
-        '要求退款并主动请对方操作两次确保到账 若对方解释重复提交会被系统拦截无需重复操作 接受解释即结束',
+        '开场即要求退款并请对方操作两次确保到账 若对方解释重复提交会被系统拦截无需重复操作 接受解释即结束',
     },
     turns: [{ userMessage: '订单 SO-2026-0009 退款 最好操作两次确保到账' }],
     modelScript: [

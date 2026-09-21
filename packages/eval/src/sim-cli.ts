@@ -12,6 +12,8 @@
  * 需要 ANTHROPIC_API_KEY 未配置时输出跳过说明并以零码退出 不伪装成绩
  * 模拟器与被测模型分离 judge 与两者分离
  * 套件核心逻辑在 sim-suite.ts 与 API 端点共用
+ * 安全对抗类用例在用例定义里通过 userModel 字段覆盖模拟器模型
+ * 全局兜底仍可用 --user-model 指定 用例级字段优先级更高
  */
 
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
