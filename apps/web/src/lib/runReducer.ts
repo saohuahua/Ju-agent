@@ -204,8 +204,10 @@ export function reduceEvents(state: RunViewState, events: AgentEvent[]): RunView
   return current
 }
 
-/** 分转元的展示辅助 */
+/** 分转元的展示辅助 千分位分隔 如 ¥6,999.00 */
 export function formatAmount(cents: number, currency = 'CNY'): string {
   const symbol = currency === 'CNY' ? '¥' : ''
-  return `${symbol}${(cents / 100).toFixed(2)}`
+  const [integer, decimal] = (cents / 100).toFixed(2).split('.')
+  const grouped = integer!.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return `${symbol}${grouped}.${decimal}`
 }

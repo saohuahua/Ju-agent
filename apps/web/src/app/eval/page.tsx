@@ -77,28 +77,30 @@ export default function EvalPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-5xl px-6 py-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-semibold">评测看板</h1>
-            <p className="mt-1 text-xs text-slate-400">
+        <div className="flex items-center justify-between gap-6">
+          <h1 className="shrink-0 text-xl font-semibold tracking-tight">评测看板</h1>
+          <div className="flex min-w-0 items-center gap-5">
+            <p className="min-w-0 text-sm text-stone-500">
               以数据库终态与工具轨迹为准的确定性评测 LLM 判分不参与任务成败
             </p>
+            <button
+              onClick={trigger}
+              disabled={running}
+              className="shrink-0 rounded-control bg-sage-700 px-4 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-sage-800 active:scale-[0.98] disabled:opacity-50"
+            >
+              {running ? '评测执行中' : '运行评测套件'}
+            </button>
           </div>
-          <button
-            onClick={trigger}
-            disabled={running}
-            className="rounded-md bg-sky-600 px-4 py-2 text-xs font-medium text-white hover:bg-sky-500 disabled:opacity-50"
-          >
-            {running ? '评测执行中' : '运行评测套件'}
-          </button>
         </div>
 
         {error && (
-          <p className="mt-4 rounded-md bg-red-950/50 px-3 py-2 text-sm text-red-300">{error}</p>
+          <p className="mt-4 rounded-control border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
         )}
 
         {!latest && !running && (
-          <div className="mt-6 rounded-lg border border-dashed border-slate-700 px-6 py-12 text-center text-sm text-slate-400">
+          <div className="mt-6 rounded-container border border-dashed border-stone-300 px-6 py-12 text-center text-sm text-stone-500">
             暂无评测报告 点击右上角运行评测套件
           </div>
         )}
@@ -122,20 +124,22 @@ export default function EvalPage() {
 
             {latest.report.metrics && (
               <section className="mt-6">
-                <h2 className="mb-2 text-sm font-medium text-slate-300">分层指标</h2>
-                <div className="overflow-hidden rounded-lg border border-slate-800">
+                <h2 className="mb-2 text-sm font-medium text-stone-700">分层指标</h2>
+                <div className="overflow-hidden rounded-container border border-hairline bg-white">
                   <table className="w-full text-sm">
-                    <thead className="bg-slate-900/80 text-left text-xs text-slate-400">
-                      <tr>
+                    <thead className="text-left text-xs text-stone-500">
+                      <tr className="border-b border-hairline bg-stone-50">
                         <th className="px-4 py-2 font-medium">指标</th>
                         <th className="px-4 py-2 font-medium">数值</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800">
+                    <tbody className="divide-y divide-hairline">
                       {Object.entries(latest.report.metrics).map(([key, value]) => (
-                        <tr key={key} className="bg-slate-900/30">
-                          <td className="px-4 py-2">{METRIC_LABEL[key] ?? key}</td>
-                          <td className="px-4 py-2 font-mono">{percent(value)}</td>
+                        <tr key={key}>
+                          <td className="px-4 py-2 text-stone-700">{METRIC_LABEL[key] ?? key}</td>
+                          <td className="px-4 py-2 font-mono tabular-nums text-stone-900">
+                            {percent(value)}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -146,19 +150,19 @@ export default function EvalPage() {
 
             {latest.report.byCategory && (
               <section className="mt-6">
-                <h2 className="mb-2 text-sm font-medium text-slate-300">分类结果</h2>
+                <h2 className="mb-2 text-sm font-medium text-stone-700">分类结果</h2>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {Object.entries(latest.report.byCategory).map(([category, entry]) => (
                     <div
                       key={category}
-                      className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-3"
+                      className="rounded-container border border-hairline bg-white px-4 py-3"
                     >
-                      <div className="text-xs text-slate-400">
+                      <div className="text-xs text-stone-500">
                         {CATEGORY_LABEL[category] ?? category}
                       </div>
-                      <div className="mt-1 text-lg font-semibold">
+                      <div className="mt-1 text-lg font-semibold tabular-nums tracking-tight text-stone-900">
                         {entry.passed}
-                        <span className="text-sm text-slate-400">/{entry.total}</span>
+                        <span className="text-sm font-normal text-stone-400">/{entry.total}</span>
                       </div>
                     </div>
                   ))}
@@ -167,11 +171,11 @@ export default function EvalPage() {
             )}
 
             <section className="mt-6">
-              <h2 className="mb-2 text-sm font-medium text-slate-300">历史报告</h2>
-              <div className="overflow-hidden rounded-lg border border-slate-800">
+              <h2 className="mb-2 text-sm font-medium text-stone-700">历史报告</h2>
+              <div className="overflow-x-auto rounded-container border border-hairline bg-white">
                 <table className="w-full text-sm">
-                  <thead className="bg-slate-900/80 text-left text-xs text-slate-400">
-                    <tr>
+                  <thead className="text-left text-xs text-stone-500">
+                    <tr className="border-b border-hairline bg-stone-50">
                       <th className="px-4 py-2 font-medium">报告</th>
                       <th className="px-4 py-2 font-medium">模型</th>
                       <th className="px-4 py-2 font-medium">通过率</th>
@@ -179,20 +183,28 @@ export default function EvalPage() {
                       <th className="px-4 py-2 font-medium">时间</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800">
+                  <tbody className="divide-y divide-hairline">
                     {reports.map((report) => (
-                      <tr key={report.reportId} className="bg-slate-900/30">
-                        <td className="px-4 py-2 font-mono text-xs">{report.reportId}</td>
-                        <td className="px-4 py-2 font-mono text-xs">{report.model}</td>
-                        <td className="px-4 py-2">
+                      <tr key={report.reportId} className="transition-colors duration-200 hover:bg-stone-50">
+                        <td className="px-4 py-2 font-mono text-xs text-stone-600">
+                          {report.reportId}
+                        </td>
+                        <td className="px-4 py-2 font-mono text-xs text-stone-600">
+                          {report.model}
+                        </td>
+                        <td className="px-4 py-2 tabular-nums text-stone-700">
                           {report.passed}/{report.total}
                         </td>
                         <td className="px-4 py-2">
-                          <span className={report.gatePassed ? 'text-emerald-400' : 'text-red-400'}>
+                          <span
+                            className={
+                              report.gatePassed ? 'text-emerald-700' : 'text-red-700'
+                            }
+                          >
                             {report.gatePassed ? '通过' : '未通过'}
                           </span>
                         </td>
-                        <td className="px-4 py-2 text-xs text-slate-400">
+                        <td className="px-4 py-2 text-xs tabular-nums text-stone-500">
                           {new Date(report.startedAt).toLocaleString('zh-CN')}
                         </td>
                       </tr>
@@ -218,11 +230,13 @@ function MetricTile({
   tone?: 'good' | 'bad'
 }) {
   const toneClass =
-    tone === 'good' ? 'text-emerald-400' : tone === 'bad' ? 'text-red-400' : 'text-slate-100'
+    tone === 'good' ? 'text-emerald-700' : tone === 'bad' ? 'text-red-700' : 'text-stone-900'
   return (
-    <div className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-3">
-      <div className="text-xs text-slate-400">{label}</div>
-      <div className={`mt-1 text-xl font-semibold ${toneClass}`}>{value}</div>
+    <div className="rounded-container border border-hairline bg-white px-4 py-3">
+      <div className="text-xs text-stone-500">{label}</div>
+      <div className={`mt-1 text-xl font-semibold tabular-nums tracking-tight ${toneClass}`}>
+        {value}
+      </div>
     </div>
   )
 }

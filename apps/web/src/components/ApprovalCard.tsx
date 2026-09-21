@@ -40,15 +40,15 @@ export function ApprovalCard({
   }
 
   return (
-    <div className="rounded-lg border border-orange-700/60 bg-orange-950/30 px-4 py-3">
+    <div className="rounded-container border border-orange-200 bg-orange-50/70 px-4 py-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-orange-200">需要人工审批</span>
-        <span className="text-sm font-semibold text-orange-100">
+        <span className="text-sm font-medium text-orange-900">需要人工审批</span>
+        <span className="text-sm font-semibold tabular-nums text-orange-900">
           {formatAmount(approval.amountCents)}
         </span>
       </div>
-      <p className="mt-1 text-xs text-slate-300">{approval.reason}</p>
-      <p className="mt-0.5 font-mono text-[11px] text-slate-500">资源 {approval.resourceId}</p>
+      <p className="mt-1 text-xs text-stone-600">{approval.reason}</p>
+      <p className="mt-0.5 font-mono text-[11px] text-stone-500">资源 {approval.resourceId}</p>
 
       {approval.status === 'pending' ? (
         canDecide && !submitting ? (
@@ -56,23 +56,23 @@ export function ApprovalCard({
             <button
               onClick={() => decide('approved')}
               disabled={submitting}
-              className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+              className="rounded-control bg-emerald-700 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-emerald-800 active:scale-[0.98] disabled:opacity-50"
             >
               批准退款
             </button>
             <button
               onClick={() => decide('rejected')}
               disabled={submitting}
-              className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-500 disabled:opacity-50"
+              className="rounded-control bg-red-700 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-red-800 active:scale-[0.98] disabled:opacity-50"
             >
               拒绝
             </button>
           </div>
         ) : (
-          <p className="mt-2 text-xs text-slate-400">等待主管在审批中心处理</p>
+          <p className="mt-2 text-xs text-stone-500">等待主管在审批中心处理</p>
         )
       ) : (
-        <p className="mt-2 text-xs text-slate-400">
+        <p className="mt-2 text-xs text-stone-500">
           审批结果{' '}
           {approval.status === 'approved'
             ? '已批准'
@@ -81,7 +81,7 @@ export function ApprovalCard({
               : '已过期'}
         </p>
       )}
-      {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
+      {error && <p className="mt-2 text-xs text-red-700">{error}</p>}
     </div>
   )
 }

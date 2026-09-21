@@ -75,53 +75,55 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
   return (
     <AppShell>
       <div className="mx-auto max-w-4xl px-6 py-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="flex items-center gap-3 text-lg font-semibold">
-              运行详情
-              {run && <StatusBadge status={run.status} />}
-            </h1>
-            <p className="mt-1 font-mono text-xs text-slate-500">{runId}</p>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="flex shrink-0 items-center gap-3 text-xl font-semibold tracking-tight">
+            运行详情
+            {run && <StatusBadge status={run.status} />}
+          </h1>
+          <div className="flex min-w-0 items-center gap-4">
+            <p className="truncate font-mono text-xs text-stone-500">{runId}</p>
+            {stuck && (
+              <button
+                onClick={resume}
+                disabled={resuming}
+                className="shrink-0 rounded-control bg-amber-700 px-4 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-amber-800 active:scale-[0.98] disabled:opacity-50"
+              >
+                {resuming ? '恢复中' : '断点恢复'}
+              </button>
+            )}
           </div>
-          {stuck && (
-            <button
-              onClick={resume}
-              disabled={resuming}
-              className="rounded-md bg-amber-600 px-4 py-2 text-xs font-medium text-white hover:bg-amber-500 disabled:opacity-50"
-            >
-              {resuming ? '恢复中' : '断点恢复'}
-            </button>
-          )}
         </div>
 
         {run && (
-          <div className="mt-4 grid grid-cols-2 gap-3 rounded-lg border border-slate-800 bg-slate-900/50 px-5 py-4 text-sm sm:grid-cols-4">
+          <div className="mt-4 grid grid-cols-2 gap-3 rounded-container border border-hairline bg-white px-5 py-4 text-sm sm:grid-cols-4">
             <div>
-              <div className="text-xs text-slate-400">客户</div>
-              <div className="mt-0.5">{run.customerId}</div>
+              <div className="text-xs text-stone-500">客户</div>
+              <div className="mt-0.5 text-stone-900">{run.customerId}</div>
             </div>
             <div>
-              <div className="text-xs text-slate-400">意图</div>
-              <div className="mt-0.5">{run.intent ?? '-'}</div>
+              <div className="text-xs text-stone-500">意图</div>
+              <div className="mt-0.5 text-stone-900">{run.intent ?? '-'}</div>
             </div>
             <div>
-              <div className="text-xs text-slate-400">模型</div>
-              <div className="mt-0.5 font-mono text-xs">{run.model}</div>
+              <div className="text-xs text-stone-500">模型</div>
+              <div className="mt-0.5 font-mono text-xs text-stone-700">{run.model}</div>
             </div>
             <div>
-              <div className="text-xs text-slate-400">提示词版本</div>
-              <div className="mt-0.5 font-mono text-xs">{run.promptVersion}</div>
+              <div className="text-xs text-stone-500">提示词版本</div>
+              <div className="mt-0.5 font-mono text-xs text-stone-700">{run.promptVersion}</div>
             </div>
           </div>
         )}
 
         {error && (
-          <p className="mt-4 rounded-md bg-red-950/50 px-3 py-2 text-sm text-red-300">{error}</p>
+          <p className="mt-4 rounded-control border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
         )}
 
         {view.tools.length > 0 && (
           <section className="mt-6">
-            <h2 className="mb-2 text-sm font-medium text-slate-300">工具轨迹</h2>
+            <h2 className="mb-2 text-sm font-medium text-stone-700">工具轨迹</h2>
             <div className="space-y-1.5">
               {view.tools.map((tool) => (
                 <ToolCard key={tool.executionId} tool={tool} />
@@ -131,28 +133,30 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
         )}
 
         <section className="mt-6">
-          <h2 className="mb-2 text-sm font-medium text-slate-300">事件时间线</h2>
-          <div className="overflow-hidden rounded-lg border border-slate-800">
+          <h2 className="mb-2 text-sm font-medium text-stone-700">事件时间线</h2>
+          <div className="overflow-x-auto rounded-container border border-hairline bg-white">
             <table className="w-full text-xs">
-              <thead className="bg-slate-900/80 text-left text-slate-400">
-                <tr>
+              <thead className="text-left text-stone-500">
+                <tr className="border-b border-hairline bg-stone-50">
                   <th className="px-3 py-2 font-medium">#</th>
                   <th className="px-3 py-2 font-medium">事件</th>
                   <th className="px-3 py-2 font-medium">内容摘要</th>
                   <th className="px-3 py-2 font-medium">时间</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/70">
+              <tbody className="divide-y divide-hairline">
                 {events.map((event) => (
-                  <tr key={event.sequence} className="bg-slate-900/30">
-                    <td className="px-3 py-1.5 font-mono text-slate-500">{event.sequence}</td>
-                    <td className="px-3 py-1.5 text-slate-200">
+                  <tr key={event.sequence}>
+                    <td className="px-3 py-1.5 font-mono tabular-nums text-stone-500">
+                      {event.sequence}
+                    </td>
+                    <td className="px-3 py-1.5 text-stone-700">
                       {EVENT_TYPE_LABEL[event.type] ?? event.type}
                     </td>
-                    <td className="max-w-md truncate px-3 py-1.5 font-mono text-[11px] text-slate-400">
+                    <td className="max-w-md truncate px-3 py-1.5 font-mono text-[11px] text-stone-500">
                       {summarizePayload(event)}
                     </td>
-                    <td className="px-3 py-1.5 text-slate-500">
+                    <td className="px-3 py-1.5 tabular-nums text-stone-500">
                       {new Date(event.createdAt).toLocaleTimeString('zh-CN')}
                     </td>
                   </tr>

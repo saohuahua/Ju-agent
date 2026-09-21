@@ -1,20 +1,98 @@
 @import 'tailwindcss';
 
-:root {
-  color-scheme: dark;
+/*
+ * AfterSales Copilot 设计系统（阶段 0）
+ *
+ * 视觉方向：极简 editorial 浅色主题，暖白 monochrome（stone 系）
+ * 主色：sage（唯一低饱和交互色，全站锁定）
+ * 状态色：muted pastel（浅底 + 深字 + 细边）
+ * 圆角体系：容器 10px / 控件 8px / 徽章 6px
+ * 动效：仅 200-300ms CSS 过渡，全部尊重 prefers-reduced-motion
+ * 规则来源：docs/redesign-audit.md
+ */
+
+@theme {
+  /* 字体：中文系统栈 + 等宽技术字段 */
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+
+  /* 中性色（暖白 stone 系） */
+  --color-canvas: #faf9f7; /* 页面底色 暖白 */
+  --color-surface: #ffffff; /* 卡片表面 */
+  --color-ink: #1c1917; /* 墨色正文 stone-900 */
+  --color-hairline: #e7e5e4; /* hairline 细边框 */
+
+  /* 主色 sage 低饱和绿（交互色，全站唯一主色） */
+  --color-sage-50: #f4f7f4;
+  --color-sage-100: #e7eee7;
+  --color-sage-200: #d0ddd1;
+  --color-sage-300: #aec4b0;
+  --color-sage-400: #86a489;
+  --color-sage-500: #64876a;
+  --color-sage-600: #4c6c53;
+  --color-sage-700: #3d5743;
+  --color-sage-800: #334738;
+  --color-sage-900: #2b3b2f;
+
+  /* 圆角体系 */
+  --radius-container: 10px; /* 卡片 面板 气泡 */
+  --radius-control: 8px; /* 按钮 输入框 导航项 */
+  --radius-badge: 6px; /* 徽章 pill */
 }
 
-/* 全局滚动条 统一控制台观感 */
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+/* 全局可见焦点环：组件不写 outline-none，键盘可达性由这里兜底 */
+:focus-visible {
+  outline: 2px solid var(--color-sage-600);
+  outline-offset: 2px;
+}
+
+/* 文本选中 */
+::selection {
+  background-color: var(--color-sage-100);
+  color: var(--color-ink);
+}
+
+/* 全局滚动条：浅色细滚动条 */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #d6d3d1;
   border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a29e;
 }
 
 ::-webkit-scrollbar-track {
   background: transparent;
+}
+
+/*
+ * 动效约束：只在 200-300ms 的 CSS 过渡内做交互反馈。
+ * prefers-reduced-motion 下全部降级为瞬时（全局兜底）。
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

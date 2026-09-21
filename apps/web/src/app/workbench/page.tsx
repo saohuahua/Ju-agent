@@ -65,19 +65,19 @@ export default function WorkbenchPage() {
 
   return (
     <AppShell>
-      <div className="flex h-screen flex-col">
-        <header className="flex items-center justify-between border-b border-slate-800 px-6 py-3">
+      <div className="flex h-[100dvh] flex-col">
+        <header className="flex items-center justify-between border-b border-hairline px-6 py-3">
           <div>
-            <h1 className="text-sm font-semibold">售后会话</h1>
-            <p className="text-xs text-slate-400">
+            <h1 className="text-sm font-semibold tracking-tight">售后会话</h1>
+            <p className="text-xs text-stone-500">
               自然语言发起查单 退货 退款 高风险动作将进入人工审批
             </p>
           </div>
           <div className="flex items-center gap-3 text-xs">
-            {runId && <span className="font-mono text-slate-500">{runId}</span>}
+            {runId && <span className="font-mono text-stone-400">{runId}</span>}
             {runId && <StatusBadge status={state.status} />}
             {runId && (
-              <span className={connected ? 'text-emerald-400' : 'text-amber-400'}>
+              <span className={connected ? 'text-emerald-700' : 'text-amber-700'}>
                 {connected ? '已连接' : '重连中'}
               </span>
             )}
@@ -87,7 +87,7 @@ export default function WorkbenchPage() {
                   setRunId(null)
                   setInput('')
                 }}
-                className="rounded-md border border-slate-700 px-2.5 py-1 text-slate-300 hover:bg-slate-800"
+                className="rounded-control border border-hairline bg-white px-2.5 py-1 text-stone-600 transition-colors duration-200 hover:bg-stone-100 hover:text-stone-900 active:scale-[0.98]"
               >
                 新会话
               </button>
@@ -96,7 +96,7 @@ export default function WorkbenchPage() {
         </header>
 
         {!modelAvailable && (
-          <div className="border-b border-amber-900/50 bg-amber-950/40 px-6 py-2 text-xs text-amber-200">
+          <div className="border-b border-amber-200 bg-amber-50 px-6 py-2 text-xs text-amber-800">
             未配置 ANTHROPIC_API_KEY 对话能力不可用 审批中心 运行记录与评测看板不受影响
           </div>
         )}
@@ -104,8 +104,8 @@ export default function WorkbenchPage() {
         <div className="flex-1 space-y-3 overflow-y-auto px-6 py-4">
           {!runId && (
             <div className="mx-auto max-w-xl pt-16 text-center">
-              <div className="text-2xl font-semibold">您好 我是售后专员 Copilot</div>
-              <p className="mt-2 text-sm text-slate-400">
+              <div className="text-2xl font-semibold tracking-tight">您好 我是售后专员 Copilot</div>
+              <p className="mt-2 text-sm text-stone-500">
                 可以查订单 查物流 解释政策 也可以直接发起退货退款
                 <br />
                 试试 订单 SO-2026-0003 不想要了 退货
@@ -119,7 +119,7 @@ export default function WorkbenchPage() {
                   <button
                     key={sample}
                     onClick={() => submit(sample)}
-                    className="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2.5 text-left text-sm text-slate-200 hover:border-sky-600 hover:bg-slate-800"
+                    className="rounded-container border border-hairline bg-white px-4 py-2.5 text-left text-sm text-stone-700 transition-colors duration-200 hover:border-sage-300 hover:bg-sage-50 active:scale-[0.99]"
                   >
                     {sample}
                   </button>
@@ -131,12 +131,12 @@ export default function WorkbenchPage() {
           {state.messages.map((message, index) => (
             <div
               key={index}
-              className={`max-w-2xl rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+              className={`max-w-2xl rounded-container px-4 py-2.5 text-sm leading-relaxed ${
                 message.role === 'user'
-                  ? 'ml-auto bg-sky-600 text-white'
+                  ? 'ml-auto bg-sage-700 text-white'
                   : message.role === 'assistant'
-                    ? 'bg-slate-800 text-slate-100'
-                    : 'mx-auto bg-transparent text-center text-xs text-slate-500'
+                    ? 'border border-hairline bg-white text-stone-800'
+                    : 'mx-auto bg-transparent text-center text-xs text-stone-400'
               }`}
             >
               {message.text}
@@ -163,15 +163,15 @@ export default function WorkbenchPage() {
           ))}
 
           {state.error && (
-            <div className="max-w-2xl rounded-lg border border-red-900 bg-red-950/40 px-4 py-2 text-sm text-red-300">
+            <div className="max-w-2xl rounded-container border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-800">
               {state.error}
             </div>
           )}
           <div ref={messageEndRef} />
         </div>
 
-        <footer className="border-t border-slate-800 px-6 py-4">
-          {error && <p className="mb-2 text-xs text-red-400">{error}</p>}
+        <footer className="border-t border-hairline px-6 py-4">
+          {error && <p className="mb-2 text-xs text-red-700">{error}</p>}
           <form
             onSubmit={(event) => {
               event.preventDefault()
@@ -186,12 +186,12 @@ export default function WorkbenchPage() {
               placeholder={
                 runId ? (awaitingInput ? '请补充信息' : '会话进行中') : '请描述您的售后需求'
               }
-              className="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-sky-600 focus:outline-none disabled:opacity-50"
+              className="flex-1 rounded-control border border-hairline bg-white px-4 py-2.5 text-sm text-stone-900 transition-colors duration-200 placeholder:text-stone-400 disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={sending || !runId || !awaitingInput}
-              className="rounded-lg bg-sky-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-sky-500 disabled:opacity-50"
+              className="rounded-control bg-sage-700 px-5 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-sage-800 active:scale-[0.98] disabled:opacity-50"
             >
               发送
             </button>

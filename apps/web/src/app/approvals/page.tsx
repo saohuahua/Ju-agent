@@ -19,6 +19,13 @@ const STATUS_LABEL: Record<ApprovalRequest['status'], string> = {
   expired: '已过期',
 }
 
+const STATUS_STYLE: Record<ApprovalRequest['status'], string> = {
+  pending: 'border-orange-200 bg-orange-50 text-orange-800',
+  approved: 'border-emerald-200 bg-emerald-50 text-emerald-800',
+  rejected: 'border-red-200 bg-red-50 text-red-800',
+  expired: 'border-stone-200 bg-stone-100 text-stone-500',
+}
+
 export default function ApprovalsPage() {
   const [approvals, setApprovals] = useState<ApprovalRequest[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -57,40 +64,46 @@ export default function ApprovalsPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-4xl px-6 py-8">
-        <h1 className="text-lg font-semibold">审批中心</h1>
-        <p className="mt-1 text-xs text-slate-400">
-          大额或例外退款需要人工把关 决定通过一次性令牌传递给退款执行 重复点击不会产生两次副作用
-        </p>
+        <div className="flex items-center justify-between gap-6">
+          <h1 className="shrink-0 text-xl font-semibold tracking-tight">审批中心</h1>
+          <p className="min-w-0 text-right text-sm text-stone-500">
+            大额或例外退款需要人工把关 决定通过一次性令牌传递给退款执行 重复点击不会产生两次副作用
+          </p>
+        </div>
         {error && (
-          <p className="mt-4 rounded-md bg-red-950/50 px-3 py-2 text-sm text-red-300">{error}</p>
+          <p className="mt-4 rounded-control border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
         )}
 
         <div className="mt-6 space-y-3">
           {approvals.length === 0 && (
-            <div className="rounded-lg border border-dashed border-slate-700 px-6 py-12 text-center text-sm text-slate-400">
+            <div className="rounded-container border border-dashed border-stone-300 px-6 py-12 text-center text-sm text-stone-500">
               暂无待处理审批
             </div>
           )}
           {approvals.map((approval) => (
             <div
               key={approval.approvalId}
-              className="rounded-lg border border-slate-800 bg-slate-900/60 px-5 py-4"
+              className="rounded-container border border-hairline bg-white px-5 py-4"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-slate-100">
+                    <span className="text-sm font-medium tabular-nums text-stone-900">
                       {formatAmount(approval.amountCents)}
                     </span>
-                    <span className="rounded-full bg-orange-600/20 px-2 py-0.5 text-xs text-orange-300">
+                    <span
+                      className={`inline-flex items-center rounded-badge border px-2 py-0.5 text-[11px] font-medium ${STATUS_STYLE[approval.status]}`}
+                    >
                       {STATUS_LABEL[approval.status]}
                     </span>
                   </div>
-                  <p className="mt-1 text-sm text-slate-300">{approval.reason}</p>
-                  <p className="mt-1 font-mono text-[11px] text-slate-500">
+                  <p className="mt-1 text-sm text-stone-600">{approval.reason}</p>
+                  <p className="mt-1 font-mono text-[11px] text-stone-500">
                     {approval.resourceType} {approval.resourceId} 会话 {approval.runId ?? '-'}
                   </p>
-                  <p className="mt-0.5 text-[11px] text-slate-500">
+                  <p className="mt-0.5 text-[11px] tabular-nums text-stone-500">
                     截止 {new Date(approval.expiresAt).toLocaleString('zh-CN')}
                   </p>
                 </div>
@@ -99,14 +112,14 @@ export default function ApprovalsPage() {
                     <button
                       onClick={() => decide(approval, 'approved')}
                       disabled={busyId === approval.approvalId}
-                      className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+                      className="rounded-control bg-emerald-700 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-emerald-800 active:scale-[0.98] disabled:opacity-50"
                     >
                       批准
                     </button>
                     <button
                       onClick={() => decide(approval, 'rejected')}
                       disabled={busyId === approval.approvalId}
-                      className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-500 disabled:opacity-50"
+                      className="rounded-control bg-red-700 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-red-800 active:scale-[0.98] disabled:opacity-50"
                     >
                       拒绝
                     </button>

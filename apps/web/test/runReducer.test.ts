@@ -110,8 +110,9 @@ describe('事件归约', () => {
     expect(state.messages[0]?.role).toBe('user')
   })
 
-  it('金额展示分转元', () => {
-    expect(formatAmount(699900)).toBe('¥6999.00')
+  it('金额展示分转元 千分位分隔', () => {
+    expect(formatAmount(699900)).toBe('¥6,999.00')
     expect(formatAmount(8900)).toBe('¥89.00')
+    expect(formatAmount(123456789)).toBe('¥1,234,567.89')
   })
 })
