@@ -95,7 +95,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
         </div>
 
         {run && (
-          <div className="mt-4 grid grid-cols-2 gap-3 rounded-container border border-hairline bg-white px-5 py-4 text-sm sm:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-4 text-sm sm:grid-cols-4">
             <div>
               <div className="text-xs text-stone-500">客户</div>
               <div className="mt-0.5 text-stone-900">{run.customerId}</div>
@@ -137,7 +137,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
           <div className="overflow-x-auto rounded-container border border-hairline bg-white">
             <table className="w-full text-xs">
               <thead className="text-left text-stone-500">
-                <tr className="border-b border-hairline bg-stone-50">
+                <tr className="border-b border-hairline">
                   <th className="px-3 py-2 font-medium">#</th>
                   <th className="px-3 py-2 font-medium">事件</th>
                   <th className="px-3 py-2 font-medium">内容摘要</th>
@@ -146,7 +146,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
               </thead>
               <tbody className="divide-y divide-hairline">
                 {events.map((event) => (
-                  <tr key={event.sequence}>
+                  <tr key={event.sequence} className="transition-colors duration-200 hover:bg-stone-50">
                     <td className="px-3 py-1.5 font-mono tabular-nums text-stone-500">
                       {event.sequence}
                     </td>
