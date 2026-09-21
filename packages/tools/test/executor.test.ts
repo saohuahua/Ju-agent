@@ -48,6 +48,19 @@ describe('只读工具', () => {
     ).rejects.toBeInstanceOf(ToolExecutionError)
     expect(c.repos.toolExecutionRepo.records).toHaveLength(0)
   })
+
+  it('同一工具多次调用 executionId 唯一 避免前端 key 撞车', async () => {
+    const c = composeTestSystem()
+    seedDeliveredOrder(c)
+    const ctx = contextFor(customerActor, 'run_dup')
+    await c.executor.execute('get_order', { orderNo: 'SO-2026-0003' }, ctx)
+    await c.executor.execute('get_order', { orderNo: 'SO-2026-0003' }, ctx)
+    const requestedIds = c.repos.eventRepo.events
+      .filter((e) => e.type === 'tool.requested')
+      .map((e) => (e.payload as { executionId: string }).executionId)
+    expect(requestedIds).toHaveLength(2)
+    expect(new Set(requestedIds).size).toBe(2)
+  })
 })
 
 describe('故障注入与重试', () => {

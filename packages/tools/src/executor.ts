@@ -50,6 +50,8 @@ function sleep(ms: number): Promise<void> {
 export class ToolExecutor {
   /** 守卫定时器集合 竞速结束统一清理 避免进程退出被拖延 */
   private readonly pendingTimers = new Set<ReturnType<typeof setTimeout>>()
+  /** 单调递增执行序号 保证同一工具多次调用时 executionId 不撞车 */
+  private executionSeq = 0
 
   constructor(private readonly deps: ExecutorDeps) {}
 
@@ -82,6 +84,7 @@ export class ToolExecutor {
     const timeoutMs = this.deps.timeoutOverrideMs ?? definition.descriptor.timeoutMs
     let lastFailure: AttemptOutcome | null = null
 
+    const callId = `${context.runId ?? 'op'}-${toolName}-${++this.executionSeq}`
     for (let attempt = 1; attempt <= 1 + retryPolicy.maxRetries; attempt++) {
       const fault = context.faults?.consume(toolName) ?? null
 
@@ -91,7 +94,7 @@ export class ToolExecutor {
       }
 
       await this.emitEvent(context, 'tool.requested', {
-        executionId: `${context.runId ?? 'op'}-${toolName}-${attempt}`,
+        executionId: `${callId}-${attempt}`,
         toolName,
         attempt,
         args: redactDeep(rawArgs),
@@ -105,6 +108,7 @@ export class ToolExecutor {
         fault,
         timeoutMs,
         attempt,
+        callId,
       )
 
       if (outcome.status === 'succeeded') {
@@ -144,9 +148,10 @@ export class ToolExecutor {
     fault: string | null,
     timeoutMs: number,
     attempt: number,
+    callId: string,
   ): Promise<AttemptOutcome> {
     const startedAt = this.deps.clock.now().getTime()
-    const executionId = `${context.runId ?? 'op'}-${toolName}-${attempt}`
+    const executionId = `${callId}-${attempt}`
     const definition = this.deps.registry.get(toolName)
 
     const attemptWork = async (): Promise<AttemptOutcome> => {

@@ -13,6 +13,7 @@ eval/reports/
 
 # 环境变量
 .env
+.env.example
 .env.local
 
 # 编辑器与系统

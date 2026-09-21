@@ -55,6 +55,7 @@ pnpm build           # 构建前端生产包
 ```bash
 cp .env.example .env
 # 填入 ANTHROPIC_API_KEY 可选调整 ANTHROPIC_MODEL
+# 用代理或中转站时同时设置 ANTHROPIC_BASE_URL 指向自定义地址
 ```
 
 配置后工作台对话走真实模型 评测可用 `pnpm eval -- --model anthropic` 测真实成绩
