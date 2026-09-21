@@ -124,6 +124,8 @@ export interface Compensation {
   status: CompensationStatus
   amountCents: number
   currency: string
+  /** 发放渠道 创建时从订单快照 与退款单同构 执行时不回查订单 */
+  channel: string
   requiresApproval: boolean
   policyVersion: string
   createdAt: string

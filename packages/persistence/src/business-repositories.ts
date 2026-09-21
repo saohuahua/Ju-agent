@@ -338,6 +338,7 @@ interface CompensationRow {
   status: string
   amount_cents: number
   currency: string
+  channel: string
   requires_approval: number
   policy_version: string
   created_at: string
@@ -354,6 +355,7 @@ function rowToCompensation(row: CompensationRow): Compensation {
     status: row.status as Compensation['status'],
     amountCents: row.amount_cents,
     currency: row.currency,
+    channel: row.channel,
     requiresApproval: row.requires_approval === 1,
     policyVersion: row.policy_version,
     createdAt: row.created_at,
@@ -370,8 +372,8 @@ export class SqliteCompensationRepository implements CompensationRepository {
       .prepare(
         `INSERT INTO compensations
          (compensation_no, order_no, customer_id, reason, status, amount_cents, currency,
-          requires_approval, policy_version, created_at, updated_at, version)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          channel, requires_approval, policy_version, created_at, updated_at, version)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
         record.compensationNo,
@@ -381,6 +383,7 @@ export class SqliteCompensationRepository implements CompensationRepository {
         record.status,
         record.amountCents,
         record.currency,
+        record.channel,
         record.requiresApproval ? 1 : 0,
         record.policyVersion,
         record.createdAt,

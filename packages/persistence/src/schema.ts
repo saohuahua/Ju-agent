@@ -87,6 +87,7 @@ CREATE TABLE IF NOT EXISTS compensations (
   status TEXT NOT NULL,
   amount_cents INTEGER NOT NULL,
   currency TEXT NOT NULL,
+  channel TEXT NOT NULL DEFAULT 'unknown',
   requires_approval INTEGER NOT NULL,
   policy_version TEXT NOT NULL,
   created_at TEXT NOT NULL,

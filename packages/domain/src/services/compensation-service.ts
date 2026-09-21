@@ -146,6 +146,8 @@ export class CompensationService {
       status: 'created',
       amountCents: input.amountCents,
       currency: order.currency,
+      // 发放渠道创建时从订单快照 与退款单同构 执行时不回查订单
+      channel: order.paymentChannel,
       requiresApproval: decision.outcome === 'needs_approval',
       policyVersion: POLICY_VERSION,
       createdAt: now,
@@ -299,12 +301,11 @@ export class CompensationService {
     await this.saveCompensation(compensation)
 
     try {
-      const order = await this.orderRepo.findByOrderNo(compensation.orderNo)
       const gatewayResult = await this.gateway.withRefund(key, {
         refundNo: input.compensationNo,
         amountCents: compensation.amountCents,
         currency: compensation.currency,
-        channel: order?.paymentChannel ?? 'unknown',
+        channel: compensation.channel,
       })
 
       // 幂等记录在副作用成功后立即落库 后续重试全部短路
