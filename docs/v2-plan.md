@@ -49,6 +49,17 @@
 
 验收 一条 sim 用例端到端跑完 允许用例失败 不允许连接失败
 
+**执行记录 2026-09-21 连通性确认 代理可用**
+
+- 单条用例 hp_refund_only_small 端到端跑通 30.7s 2499 token 通过
+- hp_lost_package_refund 24.4s 5438 token 失败（回复未提「原路」关键信息 失败已导出 eval/failures 为 W2.3 归因素材）
+- hard_impatient_large_refund_pressure 33.9s 2725 token 通过
+- 三模型参数独立生效已验证 --agent-model --user-model --judge-model 均传入 deepseek-v4-pro 时请求真实发生
+- 样本均值约 30s 每用例 约 3.5k token 每用例 据此估算 100 条 × 3 轮 = 300 用例次
+  总耗时约 2.5-3.5 小时（含用例间 1.5s 节流与瞬态重试余量）
+  token 总量约 100-120 万 按公开渠道价目（输入 $0.66/M 输出 $1.98/M）约 $1-2 量级
+  实际成本取决于代理渠道定价 此数字只作量级参考
+
 #### 1.3 真实模型首轮 32 条跑分
 
 做什么
