@@ -83,6 +83,25 @@ body {
 }
 
 /*
+ * 页面内容进入淡入：纯 CSS 250ms 一次播放
+ * prefers-reduced-motion 由下方全局兜底降为瞬时
+ */
+@keyframes fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: fade-slide-in 250ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/*
  * 动效约束：只在 200-300ms 的 CSS 过渡内做交互反馈。
  * prefers-reduced-motion 下全部降级为瞬时（全局兜底）。
  */

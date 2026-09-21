@@ -11,6 +11,7 @@
 import { Gauge } from '@phosphor-icons/react'
 import { useCallback, useEffect, useState } from 'react'
 import { AppShell } from '@/components/AppShell'
+import { Skeleton } from '@/components/Skeleton'
 import { api } from '@/lib/api'
 import type { EvalReportSummary } from '@/lib/types'
 
@@ -67,6 +68,7 @@ export default function EvalPage() {
   const [reports, setReports] = useState<EvalReportSummary[]>([])
   const [error, setError] = useState<string | null>(null)
   const [running, setRunning] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const load = useCallback(async () => {
     try {
@@ -75,6 +77,8 @@ export default function EvalPage() {
       setError(null)
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '加载失败')
+    } finally {
+      setLoading(false)
     }
   }, [])
 
@@ -100,7 +104,7 @@ export default function EvalPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-5xl px-6 py-8">
+      <div className="page-enter mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-center justify-between gap-6">
           <h1 className="shrink-0 text-xl font-semibold tracking-tight">评测看板</h1>
           <div className="flex min-w-0 items-center gap-5">
@@ -123,14 +127,32 @@ export default function EvalPage() {
           </p>
         )}
 
-        {!latest && !running && (
+        {loading && (
+          <>
+            <div className="mt-8 flex flex-wrap items-end gap-x-12 gap-y-6 border-b border-hairline pb-8">
+              {[0, 1, 2, 3].map((index) => (
+                <div key={index}>
+                  <Skeleton className="h-3 w-16" />
+                  <Skeleton className="mt-2 h-10 w-20" />
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 space-y-2.5">
+              {[0, 1, 2, 3, 4].map((index) => (
+                <Skeleton key={index} className="h-5 w-full max-w-md" />
+              ))}
+            </div>
+          </>
+        )}
+
+        {!loading && !latest && !running && (
           <div className="mt-6 flex flex-col items-center gap-2 rounded-container border border-dashed border-stone-300 px-6 py-12 text-sm text-stone-500">
             <Gauge size={28} className="text-stone-300" aria-hidden="true" />
             <span>暂无评测报告 点击右上角运行评测套件</span>
           </div>
         )}
 
-        {latest && (
+        {!loading && latest && (
           <>
             <div className="mt-8 flex flex-wrap items-end gap-x-12 gap-y-6 border-b border-hairline pb-8">
               <div>

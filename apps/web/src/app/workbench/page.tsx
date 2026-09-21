@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AppShell } from '@/components/AppShell'
 import { ApprovalCard } from '@/components/ApprovalCard'
+import { Skeleton } from '@/components/Skeleton'
 import { StatusBadge } from '@/components/StatusBadge'
 import { ToolCard } from '@/components/ToolCard'
 import { api, ApiError } from '@/lib/api'
@@ -65,7 +66,7 @@ export default function WorkbenchPage() {
 
   return (
     <AppShell>
-      <div className="flex h-[100dvh] flex-col">
+      <div className="page-enter flex h-[100dvh] flex-col">
         <header className="flex items-center justify-between border-b border-hairline px-6 py-3">
           <div>
             <h1 className="text-base font-semibold tracking-tight">售后会话</h1>
@@ -134,6 +135,13 @@ export default function WorkbenchPage() {
             </div>
           )}
 
+          {runId && state.status === 'running' && state.messages.length === 0 && (
+            <div className="max-w-2xl rounded-container border border-hairline bg-white px-4 py-2.5">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="mt-2 h-4 w-1/2" />
+            </div>
+          )}
+
           {state.messages.map((message, index) => (
             <div
               key={index}
@@ -195,7 +203,7 @@ export default function WorkbenchPage() {
               placeholder={
                 runId ? (awaitingInput ? '请补充信息' : '会话进行中') : '请描述您的售后需求'
               }
-              className="flex-1 rounded-control border border-hairline bg-white px-4 py-2.5 text-sm text-stone-900 transition-colors duration-200 placeholder:text-stone-400 disabled:opacity-50"
+              className="flex-1 rounded-control border border-hairline bg-white px-4 py-2.5 text-sm text-stone-900 transition-colors duration-200 placeholder:text-stone-500 disabled:opacity-50"
             />
             <button
               type="submit"

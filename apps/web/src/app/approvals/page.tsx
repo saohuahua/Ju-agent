@@ -9,6 +9,7 @@
 import { Tray } from '@phosphor-icons/react'
 import { useCallback, useEffect, useState } from 'react'
 import { AppShell } from '@/components/AppShell'
+import { Skeleton } from '@/components/Skeleton'
 import { api, ApiError } from '@/lib/api'
 import { formatAmount } from '@/lib/runReducer'
 import type { ApprovalRequest } from '@/lib/types'
@@ -32,6 +33,7 @@ export default function ApprovalsPage() {
   const [error, setError] = useState<string | null>(null)
   const [busyId, setBusyId] = useState<string | null>(null)
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null)
+  const [loading, setLoading] = useState(true)
 
   const load = useCallback(async () => {
     try {
@@ -41,6 +43,8 @@ export default function ApprovalsPage() {
       setLastRefresh(new Date())
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.message : '加载失败')
+    } finally {
+      setLoading(false)
     }
   }, [])
 
@@ -66,7 +70,7 @@ export default function ApprovalsPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-4xl px-6 py-8">
+      <div className="page-enter mx-auto max-w-4xl px-6 py-8">
         <div className="flex items-center justify-between gap-6">
           <h1 className="shrink-0 text-xl font-semibold tracking-tight">审批中心</h1>
           <div className="flex min-w-0 items-center gap-4">
@@ -92,13 +96,32 @@ export default function ApprovalsPage() {
           </p>
         )}
 
-        <div className="mt-6 space-y-3">
-          {approvals.length === 0 && (
-            <div className="flex flex-col items-center gap-2 rounded-container border border-dashed border-stone-300 px-6 py-12 text-sm text-stone-500">
-              <Tray size={28} className="text-stone-300" aria-hidden="true" />
-              <span>暂无待处理审批</span>
-            </div>
-          )}
+        {loading && (
+          <div className="mt-6 space-y-3">
+            {[0, 1, 2].map((index) => (
+              <div
+                key={index}
+                className="rounded-container border border-hairline bg-white px-5 py-4"
+              >
+                <div className="flex items-center gap-3">
+                  <Skeleton className="h-6 w-28" />
+                  <Skeleton className="h-4 w-16" />
+                </div>
+                <Skeleton className="mt-2 h-4 w-2/3" />
+                <Skeleton className="mt-2 h-3 w-1/2" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!loading && (
+          <div className="mt-6 space-y-3">
+            {approvals.length === 0 && (
+              <div className="flex flex-col items-center gap-2 rounded-container border border-dashed border-stone-300 px-6 py-12 text-sm text-stone-500">
+                <Tray size={28} className="text-stone-300" aria-hidden="true" />
+                <span>暂无待处理审批</span>
+              </div>
+            )}
           {approvals.map((approval) => (
             <div
               key={approval.approvalId}
@@ -145,7 +168,8 @@ export default function ApprovalsPage() {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </AppShell>
   )

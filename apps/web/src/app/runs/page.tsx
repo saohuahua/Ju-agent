@@ -8,6 +8,7 @@ import { ArrowRight, ClockCounterClockwise } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { AppShell } from '@/components/AppShell'
+import { Skeleton } from '@/components/Skeleton'
 import { StatusBadge } from '@/components/StatusBadge'
 import { api } from '@/lib/api'
 import type { RunSummary } from '@/lib/types'
@@ -15,17 +16,19 @@ import type { RunSummary } from '@/lib/types'
 export default function RunsPage() {
   const [runs, setRuns] = useState<RunSummary[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     api
       .listRuns()
       .then((body) => setRuns(body.runs))
       .catch((caught) => setError(caught instanceof Error ? caught.message : '加载失败'))
+      .finally(() => setLoading(false))
   }, [])
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-5xl px-6 py-8">
+      <div className="page-enter mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-center justify-between gap-6">
           <h1 className="shrink-0 text-xl font-semibold tracking-tight">运行记录</h1>
           <p className="min-w-0 text-right text-sm text-stone-500">
@@ -38,14 +41,43 @@ export default function RunsPage() {
           </p>
         )}
 
-        {runs.length === 0 && (
+        {loading && (
+          <div className="mt-6 overflow-x-auto">
+            <table className="w-full text-sm">
+              <tbody className="divide-y divide-hairline">
+                {[0, 1, 2, 3].map((index) => (
+                  <tr key={index}>
+                    <td className="px-4 py-2.5">
+                      <Skeleton className="h-4 w-32" />
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <Skeleton className="h-4 w-16" />
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <Skeleton className="h-4 w-20" />
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <Skeleton className="h-5 w-20" />
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <Skeleton className="h-4 w-28" />
+                    </td>
+                    <td className="px-4 py-2.5" />
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {!loading && runs.length === 0 && (
           <div className="mt-6 flex flex-col items-center gap-2 rounded-container border border-dashed border-stone-300 px-6 py-12 text-sm text-stone-500">
             <ClockCounterClockwise size={28} className="text-stone-300" aria-hidden="true" />
             <span>暂无运行记录</span>
           </div>
         )}
 
-        {runs.length > 0 && (
+        {!loading && runs.length > 0 && (
           <div className="mt-6 overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="text-left text-xs text-stone-500">

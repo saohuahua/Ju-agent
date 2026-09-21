@@ -9,6 +9,7 @@
 
 import { use, useCallback, useEffect, useState } from 'react'
 import { AppShell } from '@/components/AppShell'
+import { Skeleton } from '@/components/Skeleton'
 import { StatusBadge } from '@/components/StatusBadge'
 import { ToolCard } from '@/components/ToolCard'
 import { api } from '@/lib/api'
@@ -58,6 +59,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
 
   const view = reduceEvents(initialViewState(), events)
   const stuck = run?.status === 'running'
+  const loading = run === null && !error
 
   const resume = async () => {
     if (resuming) return
@@ -74,7 +76,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-4xl px-6 py-8">
+      <div className="page-enter mx-auto max-w-4xl px-6 py-8">
         <div className="flex items-center justify-between gap-4">
           <h1 className="flex shrink-0 items-center gap-3 text-xl font-semibold tracking-tight">
             运行详情
@@ -94,7 +96,25 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
           </div>
         </div>
 
-        {run && (
+        {loading && (
+          <>
+            <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-4">
+              {[0, 1, 2, 3].map((index) => (
+                <div key={index}>
+                  <Skeleton className="h-3 w-14" />
+                  <Skeleton className="mt-1.5 h-4 w-24" />
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 space-y-2">
+              {[0, 1, 2, 3, 4].map((index) => (
+                <Skeleton key={index} className="h-10 w-full" />
+              ))}
+            </div>
+          </>
+        )}
+
+        {!loading && run && (
           <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-4 text-sm sm:grid-cols-4">
             <div>
               <div className="text-xs text-stone-500">客户</div>
