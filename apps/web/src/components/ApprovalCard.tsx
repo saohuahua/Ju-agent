@@ -43,7 +43,7 @@ export function ApprovalCard({
     <div className="rounded-container border border-orange-200 bg-orange-50/70 px-4 py-3">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-orange-900">需要人工审批</span>
-        <span className="text-sm font-semibold tabular-nums text-orange-900">
+        <span className="text-lg font-semibold font-mono text-stone-900">
           {formatAmount(approval.amountCents)}
         </span>
       </div>

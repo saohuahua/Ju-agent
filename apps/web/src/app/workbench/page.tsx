@@ -68,7 +68,7 @@ export default function WorkbenchPage() {
       <div className="flex h-[100dvh] flex-col">
         <header className="flex items-center justify-between border-b border-hairline px-6 py-3">
           <div>
-            <h1 className="text-sm font-semibold tracking-tight">售后会话</h1>
+            <h1 className="text-base font-semibold tracking-tight">售后会话</h1>
             <p className="text-xs text-stone-500">
               自然语言发起查单 退货 退款 高风险动作将进入人工审批
             </p>
@@ -77,7 +77,13 @@ export default function WorkbenchPage() {
             {runId && <span className="font-mono text-stone-400">{runId}</span>}
             {runId && <StatusBadge status={state.status} />}
             {runId && (
-              <span className={connected ? 'text-emerald-700' : 'text-amber-700'}>
+              <span className="inline-flex items-center gap-1.5 text-stone-500">
+                <span
+                  aria-hidden="true"
+                  className={`h-1.5 w-1.5 rounded-full ${
+                    connected ? 'bg-emerald-500' : 'bg-amber-500'
+                  }`}
+                />
                 {connected ? '已连接' : '重连中'}
               </span>
             )}
@@ -119,7 +125,7 @@ export default function WorkbenchPage() {
                   <button
                     key={sample}
                     onClick={() => submit(sample)}
-                    className="rounded-container border border-hairline bg-white px-4 py-2.5 text-left text-sm text-stone-700 transition-colors duration-200 hover:border-sage-300 hover:bg-sage-50 active:scale-[0.99]"
+                    className="rounded-container border border-hairline bg-white px-4 py-2.5 text-left text-sm text-stone-700 transition-colors duration-200 hover:border-stone-300 hover:bg-stone-50 active:scale-[0.99]"
                   >
                     {sample}
                   </button>
@@ -133,7 +139,7 @@ export default function WorkbenchPage() {
               key={index}
               className={`max-w-2xl rounded-container px-4 py-2.5 text-sm leading-relaxed ${
                 message.role === 'user'
-                  ? 'ml-auto bg-sage-700 text-white'
+                  ? 'ml-auto border border-sage-200 bg-sage-100 text-sage-900'
                   : message.role === 'assistant'
                     ? 'border border-hairline bg-white text-stone-800'
                     : 'mx-auto bg-transparent text-center text-xs text-stone-400'
@@ -171,15 +177,18 @@ export default function WorkbenchPage() {
         </div>
 
         <footer className="border-t border-hairline px-6 py-4">
-          {error && <p className="mb-2 text-xs text-red-700">{error}</p>}
           <form
             onSubmit={(event) => {
               event.preventDefault()
               submit(input)
             }}
-            className="flex gap-2"
+            className="flex items-center gap-2"
           >
+            <label htmlFor="workbench-input" className="sr-only">
+              消息
+            </label>
             <input
+              id="workbench-input"
               value={input}
               onChange={(event) => setInput(event.target.value)}
               disabled={!runId || (!awaitingInput && !terminal)}
@@ -196,6 +205,11 @@ export default function WorkbenchPage() {
               发送
             </button>
           </form>
+          {error && (
+            <p className="mt-2 rounded-control border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              {error}
+            </p>
+          )}
         </footer>
       </div>
     </AppShell>

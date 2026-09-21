@@ -5,14 +5,15 @@
  *
  * 展示单次工具调用的名称 尝试次数 结果摘要与错误码
  * 展示层不做业务判断 只忠实呈现轨迹证据
+ * 视觉：hairline 白卡 + 左侧按执行状态着色的 2px 竖条
  */
 
 import type { ToolItem } from '@/lib/runReducer'
 
-const STATUS_STYLE = {
-  pending: 'border-hairline bg-white',
-  succeeded: 'border-emerald-200 bg-emerald-50/60',
-  failed: 'border-red-200 bg-red-50/60',
+const STATUS_BAR = {
+  pending: 'bg-stone-300',
+  succeeded: 'bg-emerald-500',
+  failed: 'bg-red-500',
 } as const
 
 const STATUS_LABEL = {
@@ -30,7 +31,11 @@ const STATUS_TEXT = {
 export function ToolCard({ tool }: { tool: ToolItem }) {
   const summaryEntries = Object.entries(tool.resultSummary ?? {}).slice(0, 4)
   return (
-    <div className={`rounded-container border px-3 py-2 text-xs ${STATUS_STYLE[tool.status]}`}>
+    <div className="relative rounded-container border border-hairline bg-white px-3 py-2 text-xs">
+      <span
+        aria-hidden="true"
+        className={`absolute top-1.5 bottom-1.5 left-0 w-0.5 rounded-full ${STATUS_BAR[tool.status]}`}
+      />
       <div className="flex items-center justify-between gap-2">
         <span className="font-mono text-[13px] text-stone-800">{tool.toolName}</span>
         <span className="flex items-center gap-2 text-stone-500">
