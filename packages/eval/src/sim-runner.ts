@@ -168,11 +168,10 @@ export async function runSimCase(
         simInputTokens += reply.inputTokens
         simOutputTokens += reply.outputTokens
         if (reply.terminal) {
-          if (reply.kind === 'transfer') {
-            failures.push({
-              kind: 'simulator',
-              message: `模拟客户主动要求转人工 终止于第 ${turns + 1} 轮`,
-            })
+          if (reply.kind === 'transfer' && reply.text) {
+            // 转人工诉求送达 Agent 给它按规则响应升级的机会 终态交给断言判定
+            outcome = await driveTurn(system, runId, reply.text, toolContext, false)
+            turns += 1
           }
           break
         }
