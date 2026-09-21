@@ -15,9 +15,11 @@ import type {
   Customer,
   Order,
   PolicyRule,
+  PriceProtection,
   Refund,
   ReturnRequest,
   Shipment,
+  SkuPrice,
   ToolExecutionRecord,
 } from './entities.js'
 
@@ -69,6 +71,18 @@ export interface CompensationRepository {
   findByCompensationNo(compensationNo: string): Promise<Compensation | null>
   listByOrderNo(orderNo: string): Promise<Compensation[]>
   update(record: Compensation): Promise<void>
+}
+
+export interface PriceProtectionRepository {
+  create(record: PriceProtection): Promise<void>
+  findByProtectionNo(protectionNo: string): Promise<PriceProtection | null>
+  listByOrderNo(orderNo: string): Promise<PriceProtection[]>
+  update(record: PriceProtection): Promise<void>
+}
+
+/** 商品当前售价 价保差额计算的参照价 只读 */
+export interface SkuPriceRepository {
+  listBySkus(skus: string[]): Promise<SkuPrice[]>
 }
 
 export interface PolicyRepository {

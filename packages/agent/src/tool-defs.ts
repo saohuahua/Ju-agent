@@ -19,6 +19,7 @@ export const ACTION_TOOLS: Intent[] = [
   'submit_exchange',
   'cancel_return',
   'compensation',
+  'price_protection',
   'escalate',
 ]
 
@@ -56,6 +57,8 @@ export function buildActionToolDefinitions(available: Intent[]): ToolDefinition[
     cancel_return: '取消已创建的售后申请',
     compensation:
       '发起现金红包补偿 需与顾客确认补偿金额 系统自动执行分级 50 元内自动发放 超出转人工审批 同一订单同一原因仅一次',
+    price_protection:
+      '发起价保申请 系统对比成交价与当前售价 自签收起 7 天内降价商品按单价差乘数量全额退还 差价金额由系统计算 同一订单仅可价保一次',
     escalate: '升级人工客服',
   }
   return available.map((intent) => ({

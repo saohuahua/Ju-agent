@@ -32,6 +32,7 @@ const STATUS_STYLE: Record<ApprovalRequest['status'], string> = {
 const RESOURCE_LABEL: Record<string, string> = {
   return_request: '售后单',
   compensation: '补偿单',
+  price_protection: '价保单',
 }
 
 export default function ApprovalsPage() {

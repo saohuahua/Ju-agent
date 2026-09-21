@@ -15,9 +15,11 @@ import type {
   Customer,
   Order,
   PolicyRule,
+  PriceProtection,
   Refund,
   ReturnRequest,
   Shipment,
+  SkuPrice,
   ToolExecutionRecord,
 } from './entities.js'
 import type {
@@ -34,9 +36,11 @@ import type {
   OrderRepository,
   PaymentGatewayPort,
   PolicyRepository,
+  PriceProtectionRepository,
   RefundRepository,
   ReturnRepository,
   ShipmentRepository,
+  SkuPriceRepository,
   ToolExecutionRepository,
 } from './repositories.js'
 
@@ -125,6 +129,33 @@ export class InMemoryCompensationRepository implements CompensationRepository {
   }
   async update(record: Compensation): Promise<void> {
     this.compensations.set(record.compensationNo, { ...record })
+  }
+}
+
+export class InMemoryPriceProtectionRepository implements PriceProtectionRepository {
+  readonly protections = new Map<string, PriceProtection>()
+  async create(record: PriceProtection): Promise<void> {
+    this.protections.set(record.protectionNo, { ...record })
+  }
+  async findByProtectionNo(protectionNo: string): Promise<PriceProtection | null> {
+    const found = this.protections.get(protectionNo)
+    return found ? { ...found } : null
+  }
+  async listByOrderNo(orderNo: string): Promise<PriceProtection[]> {
+    return [...this.protections.values()].filter((p) => p.orderNo === orderNo).map((p) => ({ ...p }))
+  }
+  async update(record: PriceProtection): Promise<void> {
+    this.protections.set(record.protectionNo, { ...record })
+  }
+}
+
+export class InMemorySkuPriceRepository implements SkuPriceRepository {
+  readonly prices = new Map<string, SkuPrice>()
+  async listBySkus(skus: string[]): Promise<SkuPrice[]> {
+    return skus
+      .map((sku) => this.prices.get(sku))
+      .filter((price): price is SkuPrice => Boolean(price))
+      .map((price) => ({ ...price }))
   }
 }
 
@@ -335,6 +366,8 @@ export function createInMemoryRepositories() {
     returnRepo: new InMemoryReturnRepository(),
     refundRepo: new InMemoryRefundRepository(),
     compensationRepo: new InMemoryCompensationRepository(),
+    protectionRepo: new InMemoryPriceProtectionRepository(),
+    skuPriceRepo: new InMemorySkuPriceRepository(),
     approvalRepo: new InMemoryApprovalRepository(),
     policyRepo: new InMemoryPolicyRepository(),
     auditRepo: new InMemoryAuditRepository(),

@@ -26,6 +26,8 @@ export function ApprovalCard({
   const [error, setError] = useState<string | null>(null)
 
   const isCompensation = approval.resourceType === 'compensation'
+  const isPriceProtection = approval.resourceType === 'price_protection'
+  const resourceLabel = isCompensation ? '补偿单' : isPriceProtection ? '价保单' : '售后单'
 
   const decide = async (decision: 'approved' | 'rejected') => {
     if (submitting) return
@@ -45,7 +47,11 @@ export function ApprovalCard({
     <div className="rounded-container border border-orange-200 bg-orange-50/70 px-4 py-3">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-orange-900">
-          {isCompensation ? '大额补偿需要人工审批' : '需要人工审批'}
+          {isCompensation
+            ? '大额补偿需要人工审批'
+            : isPriceProtection
+              ? '大额价保需要人工审批'
+              : '需要人工审批'}
         </span>
         <span className="text-lg font-semibold font-mono text-stone-900">
           {formatAmount(approval.amountCents)}
@@ -53,7 +59,7 @@ export function ApprovalCard({
       </div>
       <p className="mt-1 text-xs text-stone-600">{approval.reason}</p>
       <p className="mt-0.5 font-mono text-[11px] text-stone-500">
-        {isCompensation ? '补偿单' : '售后单'} {approval.resourceId}
+        {resourceLabel} {approval.resourceId}
       </p>
 
       {approval.status === 'pending' ? (
@@ -64,7 +70,7 @@ export function ApprovalCard({
               disabled={submitting}
               className="rounded-control bg-emerald-700 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-emerald-800 active:scale-[0.98] disabled:opacity-50"
             >
-              {isCompensation ? '批准发放' : '批准退款'}
+              {isCompensation ? '批准发放' : isPriceProtection ? '批准退还' : '批准退款'}
             </button>
             <button
               onClick={() => decide('rejected')}

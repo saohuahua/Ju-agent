@@ -19,6 +19,8 @@ export {
   SqliteReturnRepository,
   SqliteRefundRepository,
   SqliteCompensationRepository,
+  SqlitePriceProtectionRepository,
+  SqliteSkuPriceRepository,
   SqliteApprovalRepository,
   SqlitePolicyRepository,
 } from './business-repositories.js'

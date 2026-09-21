@@ -124,6 +124,11 @@ export const INTENT_SLOT_SCHEMAS = {
     reason: CompensationReason,
     amountCents: MoneyCents,
   }),
+  price_protection: z.object({
+    orderNo: z.string().min(1),
+    /** 部分价保时指定的商品 为空表示整单 差价由系统按当前售价计算 */
+    itemIds: z.array(z.string()).optional(),
+  }),
   escalate: z.object({ reason: z.string().min(1) }),
 } as const
 

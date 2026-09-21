@@ -17,6 +17,7 @@ import type {
   Clock,
   CompensationService,
   LeaseRepository,
+  PriceProtectionService,
   RunService,
 } from '@aftersales/domain'
 import { DomainError } from '@aftersales/domain'
@@ -68,6 +69,7 @@ export interface WorkflowRunContext {
 export interface WorkflowEngineDeps {
   afterSaleService: AfterSaleService
   compensationService: CompensationService
+  priceProtectionService: PriceProtectionService
   approvalService: ApprovalService
   runService: RunService
   executor: ToolExecutor
@@ -143,6 +145,16 @@ export class WorkflowEngine {
           runId,
         )
       }
+    } else if (approvalResourceType === 'price_protection') {
+      const protectionNo = state.protectionNo as string | undefined
+      if (protectionNo) {
+        await this.deps.priceProtectionService.applyApprovalDecision(
+          supervisorActor,
+          protectionNo,
+          decision,
+          runId,
+        )
+      }
     } else if (returnNo) {
       await this.deps.afterSaleService.applyApprovalDecision(
         supervisorActor,
@@ -157,7 +169,11 @@ export class WorkflowEngine {
 
     if (decision !== 'approved') {
       const closedText =
-        approvalResourceType === 'compensation' ? '补偿单已关闭' : '售后单已关闭'
+        approvalResourceType === 'compensation'
+          ? '补偿单已关闭'
+          : approvalResourceType === 'price_protection'
+            ? '价保单已关闭'
+            : '售后单已关闭'
       return {
         status: 'completed',
         outcome: 'rejected',
@@ -312,6 +328,8 @@ export class WorkflowEngine {
         return this.cancelSteps()
       case 'compensation':
         return this.compensationSteps()
+      case 'price_protection':
+        return this.priceProtectionSteps()
       case 'escalate':
         return this.escalateSteps()
       default:
@@ -570,6 +588,102 @@ export class WorkflowEngine {
     ]
   }
 
+  /**
+   * 价保差价退还 创建时政策判定 拒赔直接收尾
+   * 差价金额由系统按 SKU 明细计算 大额走审批
+   */
+  private priceProtectionSteps(): WorkflowStep[] {
+    return [
+      {
+        id: 'verify_order',
+        name: '校验订单归属与状态',
+        execute: async (context) => {
+          // 工作流不信任 Agent 的查询结果 自行重查一遍
+          const order = await this.deps.executor.execute(
+            'get_order',
+            { orderNo: context.slots.orderNo as string },
+            context.toolContext,
+          )
+          context.state.orderStatus = order.status
+        },
+      },
+      {
+        id: 'create_price_protection',
+        name: '创建价保单并完成政策判定',
+        execute: async (context) => {
+          const args: Record<string, unknown> = {
+            orderNo: context.slots.orderNo as string,
+          }
+          if (context.slots.itemIds) {
+            args.itemIds = context.slots.itemIds as string[]
+          }
+          const result = await this.deps.executor.execute(
+            'create_price_protection',
+            args,
+            context.toolContext,
+          )
+          context.state.protectionNo = result.protectionNo
+          context.state.policyOutcome = result.policyOutcome
+          context.state.policyExplanation = result.policyExplanation
+          context.state.refundAmountCents = result.refundAmountCents
+          context.state.requiresApproval = result.requiresApproval
+        },
+      },
+      {
+        id: 'request_approval',
+        name: '发起大额差价审批',
+        execute: async (context) => {
+          if (context.state.requiresApproval !== true) {
+            return
+          }
+          const approval = await this.deps.approvalService.create({
+            runId: context.runId,
+            resourceType: 'price_protection',
+            resourceId: context.state.protectionNo as string,
+            reason: context.state.policyExplanation as string,
+            amountCents: context.state.refundAmountCents as number,
+            requestedBy: 'workflow',
+          })
+          context.state.approvalId = approval.approvalId
+          context.state.approvalResourceType = 'price_protection'
+          // 令牌只存在断点与服务端 不经过模型
+          context.state.approvalToken = approval.oneTimeToken
+          await this.deps.runService.emit(context.runId, 'approval.required', {
+            approvalId: approval.approvalId,
+            riskLevel: 'high',
+            resourceType: 'price_protection',
+            resourceId: context.state.protectionNo as string,
+            amountCents: approval.amountCents,
+            reason: approval.reason,
+            expiresAt: approval.expiresAt,
+          })
+          return { pauseForApproval: true, approvalId: approval.approvalId }
+        },
+      },
+      {
+        id: 'execute_price_protection',
+        name: '执行差价退还',
+        execute: async (context) => {
+          if (context.state.policyOutcome === 'deny') {
+            return
+          }
+          const args: Record<string, unknown> = {
+            protectionNo: context.state.protectionNo as string,
+          }
+          if (context.state.approvalToken) {
+            args.approvalToken = context.state.approvalToken
+          }
+          const result = await this.deps.executor.execute(
+            'execute_price_protection',
+            args,
+            context.toolContext,
+          )
+          context.state.protectionStatus = result.status
+        },
+      },
+    ]
+  }
+
   /** 取消售后单 单步工作流 */
   private cancelSteps(): WorkflowStep[] {
     return [
@@ -634,6 +748,8 @@ export class WorkflowEngine {
       refundStatus: context.state.refundStatus ?? null,
       compensationNo: context.state.compensationNo ?? null,
       compensationStatus: context.state.compensationStatus ?? null,
+      protectionNo: context.state.protectionNo ?? null,
+      protectionStatus: context.state.protectionStatus ?? null,
       amountCents: context.state.amountCents ?? null,
     }
   }

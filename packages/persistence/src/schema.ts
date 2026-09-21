@@ -97,6 +97,30 @@ CREATE TABLE IF NOT EXISTS compensations (
 );
 CREATE INDEX IF NOT EXISTS idx_compensations_order ON compensations(order_no);
 
+CREATE TABLE IF NOT EXISTS price_protections (
+  protection_no TEXT PRIMARY KEY,
+  order_no TEXT NOT NULL,
+  customer_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  amount_cents INTEGER NOT NULL,
+  currency TEXT NOT NULL,
+  channel TEXT NOT NULL DEFAULT 'unknown',
+  items_json TEXT NOT NULL,
+  requires_approval INTEGER NOT NULL,
+  policy_rule_id TEXT NOT NULL,
+  policy_version TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  version INTEGER NOT NULL DEFAULT 1
+);
+CREATE INDEX IF NOT EXISTS idx_price_protections_order ON price_protections(order_no);
+
+CREATE TABLE IF NOT EXISTS sku_prices (
+  sku TEXT PRIMARY KEY,
+  current_unit_price_cents INTEGER NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS approval_requests (
   approval_id TEXT PRIMARY KEY,
   run_id TEXT,

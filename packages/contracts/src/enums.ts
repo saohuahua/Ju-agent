@@ -63,6 +63,7 @@ export const INTENTS = [
   'submit_exchange',
   'cancel_return',
   'compensation',
+  'price_protection',
   'escalate',
 ] as const
 export const Intent = z.enum(INTENTS)
@@ -207,6 +208,40 @@ export const APPROVAL_TRANSITIONS: Readonly<Record<ApprovalStatus, readonly Appr
 
 export const COMPENSATION_TRANSITIONS: Readonly<Record<CompensationStatus, readonly CompensationStatus[]>> = {
   created: ['auto_approved', 'awaiting_approval', 'cancelled'],
+  auto_approved: ['executing', 'cancelled'],
+  awaiting_approval: ['approved', 'rejected', 'expired', 'cancelled'],
+  approved: ['executing', 'cancelled'],
+  rejected: [],
+  expired: [],
+  executing: ['succeeded', 'failed'],
+  succeeded: [],
+  failed: ['executing', 'cancelled'],
+  cancelled: [],
+}
+
+/**
+ * 价保单状态 与补偿单同构的确定性状态机
+ * 拒绝与过期不占位 降价状态变化后允许重新申请
+ */
+export const PRICE_PROTECTION_STATUSES = [
+  'created',
+  'auto_approved',
+  'awaiting_approval',
+  'approved',
+  'rejected',
+  'expired',
+  'executing',
+  'succeeded',
+  'failed',
+  'cancelled',
+] as const
+export const PriceProtectionStatus = z.enum(PRICE_PROTECTION_STATUSES)
+export type PriceProtectionStatus = z.infer<typeof PriceProtectionStatus>
+
+export const PRICE_PROTECTION_TRANSITIONS: Readonly<
+  Record<PriceProtectionStatus, readonly PriceProtectionStatus[]>
+> = {
+  created: ['auto_approved', 'awaiting_approval', 'rejected', 'cancelled'],
   auto_approved: ['executing', 'cancelled'],
   awaiting_approval: ['approved', 'rejected', 'expired', 'cancelled'],
   approved: ['executing', 'cancelled'],

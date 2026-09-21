@@ -8,11 +8,13 @@
 import {
   APPROVAL_TRANSITIONS,
   COMPENSATION_TRANSITIONS,
+  PRICE_PROTECTION_TRANSITIONS,
   REFUND_TRANSITIONS,
   RETURN_TRANSITIONS,
   RUN_TRANSITIONS,
   type ApprovalStatus,
   type CompensationStatus,
+  type PriceProtectionStatus,
   type RefundStatus,
   type ReturnStatus,
   type RunStatus,
@@ -64,6 +66,13 @@ export function assertCompensationTransition(
   to: CompensationStatus,
 ): void {
   assertTransition('Compensation', COMPENSATION_TRANSITIONS, from, to)
+}
+
+export function assertPriceProtectionTransition(
+  from: PriceProtectionStatus,
+  to: PriceProtectionStatus,
+): void {
+  assertTransition('PriceProtection', PRICE_PROTECTION_TRANSITIONS, from, to)
 }
 
 /** 判断迁移是否合法 供工作流做前置检查而不抛错 */

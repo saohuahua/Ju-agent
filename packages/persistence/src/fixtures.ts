@@ -301,6 +301,36 @@ export const BASELINE_FIXTURE = {
       delivered_at: null,
       created_at: '2026-09-14T00:00:00.000Z',
     },
+    {
+      order_no: 'SO-2026-0011',
+      customer_id: 'C1001',
+      status: 'delivered',
+      total_amount_cents: 68_700,
+      currency: 'CNY',
+      payment_channel: 'wechat',
+      items: [
+        {
+          itemId: 'item-0011-1',
+          sku: 'SKU-SP-001',
+          title: '便携蓝牙音箱',
+          category: 'electronics',
+          quantity: 2,
+          unitPriceCents: 29_900,
+        },
+        {
+          itemId: 'item-0011-2',
+          sku: 'SKU-CA-001',
+          title: '编织数据线',
+          category: 'electronics',
+          quantity: 1,
+          unitPriceCents: 8_900,
+        },
+      ],
+      paid_at: '2026-09-13T00:00:00.000Z',
+      shipped_at: '2026-09-15T00:00:00.000Z',
+      delivered_at: '2026-09-17T12:00:00.000Z',
+      created_at: '2026-09-13T00:00:00.000Z',
+    },
   ] satisfies FixtureOrder[],
   shipments: [
     {
@@ -366,6 +396,18 @@ export const BASELINE_FIXTURE = {
       ],
       delivered_at: null,
     },
+    {
+      shipment_id: 'SH-2026-0011',
+      order_no: 'SO-2026-0011',
+      carrier: '顺丰速运',
+      tracking_no: 'SF2468013579',
+      status: 'delivered',
+      events: [
+        { time: '2026-09-17T08:00:00.000Z', description: '派送中 请保持电话畅通' },
+        { time: '2026-09-17T12:00:00.000Z', description: '已签收 签收人本人' },
+      ],
+      delivered_at: '2026-09-17T12:00:00.000Z',
+    },
   ] satisfies FixtureShipment[],
   policies: [
     {
@@ -404,6 +446,43 @@ export const BASELINE_FIXTURE = {
       time_window_days: null,
       excluded_categories: null,
     },
+    {
+      rule_id: 'PP1_not_delivered',
+      description: '订单尚未签收不满足价保申请条件',
+      time_window_days: null,
+      excluded_categories: null,
+    },
+    {
+      rule_id: 'PP2_window_expired',
+      description: '自签收起超过 7 天超出价保窗口无法申请价保',
+      time_window_days: 7,
+      excluded_categories: null,
+    },
+    {
+      rule_id: 'PP3_active_return',
+      description: '订单存在进行中的售后流程时先完成售后再申请价保',
+      time_window_days: null,
+      excluded_categories: null,
+    },
+    {
+      rule_id: 'PP4_no_price_drop',
+      description: '订单商品当前售价未低于成交价不满足价保条件',
+      time_window_days: null,
+      excluded_categories: null,
+    },
+    {
+      rule_id: 'PP5_price_drop',
+      description: '自签收起 7 天价保窗口内降价商品按单价差乘数量全额退还差价',
+      time_window_days: 7,
+      excluded_categories: null,
+    },
+  ],
+  /** 商品当前售价 价保差额计算的参照价 未列出的商品视为未降价 */
+  skuPrices: [
+    { sku: 'SKU-SP-001', current_unit_price_cents: 25_900, updated_at: '2026-09-19T00:00:00.000Z' },
+    { sku: 'SKU-KB-001', current_unit_price_cents: 79_900, updated_at: '2026-09-18T00:00:00.000Z' },
+    { sku: 'SKU-WA-001', current_unit_price_cents: 380_000, updated_at: '2026-09-18T00:00:00.000Z' },
+    { sku: 'SKU-MG-001', current_unit_price_cents: 39_900, updated_at: '2026-09-17T00:00:00.000Z' },
   ],
   /** 历史已完成售后 用于重复申请冲突场景 */
   historicalReturns: [
@@ -508,6 +587,13 @@ export function loadFixture(db: SqliteDatabase, patch: FixturePatch[] = []): voi
       rule.time_window_days,
       rule.excluded_categories ? JSON.stringify(rule.excluded_categories) : null,
     )
+  }
+
+  const insertSkuPrice = db.prepare(
+    'INSERT INTO sku_prices (sku, current_unit_price_cents, updated_at) VALUES (?, ?, ?)',
+  )
+  for (const price of BASELINE_FIXTURE.skuPrices) {
+    insertSkuPrice.run(price.sku, price.current_unit_price_cents, price.updated_at)
   }
 
   const insertReturn = db.prepare(

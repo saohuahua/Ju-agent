@@ -8,6 +8,7 @@
 import type {
   CompensationReason,
   CompensationStatus,
+  PriceProtectionStatus,
   ReturnType,
   ReturnReason,
   ReturnStatus,
@@ -135,6 +136,44 @@ export interface Compensation {
   createdAt: string
   updatedAt: string
   version: number
+}
+
+/** 价保明细行 成交价与当前售价的差额按数量计算 */
+export interface PriceProtectionItem {
+  itemId: string
+  sku: string
+  purchasePriceCents: number
+  currentPriceCents: number
+  quantity: number
+  refundCents: number
+}
+
+/** 价保单 自签收起 7 天窗口内 降价商品按差价退还 同一订单仅一次 */
+export interface PriceProtection {
+  protectionNo: string
+  orderNo: string
+  customerId: string
+  status: PriceProtectionStatus
+  amountCents: number
+  currency: string
+  /** 发放渠道 创建时从订单快照 执行时不回查订单 */
+  channel: string
+  /** 命中降价的商品明细 政策拒绝时为空 */
+  items: PriceProtectionItem[]
+  requiresApproval: boolean
+  /** 命中政策规则 拒绝时记录拒赔依据 */
+  policyRuleId: string
+  policyVersion: string
+  createdAt: string
+  updatedAt: string
+  version: number
+}
+
+/** 商品当前售价 价保差额计算的参照价 */
+export interface SkuPrice {
+  sku: string
+  currentUnitPriceCents: number
+  updatedAt: string
 }
 
 export interface PolicyRule {

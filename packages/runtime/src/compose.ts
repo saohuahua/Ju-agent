@@ -12,6 +12,7 @@ import {
   AuditService,
   CompensationService,
   LogisticsEventService,
+  PriceProtectionService,
   RunService,
   type Actor,
   type Clock,
@@ -32,9 +33,11 @@ import {
   SqliteLeaseRepository,
   SqliteOrderRepository,
   SqlitePolicyRepository,
+  SqlitePriceProtectionRepository,
   SqliteRefundRepository,
   SqliteReturnRepository,
   SqliteShipmentRepository,
+  SqliteSkuPriceRepository,
   SqliteToolExecutionRepository,
   createMemoryDatabase,
   loadFixture,
@@ -72,6 +75,7 @@ export interface ComposedSystem {
   approvalService: ApprovalService
   afterSaleService: AfterSaleService
   compensationService: CompensationService
+  priceProtectionService: PriceProtectionService
   logisticsService: LogisticsEventService
   executor: ToolExecutor
   engine: WorkflowEngine
@@ -116,6 +120,18 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     auditService,
     clock,
   )
+  const priceProtectionService = new PriceProtectionService(
+    new SqliteOrderRepository(db),
+    new SqliteReturnRepository(db),
+    new SqlitePriceProtectionRepository(db),
+    new SqliteSkuPriceRepository(db),
+    new SqliteIdempotencyRepository(db),
+    gateway,
+    new SqliteBusinessNoGenerator(db),
+    approvalService,
+    auditService,
+    clock,
+  )
   const runService = new RunService(
     new SqliteAgentRunRepository(db),
     new SqliteEventRepository(db),
@@ -136,6 +152,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     policyRepo: new SqlitePolicyRepository(db),
     afterSaleService,
     compensationService,
+    priceProtectionService,
     auditService,
   })
   const executor = new ToolExecutor({
@@ -148,6 +165,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
   const engine = new WorkflowEngine({
     afterSaleService,
     compensationService,
+    priceProtectionService,
     approvalService,
     runService,
     executor,
@@ -173,6 +191,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     approvalService,
     afterSaleService,
     compensationService,
+    priceProtectionService,
     logisticsService,
     executor,
     engine,

@@ -20,6 +20,11 @@ export function compensationIdempotencyKey(compensationNo: string): string {
   return `compensation:${compensationNo}`
 }
 
+/** 价保退还幂等键 绑定价保单号 同一价保无论重试多少次只退还一次 */
+export function priceProtectionIdempotencyKey(protectionNo: string): string {
+  return `price_protection:${protectionNo}`
+}
+
 /** 事件回放查询的游标语义 返回应补发的最小序号 */
 export function nextSequenceAfter(lastEventId: number | null): number {
   return (lastEventId ?? 0) + 1

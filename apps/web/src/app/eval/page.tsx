@@ -35,7 +35,7 @@ const REPEAT_OPTIONS = [
  * 各抽样档用例数 来自 SIM_CASES 统计 与 packages/eval/src/cases.js 同步
  * p1 为 P1 用例隔一取 p2 为 P2 用例隔五取 修改用例集需更新
  */
-const CASE_COUNTS: Record<SampleValue, number> = { p0: 29, p1: 26, p2: 4, all: 96 }
+const CASE_COUNTS: Record<SampleValue, number> = { p0: 33, p1: 27, p2: 4, all: 102 }
 
 /** 单条用例 token 估算均值 与 estimateSuiteTokens 一致 */
 const TOKEN_PER_CASE = 3500
@@ -765,7 +765,7 @@ export default function EvalPage() {
             <div className="min-w-0 text-sm text-stone-600">
               <span className="font-medium text-stone-800">L1 脚本回归</span>
               <span className="ml-2 text-stone-500">
-                ScriptedModel 回放理想轨迹，全量 96 条约 2 秒完成
+                ScriptedModel 回放理想轨迹，全量 102 条约 2 秒完成
               </span>
             </div>
             <button
@@ -877,7 +877,7 @@ export default function EvalPage() {
             )}
 
             <p className="mt-4 text-xs text-stone-400">
-              诚实声明：所有数字来自实际运行结果。L1 为 96 条脚本回放，L2 为抽样用户模拟评测；
+              诚实声明：所有数字来自实际运行结果。L1 为 102 条脚本回放，L2 为抽样用户模拟评测；
               Wilson 95% 置信区间仅 L2 计算，未配置密钥时不输出模拟成绩。
             </p>
 

@@ -235,6 +235,31 @@
 
 决策点 价保金额计算规则 是否支持部分价保
 
+**决策已确认 2026-09-21（用户拍板）**
+
+- 价保金额 差价全额退 无上限 不设封顶 大额走人工审批（≥5000 元复用补偿审批链）
+- 部分价保 支持 按 SKU 明细计算 只退降价商品的单价差乘数量 未降价商品不参与 指定商品全部未降价则整体拒赔
+
+**设计定稿 2026-09-21（调研代码后落定）**
+
+- 契约层 PriceProtection 实体（protectionNo orderNo customerId status amountCents currency channel 创建时快照 items 明细 requiresApproval policyRuleId policyVersion version 乐观锁）SkuPrice 实体 价保规则枚举 PP1_not_delivered/PP2_window_expired/PP3_active_return/PP4_no_price_drop/PP5_price_drop/R6_large_amount 价保幂等键 price_protection:{protectionNo}
+- 领域层 PriceProtectionService 创建即判定（订单存在 → 归属校验 → 指定明细校验 → 重复申请拦截 → 进行中售后拦截 → 政策决策）deny 落 rejected allow 落 auto_approved 大额落 awaiting_approval 执行复用补偿双幂等（idempotencyRepo.find + gateway.withRefund）SKU 售价按申请明细只查所需 SKU 价保单号 PP-2026-xxxx 独立计数
+- 持久层 price_protections 表（items_json 明细 requires_approval 策略溯源 policy_rule_id/policy_version version 乐观锁）sku_prices 表 clearBusinessData 一并清空（顺带修复功能 6 漏清 compensations 的隐患）
+- 工作流 新意图 price_protection 四步 verify_order → create_price_protection → request_approval（大额门控）→ execute_price_protection（deny 跳过）审批资源类型 price_protection 审批通过后按保护单号恢复执行
+- Agent 层 工具 create_price_protection/execute_price_protection 提示词职责第 10 条 差价金额由系统计算 不自行估算 同一订单仅可价保一次
+- 前端 审批中心资源类型登记价保单 审批卡大额价保文案 工作台话术与示例加价保
+
+**执行记录 2026-09-21 功能 8 价保流程 六层实施 + 前端收尾**
+
+- 契约层 PriceProtection/SkuPrice 实体 状态机 PRICE_PROTECTION_STATUSES 规则枚举 幂等键 工具消息 create_price_protection/execute_price_protection
+- 领域层 23 条单测覆盖窗口边界（未签收 PP1 超 7 天 PP2 售后进行中 PP3 无降价 PP4 降价 PP5 大额 R6 审批）部分价保明细 指定未降价整体拒赔 重复申请拦截 拒赔后重申请 审批三种决策 执行幂等重放与失败重试
+- 持久层 price_protections sku_prices 建表 行映射 items_json 序列化 SqlitePriceProtectionRepository 乐观锁更新 SqliteSkuPriceRepository SKU 批量查询 QUERYABLE_TABLES 加价保单表供评测断言
+- 工作流 新意图注册 审批分流 resumeAfterApproval 价保分支 汇总输出加价保单号与状态
+- Agent 层 工具注册与描述 职责第 10 条 三层测试脚手架全部装配价保服务
+- 评测层 用例 6 条 pp_*（整单价保 80 元全额退 部分价保按明细 重复申请拦截 窗口超期拒赔 指定无降价拒赔 未签收拒赔）夹具新增 SO-2026-0011 已签收订单与 sku_prices 降价快照 政策表加 PP1-PP5
+- 前端 审批中心价保单文案 审批卡三态标签 工作台示例价保问法 评测看板抽样档更新
+- 校验 pnpm typecheck 全绿 pnpm test 171 条全过 pnpm eval 102/102 报告 evr_38c92e44 P0 门禁通过 看板抽样档与 selectCases 实测对齐 p0 33 p1 27 p2 4 all 102
+
 #### 3.4 政策 RAG 冲刺项 可裁
 
 做什么

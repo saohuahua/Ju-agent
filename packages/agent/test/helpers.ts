@@ -10,6 +10,7 @@ import {
   AuditService,
   CompensationService,
   FrozenClock,
+  PriceProtectionService,
   RunService,
   testing,
 } from '@aftersales/domain'
@@ -51,6 +52,18 @@ export function composeAgentSystem(script: AgentOutput[], maxSteps = 8) {
     auditService,
     clock,
   )
+  const priceProtectionService = new PriceProtectionService(
+    repos.orderRepo,
+    repos.returnRepo,
+    repos.protectionRepo,
+    repos.skuPriceRepo,
+    repos.idempotencyRepo,
+    repos.gateway,
+    repos.noGenerator,
+    approvalService,
+    auditService,
+    clock,
+  )
   const registry = buildToolRegistry({
     customerRepo: repos.customerRepo,
     orderRepo: repos.orderRepo,
@@ -58,6 +71,7 @@ export function composeAgentSystem(script: AgentOutput[], maxSteps = 8) {
     policyRepo: repos.policyRepo,
     afterSaleService,
     compensationService,
+    priceProtectionService,
     auditService,
   })
   const executor = new ToolExecutor({
@@ -70,6 +84,7 @@ export function composeAgentSystem(script: AgentOutput[], maxSteps = 8) {
   const engine = new WorkflowEngine({
     afterSaleService,
     compensationService,
+    priceProtectionService,
     approvalService,
     runService,
     executor,

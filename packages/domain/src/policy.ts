@@ -6,17 +6,19 @@
  * 规则按序匹配 首条命中即生效 命中后统一叠加金额阈值检查
  */
 
-import type { PolicyDecisionRecord, Order, Shipment } from './entities.js'
+import type { PolicyDecisionRecord, Order, PriceProtectionItem, Shipment } from './entities.js'
 import type { Clock } from './clock.js'
 import type { ReturnType, ReturnReason } from '@aftersales/contracts'
 
 /** 政策常量 与政策表数据同源 修改规则语义时必须同步 bump 版本号 */
-export const POLICY_VERSION = '2026.09-v2'
+export const POLICY_VERSION = '2026.09-v3'
 
 /** 无理由退货窗口天数 */
 export const NO_REASON_WINDOW_DAYS = 7
 /** 质量问题受理窗口天数 */
 export const QUALITY_WINDOW_DAYS = 15
+/** 价保窗口天数 自签收起算 超窗拒绝 */
+export const PRICE_PROTECTION_WINDOW_DAYS = 7
 /** 不支持无理由退货的类目 */
 export const NO_REASON_EXCLUDED_CATEGORIES = ['fresh_food', 'customized', 'virtual']
 /** 大额退款审批阈值 单位分 500000 即 5000 元 */
@@ -229,4 +231,130 @@ export function evaluateCompensationPolicy(input: CompensationPolicyInput): Comp
     ruleId: 'C2_large_approval',
     explanation: `补偿金额 ${input.amountCents} 分 超出自动发放阈值 需人工审批`,
   }
+}
+
+export interface PriceProtectionPolicyInput {
+  order: Order
+  /** 部分价保指定的商品 为空表示整单 */
+  itemIds: string[] | null
+  /** 当前售价查询 返回命中 SKU 的当前价 无记录表示该商品未降价 */
+  priceLookup: (sku: string) => number | null
+  /** 订单是否存在进行中的售后 退货中订单不参与价保 */
+  activeReturn: boolean
+  now: Date
+}
+
+export type PriceProtectionPolicyOutcome = {
+  outcome: 'allow' | 'deny' | 'needs_approval'
+  ruleId: string
+  explanation: string
+  refundAmountCents: number
+  /** 命中降价的商品明细 按单价差乘数量计算 拒绝时为空 */
+  items: PriceProtectionItem[]
+}
+
+/** 分转元展示串 政策文案统一用元与用户沟通 */
+function formatYuan(cents: number): string {
+  return `${(cents / 100).toFixed(2)}元`
+}
+
+/**
+ * 价保政策判定 纯函数无副作用
+ *
+ * 决策 2026-09-21 差价全额退无上限 支持按 SKU 明细的部分价保
+ * 只退降价商品的单价差乘数量 未降价商品不参与计算
+ * 规则按序匹配 首条命中即生效
+ */
+export function evaluatePriceProtectionPolicy(
+  input: PriceProtectionPolicyInput,
+): PriceProtectionPolicyOutcome {
+  const { order, itemIds, priceLookup, activeReturn, now } = input
+  const deny = (
+    ruleId: string,
+    explanation: string,
+  ): PriceProtectionPolicyOutcome => ({
+    outcome: 'deny',
+    ruleId,
+    explanation,
+    refundAmountCents: 0,
+    items: [],
+  })
+
+  // PP1 未签收订单不参与价保
+  if (!order.deliveredAt) {
+    return deny('PP1_not_delivered', '订单尚未签收 不满足价保申请条件')
+  }
+
+  // PP2 自签收起 7 天窗口 超窗拒绝
+  const deliveredAt = new Date(order.deliveredAt)
+  if (!withinWindow(deliveredAt, now, PRICE_PROTECTION_WINDOW_DAYS)) {
+    return deny(
+      'PP2_window_expired',
+      `自签收起已超过 ${PRICE_PROTECTION_WINDOW_DAYS} 天 超出价保窗口 无法申请价保`,
+    )
+  }
+
+  // PP3 退货进行中的订单不参与价保
+  if (activeReturn) {
+    return deny('PP3_active_return', '订单存在进行中的售后流程 请先完成售后再申请价保')
+  }
+
+  // 只计算降价商品的单价差乘数量 未降价商品不参与
+  const wanted = itemIds && itemIds.length > 0 ? new Set(itemIds) : null
+  const drops = order.items
+    .filter((item) => !wanted || wanted.has(item.itemId))
+    .map((item) => ({ item, currentPriceCents: priceLookup(item.sku) }))
+    .filter(
+      (entry): entry is { item: (typeof order.items)[number]; currentPriceCents: number } =>
+        entry.currentPriceCents !== null &&
+        entry.currentPriceCents < entry.item.unitPriceCents,
+    )
+
+  // PP4 无降价商品 不满足价保条件
+  if (drops.length === 0) {
+    return deny('PP4_no_price_drop', '经查证 该订单商品当前售价未低于成交价 不满足价保条件')
+  }
+
+  // PP5 窗口内降价 全额退还差价
+  const items: PriceProtectionItem[] = drops.map((entry) => ({
+    itemId: entry.item.itemId,
+    sku: entry.item.sku,
+    purchasePriceCents: entry.item.unitPriceCents,
+    currentPriceCents: entry.currentPriceCents,
+    quantity: entry.item.quantity,
+    refundCents: (entry.item.unitPriceCents - entry.currentPriceCents) * entry.item.quantity,
+  }))
+  const refundAmountCents = items.reduce((sum, item) => sum + item.refundCents, 0)
+  const breakdown = items
+    .map(
+      (item) =>
+        `${item.sku} ${formatYuan(item.purchasePriceCents)}→${formatYuan(item.currentPriceCents)}×${item.quantity}`,
+    )
+    .join(' ')
+  return {
+    outcome: 'allow',
+    ruleId: 'PP5_price_drop',
+    explanation: `自签收起在 ${PRICE_PROTECTION_WINDOW_DAYS} 天价保窗口内 降价商品 ${items.length} 件 ${breakdown} 合计差价 ${formatYuan(refundAmountCents)}`,
+    refundAmountCents,
+    items,
+  }
+}
+
+/** 完整价保判定 政策规则叠加金额阈值 入口函数 */
+export function decidePriceProtectionPolicy(
+  input: PriceProtectionPolicyInput,
+): PriceProtectionPolicyOutcome {
+  const decision = evaluatePriceProtectionPolicy(input)
+  if (
+    decision.outcome === 'allow' &&
+    decision.refundAmountCents >= LARGE_REFUND_THRESHOLD_CENTS
+  ) {
+    return {
+      ...decision,
+      outcome: 'needs_approval',
+      ruleId: 'R6_large_amount',
+      explanation: `${decision.explanation} 差价金额达到大额阈值 需人工审批`,
+    }
+  }
+  return decision
 }

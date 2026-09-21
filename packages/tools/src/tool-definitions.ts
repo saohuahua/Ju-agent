@@ -14,6 +14,7 @@ import type {
   CustomerRepository,
   OrderRepository,
   PolicyRepository,
+  PriceProtectionService,
   ShipmentRepository,
 } from '@aftersales/domain'
 import { createToolError } from '@aftersales/contracts'
@@ -28,6 +29,7 @@ export interface ToolDependencies {
   policyRepo: PolicyRepository
   afterSaleService: AfterSaleService
   compensationService: CompensationService
+  priceProtectionService: PriceProtectionService
   auditService: AuditService
 }
 
@@ -302,6 +304,49 @@ export function buildToolRegistry(deps: ToolDependencies): ToolRegistry {
     },
   )
 
+  registry.register(
+    'create_price_protection',
+    async (input: ToolInput<'create_price_protection'>, context) => {
+      const result = await deps.priceProtectionService.createPriceProtection(
+        context.actor,
+        {
+          orderNo: input.orderNo,
+          itemIds: input.itemIds,
+        },
+        context.runId ?? undefined,
+      )
+      return {
+        protectionNo: result.protectionNo,
+        status: result.status,
+        policyOutcome: result.policyOutcome,
+        policyExplanation: result.policyExplanation,
+        refundAmountCents: result.refundAmountCents,
+        requiresApproval: result.requiresApproval,
+        items: result.items,
+      }
+    },
+  )
+
+  registry.register(
+    'execute_price_protection',
+    async (input: ToolInput<'execute_price_protection'>, context) => {
+      const result = await deps.priceProtectionService.executePriceProtection(
+        context.actor,
+        {
+          protectionNo: input.protectionNo,
+          approvalToken: input.approvalToken,
+        },
+        context.runId ?? undefined,
+      )
+      return {
+        protectionNo: result.protectionNo,
+        status: result.status,
+        amountCents: result.amountCents,
+        idempotencyKey: result.idempotencyKey,
+      }
+    },
+  )
+
   registry.register('escalate_to_human', async (input: ToolInput<'escalate_to_human'>, context) => {
     await deps.auditService.record(
       context.actor,
@@ -333,5 +378,7 @@ export const ALL_TOOL_NAMES: ToolName[] = [
   'cancel_return_request',
   'create_compensation',
   'execute_compensation',
+  'create_price_protection',
+  'execute_price_protection',
   'escalate_to_human',
 ]

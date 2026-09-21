@@ -13,6 +13,9 @@ export const NEW_RETURN_NO = 'RT-2026-0002'
 /** 首个新生成补偿单号 每用例独立夹具从 0001 起 */
 export const NEW_COMPENSATION_NO = 'CP-2026-0001'
 
+/** 首个新生成价保单号 每用例独立夹具从 0001 起 */
+export const NEW_PRICE_PROTECTION_NO = 'PP-2026-0001'
+
 /** 模型输出构造器 */
 export function toolCall(
   tool: 'get_order' | 'get_shipment' | 'get_policy' | 'lookup_customer',
@@ -33,7 +36,8 @@ export function action(
     | 'submit_exchange'
     | 'cancel_return'
     | 'escalate'
-    | 'compensation',
+    | 'compensation'
+    | 'price_protection',
   slots: Record<string, unknown>,
   reason: string,
 ): AgentOutput {

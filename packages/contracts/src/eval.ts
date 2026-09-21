@@ -19,6 +19,7 @@ export const EVAL_CATEGORIES = [
   'security',
   'recovery',
   'compensation',
+  'price_protection',
 ] as const
 export const EvalCategory = z.enum(EVAL_CATEGORIES)
 export type EvalCategory = z.infer<typeof EvalCategory>
@@ -31,6 +32,7 @@ export const StateAssertion = z.object({
     'return_requests',
     'refunds',
     'compensations',
+    'price_protections',
     'approval_requests',
     'audit_logs',
     'tool_executions',

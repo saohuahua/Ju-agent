@@ -155,6 +155,45 @@ export const ToolIO = {
       idempotencyKey: z.string(),
     }),
   },
+  create_price_protection: {
+    input: z.object({
+      orderNo: z.string().min(1),
+      /** 部分价保时指定的商品 为空表示整单 */
+      itemIds: z.array(z.string()).optional(),
+    }),
+    output: z.object({
+      protectionNo: z.string(),
+      status: z.string(),
+      policyOutcome: z.enum(['allow', 'deny', 'needs_approval']),
+      policyExplanation: z.string(),
+      refundAmountCents: MoneyCents,
+      requiresApproval: z.boolean(),
+      /** 命中降价的商品明细 按单价差乘数量计算 无降价时为空 */
+      items: z.array(
+        z.object({
+          itemId: z.string(),
+          sku: z.string(),
+          purchasePriceCents: MoneyCents,
+          currentPriceCents: MoneyCents,
+          quantity: z.number().int().positive(),
+          refundCents: MoneyCents,
+        }),
+      ),
+    }),
+  },
+  execute_price_protection: {
+    input: z.object({
+      protectionNo: z.string().min(1),
+      /** 大额路径必须携带一次性审批令牌 */
+      approvalToken: z.string().optional(),
+    }),
+    output: z.object({
+      protectionNo: z.string(),
+      status: z.string(),
+      amountCents: MoneyCents,
+      idempotencyKey: z.string(),
+    }),
+  },
   escalate_to_human: {
     input: z.object({ reason: z.string().min(1) }),
     output: z.object({ escalated: z.literal(true), reason: z.string() }),
@@ -283,6 +322,22 @@ export const TOOL_CATALOG: readonly ToolDescriptor[] = [
     timeoutMs: 5000,
     idempotent: true,
     description: '执行现金红包补偿 原路退回支付渠道 幂等键绑定补偿单 重试不会重复发放 由工作流调用 大额路径需审批令牌',
+  },
+  {
+    name: 'create_price_protection',
+    risk: 'medium',
+    exposedTo: 'workflow',
+    timeoutMs: 3000,
+    idempotent: false,
+    description: '创建价保单 系统对比成交价与当前售价 自签收起 7 天内降价商品按单价差乘数量计算差价 同一订单仅可价保一次 由工作流调用',
+  },
+  {
+    name: 'execute_price_protection',
+    risk: 'high',
+    exposedTo: 'workflow',
+    timeoutMs: 5000,
+    idempotent: true,
+    description: '执行价保差价退还 原路退回支付渠道 幂等键绑定价保单 重试不会重复退款 由工作流调用 大额路径需审批令牌',
   },
   {
     name: 'escalate_to_human',

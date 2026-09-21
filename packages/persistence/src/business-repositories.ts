@@ -11,9 +11,11 @@ import type {
   Customer,
   Order,
   PolicyRule,
+  PriceProtection,
   Refund,
   ReturnRequest,
   Shipment,
+  SkuPrice,
 } from '@aftersales/domain'
 import type {
   ApprovalRepository,
@@ -21,9 +23,11 @@ import type {
   CustomerRepository,
   OrderRepository,
   PolicyRepository,
+  PriceProtectionRepository,
   RefundRepository,
   ReturnRepository,
   ShipmentRepository,
+  SkuPriceRepository,
 } from '@aftersales/domain'
 import type { PolicyDecisionRecord } from '@aftersales/domain'
 import type { OrderItem, ReturnReason, ReturnType } from '@aftersales/contracts'
@@ -439,6 +443,125 @@ export class SqliteCompensationRepository implements CompensationRepository {
     if (result.changes === 0) {
       throw new Error(`补偿单乐观锁冲突 ${record.compensationNo}`)
     }
+  }
+}
+
+interface PriceProtectionRow {
+  protection_no: string
+  order_no: string
+  customer_id: string
+  status: string
+  amount_cents: number
+  currency: string
+  channel: string
+  items_json: string
+  requires_approval: number
+  policy_rule_id: string
+  policy_version: string
+  created_at: string
+  updated_at: string
+  version: number
+}
+
+function rowToPriceProtection(row: PriceProtectionRow): PriceProtection {
+  return {
+    protectionNo: row.protection_no,
+    orderNo: row.order_no,
+    customerId: row.customer_id,
+    status: row.status as PriceProtection['status'],
+    amountCents: row.amount_cents,
+    currency: row.currency,
+    channel: row.channel,
+    items: JSON.parse(row.items_json) as PriceProtection['items'],
+    requiresApproval: row.requires_approval === 1,
+    policyRuleId: row.policy_rule_id,
+    policyVersion: row.policy_version,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    version: row.version,
+  }
+}
+
+export class SqlitePriceProtectionRepository implements PriceProtectionRepository {
+  constructor(private readonly db: SqliteDatabase) {}
+
+  async create(record: PriceProtection): Promise<void> {
+    this.db
+      .prepare(
+        `INSERT INTO price_protections
+         (protection_no, order_no, customer_id, status, amount_cents, currency, channel,
+          items_json, requires_approval, policy_rule_id, policy_version, created_at, updated_at, version)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      )
+      .run(
+        record.protectionNo,
+        record.orderNo,
+        record.customerId,
+        record.status,
+        record.amountCents,
+        record.currency,
+        record.channel,
+        JSON.stringify(record.items),
+        record.requiresApproval ? 1 : 0,
+        record.policyRuleId,
+        record.policyVersion,
+        record.createdAt,
+        record.updatedAt,
+        record.version,
+      )
+  }
+
+  async findByProtectionNo(protectionNo: string): Promise<PriceProtection | null> {
+    const row = this.db
+      .prepare('SELECT * FROM price_protections WHERE protection_no = ?')
+      .get(protectionNo) as PriceProtectionRow | undefined
+    return row ? rowToPriceProtection(row) : null
+  }
+
+  async listByOrderNo(orderNo: string): Promise<PriceProtection[]> {
+    const rows = this.db
+      .prepare('SELECT * FROM price_protections WHERE order_no = ?')
+      .all(orderNo) as PriceProtectionRow[]
+    return rows.map(rowToPriceProtection)
+  }
+
+  async update(record: PriceProtection): Promise<void> {
+    const result = this.db
+      .prepare(
+        `UPDATE price_protections
+         SET status = ?, updated_at = ?, version = version + 1
+         WHERE protection_no = ? AND version = ?`,
+      )
+      .run(record.status, record.updatedAt, record.protectionNo, record.version)
+    if (result.changes === 0) {
+      throw new Error(`价保单乐观锁冲突 ${record.protectionNo}`)
+    }
+  }
+}
+
+interface SkuPriceRow {
+  sku: string
+  current_unit_price_cents: number
+  updated_at: string
+}
+
+/** 商品当前售价仓储 只读 数据由运营端维护 这里只提供查询 */
+export class SqliteSkuPriceRepository implements SkuPriceRepository {
+  constructor(private readonly db: SqliteDatabase) {}
+
+  async listBySkus(skus: string[]): Promise<SkuPrice[]> {
+    if (skus.length === 0) return []
+    const placeholders = skus.map(() => '?').join(', ')
+    const rows = this.db
+      .prepare(
+        `SELECT * FROM sku_prices WHERE sku IN (${placeholders})`,
+      )
+      .all(...skus) as SkuPriceRow[]
+    return rows.map((row) => ({
+      sku: row.sku,
+      currentUnitPriceCents: row.current_unit_price_cents,
+      updatedAt: row.updated_at,
+    }))
   }
 }
 
