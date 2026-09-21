@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>面 2 工作台物流推送时间线 · 静态设计原型</title>
+<style>
+  /*
+   * 面 2 工作台物流推送时间线 · 静态设计原型（不接数据，不实现逻辑）
+   * 全局色板 v2：纯白 + 电光蓝（见 docs/redesign-audit.md 修订记录）
+   * 结构：左对话列（客户视角）+ 右会话时间线（可观测视角）
+   * 物流事件为外部异步注入，Agent 收到后重新规划
+   * 全部数字与物流单号均为示意数据
+   */
+  :root {
+    --canvas: #ffffff; --surface: #ffffff;
+    --ink: #18181b; --hairline: #e5e7eb;
+    --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-200: #bfdbfe; --blue-300: #93c5fd;
+    --blue-500: #3b82f6; --blue-600: #2563eb; --blue-700: #1d4ed8; --blue-800: #1e40af;
+    --r-container: 10px; --r-control: 8px; --r-badge: 6px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--canvas); color: var(--ink); font-size: 14px; line-height: 1.6;
+  }
+  .mono, .num { font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace; }
+  .num { font-variant-numeric: tabular-nums; }
+  a { color: var(--blue-700); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :focus-visible { outline: 2px solid var(--blue-600); outline-offset: 2px; }
+
+  /* ---------- 侧边栏（与面 1 一致） ---------- */
+  .shell { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 240px; flex: none; background: var(--canvas);
+    border-right: 1px solid var(--hairline);
+    padding: 20px 12px; display: flex; flex-direction: column; gap: 24px;
+    position: sticky; top: 0; height: 100vh;
+  }
+  .brand { padding: 0 10px; }
+  .brand-name { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand-sub { font-size: 11px; color: #71717a; margin-top: 2px; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+    border-radius: var(--r-control); color: #52525b; font-size: 13px;
+    transition: background-color 200ms, color 200ms;
+  }
+  .nav-item:hover { background: var(--blue-50); color: var(--ink); }
+  .nav-item.active {
+    background: var(--blue-50); color: var(--ink); font-weight: 500;
+    box-shadow: inset 2px 0 0 var(--blue-600);
+  }
+  .nav-item svg { flex: none; }
+  .identity { margin-top: auto; padding: 8px 10px; border-top: 1px solid var(--hairline); padding-top: 14px; }
+  .identity-label { font-size: 11px; color: #71717a; }
+  .identity-value { font-size: 13px; font-weight: 500; margin-top: 2px; }
+
+  /* ---------- 主区 ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .wb-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    border-bottom: 1px solid var(--hairline); padding: 12px 20px; background: var(--canvas);
+  }
+  .wb-header h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
+  .wb-header .sub { font-size: 12px; color: #71717a; margin-top: 1px; }
+  .wb-header-right { display: flex; align-items: center; gap: 14px; font-size: 12px; }
+  .sse-dot { display: inline-flex; align-items: center; gap: 6px; color: #52525b; }
+  .sse-dot .dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; }
+
+  /* 徽章 */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px; border-radius: var(--r-badge);
+    border: 1px solid; padding: 1px 7px; font-size: 11px; font-weight: 500; white-space: nowrap;
+  }
+  .badge-sky { border-color: #bae6fd; background: #f0f9ff; color: #075985; }
+  .badge-orange { border-color: #fed7aa; background: #fff7ed; color: #9a3412; }
+  .badge-amber { border-color: #fde68a; background: #fffbeb; color: #92400e; }
+  .badge-zinc { border-color: #e4e4e7; background: #fafafa; color: #52525b; }
+  .badge-emerald { border-color: #a7f3d0; background: #ecfdf5; color: #065f46; }
+  .badge-blue { border-color: var(--blue-200); background: var(--blue-50); color: var(--blue-800); }
+
+  /* ---------- 双栏 ---------- */
+  .wb-grid { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 400px; min-height: 0; }
+
+  /* 左：对话列 */
+  .chat-col { display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--hairline); }
+  .chat-scroll { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { max-width: 560px; border-radius: var(--r-container); padding: 9px 14px; font-size: 14px; line-height: 1.65; }
+  .msg-user { margin-left: auto; background: var(--blue-600); color: #fff; border-bottom-right-radius: 4px; }
+  .msg-agent { border: 1px solid var(--hairline); background: var(--surface); color: var(--ink); border-bottom-left-radius: 4px; }
+  .msg-system { margin: 4px auto; background: transparent; text-align: center; font-size: 12px; color: #71717a; }
+  .msg-logistics {
+    display: flex; gap: 10px; align-items: flex-start; border: 1px solid #bae6fd;
+    background: #f0f9ff; border-radius: var(--r-container); padding: 10px 14px; max-width: 560px;
+    font-size: 13px; color: #075985;
+  }
+  .msg-logistics svg { flex: none; margin-top: 2px; }
+  .msg-logistics .lg-title { font-weight: 600; color: #075985; }
+  .msg-logistics .lg-meta { font-size: 11px; color: #0369a1; margin-top: 2px; }
+  .msg-agent .proactive { display: inline-flex; align-items: center; gap: 4px; margin-right: 6px; }
+  .stream-caret { animation: pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  @media (prefers-reduced-motion: reduce) { .stream-caret { animation: none; } }
+
+  /* 工具卡（与 ToolCard 同构） */
+  .tool-card {
+    position: relative; max-width: 560px; border: 1px solid var(--hairline);
+    border-radius: var(--r-container); background: var(--surface); padding: 8px 12px; font-size: 12px;
+  }
+  .tool-card .bar { position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px; border-radius: 2px; background: #a1a1aa; }
+  .tool-card.running .bar { background: #3b82f6; }
+  .tool-card.done .bar { background: #10b981; }
+  .tool-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .tool-name { font-size: 13px; color: #27272a; font-weight: 500; }
+  .tool-state { color: #71717a; font-size: 11px; }
+
+  /* 审批卡（与 ApprovalCard 同构，主管视角） */
+  .approval-card {
+    max-width: 560px; border: 1px solid #fed7aa; background: #fff7ed;
+    border-radius: var(--r-container); padding: 12px 14px;
+  }
+  .approval-head { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #9a3412; }
+  .approval-amount { margin-top: 6px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; color: #7c2d12; }
+  .approval-note { margin-top: 4px; font-size: 12px; color: #c2410c; }
+
+  /* 暂停遮罩（覆盖对话列输入区上方） */
+  .pause-zone { position: relative; max-width: 560px; }
+  .pause-overlay {
+    position: absolute; inset: 0; background: rgba(255, 255, 255, 0.86);
+    border-radius: var(--r-container); display: flex; align-items: center; justify-content: center;
+    border: 1px dashed #d4d4d8;
+  }
+  .pause-card { text-align: center; padding: 18px 24px; max-width: 320px; }
+  .pause-card .pc-icon { display: inline-flex; border-radius: 50%; padding: 8px; border: 1px solid; margin-bottom: 8px; }
+  .pause-card.waiting-approval .pc-icon { background: #fff7ed; border-color: #fed7aa; color: #c2410c; }
+  .pause-card .pc-title { font-size: 14px; font-weight: 600; color: #27272a; }
+  .pause-card .pc-desc { margin-top: 4px; font-size: 12px; color: #71717a; }
+
+  /* 输入区 */
+  .chat-footer { border-top: 1px solid var(--hairline); padding: 14px 20px; background: var(--canvas); }
+  .chat-footer form { display: flex; gap: 10px; align-items: center; }
+  .chat-input {
+    flex: 1; border: 1px solid var(--hairline); border-radius: var(--r-control);
+    padding: 9px 14px; font-size: 14px; color: var(--ink); background: var(--surface);
+  }
+  .chat-input:disabled { opacity: 0.55; background: #fafafa; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; border-radius: var(--r-control);
+    padding: 9px 16px; font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: background-color 200ms, transform 200ms; border: 1px solid transparent;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--blue-600); color: #fff; }
+  .btn-primary:hover { background: var(--blue-700); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* 右：会话时间线 */
+  .tl-col { display: flex; flex-direction: column; min-width: 0; background: var(--canvas); }
+  .tl-head { border-bottom: 1px solid var(--hairline); padding: 14px 16px 10px; }
+  .tl-head h2 { font-size: 13px; font-weight: 600; color: #27272a; display: flex; align-items: center; gap: 8px; }
+  .tl-head .hint { font-size: 11px; color: #71717a; margin-top: 3px; }
+  .tl-scroll { flex: 1; overflow-y: auto; padding: 14px 16px 20px; }
+
+  .tl-node { position: relative; padding-left: 26px; padding-bottom: 18px; }
+  .tl-node::before {
+    content: ""; position: absolute; left: 8px; top: 14px; bottom: -2px; width: 2px; background: #e5e7eb;
+  }
+  .tl-node:last-child::before { display: none; }
+  .tl-dot {
+    position: absolute; left: 4px; top: 5px; width: 10px; height: 10px; border-radius: 50%;
+    background: #a1a1aa; border: 2px solid var(--canvas); z-index: 1;
+  }
+  .tl-node.k-logistics .tl-dot { background: #0ea5e9; }
+  .tl-node.k-replan .tl-dot { background: var(--blue-600); }
+  .tl-node.k-pause .tl-dot { background: #f59e0b; }
+  .tl-node.k-approval .tl-dot { background: #ea580c; }
+  .tl-node.k-done .tl-dot { background: #10b981; }
+  .tl-node.k-fail .tl-dot { background: #dc2626; }
+  .tl-label { font-size: 12px; font-weight: 500; color: #27272a; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .tl-time { font-size: 11px; color: #a1a1aa; font-weight: 400; }
+  .tl-payload { margin-top: 2px; font-size: 11px; color: #71717a; }
+  .tl-payload.mono { color: #52525b; }
+
+  .tl-card {
+    margin-top: 6px; border: 1px solid; border-radius: var(--r-control); padding: 8px 10px; font-size: 11px;
+  }
+  .tl-card.logistics { border-color: #bae6fd; background: #f0f9ff; color: #075985; }
+  .tl-card.logistics .rows { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+  .tl-card.logistics .row { display: flex; justify-content: space-between; gap: 8px; }
+  .tl-card.logistics .row .k { color: #0369a1; flex: none; }
+  .tl-card.logistics .row .v { text-align: right; word-break: break-all; }
+
+  .tl-card.replan { border-color: var(--blue-200); background: var(--blue-50); }
+  .replan-old {
+    margin-top: 6px; border-left: 2px solid #d4d4d8; padding-left: 8px; color: #a1a1aa;
+    text-decoration: line-through; font-size: 11px;
+  }
+  .replan-arrow { margin: 4px 0; color: var(--blue-700); font-size: 11px; display: flex; align-items: center; gap: 4px; }
+  .replan-new { margin-top: 2px; padding-left: 8px; border-left: 2px solid var(--blue-600); font-size: 11px; color: #1e40af; }
+  .replan-new .step { margin-top: 2px; }
+
+  .tl-card.pause { border-color: #fde68a; background: #fffbeb; color: #92400e; }
+  .tl-card.approval { border-color: #fed7aa; background: #fff7ed; color: #9a3412; }
+
+  .tl-pending { display: flex; align-items: center; gap: 8px; border: 1px dashed #d4d4d8; border-radius: var(--r-control); padding: 8px 10px; font-size: 12px; color: #71717a; }
+  .tl-pending .pulse { width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; animation: pulse 1.6s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { .tl-pending .pulse { animation: none; } }
+
+  .tl-legend { border-top: 1px solid var(--hairline); padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 11px; color: #71717a; }
+  .tl-legend .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: baseline; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <!-- 侧边栏 -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-name">AfterSales Copilot</div>
+      <div class="brand-sub">可评测 · 可恢复的售后 Agent</div>
+    </div>
+    <nav class="nav" aria-label="主导航">
+      <a class="nav-item active" href="#" aria-current="page">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3.5A1.5 1.5 0 0 1 3.5 2h9A1.5 1.5 0 0 1 14 3.5v6a1.5 1.5 0 0 1-1.5 1.5H7l-3.2 2.4a.3.3 0 0 1-.48-.24V11H3.5A1.5 1.5 0 0 1 2 9.5v-6Z"/><path d="M5 5.5h6M5 8h3.5"/></svg>
+        工作台
+      </a>
+      <a class="nav-item" href="#">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 13.5 13h-11L8 2.5Z"/><path d="M8 6v3.5"/><circle cx="8" cy="11.5" r=".6" fill="currentColor"/></svg>
+        审批中心
+      </a>
+      <a class="nav-item" href="#">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><path d="M8 4.8V8l2.2 1.6"/></svg>
+        运行记录
+      </a>
+      <a class="nav-item" href="#">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.8c2.8 1.7 4.8 4 4.8 6.7a4.8 4.8 0 0 1-9.6 0C3.2 5.8 5.2 3.5 8 1.8Z"/><path d="M4.2 9.3h7.6"/></svg>
+        评测看板
+      </a>
+    </nav>
+    <div class="identity">
+      <div class="identity-label">当前身份</div>
+      <div class="identity-value">主管 审批</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- 页头 -->
+    <header class="wb-header">
+      <div>
+        <h1>售后会话</h1>
+        <p class="sub">自然语言发起查单 退货 退款，物流状态中途变化会注入会话并触发重新规划。</p>
+      </div>
+      <div class="wb-header-right">
+        <span class="mono num" style="color:#a1a1aa">run_m4x2k9b7</span>
+        <span class="badge badge-orange">等待审批</span>
+        <span class="sse-dot"><span class="dot"></span>已连接</span>
+        <button class="btn" style="border-color:var(--hairline);background:var(--surface);color:#3f3f46;padding:6px 12px;font-size:12px">新会话</button>
+      </div>
+    </header>
+
+    <div class="wb-grid">
+      <!-- 左：对话列 -->
+      <section class="chat-col" aria-label="会话对话">
+        <div class="chat-scroll">
+          <div class="msg msg-system">14:02 新会话开始，客户 cust-1001</div>
+
+          <div class="msg msg-user">订单 SO-2026-0041 到哪了？我等了三天了。</div>
+
+          <div class="msg msg-agent">我来查一下物流。已为您调取订单 SO-2026-0041 的物流轨迹，商品已出库，承运商预计明天送达。请留意收货。</div>
+
+          <div class="tool-card done">
+            <span class="bar"></span>
+            <div class="tool-row">
+              <span class="tool-name mono">get_order</span>
+              <span class="tool-state num">46ms · 成功</span>
+            </div>
+          </div>
+
+          <div class="msg msg-logistics" role="note">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4.5h9v7h-9v-7ZM10.5 7h3l1.5 1.8v2.7h-4.5V7Z"/><circle cx="4.2" cy="13" r="1.2"/><circle cx="11.8" cy="13" r="1.2"/></svg>
+            <div>
+              <div class="lg-title">物流状态更新：快件已丢失（承运商回调，14:07）</div>
+              <div class="lg-meta">异步事件已注入会话，Agent 收到后将重新规划处理方案。</div>
+            </div>
+          </div>
+
+          <div class="msg msg-agent">
+            <span class="proactive badge badge-sky">主动触达</span>
+            非常抱歉，刚刚收到承运商通知：您的快件 SF1234567890 在运输途中丢失。已为您发起补发，预计 3 天内重新发货；同时按平台政策申请 ¥99.00 补偿，需要主管审批后到账。给您带来不便。
+          </div>
+
+          <div class="tool-card done">
+            <span class="bar"></span>
+            <div class="tool-row">
+              <span class="tool-name mono">submit_reship</span>
+              <span class="tool-state num">38ms · 成功</span>
+            </div>
+          </div>
+
+          <div class="tool-card running">
+            <span class="bar"></span>
+            <div class="tool-row">
+              <span class="tool-name mono">submit_compensation</span>
+              <span class="tool-state">审批创建中</span>
+            </div>
+          </div>
+
+          <!-- 暂停遮罩区：审批卡 + 遮罩 -->
+          <div class="pause-zone">
+            <div class="approval-card">
+              <div class="approval-head">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.8 13.6 4.6v3.5c0 3.1-2.4 5-5.6 6.1C4.8 13.1 2.4 11.2 2.4 8.1V4.6L8 1.8Z"/></svg>
+                补偿审批
+              </div>
+              <div class="approval-amount num">¥99.00</div>
+              <div class="approval-note">快件丢失补偿 · cust-1001 · 审批令牌已生成，等待主管在审批中心处理。</div>
+            </div>
+            <div class="pause-overlay" aria-hidden="false">
+              <div class="pause-card waiting-approval">
+                <span class="pc-icon">
+                  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M6 5.5v5M10 5.5v5"/></svg>
+                </span>
+                <div class="pc-title">运行已暂停，等待主管审批</div>
+                <div class="pc-desc">会话输入已锁定。审批通过后自动恢复续跑，通过断点恢复从暂停处继续，已完成步骤不重复执行。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="chat-footer">
+          <form onsubmit="return false">
+            <input class="chat-input" disabled placeholder="会话已暂停，等待审批通过后恢复" aria-label="消息">
+            <button class="btn btn-primary" type="submit" disabled>发送</button>
+          </form>
+        </footer>
+      </section>
+
+      <!-- 右：会话时间线 -->
+      <section class="tl-col" aria-label="会话时间线">
+        <div class="tl-head">
+          <h2>
+            会话时间线
+            <span class="badge badge-zinc">当前 run</span>
+          </h2>
+          <p class="hint">事件按 sequence 排序。物流事件为外部异步注入，不属于模型轮次。</p>
+        </div>
+        <div class="tl-scroll">
+          <div class="tl-node k-done">
+            <span class="tl-dot"></span>
+            <div class="tl-label">运行开始 <span class="tl-time num">14:02:11</span></div>
+            <div class="tl-payload mono">cust-1001 · claude-sonnet-5 · 提示词 v7</div>
+          </div>
+
+          <div class="tl-node">
+            <span class="tl-dot"></span>
+            <div class="tl-label">用户消息 <span class="tl-time num">14:02:20</span></div>
+            <div class="tl-payload">订单 SO-2026-0041 到哪了？我等了三天了。</div>
+          </div>
+
+          <div class="tl-node k-done">
+            <span class="tl-dot"></span>
+            <div class="tl-label">工具调用 get_order <span class="tl-time num">14:02:24</span></div>
+            <div class="tl-payload mono">工具完成 46ms · 成功</div>
+          </div>
+
+          <div class="tl-node k-done">
+            <span class="tl-dot"></span>
+            <div class="tl-label">回复完成 <span class="tl-time num">14:02:31</span></div>
+            <div class="tl-payload">商品已出库，预计明天送达。</div>
+          </div>
+
+          <!-- 物流事件节点：外部异步注入 -->
+          <div class="tl-node k-logistics">
+            <span class="tl-dot"></span>
+            <div class="tl-label">
+              物流事件 logistics.updated
+              <span class="badge badge-sky">异步推送</span>
+              <span class="tl-time num">14:07:45</span>
+            </div>
+            <div class="tl-card logistics">
+              模拟承运商回调，事件注入运行中途
+              <div class="rows">
+                <div class="row"><span class="k">运单</span><span class="v mono">SF1234567890</span></div>
+                <div class="row"><span class="k">状态</span><span class="v">in_transit → lost</span></div>
+                <div class="row"><span class="k">原因</span><span class="v">运输途中包裹遗失</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 重新规划节点 -->
+          <div class="tl-node k-replan">
+            <span class="tl-dot"></span>
+            <div class="tl-label">
+              重新规划 plan.revised
+              <span class="badge badge-blue">计划变更</span>
+              <span class="tl-time num">14:07:52</span>
+            </div>
+            <div class="tl-card replan">
+              <div class="replan-old">原计划：回复物流进度，等待客户签收</div>
+              <div class="replan-arrow">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13V3m0 0 4 4M3 3 7.5 7.5"/></svg>
+                物流事件打断原计划，Agent 重新规划
+              </div>
+              <div class="replan-new">
+                新计划：主动触达 + 补发 + 补偿审批
+                <div class="step">1. 告知客户丢件，安抚情绪</div>
+                <div class="step">2. submit_reship 补发新单</div>
+                <div class="step">3. submit_compensation 小额补偿，走审批</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-node">
+            <span class="tl-dot"></span>
+            <div class="tl-label">主动触达 message.delta <span class="tl-time num">14:08:03</span></div>
+            <div class="tl-payload">非用户输入触发的 Agent 消息，来源标注为物流事件响应。</div>
+          </div>
+
+          <div class="tl-node k-done">
+            <span class="tl-dot"></span>
+            <div class="tl-label">工具调用 submit_reship <span class="tl-time num">14:08:05</span></div>
+            <div class="tl-payload mono">工具完成 38ms · 成功</div>
+          </div>
+
+          <div class="tl-node k-approval">
+            <span class="tl-dot"></span>
+            <div class="tl-label">
+              需要审批 approval.required
+              <span class="tl-time num">14:08:11</span>
+            </div>
+            <div class="tl-card approval">补偿 ¥99.00 · 审批令牌一次性 · 截止 14:38</div>
+          </div>
+
+          <div class="tl-node k-pause">
+            <span class="tl-dot"></span>
+            <div class="tl-label">运行暂停 run.paused <span class="tl-time num">14:08:11</span></div>
+            <div class="tl-card pause">awaiting_approval · 断点已落库，恢复时跳过已完成步骤</div>
+          </div>
+
+          <div class="tl-node">
+            <span class="tl-dot"></span>
+            <div class="tl-pending">
+              <span class="pulse"></span>
+              等待审批决定 approval.decided 后自动恢复
+            </div>
+          </div>
+        </div>
+        <div class="tl-legend">
+          <span><span class="dot" style="background:#a1a1aa"></span>常规</span>
+          <span><span class="dot" style="background:#0ea5e9"></span>物流事件</span>
+          <span><span class="dot" style="background:#2563eb"></span>重新规划</span>
+          <span><span class="dot" style="background:#ea580c"></span>审批</span>
+          <span><span class="dot" style="background:#f59e0b"></span>暂停</span>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>
