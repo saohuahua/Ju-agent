@@ -13,6 +13,8 @@ import {
   ContinueRunRequest,
   CreateRunRequest,
   LogisticsEventInjectRequest,
+  OperatorMessageRequest,
+  RunResolveRequest,
 } from '@aftersales/contracts'
 import type { EvalReport } from '@aftersales/contracts'
 import { DomainError } from '@aftersales/domain'
@@ -247,6 +249,23 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     if (actor.role === 'customer' && run.customerId !== actor.customerId) {
       return context.json({ error: 'AUTHORIZATION_DENIED', message: '无权访问该会话' }, 403)
     }
+    // 人工处理中 客户消息直接落事件 不驱动模型 坐席端经 SSE 实时可见
+    if (run.status === 'handling_human') {
+      if (actor.role !== 'customer') {
+        return context.json(
+          { error: 'CONFLICT', message: '人工会话中仅客户可走消息端点 坐席请使用坐席消息端点' },
+          409,
+        )
+      }
+      try {
+        await system.handoverService.appendCustomerMessage(actor, runId, body.data.message)
+      } catch (error) {
+        const mapped = errorResponse(error)
+        if (mapped) return context.json(mapped.body, mapped.status)
+        throw error
+      }
+      return context.json({ runId })
+    }
     // 同步预检 等待输入之外的续跑一律 409 与 runner 内部校验同源（RUN_TRANSITIONS）
     if (run.status !== 'awaiting_input') {
       return context.json(
@@ -254,13 +273,15 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
         409,
       )
     }
-    if (!executeInBackground(runId, () =>
-      system.runner.continueWithMessage(runId, body.data.message, {
-        actor: { role: 'customer', customerId: run.customerId },
-        runId,
-        faults: null,
-      }),
-    )) {
+    if (
+      !executeInBackground(runId, () =>
+        system.runner.continueWithMessage(runId, body.data.message, {
+          actor: { role: 'customer', customerId: run.customerId },
+          runId,
+          faults: null,
+        }),
+      )
+    ) {
       return context.json({ error: 'CONFLICT', message: '会话正在处理中 请稍后再试' }, 409)
     }
     return context.json({ runId })
@@ -279,16 +300,76 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
         409,
       )
     }
-    if (!executeInBackground(runId, () =>
-      system.runner.resumeFromCheckpoint(runId, {
-        actor: { role: 'customer', customerId: run.customerId },
-        runId,
-        faults: null,
-      }),
-    )) {
+    if (
+      !executeInBackground(runId, () =>
+        system.runner.resumeFromCheckpoint(runId, {
+          actor: { role: 'customer', customerId: run.customerId },
+          runId,
+          faults: null,
+        }),
+      )
+    ) {
       return context.json({ error: 'CONFLICT', message: '会话正在处理中 请稍后再试' }, 409)
     }
     return context.json({ runId })
+  })
+
+  // ---------- 人工接管 ----------
+
+  app.post('/api/runs/:runId/handover', async (context) => {
+    if (!requireRole(context, ['operator', 'supervisor'])) {
+      return context.json({ error: 'AUTHORIZATION_DENIED', message: '仅操作员可接管会话' }, 403)
+    }
+    const actor = context.get('actor') as Actor
+    const runId = context.req.param('runId')
+    try {
+      await system.handoverService.takeOver(actor, runId)
+    } catch (error) {
+      const mapped = errorResponse(error)
+      if (mapped) return context.json(mapped.body, mapped.status)
+      throw error
+    }
+    return context.json({ runId, status: 'handling_human' })
+  })
+
+  app.post('/api/runs/:runId/operator-messages', async (context) => {
+    if (!requireRole(context, ['operator', 'supervisor'])) {
+      return context.json({ error: 'AUTHORIZATION_DENIED', message: '仅操作员可发送坐席消息' }, 403)
+    }
+    const actor = context.get('actor') as Actor
+    const runId = context.req.param('runId')
+    const body = OperatorMessageRequest.safeParse(await context.req.json())
+    if (!body.success) {
+      return context.json({ error: 'VALIDATION_ERROR', message: '请求体不合法' }, 400)
+    }
+    try {
+      await system.handoverService.appendOperatorMessage(actor, runId, body.data.message)
+    } catch (error) {
+      const mapped = errorResponse(error)
+      if (mapped) return context.json(mapped.body, mapped.status)
+      throw error
+    }
+    return context.json({ runId })
+  })
+
+  app.post('/api/runs/:runId/resolve', async (context) => {
+    if (!requireRole(context, ['operator', 'supervisor'])) {
+      return context.json({ error: 'AUTHORIZATION_DENIED', message: '仅操作员可标记解决' }, 403)
+    }
+    const actor = context.get('actor') as Actor
+    const runId = context.req.param('runId')
+    const body = RunResolveRequest.safeParse(await context.req.json())
+    if (!body.success) {
+      return context.json({ error: 'VALIDATION_ERROR', message: '请求体不合法' }, 400)
+    }
+    try {
+      await system.handoverService.resolve(actor, runId, body.data.summary)
+    } catch (error) {
+      const mapped = errorResponse(error)
+      if (mapped) return context.json(mapped.body, mapped.status)
+      throw error
+    }
+    return context.json({ runId, status: 'completed' })
   })
 
   // ---------- 事件流 ----------
@@ -307,7 +388,8 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
         listEvents: (id, from) => deps.system.eventRepo.listByRun(id, from),
         isRunTerminal: async (id) => {
           const current = await system.runService.get(id)
-          return ['completed', 'failed', 'cancelled', 'escalated'].includes(current.status)
+          // escalated 已非终态 可被坐席接管 事件流保持打开等待 run.handover
+          return ['completed', 'failed', 'cancelled'].includes(current.status)
         },
       },
       runId,
@@ -541,7 +623,7 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
         503,
       )
     }
-    const body = await context.req.json().catch(() => ({})) as {
+    const body = (await context.req.json().catch(() => ({}))) as {
       sample?: 'p0' | 'p1' | 'p2' | 'all'
       repeat?: number
       agentModel?: string
@@ -555,14 +637,25 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
       userModel: body.userModel ?? process.env.SIM_USER_MODEL ?? DEFAULT_USER_MODEL,
       judgeModel: body.judgeModel ?? process.env.SIM_JUDGE_MODEL ?? DEFAULT_JUDGE_MODEL,
     }
-    if (options.sample !== 'p0' && options.sample !== 'p1' && options.sample !== 'p2' && options.sample !== 'all') {
-      return context.json({ error: 'BAD_REQUEST', message: 'sample 参数需为 p0 p1 p2 all 之一' }, 400)
+    if (
+      options.sample !== 'p0' &&
+      options.sample !== 'p1' &&
+      options.sample !== 'p2' &&
+      options.sample !== 'all'
+    ) {
+      return context.json(
+        { error: 'BAD_REQUEST', message: 'sample 参数需为 p0 p1 p2 all 之一' },
+        400,
+      )
     }
 
     // 已有任务在跑 拒绝并发启动 避免中转站限流叠加
     for (const task of simTasks.values()) {
       if (task.status === 'running') {
-        return context.json({ error: 'CONFLICT', message: '已有 L2 评测任务运行中 请等待完成' }, 409)
+        return context.json(
+          { error: 'CONFLICT', message: '已有 L2 评测任务运行中 请等待完成' },
+          409,
+        )
       }
     }
 

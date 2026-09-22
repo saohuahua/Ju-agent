@@ -51,6 +51,12 @@
 
 验收 三命令全绿 工作台首屏即可提问 处理中禁发
 
+**执行记录 2026-09-22 完成 commit b21cf07**
+
+- 验证 pnpm typecheck 全绿 pnpm test 184 条全过 pnpm eval 105/105 P0 门禁通过（报告 evr_70758f73）
+- 提交含 API 异步化 单飞锁 409 预检 后台异常兜底 failed 工作台首屏即问 处理中禁发 运行详情提示语义更新
+- v3 计划文档先行单独提交（ac64fab）
+
 ### A. 坐席工作台 约 1.5-2 天（功能 14）
 
 做什么
@@ -73,6 +79,19 @@
 - 简单 escalated 会话出现在坐席收件箱 坐席发一条消息客户工作台实时可见
 - 完整 接管 → 对话 → 标记解决全链路 状态机走 handling_human L1 用例绿 SSE 断线重连后坐席消息不丢
 - 复杂 收件箱多会话并发认领防护（409）解决摘要入审计与事件时间线 客户侧 CSAT 在人工解决后同样可评（与功能 C 联动）
+
+**执行记录 2026-09-23 完成 功能 14 人工接管闭环**
+
+- 契约层 RunStatus 加 handling_human RUN_TRANSITIONS escalated 出边接管 handling_human 唯一出口 completed 事件协议加 run.handover / operator.message / run.resolved 请求契约 OperatorMessageRequest / RunResolveRequest
+- 领域层 HumanHandoverService takeOver（仅 escalated 角色门槛领域防线）appendOperatorMessage / appendCustomerMessage（仅 handling_human 直落事件不经模型）resolve（附摘要迁回 completed）三动作全审计 角色与状态违规抛 CONFLICT / AUTHORIZATION_DENIED
+- 组合根 composeSystem 装配 handoverService 评测与 API 共用
+- API 层 三端点 handover / operator-messages / resolve（operator/supervisor）消息端点在 handling_human 时客户留言直接落事件 坐席走专用端点 互斥 409 关键修正 SSE 终态判定移除 escalated（可接管 事件流保持打开等待 run.handover）终态收敛为 completed/failed/cancelled
+- 评测层 契约加 handoverScript 剧本（take_over / operator_message / customer_message / resolve 可选 role 越权用例）L1 与 L2 sim-runner 共用 driveHandoverStep 领域拒绝吞掉由断言判定 新类目 handover 用例 6 条 hd_*（P0 接管解决闭环 P0 双向对话 P1 未升级拒接管 P1 接管前拒消息 P1 客户越权拒接管 P2 重复接管幂等）L1 111/111 全绿
+- 前端 坐席工作台 /console 收件箱（escalated + handling_human 三秒轮询）会话面板（SSE 实时 工具轨迹折叠）接管按钮 坐席回复框 解决摘要面板（必填）客户工作台 escalated 非终态化（等待坐席接入锁定输入）handling_human 解锁双向对话 坐席气泡紫罗兰主题 + 人工坐席徽章 接管与解决系统提示条 归约器与 SSE 监听补三类新事件 StatusBadge 加人工处理中 导航加坐席工作台 修复 console 页 localStorage 渲染期读取导致的水合不一致（改挂载后读取 + 轮询同步身份）
+- 测试 归约器 2 条新用例（接管事件链 断线重放不丢消息）API 2 条新用例（全链路事件与审计断言 403/409 拒绝面）
+- 真实模型实测 浏览器双端走完整闭环 客户工作台发起升级 → 坐席工作台收件箱出现 → UI 接管 → UI 发坐席消息 → 客户侧实时收到（UTF-8 正确 输入解锁）→ 客户 UI 留言 → 坐席标记解决 → 客户侧显示坐席已标记解决 + 摘要 + 已完成 + 新会话按钮 HTTP 层另驱动一条全链路（403 客户接管 409 重复接管 事件链 87-91 完整）另发现并修复 curl 测试客户端 Windows 编码乱码为测试侧问题（浏览器 fetch 与 API 测试均验证 UTF-8 正确）
+- 评测看板 类目标签加人工接管 抽样档实测对齐 p0 37 p1 29 p2 4 all 111
+- 校验 pnpm typecheck 全绿 pnpm test 全过（web 11 api 13）pnpm eval 111/111 P0 门禁通过（报告 evr_e411c7f9）
 
 ### B. L2 提示词迭代 + Pass^3 约 1.5-2 天（功能 15）
 

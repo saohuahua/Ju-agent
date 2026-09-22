@@ -147,6 +147,50 @@ describe('事件归约', () => {
     expect(state.messages[0]?.role).toBe('user')
   })
 
+  it('人工接管事件链 升级 接管 坐席消息 客户留言 解决', () => {
+    let state = initialViewState()
+    state = reduceEvent(state, event(1, 'run.started', {}))
+    state = reduceEvent(state, event(2, 'message.user', { text: '转人工' }))
+    state = reduceEvent(state, event(3, 'run.escalated', { reason: '客户要求人工' }))
+    expect(state.status).toBe('escalated')
+
+    state = reduceEvent(state, event(4, 'run.handover', { takenBy: 'operator' }))
+    expect(state.status).toBe('handling_human')
+    expect(state.messages.at(-1)?.role).toBe('system')
+    expect(state.messages.at(-1)?.text).toContain('人工坐席已接入')
+
+    state = reduceEvent(
+      state,
+      event(5, 'operator.message', { text: '您好 请讲', sentBy: 'operator' }),
+    )
+    expect(state.messages.at(-1)).toEqual({ role: 'operator', text: '您好 请讲' })
+
+    state = reduceEvent(state, event(6, 'message.user', { text: '我要退货' }))
+    expect(state.messages.at(-1)?.role).toBe('user')
+
+    state = reduceEvent(
+      state,
+      event(7, 'run.resolved', { summary: '坐席已解决 会话完结', resolvedBy: 'operator' }),
+    )
+    expect(state.status).toBe('completed')
+    expect(state.messages.at(-1)?.text).toContain('坐席已标记解决')
+  })
+
+  it('SSE 断线重连重放人工接管事件 双向消息不丢失', () => {
+    const replayed = [
+      event(1, 'message.user', { text: '转人工' }),
+      event(2, 'run.escalated', { reason: '客户要求人工' }),
+      event(3, 'run.handover', { takenBy: 'operator' }),
+      event(4, 'operator.message', { text: '您好 我是人工坐席', sentBy: 'operator' }),
+      event(5, 'message.user', { text: '键盘失灵要求退货' }),
+      event(6, 'run.resolved', { summary: '走质保换新', resolvedBy: 'operator' }),
+    ]
+    const state = reduceEvents(initialViewState(), replayed)
+    expect(state.status).toBe('completed')
+    expect(state.messages.filter((message) => message.role === 'operator')).toHaveLength(1)
+    expect(state.messages.filter((message) => message.role === 'user')).toHaveLength(2)
+  })
+
   it('金额展示分转元 千分位分隔', () => {
     expect(formatAmount(699900)).toBe('¥6,999.00')
     expect(formatAmount(8900)).toBe('¥89.00')

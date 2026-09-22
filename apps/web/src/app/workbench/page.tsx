@@ -48,7 +48,8 @@ export default function WorkbenchPage() {
           // 创建即返回 运行在后台推进 轨迹经 SSE 实时到达
           const created = await api.createRun(text)
           setRunId(created.runId)
-        } else if (state.status === 'awaiting_input') {
+        } else if (state.status === 'awaiting_input' || state.status === 'handling_human') {
+          // handling_human 时服务端把客户消息直接落事件 坐席端实时可见
           await api.continueRun(runId, text)
         } else {
           setError('会话正在处理中 请等待回复完成后再发送')
@@ -64,20 +65,28 @@ export default function WorkbenchPage() {
     [runId, sending, state.status],
   )
 
+  // escalated 已非终态 等待坐席接入后仍可对话 真终态才锁定
+  const terminal = ['completed', 'failed', 'cancelled'].includes(state.status)
+  const awaitingHuman = runId !== null && state.status === 'escalated'
   const awaitingInput = runId !== null && state.status === 'awaiting_input'
-  const terminal = ['completed', 'failed', 'cancelled', 'escalated'].includes(state.status)
-  const canInteract = runId === null || awaitingInput
+  const humanHandling = runId !== null && state.status === 'handling_human'
+  const canInteract = runId === null || awaitingInput || humanHandling
   const pendingAssistant =
     (sending && runId === null) ||
     (runId !== null && state.messages.length === 0 && ['created', 'running'].includes(state.status))
 
-  const inputPlaceholder = runId === null
-    ? '描述您的售后需求 也可以点击下方示例'
-    : awaitingInput
-      ? '请补充信息'
-      : terminal
-        ? '会话已结束 请点击右上角新会话'
-        : '会话进行中 请等待回复'
+  const inputPlaceholder =
+    runId === null
+      ? '描述您的售后需求 也可以点击下方示例'
+      : awaitingInput
+        ? '请补充信息'
+        : humanHandling
+          ? '人工坐席处理中 您可以继续留言'
+          : awaitingHuman
+            ? '已升级人工 等待坐席接入'
+            : terminal
+              ? '会话已结束 请点击右上角新会话'
+              : '会话进行中 请等待回复'
 
   return (
     <AppShell>
@@ -170,9 +179,16 @@ export default function WorkbenchPage() {
                   ? 'ml-auto border border-sage-200 bg-sage-100 text-sage-900'
                   : message.role === 'assistant'
                     ? 'border border-hairline bg-white text-stone-800'
-                    : 'mx-auto bg-transparent text-center text-xs text-stone-400'
+                    : message.role === 'operator'
+                      ? 'border border-violet-200 bg-violet-50 text-violet-900'
+                      : 'mx-auto bg-transparent text-center text-xs text-stone-400'
               }`}
             >
+              {message.role === 'operator' && (
+                <span className="mr-1.5 inline-flex items-center rounded-badge border border-violet-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-violet-700">
+                  人工坐席
+                </span>
+              )}
               {message.text}
               {message.streaming && <span className="ml-1 animate-pulse">▍</span>}
             </div>

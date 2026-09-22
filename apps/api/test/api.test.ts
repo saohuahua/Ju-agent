@@ -42,9 +42,14 @@ async function settleRun(
     const response = await app.request(`/api/runs/${runId}`, { headers: auth(token) })
     const body = (await response.json()) as { run: { status: string; runId: string } }
     if (
-      ['completed', 'failed', 'cancelled', 'escalated', 'awaiting_input', 'awaiting_approval'].includes(
-        body.run.status,
-      )
+      [
+        'completed',
+        'failed',
+        'cancelled',
+        'escalated',
+        'awaiting_input',
+        'awaiting_approval',
+      ].includes(body.run.status)
     ) {
       return body.run
     }
@@ -295,6 +300,124 @@ describe('SSE 事件流', () => {
     expect(ids[0]).toBe(3)
     expect(ids).toEqual([...new Set(ids)])
     expect(ids.length).toBeGreaterThan(1)
+  })
+})
+
+describe('人工接管闭环', () => {
+  const escalateScript: AgentOutput[] = [
+    { kind: 'action', intent: 'escalate', slots: { reason: '客户要求人工' }, reason: '升级' },
+  ]
+
+  it('接管 对话 标记解决全链路 终态回到 completed 事件与审计齐全', async () => {
+    const { app, system } = makeApp(escalateScript)
+    const create = await app.request('/api/runs', {
+      method: 'POST',
+      headers: { ...auth(CUSTOMER_TOKEN), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '转人工 我要真人' }),
+    })
+    const { runId } = (await create.json()) as { runId: string }
+    const run = await settleRun(app, runId, CUSTOMER_TOKEN)
+    expect(run.status).toBe('escalated')
+
+    // 客户不可接管
+    const customerTake = await app.request(`/api/runs/${runId}/handover`, {
+      method: 'POST',
+      headers: auth(CUSTOMER_TOKEN),
+    })
+    expect(customerTake.status).toBe(403)
+
+    // 坐席接管
+    const take = await app.request(`/api/runs/${runId}/handover`, {
+      method: 'POST',
+      headers: auth(authEnv.operatorToken),
+    })
+    expect(take.status).toBe(200)
+
+    // 坐席消息
+    const operatorMessage = await app.request(`/api/runs/${runId}/operator-messages`, {
+      method: 'POST',
+      headers: { ...auth(authEnv.operatorToken), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '您好 我是人工坐席' }),
+    })
+    expect(operatorMessage.status).toBe(200)
+
+    // 客户在人工会话中留言 走消息端点落事件
+    const customerMessage = await app.request(`/api/runs/${runId}/messages`, {
+      method: 'POST',
+      headers: { ...auth(CUSTOMER_TOKEN), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '我的诉求是退货' }),
+    })
+    expect(customerMessage.status).toBe(200)
+
+    // 标记解决
+    const resolve = await app.request(`/api/runs/${runId}/resolve`, {
+      method: 'POST',
+      headers: { ...auth(authEnv.operatorToken), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ summary: '坐席核实后按政策处理 会话解决' }),
+    })
+    expect(resolve.status).toBe(200)
+
+    const final = await app.request(`/api/runs/${runId}`, { headers: auth(CUSTOMER_TOKEN) })
+    const finalBody = (await final.json()) as { run: { status: string } }
+    expect(finalBody.run.status).toBe('completed')
+
+    // 事件时间线含三类新事件
+    const events = await app.request(`/api/runs/${runId}/events/json`, {
+      headers: auth(CUSTOMER_TOKEN),
+    })
+    const eventsBody = (await events.json()) as {
+      events: Array<{ type: string; payload: Record<string, unknown> }>
+    }
+    const types = eventsBody.events.map((event) => event.type)
+    expect(types).toContain('run.handover')
+    expect(types).toContain('operator.message')
+    expect(types).toContain('run.resolved')
+    const operatorMessageEvent = eventsBody.events.find(
+      (event) => event.type === 'operator.message',
+    )
+    expect(String(operatorMessageEvent?.payload.text)).toContain('人工坐席')
+
+    // 审计留痕
+    const handoverAudits = system.queryTable('audit_logs', { action: 'run_handover_taken' })
+    const resolveAudits = system.queryTable('audit_logs', { action: 'run_resolved' })
+    expect(handoverAudits).toHaveLength(1)
+    expect(resolveAudits).toHaveLength(1)
+  })
+
+  it('接管前发坐席消息与未接管解决均 409', async () => {
+    const { app } = makeApp(escalateScript)
+    const create = await app.request('/api/runs', {
+      method: 'POST',
+      headers: { ...auth(CUSTOMER_TOKEN), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '转人工' }),
+    })
+    const { runId } = (await create.json()) as { runId: string }
+    await settleRun(app, runId, CUSTOMER_TOKEN)
+
+    const earlyMessage = await app.request(`/api/runs/${runId}/operator-messages`, {
+      method: 'POST',
+      headers: { ...auth(authEnv.operatorToken), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '未接管先发' }),
+    })
+    expect(earlyMessage.status).toBe(409)
+
+    const earlyResolve = await app.request(`/api/runs/${runId}/resolve`, {
+      method: 'POST',
+      headers: { ...auth(authEnv.operatorToken), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ summary: '未接管先解决' }),
+    })
+    expect(earlyResolve.status).toBe(409)
+
+    // 重复接管同样 409
+    await app.request(`/api/runs/${runId}/handover`, {
+      method: 'POST',
+      headers: auth(authEnv.operatorToken),
+    })
+    const duplicateTake = await app.request(`/api/runs/${runId}/handover`, {
+      method: 'POST',
+      headers: auth(authEnv.operatorToken),
+    })
+    expect(duplicateTake.status).toBe(409)
   })
 })
 

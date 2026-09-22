@@ -155,6 +155,21 @@ export const EVENT_PAYLOAD_SCHEMAS = {
     source: z.enum(['operator', 'simulator']),
     injectedAt: z.string(),
   }),
+  /** 坐席接管 escalated 会话转人工处理 状态迁往 handling_human */
+  'run.handover': z.object({
+    /** 接管者标识 操作员或主管 */
+    takenBy: z.string(),
+  }),
+  /** 坐席消息 人工处理中直接落事件流 不经模型 客户端经 SSE 实时可见 */
+  'operator.message': z.object({
+    text: z.string().min(1),
+    sentBy: z.string(),
+  }),
+  /** 坐席标记解决 附解决摘要 会话迁往 completed 终态 */
+  'run.resolved': z.object({
+    summary: z.string(),
+    resolvedBy: z.string(),
+  }),
 } as const
 
 /** 事件类型到 payload 的类型映射 供运行时与前端共享 */

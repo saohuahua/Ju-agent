@@ -21,6 +21,7 @@ export const EVAL_CATEGORIES = [
   'compensation',
   'price_protection',
   'policy_rag',
+  'handover',
 ] as const
 export const EvalCategory = z.enum(EVAL_CATEGORIES)
 export type EvalCategory = z.infer<typeof EvalCategory>
@@ -177,6 +178,23 @@ export const EvalCase = z.object({
         status: LogisticsEventStatus,
         description: z.string(),
         eventId: z.string().optional(),
+      }),
+    )
+    .optional(),
+  /**
+   * 人工接管剧本 escalated 会话的收口闭环
+   * 领域拒绝不抛出 供拒绝类用例断言接管被拒
+   */
+  handoverScript: z
+    .array(
+      z.object({
+        action: z.enum(['take_over', 'operator_message', 'customer_message', 'resolve']),
+        /** operator_message 与 customer_message 的文本 */
+        message: z.string().min(1).optional(),
+        /** resolve 的解决摘要 */
+        summary: z.string().min(1).optional(),
+        /** 执行身份 缺省 operator customer 供越权拒绝用例 */
+        role: z.enum(['operator', 'customer']).optional(),
       }),
     )
     .optional(),

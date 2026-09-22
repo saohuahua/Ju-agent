@@ -4,7 +4,13 @@
  * 统一注入身份令牌与错误处理 组件不直接拼 fetch
  */
 
-import type { AgentEvent, ApprovalRequest, EvalReportSummary, RunSummary, SimTaskView } from './types'
+import type {
+  AgentEvent,
+  ApprovalRequest,
+  EvalReportSummary,
+  RunSummary,
+  SimTaskView,
+} from './types'
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8787'
 
@@ -25,6 +31,14 @@ export function currentToken(): string {
 
 export function setToken(token: string): void {
   window.localStorage.setItem(TOKEN_STORAGE_KEY, token)
+}
+
+/** 当前演示身份角色 坐席工作台等内部页面的客户端门槛 */
+export function currentRole(): 'customer' | 'operator' | 'supervisor' {
+  const token = currentToken()
+  if (token === 'operator-token') return 'operator'
+  if (token === 'supervisor-token') return 'supervisor'
+  return 'customer'
 }
 
 export class ApiError extends Error {
@@ -101,13 +115,36 @@ export const api = {
   resumeRun: (runId: string) =>
     request<{ runId: string }>(`/api/runs/${runId}/resume`, { method: 'POST' }),
 
+  takeOverRun: (runId: string) =>
+    request<{ runId: string; status: string }>(`/api/runs/${runId}/handover`, {
+      method: 'POST',
+    }),
+
+  sendOperatorMessage: (runId: string, message: string) =>
+    request<{ runId: string }>(`/api/runs/${runId}/operator-messages`, {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    }),
+
+  resolveRun: (runId: string, summary: string) =>
+    request<{ runId: string; status: string }>(`/api/runs/${runId}/resolve`, {
+      method: 'POST',
+      body: JSON.stringify({ summary }),
+    }),
+
   injectLogisticsEvent: (
     runId: string,
     body: { orderNo: string; status: 'delayed' | 'lost'; description: string; eventId?: string },
   ) =>
     request<{
       runId: string
-      event: { orderNo: string; status: string; description: string; eventId: string; injectedAt: string }
+      event: {
+        orderNo: string
+        status: string
+        description: string
+        eventId: string
+        injectedAt: string
+      }
       delivered: boolean
       outcome: string | null
     }>(`/api/runs/${runId}/logistics-events`, {
@@ -147,6 +184,5 @@ export const api = {
       },
     ),
 
-  getSimTask: (taskId: string) =>
-    request<{ task: SimTaskView }>(`/api/eval/sim-tasks/${taskId}`),
+  getSimTask: (taskId: string) => request<{ task: SimTaskView }>(`/api/eval/sim-tasks/${taskId}`),
 }

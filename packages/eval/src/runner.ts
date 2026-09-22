@@ -146,6 +146,11 @@ export async function runCase(
       await injectLogisticsEvent(system, run.runId, event, toolContext)
     }
 
+    // 升级人工后的接管剧本 坐席接管 对话 解决闭环 领域拒绝吞掉 由断言判定
+    for (const step of evalCase.handoverScript ?? []) {
+      await driveHandoverStep(system, run.runId, step, actor)
+    }
+
     // 运行结束后的运营动作 收货登记等闭环
     for (const action of evalCase.operatorActions ?? []) {
       await system.executor.execute(action.tool, action.args, {
@@ -240,6 +245,35 @@ export async function driveApproval(
 }
 
 type ScriptedLogisticsEvent = NonNullable<EvalCase['logisticsEvents']>[number]
+
+type HandoverStep = NonNullable<EvalCase['handoverScript']>[number]
+
+/**
+ * 人工接管剧本执行 与坐席工作台共用同一领域服务
+ * 领域拒绝不抛出 供拒绝类用例断言接管或消息被拒
+ */
+export async function driveHandoverStep(
+  system: ComposedSystem,
+  runId: string,
+  step: HandoverStep,
+  actor: Actor,
+): Promise<void> {
+  // 缺省以操作员执行 customer 供越权拒绝用例断言领域防线
+  const operator: Actor = step.role === 'customer' ? actor : { role: 'operator' }
+  try {
+    if (step.action === 'take_over') {
+      await system.handoverService.takeOver(operator, runId)
+    } else if (step.action === 'operator_message') {
+      await system.handoverService.appendOperatorMessage(operator, runId, step.message ?? '')
+    } else if (step.action === 'customer_message') {
+      await system.handoverService.appendCustomerMessage(actor, runId, step.message ?? '')
+    } else {
+      await system.handoverService.resolve(operator, runId, step.summary ?? '')
+    }
+  } catch {
+    // 拒绝语义由断言判定 这里不中断用例
+  }
+}
 
 /**
  * 物流事件注入 与运营端点共用同一领域服务与触达入口

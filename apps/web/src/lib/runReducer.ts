@@ -8,7 +8,7 @@
 import type { AgentEvent, RunStatus } from './types'
 
 export interface ChatMessage {
-  role: 'user' | 'assistant' | 'system'
+  role: 'user' | 'assistant' | 'system' | 'operator'
   text: string
   /** 助手消息是否仍在流式拼接 */
   streaming?: boolean
@@ -178,7 +178,9 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
       // 流式期的幽灵条目按工具名关联 升级为执行条目
       const ghost = state.tools.find(
         (tool) =>
-          tool.inputStreaming && tool.toolName === toolName && tool.executionId.startsWith('pending-'),
+          tool.inputStreaming &&
+          tool.toolName === toolName &&
+          tool.executionId.startsWith('pending-'),
       )
       if (ghost) {
         next.tools = state.tools.map((tool) =>
@@ -271,6 +273,23 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
     }
     case 'run.escalated': {
       next.status = 'escalated'
+      return next
+    }
+    case 'run.handover': {
+      next.status = 'handling_human'
+      next.messages = [...state.messages, { role: 'system', text: '人工坐席已接入 会话转人工处理' }]
+      return next
+    }
+    case 'operator.message': {
+      next.messages = [...state.messages, { role: 'operator', text: String(payload.text ?? '') }]
+      return next
+    }
+    case 'run.resolved': {
+      next.status = 'completed'
+      next.messages = [
+        ...state.messages,
+        { role: 'system', text: `坐席已标记解决：${String(payload.summary ?? '')}` },
+      ]
       return next
     }
     case 'run.completed': {

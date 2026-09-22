@@ -11,6 +11,7 @@ import {
   ApprovalService,
   AuditService,
   CompensationService,
+  HumanHandoverService,
   LogisticsEventService,
   PolicySearchService,
   PriceProtectionService,
@@ -86,6 +87,7 @@ export interface ComposedSystem {
   priceProtectionService: PriceProtectionService
   policySearchService: PolicySearchService
   logisticsService: LogisticsEventService
+  handoverService: HumanHandoverService
   executor: ToolExecutor
   engine: WorkflowEngine
   runner: AgentRunner
@@ -153,6 +155,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     auditService,
     clock,
   )
+  const handoverService = new HumanHandoverService(runService, auditService)
   const policySearchService = new PolicySearchService(
     new SqlitePolicyArticleRepository(db),
     options.policyScorer ?? new ChatModelPolicyScorer(options.model),
@@ -209,6 +212,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     priceProtectionService,
     policySearchService,
     logisticsService,
+    handoverService,
     executor,
     engine,
     runner,

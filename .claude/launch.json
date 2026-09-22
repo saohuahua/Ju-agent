@@ -14,6 +14,13 @@
       "port": 8790
     },
     {
+      "name": "web-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["next", "dev", "--turbopack", "-p", "8791"],
+      "port": 8791,
+      "cwd": "apps/web"
+    },
+    {
       "name": "mockups",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8990", "--directory", "docs/v2-ui-mockups"],

@@ -93,7 +93,8 @@ stateDiagram-v2
   running --> escalated : escalate 升级人工
   running --> completed : conclude 任务完成
   running --> failed : 校验失败 / 模型错误
-  escalated --> [*]
+  escalated --> handling_human : 坐席接管 功能14
+  handling_human --> completed : 坐席标记解决 附摘要
   completed --> [*]
   failed --> [*]
 ```

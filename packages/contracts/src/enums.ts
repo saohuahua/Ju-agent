@@ -8,7 +8,7 @@
 
 import { z } from 'zod'
 
-/** 售后会话运行状态 Agent 循环与工作流共同驱动 */
+/** 售后会话运行状态 Agent 循环与工作流共同驱动 escalated 后可转人工坐席处理 */
 export const RUN_STATUSES = [
   'created',
   'running',
@@ -18,6 +18,7 @@ export const RUN_STATUSES = [
   'failed',
   'cancelled',
   'escalated',
+  'handling_human',
 ] as const
 export const RunStatus = z.enum(RUN_STATUSES)
 export type RunStatus = z.infer<typeof RunStatus>
@@ -157,6 +158,9 @@ export const EVENT_TYPES = [
   'run.completed',
   'run.escalated',
   'logistics.event',
+  'run.handover',
+  'operator.message',
+  'run.resolved',
 ] as const
 export const EventType = z.enum(EVENT_TYPES)
 export type EventType = z.infer<typeof EventType>
@@ -173,7 +177,10 @@ export const RUN_TRANSITIONS: Readonly<Record<RunStatus, readonly RunStatus[]>> 
   completed: [],
   failed: [],
   cancelled: [],
-  escalated: [],
+  // 升级人工不再是无出口的死终态 坐席接管后转人工处理
+  escalated: ['handling_human'],
+  // 人工处理中 坐席标记解决后回到 completed 终态
+  handling_human: ['completed'],
 }
 
 export const RETURN_TRANSITIONS: Readonly<Record<ReturnStatus, readonly ReturnStatus[]>> = {
@@ -206,7 +213,9 @@ export const APPROVAL_TRANSITIONS: Readonly<Record<ApprovalStatus, readonly Appr
   expired: [],
 }
 
-export const COMPENSATION_TRANSITIONS: Readonly<Record<CompensationStatus, readonly CompensationStatus[]>> = {
+export const COMPENSATION_TRANSITIONS: Readonly<
+  Record<CompensationStatus, readonly CompensationStatus[]>
+> = {
   created: ['auto_approved', 'awaiting_approval', 'cancelled'],
   auto_approved: ['executing', 'cancelled'],
   awaiting_approval: ['approved', 'rejected', 'expired', 'cancelled'],

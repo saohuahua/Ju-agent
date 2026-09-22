@@ -14,6 +14,7 @@ export type RunStatus =
   | 'failed'
   | 'cancelled'
   | 'escalated'
+  | 'handling_human'
 
 export interface AgentEvent {
   runId: string

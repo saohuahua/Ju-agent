@@ -40,6 +40,10 @@ const RUN_STATUS_STYLE: Record<RunStatus, { label: string; className: string }> 
     label: '已升级人工',
     className: 'border-purple-200 bg-purple-50 text-purple-800',
   },
+  handling_human: {
+    label: '人工处理中',
+    className: 'border-violet-200 bg-violet-50 text-violet-800',
+  },
 }
 
 export function StatusBadge({ status }: { status: RunStatus }) {

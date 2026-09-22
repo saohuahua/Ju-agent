@@ -35,7 +35,7 @@ const REPEAT_OPTIONS = [
  * 各抽样档用例数 来自 SIM_CASES 统计 与 packages/eval/src/cases.js 同步
  * p1 为 P1 用例隔一取 p2 为 P2 用例隔五取 修改用例集需更新
  */
-const CASE_COUNTS: Record<SampleValue, number> = { p0: 35, p1: 27, p2: 4, all: 105 }
+const CASE_COUNTS: Record<SampleValue, number> = { p0: 37, p1: 29, p2: 4, all: 111 }
 
 /** 单条用例 token 估算均值 与 estimateSuiteTokens 一致 */
 const TOKEN_PER_CASE = 3500
@@ -95,6 +95,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   compensation: '现金补偿',
   price_protection: '价保',
   policy_rag: '政策检索',
+  handover: '人工接管',
 }
 
 // ---------- 工具函数 ----------
@@ -142,9 +143,7 @@ function layerItems(
   const items: Array<{ caseId: string; kind: FailureKind; message: string }> = []
   let failedCases = 0
   for (const result of results) {
-    const matched = normalizeFailures(result).filter((failure) =>
-      kinds.includes(failure.kind),
-    )
+    const matched = normalizeFailures(result).filter((failure) => kinds.includes(failure.kind))
     if (matched.length > 0) {
       failedCases += 1
       items.push(...matched.map((failure) => ({ caseId: result.caseId, ...failure })))
@@ -164,13 +163,7 @@ const BADGE_TONES = {
   warn: 'border-amber-200 bg-amber-50 text-amber-800',
 } as const
 
-function Badge({
-  tone,
-  children,
-}: {
-  tone: keyof typeof BADGE_TONES
-  children: ReactNode
-}) {
+function Badge({ tone, children }: { tone: keyof typeof BADGE_TONES; children: ReactNode }) {
   return (
     <span
       className={`inline-flex items-center rounded-badge border px-1.5 py-0.5 text-[10px] font-medium ${BADGE_TONES[tone]}`}
@@ -196,8 +189,7 @@ function CiBar({
   variant: 'primary' | 'secondary'
 }) {
   const clamp = (value: number) => Math.min(100, Math.max(0, value * 100))
-  const barClass =
-    variant === 'primary' ? 'h-2 bg-blue-300' : 'h-3.5 bg-zinc-300'
+  const barClass = variant === 'primary' ? 'h-2 bg-blue-300' : 'h-3.5 bg-zinc-300'
   const dotClass = variant === 'primary' ? 'bg-blue-700' : 'bg-zinc-500'
   return (
     <div className="w-full max-w-64">
@@ -273,13 +265,7 @@ function Segment<T extends string | number>({
 // ---------- 报告对比 ----------
 
 /** 单列报告卡 L1 无置信区间 L2 画 Wilson 区间条 */
-function ReportColumn({
-  report,
-  level,
-}: {
-  report: EvalReportSummary
-  level: 'L1' | 'L2'
-}) {
+function ReportColumn({ report, level }: { report: EvalReportSummary; level: 'L1' | 'L2' }) {
   const tsr = tsrOf(report)
   const k = passK(report)
   const passPower = report.report.passPowerK
@@ -581,7 +567,10 @@ function SimProgressCard({ task }: { task: SimTaskView }) {
   const progress = task.progress
   return (
     <div className="flex items-center gap-3 rounded-control border border-sky-200 bg-sky-50 px-4 py-2.5 text-sm text-sky-900">
-      <span className="size-2 shrink-0 animate-breathe rounded-full bg-sky-500" aria-hidden="true" />
+      <span
+        className="size-2 shrink-0 animate-breathe rounded-full bg-sky-500"
+        aria-hidden="true"
+      />
       {progress ? (
         <>
           <span className="tabular-nums">
@@ -768,7 +757,7 @@ export default function EvalPage() {
             <div className="min-w-0 text-sm text-stone-600">
               <span className="font-medium text-stone-800">L1 脚本回归</span>
               <span className="ml-2 text-stone-500">
-                ScriptedModel 回放理想轨迹，全量 105 条约 2 秒完成
+                ScriptedModel 回放理想轨迹，全量 111 条约 2 秒完成
               </span>
             </div>
             <button
@@ -796,7 +785,9 @@ export default function EvalPage() {
                   else setJudgeModel(value)
                 }}
                 placeholder={DEFAULT_MODELS[key]}
-                aria-label={key === 'agent' ? '被测模型' : key === 'user' ? '用户模拟器模型' : 'Judge 模型'}
+                aria-label={
+                  key === 'agent' ? '被测模型' : key === 'user' ? '用户模拟器模型' : 'Judge 模型'
+                }
                 className="w-48 rounded-control border border-zinc-200 bg-white px-3 py-1.5 font-mono text-xs text-stone-700 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none"
               />
             ))}
@@ -818,7 +809,8 @@ export default function EvalPage() {
 
           {l2Unavailable && (
             <div className="mt-3 rounded-control border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-              未配置 ANTHROPIC_API_KEY，L2 用户模拟评测不可用，L1 脚本回归不受影响。诚实原则：不输出模拟成绩。
+              未配置 ANTHROPIC_API_KEY，L2 用户模拟评测不可用，L1
+              脚本回归不受影响。诚实原则：不输出模拟成绩。
             </div>
           )}
 
@@ -839,7 +831,10 @@ export default function EvalPage() {
           <>
             <div className="mt-8 grid gap-4 md:grid-cols-2">
               {[0, 1].map((index) => (
-                <div key={index} className="rounded-container border border-hairline bg-white px-5 py-4">
+                <div
+                  key={index}
+                  className="rounded-container border border-hairline bg-white px-5 py-4"
+                >
                   <Skeleton className="h-4 w-24" />
                   <Skeleton className="mt-3 h-9 w-40" />
                   <Skeleton className="mt-3 h-2 w-56" />
@@ -868,8 +863,16 @@ export default function EvalPage() {
             <section className="mt-8">
               <h2 className="mb-2 text-sm font-medium text-stone-700">最近报告对比</h2>
               <div className="flex flex-col gap-4 md:flex-row md:items-stretch">
-                {latestL1 ? <ReportColumn report={latestL1} level="L1" /> : <EmptyColumn level="L1" />}
-                {latestL2 ? <ReportColumn report={latestL2} level="L2" /> : <EmptyColumn level="L2" />}
+                {latestL1 ? (
+                  <ReportColumn report={latestL1} level="L1" />
+                ) : (
+                  <EmptyColumn level="L1" />
+                )}
+                {latestL2 ? (
+                  <ReportColumn report={latestL2} level="L2" />
+                ) : (
+                  <EmptyColumn level="L2" />
+                )}
               </div>
             </section>
 
@@ -880,7 +883,7 @@ export default function EvalPage() {
             )}
 
             <p className="mt-4 text-xs text-stone-400">
-              诚实声明：所有数字来自实际运行结果。L1 为 105 条脚本回放，L2 为抽样用户模拟评测；
+              诚实声明：所有数字来自实际运行结果。L1 为 111 条脚本回放，L2 为抽样用户模拟评测；
               Wilson 95% 置信区间仅 L2 计算，未配置密钥时不输出模拟成绩。
             </p>
 

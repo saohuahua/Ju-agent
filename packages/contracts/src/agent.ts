@@ -88,6 +88,18 @@ export const LogisticsEventInjectRequest = z.object({
 })
 export type LogisticsEventInjectRequest = z.infer<typeof LogisticsEventInjectRequest>
 
+/** 坐席人工消息请求 handling_human 会话内追加 客户端经 SSE 实时可见 */
+export const OperatorMessageRequest = z.object({
+  message: z.string().min(1),
+})
+export type OperatorMessageRequest = z.infer<typeof OperatorMessageRequest>
+
+/** 坐席标记解决请求 附解决摘要 会话迁往 completed 终态 */
+export const RunResolveRequest = z.object({
+  summary: z.string().min(1),
+})
+export type RunResolveRequest = z.infer<typeof RunResolveRequest>
+
 /** 运行对外摘要 */
 export const RunSummary = z.object({
   runId: z.string(),

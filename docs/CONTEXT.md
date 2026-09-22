@@ -22,6 +22,19 @@
 - **运单状态（shipment status）** in_transit 运输中 delayed 延误 lost 丢件 delivered 已签收 exception 异常
 - **注入方** 运营端点（operator 手动 demo）与 L2 模拟器剧本 共用同一注入服务与 API
 
+## 人工接管（功能 14）
+
+- **人工处理中（handling_human）** 坐席接管后的运行状态 escalated → handling_human → completed
+  escalated 不再是死终态 接管是唯一出口
+- **接管（handover / take over）** operator 或 supervisor 把升级会话收归人工
+  仅 escalated 可接管 重复接管与越权（客户）均被领域拒绝 事件 run.handover
+- **坐席消息（operator message）** 人工处理中坐席直接落事件流的消息 不经模型
+  客户工作台经 SSE 实时可见 事件 operator.message
+- **标记解决（resolve）** 坐席附解决摘要把会话迁回 completed 终态
+  摘要落审计与 run.resolved 事件 客户侧可见
+- **人工会话客户留言** handling_human 中客户走消息端点直接落 message.user 事件 不驱动模型
+- **权限分离** AI 不碰终审（升级即交出） 坐席不碰业务执行（退款补偿仍走审批中心）
+
 ## 既有概念（沿用 不另起名）
 
 - **审批令牌（approval token）** 一次性 只存断点不经过模型

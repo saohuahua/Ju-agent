@@ -81,6 +81,9 @@ export function useRunEvents(runId: string | null): SseSession {
       'run.failed',
       'run.completed',
       'run.escalated',
+      'run.handover',
+      'operator.message',
+      'run.resolved',
     ]
     for (const type of eventTypes) {
       source.addEventListener(type, handle as EventListener)

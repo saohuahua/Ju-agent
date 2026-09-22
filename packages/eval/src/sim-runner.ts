@@ -18,7 +18,7 @@ import { UserSimulator, TallyingModel } from './simulator.js'
 import { judgeTranscript, type TranscriptTurn } from './judge.js'
 import type { CaseDetail, JudgeFailure } from './types.js'
 import type { AssertionFailure } from './validators.js'
-import { collectAssertions, driveApproval, driveTurn } from './runner.js'
+import { collectAssertions, driveApproval, driveHandoverStep, driveTurn } from './runner.js'
 
 /** 模拟评测超时与脚本回归一致 加速故障注入用例 */
 const SIM_TIMEOUT_MS = 300
@@ -98,8 +98,7 @@ function exportFailureStub(
     promptVersion: PROMPT_VERSION,
     transcript,
     failures: failures.map((failure) => ({ kind: failure.kind, message: failure.message })),
-    promotionHint:
-      '人工确认失败根因后 可将 scenario 与断言整理为正式回归用例 固化到 cases 目录',
+    promotionHint: '人工确认失败根因后 可将 scenario 与断言整理为正式回归用例 固化到 cases 目录',
   }
   const file = `${dir}/${simCase.id}-${Date.now()}.json`
   try {
@@ -111,10 +110,7 @@ function exportFailureStub(
 }
 
 /** 单条 L2 用例执行 */
-export async function runSimCase(
-  simCase: EvalCase,
-  options: RunSimOptions,
-): Promise<CaseDetail> {
+export async function runSimCase(simCase: EvalCase, options: RunSimOptions): Promise<CaseDetail> {
   const startedAt = Date.now()
   const clock = new FrozenClock(simCase.frozenTime ?? BASELINE_FROZEN_TIME)
   const scenario = simCase.scenario
@@ -219,6 +215,12 @@ export async function runSimCase(
       })
     }
 
+    // 升级人工后的接管剧本 L2 无真人坐席 按脚本执行接管对话与解决
+    // 与 L1 runner 共用同一领域入口 领域拒绝吞掉 由断言判定
+    for (const step of simCase.handoverScript ?? []) {
+      await driveHandoverStep(system, runId, step, actor)
+    }
+
     // 运行结束后的运营闭环动作
     for (const action of simCase.operatorActions ?? []) {
       await system.executor.execute(action.tool, action.args, {
@@ -251,7 +253,10 @@ export async function runSimCase(
       transcript = readTranscript(system, runId)
       judgeFailures = await judgeTranscript({ model: options.judgeModel }, rubric, transcript)
       for (const failure of judgeFailures) {
-        failures.push({ kind: 'judge', message: `judge 判定未通过 ${failure.rubric} ${failure.reason}` })
+        failures.push({
+          kind: 'judge',
+          message: `judge 判定未通过 ${failure.rubric} ${failure.reason}`,
+        })
       }
     }
 

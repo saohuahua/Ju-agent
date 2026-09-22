@@ -13,6 +13,7 @@ import {
   ChartBar,
   CheckSquareOffset,
   ClockCounterClockwise,
+  Headset,
   ShieldCheck,
   type Icon,
 } from '@phosphor-icons/react'
@@ -23,6 +24,7 @@ import { DEMO_TOKENS, currentToken, setToken } from '@/lib/api'
 
 const NAV_ITEMS: Array<{ href: string; label: string; icon: Icon }> = [
   { href: '/workbench', label: '会话工作台', icon: ChatsCircle },
+  { href: '/console', label: '坐席工作台', icon: Headset },
   { href: '/approvals', label: '审批中心', icon: CheckSquareOffset },
   { href: '/runs', label: '运行记录', icon: ClockCounterClockwise },
   { href: '/eval', label: '评测看板', icon: ChartBar },
@@ -90,7 +92,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
         <div className="border-t border-hairline px-3 py-4">
-          <label htmlFor="demo-identity" className="block text-[11px] tracking-wider text-stone-400">
+          <label
+            htmlFor="demo-identity"
+            className="block text-[11px] tracking-wider text-stone-400"
+          >
             演示身份
           </label>
           <select

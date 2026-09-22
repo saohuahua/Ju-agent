@@ -103,6 +103,9 @@ run.resumed        恢复 来源 user_message approval checkpoint
 run.failed         失败 含错误码
 run.completed      完成
 run.escalated      升级人工
+run.handover       坐席接管 会话转人工处理
+operator.message   坐席消息 人工处理中直落事件流
+run.resolved       坐席标记解决 附摘要
 ```
 
 断线补发 客户端携带 Last-Event-ID 服务端从持久化事件表续传
