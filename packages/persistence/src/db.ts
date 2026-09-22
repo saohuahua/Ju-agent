@@ -27,9 +27,14 @@ export function openDatabase(dbPath: string): SqliteDatabase {
   return db
 }
 
-/** 建表迁移 幂等可重复执行 */
+/** 建表迁移 幂等可重复执行 老库补列 */
 export function migrate(db: SqliteDatabase): void {
   db.exec(SCHEMA_SQL)
+  // agent_runs.source 增量列 老库无此列时补齐 新库建表已含
+  const runColumns = db.prepare('PRAGMA table_info(agent_runs)').all() as Array<{ name: string }>
+  if (!runColumns.some((column) => column.name === 'source')) {
+    db.exec("ALTER TABLE agent_runs ADD COLUMN source TEXT NOT NULL DEFAULT 'customer'")
+  }
 }
 
 /** 评测与测试用 每次全新内存库 */
@@ -47,6 +52,7 @@ export function clearBusinessData(db: SqliteDatabase): void {
     'tool_executions',
     'agent_events',
     'agent_runs',
+    'ratings',
     'checkpoints',
     'idempotency_records',
     'leases',

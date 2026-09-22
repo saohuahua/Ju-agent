@@ -34,6 +34,8 @@ export {
   SqliteAgentRunRepository,
   SqliteLeaseRepository,
   SqliteBusinessNoGenerator,
+  SqliteRatingRepository,
+  SqliteAnalyticsReadModel,
   saveEvalReport,
   listEvalReports,
   queryTable,

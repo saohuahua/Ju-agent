@@ -86,6 +86,8 @@ export async function runCase(
       promptVersion: PROMPT_VERSION,
       model: model.info.model,
       faultPlan: evalCase.faultPlan ?? [],
+      // 评测会话标注 sim 来源 运营分析口径将其排除
+      source: 'sim',
     })
     const toolContext = { actor, runId: run.runId, faults }
 

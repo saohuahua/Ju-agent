@@ -19,6 +19,7 @@ import type {
   PriceProtection,
   Refund,
   ReturnRequest,
+  RunRating,
   Shipment,
   SkuPrice,
   ToolExecutionRecord,
@@ -39,6 +40,7 @@ import type {
   PolicyArticleRepository,
   PolicyRepository,
   PriceProtectionRepository,
+  RatingRepository,
   RefundRepository,
   ReturnRepository,
   ShipmentRepository,
@@ -127,7 +129,9 @@ export class InMemoryCompensationRepository implements CompensationRepository {
     return found ? { ...found } : null
   }
   async listByOrderNo(orderNo: string): Promise<Compensation[]> {
-    return [...this.compensations.values()].filter((c) => c.orderNo === orderNo).map((c) => ({ ...c }))
+    return [...this.compensations.values()]
+      .filter((c) => c.orderNo === orderNo)
+      .map((c) => ({ ...c }))
   }
   async update(record: Compensation): Promise<void> {
     this.compensations.set(record.compensationNo, { ...record })
@@ -144,7 +148,9 @@ export class InMemoryPriceProtectionRepository implements PriceProtectionReposit
     return found ? { ...found } : null
   }
   async listByOrderNo(orderNo: string): Promise<PriceProtection[]> {
-    return [...this.protections.values()].filter((p) => p.orderNo === orderNo).map((p) => ({ ...p }))
+    return [...this.protections.values()]
+      .filter((p) => p.orderNo === orderNo)
+      .map((p) => ({ ...p }))
   }
   async update(record: PriceProtection): Promise<void> {
     this.protections.set(record.protectionNo, { ...record })
@@ -307,6 +313,18 @@ export class InMemoryAgentRunRepository implements AgentRunRepository {
   }
 }
 
+/** 满意度评分内存仓储 一 run 一评 */
+export class InMemoryRatingRepository implements RatingRepository {
+  readonly ratings = new Map<string, RunRating>()
+  async create(record: RunRating): Promise<void> {
+    this.ratings.set(record.runId, { ...record })
+  }
+  async findByRunId(runId: string): Promise<RunRating | null> {
+    const found = this.ratings.get(runId)
+    return found ? { ...found } : null
+  }
+}
+
 export class InMemoryLeaseRepository implements LeaseRepository {
   private leases = new Map<string, { holder: string; expiresAt: number }>()
   async acquire(
@@ -388,6 +406,7 @@ export function createInMemoryRepositories() {
     checkpointRepo: new InMemoryCheckpointRepository(),
     idempotencyRepo: new InMemoryIdempotencyRepository(),
     runRepo: new InMemoryAgentRunRepository(),
+    ratingRepo: new InMemoryRatingRepository(),
     leaseRepo: new InMemoryLeaseRepository(),
     noGenerator: new InMemoryBusinessNoGenerator(),
     gateway: new InMemoryPaymentGateway(),

@@ -421,6 +421,103 @@ describe('人工接管闭环', () => {
   })
 })
 
+describe('满意度评分与运营分析', () => {
+  const queryScript: AgentOutput[] = [
+    { kind: 'tool_call', tool: 'get_order', args: { orderNo: 'SO-2026-0002' }, reason: '查单' },
+    { kind: 'final', answer: '订单已在运输中', escalated: false, summary: '查单' },
+  ]
+
+  it('终态评分提交 幂等拒绝 非 customer 被拒', async () => {
+    const { app } = makeApp(queryScript)
+    const create = await app.request('/api/runs', {
+      method: 'POST',
+      headers: { ...auth(CUSTOMER_TOKEN), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '订单 SO-2026-0002 到哪了' }),
+    })
+    const { runId } = (await create.json()) as { runId: string }
+    await settleRun(app, runId, CUSTOMER_TOKEN)
+
+    const rate = await app.request(`/api/runs/${runId}/rating`, {
+      method: 'POST',
+      headers: { ...auth(CUSTOMER_TOKEN), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ score: 5, comment: '很快' }),
+    })
+    expect(rate.status).toBe(201)
+    const rated = (await rate.json()) as { rating: { score: number; comment: string | null } }
+    expect(rated.rating.score).toBe(5)
+    expect(rated.rating.comment).toBe('很快')
+
+    // 重复评分 409
+    const again = await app.request(`/api/runs/${runId}/rating`, {
+      method: 'POST',
+      headers: { ...auth(CUSTOMER_TOKEN), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ score: 3 }),
+    })
+    expect(again.status).toBe(409)
+
+    // 操作员不可评 403
+    const operatorRate = await app.request(`/api/runs/${runId}/rating`, {
+      method: 'POST',
+      headers: { ...auth(authEnv.operatorToken), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ score: 5 }),
+    })
+    expect(operatorRate.status).toBe(403)
+
+    // 查询评分
+    const query = await app.request(`/api/runs/${runId}/rating`, {
+      headers: auth(CUSTOMER_TOKEN),
+    })
+    const queryBody = (await query.json()) as { rating: { score: number } | null }
+    expect(queryBody.rating?.score).toBe(5)
+  })
+
+  it('分析总览仅聚合 customer 会话 客户 403', async () => {
+    const { app, system } = makeApp(queryScript)
+    // 真实客户会话 经 API 创建 source=customer
+    const create = await app.request('/api/runs', {
+      method: 'POST',
+      headers: { ...auth(CUSTOMER_TOKEN), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '订单 SO-2026-0002 到哪了' }),
+    })
+    const { runId } = (await create.json()) as { runId: string }
+    await settleRun(app, runId, CUSTOMER_TOKEN)
+    await app.request(`/api/runs/${runId}/rating`, {
+      method: 'POST',
+      headers: { ...auth(CUSTOMER_TOKEN), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ score: 4 }),
+    })
+
+    // 评测来源会话 直插领域 标注 sim 不应进运营指标
+    await system.runService.start({
+      customerId: 'C1001',
+      promptVersion: 'v2.2',
+      model: 'sim',
+      source: 'sim',
+    })
+
+    const denied = await app.request('/api/analytics/overview', {
+      headers: auth(CUSTOMER_TOKEN),
+    })
+    expect(denied.status).toBe(403)
+
+    const overview = await app.request('/api/analytics/overview', {
+      headers: auth(authEnv.operatorToken),
+    })
+    expect(overview.status).toBe(200)
+    const body = (await overview.json()) as {
+      totalSessions: number
+      ratingCount: number
+      toolDistribution: Array<{ toolName: string }>
+      scopeNote: string
+    }
+    expect(body.totalSessions).toBe(1)
+    expect(body.ratingCount).toBe(1)
+    expect(body.scopeNote).toContain('customer')
+    const tools = body.toolDistribution.map((entry) => entry.toolName)
+    expect(tools).toContain('get_order')
+  })
+})
+
 /** 读取 SSE 流直到完成标记或超时 */
 async function readStreamUntilComplete(stream: ReadableStream<Uint8Array>): Promise<string> {
   const reader = stream.getReader()

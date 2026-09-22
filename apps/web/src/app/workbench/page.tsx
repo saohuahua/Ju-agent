@@ -16,6 +16,7 @@ import { StatusBadge } from '@/components/StatusBadge'
 import { ToolCard } from '@/components/ToolCard'
 import { api, ApiError } from '@/lib/api'
 import { useRunEvents } from '@/lib/sse'
+import type { RunRatingView } from '@/lib/types'
 
 export default function WorkbenchPage() {
   const [runId, setRunId] = useState<string | null>(null)
@@ -23,6 +24,10 @@ export default function WorkbenchPage() {
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [modelAvailable, setModelAvailable] = useState(true)
+  const [rating, setRating] = useState<RunRatingView | null>(null)
+  const [ratingScore, setRatingScore] = useState(0)
+  const [ratingComment, setRatingComment] = useState('')
+  const [ratingBusy, setRatingBusy] = useState(false)
   const { state, connected } = useRunEvents(runId)
   const messageEndRef = useRef<HTMLDivElement>(null)
 
@@ -32,6 +37,32 @@ export default function WorkbenchPage() {
       .then((info) => setModelAvailable(info.modelAvailable))
       .catch(() => setModelAvailable(false))
   }, [])
+
+  // 会话终态后拉取既有评分 新会话重置评分状态
+  useEffect(() => {
+    setRating(null)
+    setRatingScore(0)
+    setRatingComment('')
+    if (!runId) return
+    api
+      .getRating(runId)
+      .then((body) => setRating(body.rating))
+      .catch(() => undefined)
+  }, [runId])
+
+  const submitRating = async () => {
+    if (!runId || ratingScore < 1 || ratingBusy) return
+    setRatingBusy(true)
+    setError(null)
+    try {
+      const body = await api.submitRating(runId, ratingScore, ratingComment.trim() || undefined)
+      setRating(body.rating)
+    } catch (caught) {
+      setError(caught instanceof ApiError ? caught.message : '评分提交失败')
+    } finally {
+      setRatingBusy(false)
+    }
+  }
 
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -71,6 +102,10 @@ export default function WorkbenchPage() {
   const awaitingInput = runId !== null && state.status === 'awaiting_input'
   const humanHandling = runId !== null && state.status === 'handling_human'
   const canInteract = runId === null || awaitingInput || humanHandling
+  // 评分开放口径 全终态含升级与人工处理中
+  const ratingEligible =
+    runId !== null &&
+    ['completed', 'failed', 'cancelled', 'escalated', 'handling_human'].includes(state.status)
   const pendingAssistant =
     (sending && runId === null) ||
     (runId !== null && state.messages.length === 0 && ['created', 'running'].includes(state.status))
@@ -215,6 +250,61 @@ export default function WorkbenchPage() {
               onDecided={() => undefined}
             />
           ))}
+
+          {/* 终态评分卡 全终态可评 一会话一评 */}
+          {runId && ratingEligible && (
+            <div className="max-w-2xl rounded-container border border-hairline bg-white px-4 py-3">
+              {rating ? (
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-amber-500" aria-hidden="true">
+                    {'★'.repeat(rating.score)}
+                    <span className="text-stone-300">{'★'.repeat(5 - rating.score)}</span>
+                  </span>
+                  <span className="text-stone-600">
+                    感谢您的评价 {rating.score} 星{rating.comment ? ` 「${rating.comment}」` : ''}
+                  </span>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="mr-1 text-xs text-stone-500">本次服务您满意吗</span>
+                    {[1, 2, 3, 4, 5].map((score) => (
+                      <button
+                        key={score}
+                        type="button"
+                        onClick={() => setRatingScore(score)}
+                        aria-label={`${score} 星`}
+                        className={`text-lg leading-none transition-transform duration-200 active:scale-90 ${
+                          score <= ratingScore
+                            ? 'text-amber-500'
+                            : 'text-stone-300 hover:text-amber-300'
+                        }`}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      value={ratingComment}
+                      onChange={(event) => setRatingComment(event.target.value)}
+                      maxLength={200}
+                      placeholder="可选 一句话评价"
+                      className="flex-1 rounded-control border border-hairline bg-white px-3 py-1.5 text-xs text-stone-800 transition-colors duration-200 placeholder:text-stone-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={submitRating}
+                      disabled={ratingScore < 1 || ratingBusy}
+                      className="rounded-control bg-sage-700 px-3.5 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-sage-800 active:scale-[0.98] disabled:opacity-50"
+                    >
+                      {ratingBusy ? '提交中' : '提交评价'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {state.error && (
             <div className="max-w-2xl rounded-container border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-800">

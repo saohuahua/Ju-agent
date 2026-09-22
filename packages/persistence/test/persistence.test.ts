@@ -156,6 +156,7 @@ describe('运行仓储', () => {
       model: 'scripted',
       error: null,
       faultPlan: [],
+      source: 'customer' as const,
       createdAt: BASELINE_FROZEN_TIME,
       updatedAt: BASELINE_FROZEN_TIME,
     }
@@ -164,6 +165,7 @@ describe('运行仓储', () => {
     const found = await repo.findById('run_test01')
     expect(found?.status).toBe('running')
     expect(found?.intent).toBe('submit_refund_only')
+    expect(found?.source).toBe('customer')
   })
 })
 

@@ -20,6 +20,8 @@ export interface StartRunInput {
   promptVersion: string
   model: string
   faultPlan?: unknown[]
+  /** 会话来源 缺省真实客户 评测与模拟会话须显式标注 sim 运营指标只聚合 customer */
+  source?: 'customer' | 'sim'
 }
 
 export class RunService {
@@ -40,6 +42,7 @@ export class RunService {
       model: input.model,
       error: null,
       faultPlan: input.faultPlan ?? [],
+      source: input.source ?? 'customer',
       createdAt: now,
       updatedAt: now,
     }

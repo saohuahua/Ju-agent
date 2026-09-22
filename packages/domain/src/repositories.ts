@@ -19,6 +19,8 @@ import type {
   PriceProtection,
   Refund,
   ReturnRequest,
+  RunRating,
+  RunSource,
   Shipment,
   SkuPrice,
   ToolExecutionRecord,
@@ -160,6 +162,37 @@ export interface PaymentGatewayPort {
   /** 评测与演示用 读取网关侧成功扣款次数 */
   chargeCount(idempotencyKey: string): number
   totalSuccessfulCharges(): number
+}
+
+/** 满意度评分 一 run 一评 幂等拒绝 */
+export interface RatingRepository {
+  create(record: RunRating): Promise<void>
+  findByRunId(runId: string): Promise<RunRating | null>
+}
+
+/**
+ * 运营分析读模型端口
+ *
+ * 聚合查询的 SQL 实现留在持久层 领域只关心口径
+ * source=customer 是运营指标的唯一口径 评测与模拟会话不进聚合
+ */
+export interface AnalyticsReadModel {
+  runStatusCounts(source: RunSource): Promise<Array<{ status: string; count: number }>>
+  runsByDay(source: RunSource, days: number): Promise<Array<{ day: string; count: number }>>
+  /** 平均模型轮次 agent.turn 事件按 run 平均 */
+  avgTurns(source: RunSource): Promise<number>
+  /** 发生过升级的会话数 run.escalated 事件按 run 去重 */
+  escalatedRunCount(source: RunSource): Promise<number>
+  toolDistribution(
+    source: RunSource,
+  ): Promise<Array<{ toolName: string; total: number; failed: number }>>
+  /** 已决审批的平均时效毫秒 */
+  avgApprovalLatencyMs(): Promise<number | null>
+  decidedApprovalCount(): Promise<number>
+  ratingCounts(): Promise<Array<{ score: number; count: number }>>
+  /** CSAT 与会话终态交叉 人工解决与 AI 解决的满意度对照 */
+  ratingByFinalStatus(): Promise<Array<{ status: string; avgScore: number; count: number }>>
+  ratingCount(): Promise<number>
 }
 
 /** 领域错误 统一携带契约错误码 */

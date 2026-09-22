@@ -181,10 +181,18 @@ CREATE TABLE IF NOT EXISTS agent_runs (
   model TEXT NOT NULL,
   error TEXT,
   fault_plan_json TEXT NOT NULL DEFAULT '[]',
+  source TEXT NOT NULL DEFAULT 'customer',
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_runs_status ON agent_runs(status);
+
+CREATE TABLE IF NOT EXISTS ratings (
+  run_id TEXT PRIMARY KEY,
+  score INTEGER NOT NULL,
+  comment TEXT,
+  submitted_at TEXT NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS agent_events (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

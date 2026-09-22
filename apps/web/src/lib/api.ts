@@ -6,8 +6,10 @@
 
 import type {
   AgentEvent,
+  AnalyticsOverview,
   ApprovalRequest,
   EvalReportSummary,
+  RunRatingView,
   RunSummary,
   SimTaskView,
 } from './types'
@@ -185,4 +187,15 @@ export const api = {
     ),
 
   getSimTask: (taskId: string) => request<{ task: SimTaskView }>(`/api/eval/sim-tasks/${taskId}`),
+
+  submitRating: (runId: string, score: number, comment?: string) =>
+    request<{ rating: RunRatingView }>(`/api/runs/${runId}/rating`, {
+      method: 'POST',
+      body: JSON.stringify(comment ? { score, comment } : { score }),
+    }),
+
+  getRating: (runId: string) =>
+    request<{ rating: RunRatingView | null }>(`/api/runs/${runId}/rating`),
+
+  getAnalytics: (days = 14) => request<AnalyticsOverview>(`/api/analytics/overview?days=${days}`),
 }

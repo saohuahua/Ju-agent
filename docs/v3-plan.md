@@ -138,6 +138,18 @@
 - 完整 仪表盘基础六指标 + CSAT 分布 source 过滤生效（模拟会话不进聚合）
 - 复杂 CSAT×终态交叉矩阵（升级人工但满意等样本可讲）审批时效 深化图表
 
+**执行记录 2026-09-23 完成 功能 16 运营仪表盘 + CSAT**
+
+- 契约层 agent_runs 加 source 口径（customer/sim 老库幂等补列迁移）RunRatingRequest/RunRatingView AnalyticsOverviewResponse 响应契约含 scopeNote 口径声明
+- 领域层 RatingService（全终态可评 仅本人 一 run 一评幂等拒绝 分数区间校验 审计 run_rated）AnalyticsService 纯读侧聚合（解决率升级率推导 CSAT 均值与交叉）口径经 AnalyticsReadModel 端口 SQL 实现留在持久层
+- 持久层 ratings 表 agent_runs source 列（PRAGMA 检测补列）SqliteRatingRepository SqliteAnalyticsReadModel（按日趋势 平均轮次 升级会话数 工具分布 审批时效 CSAT 交叉全部 SQL 聚合）QUERYABLE_TABLES 加 ratings clearBusinessData 清空 ratings
+- 运行器 L1 与 L2 的 runService.start 显式标注 source sim 运营口径排除评测会话
+- API 层 POST/GET /api/runs/:runId/rating（customer）GET /api/analytics/overview（operator/supervisor days 1-90）
+- 前端 运营分析页 /analytics（operator 视角 KPI 指标卡 解决率升级率比例仪表 按日趋势列图 终态分布条形 工具调用分布 满意度分布列图 满意度×终态交叉表 口径声明）图表为设计系统内自绘组件（charts.tsx 单 sage 色系 遵循 dataviz 规范 条厚 16px 数据端 4px 圆角 直接标签文本 token 悬停高亮 无第三方依赖）工作台终态评分卡（星级+可选评论）运行详情页显示客户评分 导航加运营分析
+- 测试 领域 6+3 条（评分不变量 分析口径零除保护）API 2 条（评分提交幂等与 403 分析总览 source 过滤与 403）
+- 浏览器实测 operator 视角 /analytics 真数据渲染（会话总量 7 模拟会话排除 评分 5.0 交叉表人工处理中样本）curl 评分提交落库
+- 校验 typecheck 全绿 test 全过（domain 95 web 11 api 15）L1 111/111
+
 ### D. 模拟对话直播 约 1 天（功能 17 可裁）
 
 做什么

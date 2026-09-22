@@ -15,6 +15,7 @@ import {
   ClockCounterClockwise,
   Headset,
   ShieldCheck,
+  TrendUp,
   type Icon,
 } from '@phosphor-icons/react'
 import Link from 'next/link'
@@ -26,6 +27,7 @@ const NAV_ITEMS: Array<{ href: string; label: string; icon: Icon }> = [
   { href: '/workbench', label: '会话工作台', icon: ChatsCircle },
   { href: '/console', label: '坐席工作台', icon: Headset },
   { href: '/approvals', label: '审批中心', icon: CheckSquareOffset },
+  { href: '/analytics', label: '运营分析', icon: TrendUp },
   { href: '/runs', label: '运行记录', icon: ClockCounterClockwise },
   { href: '/eval', label: '评测看板', icon: ChartBar },
 ]

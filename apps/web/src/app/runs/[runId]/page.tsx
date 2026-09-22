@@ -15,7 +15,7 @@ import { StatusBadge } from '@/components/StatusBadge'
 import { ToolCard } from '@/components/ToolCard'
 import { api, currentToken } from '@/lib/api'
 import { reduceEvents, initialViewState } from '@/lib/runReducer'
-import type { AgentEvent, RunSummary } from '@/lib/types'
+import type { AgentEvent, RunRatingView, RunSummary } from '@/lib/types'
 
 const EVENT_TYPE_LABEL: Record<string, string> = {
   'run.started': '运行开始',
@@ -39,12 +39,16 @@ const EVENT_TYPE_LABEL: Record<string, string> = {
   'run.failed': '运行失败',
   'run.completed': '运行完成',
   'run.escalated': '升级人工',
+  'run.handover': '坐席接管',
+  'operator.message': '坐席消息',
+  'run.resolved': '坐席标记解决',
 }
 
 export default function RunDetailPage({ params }: { params: Promise<{ runId: string }> }) {
   const { runId } = use(params)
   const [run, setRun] = useState<RunSummary | null>(null)
   const [events, setEvents] = useState<AgentEvent[]>([])
+  const [rating, setRating] = useState<RunRatingView | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [resuming, setResuming] = useState(false)
 
@@ -59,9 +63,14 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
 
   const load = useCallback(async () => {
     try {
-      const [runBody, eventBody] = await Promise.all([api.getRun(runId), api.listEvents(runId)])
+      const [runBody, eventBody, ratingBody] = await Promise.all([
+        api.getRun(runId),
+        api.listEvents(runId),
+        api.getRating(runId).catch(() => ({ rating: null })),
+      ])
       setRun(runBody.run)
       setEvents(eventBody.events)
+      setRating(ratingBody.rating)
       setError(null)
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '加载失败')
@@ -174,6 +183,22 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
               <div className="text-xs text-stone-500">提示词版本</div>
               <div className="mt-0.5 font-mono text-xs text-stone-700">{run.promptVersion}</div>
             </div>
+            {rating && (
+              <div>
+                <div className="text-xs text-stone-500">客户评分</div>
+                <div className="mt-0.5 flex items-center gap-1.5">
+                  <span className="text-amber-500" aria-hidden="true">
+                    {'★'.repeat(rating.score)}
+                    <span className="text-stone-300">{'★'.repeat(5 - rating.score)}</span>
+                  </span>
+                  {rating.comment && (
+                    <span className="truncate text-xs text-stone-500" title={rating.comment}>
+                      {rating.comment}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -278,7 +303,10 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
               </thead>
               <tbody className="divide-y divide-hairline">
                 {events.map((event) => (
-                  <tr key={event.sequence} className="transition-colors duration-200 hover:bg-stone-50">
+                  <tr
+                    key={event.sequence}
+                    className="transition-colors duration-200 hover:bg-stone-50"
+                  >
                     <td className="px-3 py-1.5 font-mono tabular-nums text-stone-500">
                       {event.sequence}
                     </td>
@@ -306,7 +334,10 @@ function summarizePayload(event: AgentEvent): string {
   const payload = event.payload as Record<string, unknown>
   if (event.type === 'logistics.event') {
     const statusText = payload.status === 'lost' ? '包裹丢失' : '运输延误'
-    return `订单 ${String(payload.orderNo ?? '')} ${statusText} ${String(payload.description ?? '')}`.slice(0, 100)
+    return `订单 ${String(payload.orderNo ?? '')} ${statusText} ${String(payload.description ?? '')}`.slice(
+      0,
+      100,
+    )
   }
   const keys = Object.keys(payload)
   if (keys.length === 0) return ''

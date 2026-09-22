@@ -238,8 +238,21 @@ export interface AgentRunRecord {
   error: string | null
   /** 评测注入的故障计划 生产路径恒为空 */
   faultPlan: unknown[]
+  /** 会话来源 customer 真实客户会话 sim 评测与模拟会话 运营指标只聚合前者 */
+  source: RunSource
   createdAt: string
   updatedAt: string
+}
+
+/** 会话来源 运营分析口径的真实性边界 */
+export type RunSource = 'customer' | 'sim'
+
+/** 会话满意度评分 全终态可收集 一 run 一评 */
+export interface RunRating {
+  runId: string
+  score: number
+  comment: string | null
+  submittedAt: string
 }
 
 /** 操作身份 客户只能触达自己的资源 操作员与主管按角色放行 */

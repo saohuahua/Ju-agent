@@ -109,10 +109,28 @@ export const RunSummary = z.object({
   promptVersion: z.string(),
   model: z.string(),
   error: z.string().nullable(),
+  /** 会话来源 customer 真实客户 sim 评测与模拟 运营指标只聚合前者 */
+  source: z.enum(['customer', 'sim']).default('customer'),
   createdAt: z.string(),
   updatedAt: z.string(),
 })
 export type RunSummary = z.infer<typeof RunSummary>
+
+/** 满意度评分请求 终态会话 客户身份 一 run 一评 */
+export const RunRatingRequest = z.object({
+  score: z.number().int().min(1).max(5),
+  comment: z.string().max(200).optional(),
+})
+export type RunRatingRequest = z.infer<typeof RunRatingRequest>
+
+/** 满意度评分落库形态 */
+export const RunRatingView = z.object({
+  runId: z.string(),
+  score: z.number().int().min(1).max(5),
+  comment: z.string().nullable(),
+  submittedAt: z.string(),
+})
+export type RunRatingView = z.infer<typeof RunRatingView>
 
 /** 各意图的槽位契约 用于校验模型给出的 action 参数 */
 export const INTENT_SLOT_SCHEMAS = {

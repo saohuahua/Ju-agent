@@ -9,12 +9,16 @@ import type { EventType, ToolErrorShape } from '@aftersales/contracts'
 import type { AgentRunRecord, AuditLog, Checkpoint, ToolExecutionRecord } from '@aftersales/domain'
 import type {
   AgentRunRepository,
+  AnalyticsReadModel,
   AuditRepository,
   BusinessNoGenerator,
   CheckpointRepository,
   EventRepository,
   IdempotencyRepository,
   LeaseRepository,
+  RatingRepository,
+  RunRating,
+  RunSource,
   ToolExecutionRepository,
 } from '@aftersales/domain'
 import type { SqliteDatabase } from './db.js'
@@ -239,6 +243,7 @@ export class SqliteAgentRunRepository implements AgentRunRepository {
       model: row.model as string,
       error: (row.error as string | null) ?? null,
       faultPlan: JSON.parse((row.fault_plan_json as string) ?? '[]') as unknown[],
+      source: ((row.source as string) ?? 'customer') as AgentRunRecord['source'],
       createdAt: row.created_at as string,
       updatedAt: row.updated_at as string,
     }
@@ -248,8 +253,8 @@ export class SqliteAgentRunRepository implements AgentRunRepository {
     this.db
       .prepare(
         `INSERT INTO agent_runs
-         (run_id, customer_id, status, intent, prompt_version, model, error, fault_plan_json, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         (run_id, customer_id, status, intent, prompt_version, model, error, fault_plan_json, source, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
         record.runId,
@@ -260,6 +265,7 @@ export class SqliteAgentRunRepository implements AgentRunRepository {
         record.model,
         record.error,
         JSON.stringify(record.faultPlan),
+        record.source,
         record.createdAt,
         record.updatedAt,
       )
@@ -423,6 +429,7 @@ const QUERYABLE_TABLES = new Set([
   'tool_executions',
   'agent_runs',
   'agent_events',
+  'ratings',
 ])
 
 export function queryTable(
@@ -451,5 +458,150 @@ export function decodeErrorShape(json: string): ToolErrorShape | null {
     return JSON.parse(json) as ToolErrorShape
   } catch {
     return null
+  }
+}
+
+/** 满意度评分仓储 一 run 一评 主键即 run_id */
+export class SqliteRatingRepository implements RatingRepository {
+  constructor(private readonly db: SqliteDatabase) {}
+
+  async create(record: RunRating): Promise<void> {
+    this.db
+      .prepare('INSERT INTO ratings (run_id, score, comment, submitted_at) VALUES (?, ?, ?, ?)')
+      .run(record.runId, record.score, record.comment, record.submittedAt)
+  }
+
+  async findByRunId(runId: string): Promise<RunRating | null> {
+    const row = this.db.prepare('SELECT * FROM ratings WHERE run_id = ?').get(runId) as
+      { run_id: string; score: number; comment: string | null; submitted_at: string } | undefined
+    if (!row) return null
+    return {
+      runId: row.run_id,
+      score: row.score,
+      comment: row.comment,
+      submittedAt: row.submitted_at,
+    }
+  }
+}
+
+/**
+ * 运营分析读模型 SQL 实现
+ *
+ * 全部查询按 source 过滤 评测与模拟会话不进运营指标
+ * 聚合口径与领域 AnalyticsService 声明一致
+ */
+export class SqliteAnalyticsReadModel implements AnalyticsReadModel {
+  constructor(private readonly db: SqliteDatabase) {}
+
+  async runStatusCounts(source: RunSource): Promise<Array<{ status: string; count: number }>> {
+    const rows = this.db
+      .prepare('SELECT status, COUNT(*) AS count FROM agent_runs WHERE source = ? GROUP BY status')
+      .all(source) as Array<{ status: string; count: number }>
+    return rows
+  }
+
+  async runsByDay(source: RunSource, days: number): Promise<Array<{ day: string; count: number }>> {
+    const rows = this.db
+      .prepare(
+        `SELECT substr(created_at, 1, 10) AS day, COUNT(*) AS count
+         FROM agent_runs
+         WHERE source = ? AND created_at >= date('now', ?)
+         GROUP BY day ORDER BY day`,
+      )
+      .all(source, `-${days} day`) as Array<{ day: string; count: number }>
+    return rows
+  }
+
+  async avgTurns(source: RunSource): Promise<number> {
+    const row = this.db
+      .prepare(
+        `SELECT AVG(turn_count) AS avg_turns FROM (
+           SELECT e.run_id, COUNT(*) AS turn_count
+           FROM agent_events e
+           JOIN agent_runs r ON r.run_id = e.run_id
+           WHERE e.type = 'agent.turn' AND r.source = ?
+           GROUP BY e.run_id
+         )`,
+      )
+      .get(source) as { avg_turns: number | null }
+    return row?.avg_turns ?? 0
+  }
+
+  async escalatedRunCount(source: RunSource): Promise<number> {
+    const row = this.db
+      .prepare(
+        `SELECT COUNT(DISTINCT e.run_id) AS count
+         FROM agent_events e
+         JOIN agent_runs r ON r.run_id = e.run_id
+         WHERE e.type = 'run.escalated' AND r.source = ?`,
+      )
+      .get(source) as { count: number }
+    return row?.count ?? 0
+  }
+
+  async toolDistribution(
+    source: RunSource,
+  ): Promise<Array<{ toolName: string; total: number; failed: number }>> {
+    const rows = this.db
+      .prepare(
+        `SELECT t.tool_name, COUNT(*) AS total,
+                SUM(CASE WHEN t.status = 'failed' THEN 1 ELSE 0 END) AS failed
+         FROM tool_executions t
+         LEFT JOIN agent_runs r ON r.run_id = t.run_id
+         WHERE r.source = ?
+         GROUP BY t.tool_name ORDER BY total DESC`,
+      )
+      .all(source) as Array<{ tool_name: string; total: number; failed: number }>
+    return rows.map((row) => ({
+      toolName: row.tool_name,
+      total: row.total,
+      failed: row.failed ?? 0,
+    }))
+  }
+
+  async avgApprovalLatencyMs(): Promise<number | null> {
+    const row = this.db
+      .prepare(
+        `SELECT AVG((julianday(decided_at) - julianday(created_at)) * 86400000) AS latency
+         FROM approval_requests WHERE decided_at IS NOT NULL`,
+      )
+      .get() as { latency: number | null }
+    return row?.latency ?? null
+  }
+
+  async decidedApprovalCount(): Promise<number> {
+    const row = this.db
+      .prepare('SELECT COUNT(*) AS count FROM approval_requests WHERE decided_at IS NOT NULL')
+      .get() as { count: number }
+    return row?.count ?? 0
+  }
+
+  async ratingCounts(): Promise<Array<{ score: number; count: number }>> {
+    const rows = this.db
+      .prepare('SELECT score, COUNT(*) AS count FROM ratings GROUP BY score ORDER BY score')
+      .all() as Array<{ score: number; count: number }>
+    return rows
+  }
+
+  async ratingCount(): Promise<number> {
+    const row = this.db.prepare('SELECT COUNT(*) AS count FROM ratings').get() as { count: number }
+    return row?.count ?? 0
+  }
+
+  async ratingByFinalStatus(): Promise<Array<{ status: string; avgScore: number; count: number }>> {
+    const rows = this.db
+      .prepare(
+        `SELECT r.status, AVG(g.score) AS avg_score, COUNT(*) AS count
+         FROM ratings g
+         JOIN agent_runs r ON r.run_id = g.run_id
+         WHERE r.source = 'customer'
+         GROUP BY r.status ORDER BY r.status`,
+      )
+      .all() as Array<{ status: string; avg_score: number; count: number }>
+    return rows.map((row) => ({
+      status: row.status,
+      avgScore: row.avg_score ?? 0,
+      count: row.count,
+    }))
   }
 }

@@ -8,6 +8,7 @@
 
 import {
   AfterSaleService,
+  AnalyticsService,
   ApprovalService,
   AuditService,
   CompensationService,
@@ -15,6 +16,7 @@ import {
   LogisticsEventService,
   PolicySearchService,
   PriceProtectionService,
+  RatingService,
   RunService,
   type Actor,
   type Clock,
@@ -25,6 +27,7 @@ import type { ChatModel } from '@aftersales/agent'
 import {
   BASELINE_FROZEN_TIME,
   SqliteAgentRunRepository,
+  SqliteAnalyticsReadModel,
   SqliteApprovalRepository,
   SqliteAuditRepository,
   SqliteBusinessNoGenerator,
@@ -38,6 +41,7 @@ import {
   SqlitePolicyArticleRepository,
   SqlitePolicyRepository,
   SqlitePriceProtectionRepository,
+  SqliteRatingRepository,
   SqliteRefundRepository,
   SqliteReturnRepository,
   SqliteShipmentRepository,
@@ -88,6 +92,8 @@ export interface ComposedSystem {
   policySearchService: PolicySearchService
   logisticsService: LogisticsEventService
   handoverService: HumanHandoverService
+  ratingService: RatingService
+  analyticsService: AnalyticsService
   executor: ToolExecutor
   engine: WorkflowEngine
   runner: AgentRunner
@@ -156,6 +162,13 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     clock,
   )
   const handoverService = new HumanHandoverService(runService, auditService)
+  const ratingService = new RatingService(
+    runService,
+    new SqliteRatingRepository(db),
+    auditService,
+    clock,
+  )
+  const analyticsService = new AnalyticsService(new SqliteAnalyticsReadModel(db))
   const policySearchService = new PolicySearchService(
     new SqlitePolicyArticleRepository(db),
     options.policyScorer ?? new ChatModelPolicyScorer(options.model),
@@ -167,6 +180,8 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     orderRepo: new SqliteOrderRepository(db),
     shipmentRepo: new SqliteShipmentRepository(db),
     policyRepo: new SqlitePolicyRepository(db),
+    returnRepo: new SqliteReturnRepository(db),
+    refundRepo: new SqliteRefundRepository(db),
     afterSaleService,
     compensationService,
     priceProtectionService,
@@ -213,6 +228,8 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     policySearchService,
     logisticsService,
     handoverService,
+    ratingService,
+    analyticsService,
     executor,
     engine,
     runner,

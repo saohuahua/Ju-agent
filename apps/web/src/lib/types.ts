@@ -32,8 +32,37 @@ export interface RunSummary {
   promptVersion: string
   model: string
   error: string | null
+  /** 会话来源 customer 真实客户 sim 评测与模拟 运营指标只聚合前者 */
+  source: 'customer' | 'sim'
   createdAt: string
   updatedAt: string
+}
+
+/** 会话满意度评分 */
+export interface RunRatingView {
+  runId: string
+  score: number
+  comment: string | null
+  submittedAt: string
+}
+
+/** 运营分析总览 口径 source=customer */
+export interface AnalyticsOverview {
+  totalSessions: number
+  statusCounts: Array<{ status: string; count: number }>
+  resolutionRate: number
+  escalationRate: number
+  sessionsByDay: Array<{ day: string; count: number }>
+  avgTurns: number
+  toolDistribution: Array<{ toolName: string; total: number; failed: number }>
+  avgApprovalLatencyMs: number | null
+  decidedApprovalCount: number
+  ratingCounts: Array<{ score: number; count: number }>
+  ratingCount: number
+  avgRating: number | null
+  ratingByFinalStatus: Array<{ status: string; avgScore: number; count: number }>
+  days: number
+  scopeNote: string
 }
 
 export interface ApprovalRequest {

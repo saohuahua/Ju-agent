@@ -146,6 +146,8 @@ export async function runSimCase(simCase: EvalCase, options: RunSimOptions): Pro
       promptVersion: PROMPT_VERSION,
       model: tally.info.model,
       faultPlan: simCase.faultPlan ?? [],
+      // L2 模拟会话标注 sim 来源 运营分析口径将其排除
+      source: 'sim',
     })
     runId = run.runId
     const toolContext = { actor, runId, faults }

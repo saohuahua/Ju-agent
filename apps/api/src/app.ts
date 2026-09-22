@@ -14,6 +14,7 @@ import {
   CreateRunRequest,
   LogisticsEventInjectRequest,
   OperatorMessageRequest,
+  RunRatingRequest,
   RunResolveRequest,
 } from '@aftersales/contracts'
 import type { EvalReport } from '@aftersales/contracts'
@@ -370,6 +371,49 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
       throw error
     }
     return context.json({ runId, status: 'completed' })
+  })
+
+  // ---------- 满意度与运营分析 ----------
+
+  app.post('/api/runs/:runId/rating', async (context) => {
+    const actor = context.get('actor') as Actor
+    const runId = context.req.param('runId')
+    const body = RunRatingRequest.safeParse(await context.req.json())
+    if (!body.success) {
+      return context.json({ error: 'VALIDATION_ERROR', message: '请求体不合法' }, 400)
+    }
+    try {
+      const rating = await system.ratingService.submit(actor, runId, body.data)
+      return context.json({ rating }, 201)
+    } catch (error) {
+      const mapped = errorResponse(error)
+      if (mapped) return context.json(mapped.body, mapped.status)
+      throw error
+    }
+  })
+
+  app.get('/api/runs/:runId/rating', async (context) => {
+    const actor = context.get('actor') as Actor
+    const runId = context.req.param('runId')
+    const run = await system.runService.get(runId)
+    if (actor.role === 'customer' && run.customerId !== actor.customerId) {
+      return context.json({ error: 'AUTHORIZATION_DENIED', message: '无权访问该会话' }, 403)
+    }
+    const rating = await system.ratingService.findByRunId(runId)
+    return context.json({ rating })
+  })
+
+  app.get('/api/analytics/overview', async (context) => {
+    if (!requireRole(context, ['operator', 'supervisor'])) {
+      return context.json({ error: 'AUTHORIZATION_DENIED', message: '仅内部人员可查看运营分析' }, 403)
+    }
+    const days = Math.min(Math.max(Number(context.req.query('days') ?? 14) || 14, 1), 90)
+    const overview = await system.analyticsService.overview(days)
+    return context.json({
+      ...overview,
+      days,
+      scopeNote: '仅聚合真实客户会话 source=customer 评测与模拟会话不计入',
+    })
   })
 
   // ---------- 事件流 ----------
