@@ -4,7 +4,7 @@
  * 会话工作台
  *
  * 面向客户的售后对话界面
- * 事件流驱动渲染 补问时开放输入 审批时展示卡片 终态锁定
+ * 事件流驱动渲染 运行后台推进 首屏即可提问 补问时开放输入 终态锁定
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -39,17 +39,19 @@ export default function WorkbenchPage() {
 
   const submit = useCallback(
     async (message: string) => {
-      if (!message.trim() || sending) return
+      const text = message.trim()
+      if (!text || sending) return
       setSending(true)
       setError(null)
       try {
         if (!runId) {
-          const created = await api.createRun(message)
+          // 创建即返回 运行在后台推进 轨迹经 SSE 实时到达
+          const created = await api.createRun(text)
           setRunId(created.runId)
         } else if (state.status === 'awaiting_input') {
-          await api.continueRun(runId, message)
+          await api.continueRun(runId, text)
         } else {
-          setError('当前会话不在等待输入 请刷新或新建会话')
+          setError('会话正在处理中 请等待回复完成后再发送')
           return
         }
         setInput('')
@@ -64,6 +66,18 @@ export default function WorkbenchPage() {
 
   const awaitingInput = runId !== null && state.status === 'awaiting_input'
   const terminal = ['completed', 'failed', 'cancelled', 'escalated'].includes(state.status)
+  const canInteract = runId === null || awaitingInput
+  const pendingAssistant =
+    (sending && runId === null) ||
+    (runId !== null && state.messages.length === 0 && ['created', 'running'].includes(state.status))
+
+  const inputPlaceholder = runId === null
+    ? '描述您的售后需求 也可以点击下方示例'
+    : awaitingInput
+      ? '请补充信息'
+      : terminal
+        ? '会话已结束 请点击右上角新会话'
+        : '会话进行中 请等待回复'
 
   return (
     <AppShell>
@@ -94,6 +108,7 @@ export default function WorkbenchPage() {
                 onClick={() => {
                   setRunId(null)
                   setInput('')
+                  setError(null)
                 }}
                 className="rounded-control border border-hairline bg-white px-2.5 py-1 text-stone-600 transition-colors duration-200 hover:bg-stone-100 hover:text-stone-900 active:scale-[0.98]"
               >
@@ -116,7 +131,7 @@ export default function WorkbenchPage() {
               <p className="mt-2 text-sm text-stone-500">
                 可以查订单 查物流 解释政策 也可以直接发起退货退款 现金红包补偿或降价价保
                 <br />
-                试试 订单 SO-2026-0003 不想要了 退货
+                直接输入问题 或点击下方示例立即开始
               </p>
               <div className="mt-6 grid gap-2">
                 {[
@@ -130,7 +145,8 @@ export default function WorkbenchPage() {
                   <button
                     key={sample}
                     onClick={() => submit(sample)}
-                    className="rounded-container border border-hairline bg-white px-4 py-2.5 text-left text-sm text-stone-700 transition-colors duration-200 hover:border-stone-300 hover:bg-stone-50 active:scale-[0.99]"
+                    disabled={sending}
+                    className="rounded-container border border-hairline bg-white px-4 py-2.5 text-left text-sm text-stone-700 transition-colors duration-200 hover:border-stone-300 hover:bg-stone-50 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {sample}
                   </button>
@@ -139,7 +155,7 @@ export default function WorkbenchPage() {
             </div>
           )}
 
-          {runId && state.status === 'running' && state.messages.length === 0 && (
+          {pendingAssistant && (
             <div className="max-w-2xl rounded-container border border-hairline bg-white px-4 py-2.5">
               <Skeleton className="h-4 w-3/4" />
               <Skeleton className="mt-2 h-4 w-1/2" />
@@ -207,18 +223,16 @@ export default function WorkbenchPage() {
               id="workbench-input"
               value={input}
               onChange={(event) => setInput(event.target.value)}
-              disabled={!runId || (!awaitingInput && !terminal)}
-              placeholder={
-                runId ? (awaitingInput ? '请补充信息' : '会话进行中') : '请描述您的售后需求'
-              }
+              disabled={!canInteract}
+              placeholder={inputPlaceholder}
               className="flex-1 rounded-control border border-hairline bg-white px-4 py-2.5 text-sm text-stone-900 transition-colors duration-200 placeholder:text-stone-500 disabled:opacity-50"
             />
             <button
               type="submit"
-              disabled={sending || !runId || !awaitingInput}
+              disabled={sending || !input.trim() || !canInteract}
               className="rounded-control bg-sage-700 px-5 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-sage-800 active:scale-[0.98] disabled:opacity-50"
             >
-              发送
+              {sending ? '发送中' : '发送'}
             </button>
           </form>
           {error && (

@@ -89,6 +89,51 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
   const authEnv = deps.authEnv ?? createAuthEnv()
   const { system } = deps
 
+  // 后台执行中的运行 进程内单飞锁 防止同一运行被并发驱动 单实例部署假设
+  const executingRuns = new Map<string, Promise<void>>()
+
+  /**
+   * 运行提交后立即返回 事件经 SSE 实时推送
+   * 循环内的模型错误由 failRun 兜底 这里兜状态机外的意外异常
+   */
+  /**
+   * 运行提交后立即返回 事件经 SSE 实时推送
+   * 循环内的模型错误由 failRun 兜底 这里兜状态机之外的意外异常
+   * 返回 false 表示该运行已有后台任务占用 调用方应拒绝而非静默丢弃
+   */
+  const executeInBackground = (runId: string, task: () => Promise<unknown>): boolean => {
+    if (executingRuns.has(runId)) return false
+    const execution = (async () => {
+      try {
+        await task()
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        console.error(`运行 ${runId} 后台执行异常`, error)
+        try {
+          const run = await system.runService.get(runId)
+          // 状态机允许的路径尽量落到 failed awaiting_* 无法转 failed
+          // 以事件如实告知客户端 并保留状态供断点恢复救援
+          if (run.status === 'created') {
+            await system.runService.transition(runId, 'running')
+          }
+          if (run.status === 'created' || run.status === 'running') {
+            await system.runService.transition(runId, 'failed', { error: message })
+          }
+          await system.runService.emit(runId, 'run.failed', {
+            errorCode: 'INTERNAL_ERROR',
+            message,
+          })
+        } catch (persistError) {
+          console.error(`运行 ${runId} 失败终态落库异常`, persistError)
+        }
+      } finally {
+        executingRuns.delete(runId)
+      }
+    })()
+    executingRuns.set(runId, execution)
+    return true
+  }
+
   // L2 模拟评测后台任务表 进程内状态 重启即清空
   // 单实例部署假设下足够 任务串行推进避免中转站限流叠加
   const simTasks = new Map<
@@ -159,12 +204,15 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
       promptVersion: PROMPT_VERSION,
       model: deps.system.runner ? 'configured' : 'none',
     })
-    const outcome = await system.runner.start(run.runId, body.data.message, {
-      actor: { role: 'customer', customerId },
-      runId: run.runId,
-      faults: null,
-    })
-    return context.json({ runId: run.runId, outcome }, 201)
+    // 立即返回 runId 运行在后台推进 事件经 SSE 实时可见 客户端先订事件再提交亦可
+    executeInBackground(run.runId, () =>
+      system.runner.start(run.runId, body.data.message, {
+        actor: { role: 'customer', customerId },
+        runId: run.runId,
+        faults: null,
+      }),
+    )
+    return context.json({ runId: run.runId }, 201)
   })
 
   app.get('/api/runs', async (context) => {
@@ -199,18 +247,23 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     if (actor.role === 'customer' && run.customerId !== actor.customerId) {
       return context.json({ error: 'AUTHORIZATION_DENIED', message: '无权访问该会话' }, 403)
     }
-    try {
-      const outcome = await system.runner.continueWithMessage(runId, body.data.message, {
+    // 同步预检 等待输入之外的续跑一律 409 与 runner 内部校验同源（RUN_TRANSITIONS）
+    if (run.status !== 'awaiting_input') {
+      return context.json(
+        { error: 'CONFLICT', message: `会话状态 ${run.status} 不在接受补问` },
+        409,
+      )
+    }
+    if (!executeInBackground(runId, () =>
+      system.runner.continueWithMessage(runId, body.data.message, {
         actor: { role: 'customer', customerId: run.customerId },
         runId,
         faults: null,
-      })
-      return context.json({ runId, outcome })
-    } catch (error) {
-      const mapped = errorResponse(error)
-      if (mapped) return context.json(mapped.body, mapped.status)
-      throw error
+      }),
+    )) {
+      return context.json({ error: 'CONFLICT', message: '会话正在处理中 请稍后再试' }, 409)
     }
+    return context.json({ runId })
   })
 
   app.post('/api/runs/:runId/resume', async (context) => {
@@ -219,18 +272,23 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     }
     const runId = context.req.param('runId')
     const run = await system.runService.get(runId)
-    try {
-      const outcome = await system.runner.resumeFromCheckpoint(runId, {
+    // 同步预检 终态与等待输入的运行无可恢复断点 只有卡住的运行可恢复
+    if (['completed', 'failed', 'cancelled', 'escalated', 'awaiting_input'].includes(run.status)) {
+      return context.json(
+        { error: 'CONFLICT', message: `会话状态 ${run.status} 无可恢复的断点` },
+        409,
+      )
+    }
+    if (!executeInBackground(runId, () =>
+      system.runner.resumeFromCheckpoint(runId, {
         actor: { role: 'customer', customerId: run.customerId },
         runId,
         faults: null,
-      })
-      return context.json({ runId, outcome })
-    } catch (error) {
-      const mapped = errorResponse(error)
-      if (mapped) return context.json(mapped.body, mapped.status)
-      throw error
+      }),
+    )) {
+      return context.json({ error: 'CONFLICT', message: '会话正在处理中 请稍后再试' }, 409)
     }
+    return context.json({ runId })
   })
 
   // ---------- 事件流 ----------
@@ -306,14 +364,28 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
       return context.json({ error: 'APPROVAL_EXPIRED', message: '审批已过期' }, 409)
     }
     const run = await system.runService.get(runId)
-    const outcome = await system.runner.resumeAfterApproval(
+    // 同步预检 只有等待审批的运行可恢复 与 runner 内部校验同源
+    if (run.status !== 'awaiting_approval') {
+      return context.json(
+        { error: 'CONFLICT', message: `会话状态 ${run.status} 不在等待审批` },
+        409,
+      )
+    }
+    // 决定已同步落库 恢复执行在后台推进 客户端经 SSE 观察后续轮次
+    executeInBackground(runId, () =>
+      system.runner.resumeAfterApproval(
+        runId,
+        approvalId,
+        body.data.decision,
+        actor.customerId ?? actor.role,
+        { actor: { role: 'customer', customerId: run.customerId }, runId, faults: null },
+      ),
+    )
+    return context.json({
       runId,
       approvalId,
-      body.data.decision,
-      actor.customerId ?? actor.role,
-      { actor: { role: 'customer', customerId: run.customerId }, runId, faults: null },
-    )
-    return context.json({ runId, approvalId, decision: body.data.decision, outcome })
+      decision: body.data.decision,
+    })
   })
 
   // ---------- 运营操作 ----------
@@ -329,7 +401,6 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     if (!body.success) {
       return context.json({ error: 'VALIDATION_ERROR', message: '请求体不合法' }, 400)
     }
-    const run = await system.runService.get(runId)
     try {
       const event = await system.logisticsService.inject(actor, {
         orderNo: body.data.orderNo,
@@ -339,11 +410,33 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
         source: 'operator',
         runId,
       })
-      const result = await system.runner.processLogisticsEvent(runId, event, {
-        actor: { role: 'customer', customerId: run.customerId },
+      // 混合到达语义不变量 事件无论会话状态一律落表 时间线可回放
+      // 运行占用中必为忙时路径 落表后挂起下一轮 同步返回不会驱动循环
+      const run = await system.runService.get(runId)
+      const toolContext = {
+        actor: { role: 'customer' as const, customerId: run.customerId },
         runId,
         faults: null,
-      })
+      }
+      const delivered = run.status === 'awaiting_input'
+      if (executingRuns.has(runId)) {
+        const result = await system.runner.processLogisticsEvent(runId, event, toolContext)
+        return context.json({
+          runId,
+          event: {
+            orderNo: event.orderNo,
+            status: event.status,
+            description: event.description,
+            eventId: event.eventId,
+            injectedAt: event.injectedAt,
+          },
+          delivered: result.delivered,
+          outcome: null,
+        })
+      }
+      executeInBackground(runId, () =>
+        system.runner.processLogisticsEvent(runId, event, toolContext),
+      )
       return context.json({
         runId,
         event: {
@@ -353,8 +446,8 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
           eventId: event.eventId,
           injectedAt: event.injectedAt,
         },
-        delivered: result.delivered,
-        outcome: result.outcome ?? null,
+        delivered,
+        outcome: null,
       })
     } catch (error) {
       const mapped = errorResponse(error)

@@ -68,13 +68,13 @@ export const api = {
   health: () => request<HealthInfo>('/api/health'),
 
   createRun: (message: string, customerId?: string) =>
-    request<{ runId: string; outcome: string }>('/api/runs', {
+    request<{ runId: string }>('/api/runs', {
       method: 'POST',
       body: JSON.stringify(customerId ? { message, customerId } : { message }),
     }),
 
   continueRun: (runId: string, message: string) =>
-    request<{ runId: string; outcome: string }>(`/api/runs/${runId}/messages`, {
+    request<{ runId: string }>(`/api/runs/${runId}/messages`, {
       method: 'POST',
       body: JSON.stringify({ message }),
     }),
@@ -90,13 +90,16 @@ export const api = {
   listApprovals: () => request<{ approvals: ApprovalRequest[] }>('/api/approvals'),
 
   decideApproval: (runId: string, approvalId: string, decision: 'approved' | 'rejected') =>
-    request<{ outcome: string }>(`/api/runs/${runId}/approvals/${approvalId}/decide`, {
-      method: 'POST',
-      body: JSON.stringify({ decision, decidedBy: 'supervisor' }),
-    }),
+    request<{ runId: string; approvalId: string; decision: 'approved' | 'rejected' }>(
+      `/api/runs/${runId}/approvals/${approvalId}/decide`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ decision, decidedBy: 'supervisor' }),
+      },
+    ),
 
   resumeRun: (runId: string) =>
-    request<{ outcome: string }>(`/api/runs/${runId}/resume`, { method: 'POST' }),
+    request<{ runId: string }>(`/api/runs/${runId}/resume`, { method: 'POST' }),
 
   injectLogisticsEvent: (
     runId: string,

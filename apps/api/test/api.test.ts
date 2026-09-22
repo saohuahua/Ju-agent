@@ -5,11 +5,12 @@
  */
 
 import { describe, expect, it } from 'vitest'
+import type { Hono } from 'hono'
 import { ScriptedModel } from '@aftersales/agent'
 import type { AgentOutput } from '@aftersales/contracts'
 import { FrozenClock } from '@aftersales/domain'
 import { composeSystem } from '@aftersales/runtime'
-import { createApp } from '../src/app.js'
+import { createApp, type AppEnv } from '../src/app.js'
 import { createAuthEnv } from '../src/auth.js'
 
 const CUSTOMER_TOKEN = 'cust-token-1001'
@@ -27,6 +28,31 @@ function makeApp(script: AgentOutput[]) {
 
 function auth(token: string): Record<string, string> {
   return { Authorization: `Bearer ${token}` }
+}
+
+/** 运行提交后后台推进 轮询至状态收敛 超时视为失败 */
+async function settleRun(
+  app: Hono<AppEnv>,
+  runId: string,
+  token: string,
+  timeoutMs = 5000,
+): Promise<{ status: string; runId: string }> {
+  const deadline = Date.now() + timeoutMs
+  for (;;) {
+    const response = await app.request(`/api/runs/${runId}`, { headers: auth(token) })
+    const body = (await response.json()) as { run: { status: string; runId: string } }
+    if (
+      ['completed', 'failed', 'cancelled', 'escalated', 'awaiting_input', 'awaiting_approval'].includes(
+        body.run.status,
+      )
+    ) {
+      return body.run
+    }
+    if (Date.now() > deadline) {
+      throw new Error(`运行未在限时内收敛 ${runId} 停留于 ${body.run.status}`)
+    }
+    await new Promise((resolve) => setTimeout(resolve, 20))
+  }
 }
 
 describe('基础契约', () => {
@@ -88,6 +114,29 @@ describe('基础契约', () => {
 })
 
 describe('运行与会话', () => {
+  it('非等待输入状态补问返回 409', async () => {
+    const script: AgentOutput[] = [
+      { kind: 'final', answer: '您好', escalated: false, summary: '问候' },
+    ]
+    const { app } = makeApp(script)
+    const create = await app.request('/api/runs', {
+      method: 'POST',
+      headers: { ...auth(CUSTOMER_TOKEN), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '在吗' }),
+    })
+    const created = (await create.json()) as { runId: string }
+    await settleRun(app, created.runId, CUSTOMER_TOKEN)
+
+    const response = await app.request(`/api/runs/${created.runId}/messages`, {
+      method: 'POST',
+      headers: { ...auth(CUSTOMER_TOKEN), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '再问一句' }),
+    })
+    expect(response.status).toBe(409)
+    const body = (await response.json()) as { error: string }
+    expect(body.error).toBe('CONFLICT')
+  })
+
   it('客户创建运行完成查单 客户只能看自己的会话', async () => {
     const script: AgentOutput[] = [
       { kind: 'tool_call', tool: 'get_order', args: { orderNo: 'SO-2026-0002' }, reason: '查单' },
@@ -100,8 +149,12 @@ describe('运行与会话', () => {
       body: JSON.stringify({ message: '订单 SO-2026-0002 到哪了' }),
     })
     expect(create.status).toBe(201)
-    const created = (await create.json()) as { runId: string; outcome: string }
-    expect(created.outcome).toBe('completed')
+    const created = (await create.json()) as { runId: string }
+    expect(created.runId).toBeTruthy()
+
+    // 运行后台推进 轮询至收敛
+    const run = await settleRun(app, created.runId, CUSTOMER_TOKEN)
+    expect(run.status).toBe('completed')
 
     // 本人可见
     const own = await app.request(`/api/runs/${created.runId}`, { headers: auth(CUSTOMER_TOKEN) })
@@ -129,6 +182,7 @@ describe('运行与会话', () => {
       body: JSON.stringify({ message: '在吗' }),
     })
     const created = (await create.json()) as { runId: string }
+    await settleRun(app, created.runId, CUSTOMER_TOKEN)
     const eventsResponse = await app.request(`/api/runs/${created.runId}/events/json`, {
       headers: auth(CUSTOMER_TOKEN),
     })
@@ -163,8 +217,9 @@ describe('审批闭环', () => {
       headers: { ...auth(CUSTOMER_TOKEN), 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: '订单 SO-2026-0001 退款' }),
     })
-    const created = (await create.json()) as { runId: string; outcome: string }
-    expect(created.outcome).toBe('awaiting_approval')
+    const created = (await create.json()) as { runId: string }
+    const settled = await settleRun(app, created.runId, CUSTOMER_TOKEN)
+    expect(settled.status).toBe('awaiting_approval')
 
     // 操作员查看待审批
     const pending = await app.request('/api/approvals', { headers: auth(authEnv.operatorToken) })
@@ -185,7 +240,7 @@ describe('审批闭环', () => {
     )
     expect(operatorDecide.status).toBe(403)
 
-    // 主管批准
+    // 主管批准 决定同步落库 恢复执行后台推进
     const decide = await app.request(
       `/api/runs/${created.runId}/approvals/${approval!.approvalId}/decide`,
       {
@@ -195,8 +250,10 @@ describe('审批闭环', () => {
       },
     )
     expect(decide.status).toBe(200)
-    const decided = (await decide.json()) as { outcome: string }
-    expect(decided.outcome).toBe('completed')
+    const decided = (await decide.json()) as { runId: string; approvalId: string; decision: string }
+    expect(decided.decision).toBe('approved')
+    const resumed = await settleRun(app, created.runId, CUSTOMER_TOKEN)
+    expect(resumed.status).toBe('completed')
 
     // 重复决定被拦截
     const duplicate = await app.request(
@@ -223,8 +280,9 @@ describe('SSE 事件流', () => {
       body: JSON.stringify({ message: '在吗' }),
     })
     const created = (await create.json()) as { runId: string }
-
     // 已完成的运行 流会先补发再关闭
+    await settleRun(app, created.runId, CUSTOMER_TOKEN)
+
     const response = await app.request(`/api/runs/${created.runId}/events`, {
       headers: { ...auth(CUSTOMER_TOKEN), 'Last-Event-ID': '2' },
     })

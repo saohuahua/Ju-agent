@@ -103,7 +103,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
       })
       setInjectResult(
         result.delivered
-          ? `已注入并即时触达 会话终态 ${result.outcome ?? '-'}`
+          ? '已注入并即时触达 会话正在后台推进 请稍后查看时间线'
           : '已注入并落表 会话非空闲 挂起至下一轮对话',
       )
       setInjectOrderNo('')
