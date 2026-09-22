@@ -67,9 +67,7 @@ export function buildActionToolDefinitions(available: Intent[]): ToolDefinition[
   return available.map((intent) => ({
     name: intent,
     description: descriptions[intent],
-    inputSchema: jsonSchema(
-      INTENT_SLOT_SCHEMAS[intent].extend({ explanation: z.string() }),
-    ),
+    inputSchema: jsonSchema(INTENT_SLOT_SCHEMAS[intent].extend({ explanation: z.string() })),
   }))
 }
 
@@ -93,7 +91,7 @@ export function buildConcludeToolDefinition(): ToolDefinition {
   return {
     name: CONCLUDE_TOOL,
     description:
-      '任务已完成或已给出最终答复时调用 结束本次售后任务 并附一句话结果摘要 未调用此工具而直接输出文本会被视为等待用户回复',
+      '任务已完成或已给出最终答复时调用 结束本次售后任务 并附一句话结果摘要 未调用此工具而直接输出文本会被视为等待用户回复 政策解释 查询结果解读 拒绝与超时说明都属于已给出最终答复 客户没有待补充信息时必须调用本工具收尾 不要以纯文本礼貌性提问结束后停住',
     inputSchema: jsonSchema(
       z.object({
         summary: z.string().min(1).describe('一句话结果摘要 供运营与审计'),

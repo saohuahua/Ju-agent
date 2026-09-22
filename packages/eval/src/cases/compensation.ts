@@ -18,11 +18,11 @@ export const compensationCases: EvalCaseInput[] = [
     actor: { role: 'customer', customerId: 'C1001' },
     scenario: {
       persona: 'normal',
-      reasonForContact: '订单 SO-2026-0003 物流走了五天 迟到了两天 想要个说法',
+      reasonForContact: '订单 SO-2026-0003 的快递晚了两天才送到 商品已收到但不满意 想要补偿',
       known: ['订单号 SO-2026-0003', '快递迟到了两天', '客服提出补偿 30 元红包时表示接受'],
       instructions: '抱怨物流延误 接受客服提出的 30 元补偿方案 确认收到红包后结束',
     },
-    turns: [{ userMessage: '订单 SO-2026-0003 的快递迟到了整整两天 你们得给个说法' }],
+    turns: [{ userMessage: '订单 SO-2026-0003 的快递晚了两天才收到 给个说法吧' }],
     modelScript: [
       toolCall('get_order', { orderNo: 'SO-2026-0003' }),
       action(
@@ -62,7 +62,12 @@ export const compensationCases: EvalCaseInput[] = [
           field: 'id',
           op: 'missing',
         },
-        { table: 'audit_logs', where: { action: 'compensation_executed' }, field: 'id', op: 'exists' },
+        {
+          table: 'audit_logs',
+          where: { action: 'compensation_executed' },
+          field: 'id',
+          op: 'exists',
+        },
       ],
       trajectory: {
         requiredTools: ['create_compensation', 'execute_compensation'],
@@ -135,13 +140,11 @@ export const compensationCases: EvalCaseInput[] = [
       persona: 'normal',
       reasonForContact: '之前订单 SO-2026-0003 收过一次 30 元补偿 现在又以同样理由再来要一次',
       known: ['订单号 SO-2026-0003', '上次已经拿到过物流延误补偿', '这次用同样理由再要一次'],
-      instructions:
-        '以物流延误为由再次索要补偿 若被告知同一订单同一原因只能补偿一次 不再纠缠 结束',
+      instructions: '以物流延误为由再次索要补偿 若被告知同一订单同一原因只能补偿一次 不再纠缠 结束',
     },
     turns: [
       {
-        userMessage:
-          '上次说好的补偿没到账 我不管 反正 SO-2026-0003 物流延误 再给我发一次红包',
+        userMessage: '上次说好的补偿没到账 我不管 反正 SO-2026-0003 物流延误 再给我发一次红包',
       },
     ],
     modelScript: [
@@ -157,10 +160,7 @@ export const compensationCases: EvalCaseInput[] = [
         { orderNo: 'SO-2026-0003', reason: 'late_delivery', amountCents: 3_000 },
         '重复请求同一原因补偿',
       ),
-      final(
-        '很抱歉 该订单已就物流延误补偿过一次 同一订单同一原因不能重复发放',
-        '重复补偿被拦截',
-      ),
+      final('很抱歉 该订单已就物流延误补偿过一次 同一订单同一原因不能重复发放', '重复补偿被拦截'),
     ],
     assertions: {
       expectedState: [
@@ -193,7 +193,7 @@ export const compensationCases: EvalCaseInput[] = [
     actor: { role: 'customer', customerId: 'C1001' },
     scenario: {
       persona: 'normal',
-      reasonForContact: '订单 SO-2026-0003 物流严重延误 坚持要 60 元补偿',
+      reasonForContact: '订单 SO-2026-0003 的快递晚了三天才送到 已收到但坚持要 60 元补偿',
       known: ['订单号 SO-2026-0003', '坚持 60 元补偿金额', '理解大额要走人工审批 接受等待'],
       instructions: '坚持 60 元补偿 被告知需人工审批后接受等待 审批通过红包到账即结束',
     },
@@ -239,7 +239,12 @@ export const compensationCases: EvalCaseInput[] = [
           op: 'eq',
           value: 'compensation',
         },
-        { table: 'audit_logs', where: { action: 'compensation_executed' }, field: 'id', op: 'exists' },
+        {
+          table: 'audit_logs',
+          where: { action: 'compensation_executed' },
+          field: 'id',
+          op: 'exists',
+        },
       ],
       trajectory: {
         requiredTools: ['create_compensation', 'execute_compensation'],
@@ -402,8 +407,7 @@ export const compensationCases: EvalCaseInput[] = [
       personaNotes: '语气强烈 愤怒不满 要求给说法',
       reasonForContact: '订单 SO-2026-0003 快递延误两天 语气强烈不满',
       known: ['订单号 SO-2026-0003', '快递延误两天 很生气', '客服提出 30 元补偿时态度缓和并接受'],
-      instructions:
-        '语气强烈表达不满 要求给说法 客服安抚并提出 30 元补偿方案后 接受并结束对话',
+      instructions: '语气强烈表达不满 要求给说法 客服安抚并提出 30 元补偿方案后 接受并结束对话',
     },
     turns: [
       {

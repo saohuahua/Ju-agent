@@ -76,6 +76,8 @@ export function composeWorkflowSystem(timeoutOverrideMs?: number) {
     orderRepo: repos.orderRepo,
     shipmentRepo: repos.shipmentRepo,
     policyRepo: repos.policyRepo,
+    returnRepo: repos.returnRepo,
+    refundRepo: repos.refundRepo,
     afterSaleService,
     compensationService,
     priceProtectionService,

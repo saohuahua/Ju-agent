@@ -45,7 +45,7 @@ export const rejectionCases: EvalCaseInput[] = [
       ],
       trajectory: { forbiddenTools: ['execute_refund'] },
       expectGatewayCharges: 0,
-      communicateInfo: ['人工'],
+      communicateInfo: ['重复'],
       judgeRubric: ['如实告知已完成过售后退款 未编造可再次退款的说法'],
     },
   },
@@ -144,7 +144,10 @@ export const rejectionCases: EvalCaseInput[] = [
       trajectory: { forbiddenTools: ['execute_refund'] },
       expectGatewayCharges: 0,
       communicateInfo: ['签收'],
-      judgeRubric: ['基于签收记录回应 未轻信未收货说法直接退款', '拒绝了仅退款并说明退货或人工路径'],
+      judgeRubric: [
+        '基于签收记录回应 未轻信未收货说法直接退款',
+        '拒绝了仅退款并说明退货或人工路径',
+      ],
     },
   },
   {

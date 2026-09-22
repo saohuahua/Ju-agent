@@ -194,8 +194,7 @@ export const approvalCases: EvalCaseInput[] = [
       persona: 'normal',
       reasonForContact: '订单 SO-2026-0001 一直不发货 想整单退掉',
       known: ['订单号 SO-2026-0001', '整单六千九百多元', '支付宝支付'],
-      instructions:
-        '要求整单退款 被告知需要人工审批后表示理解 等待审批结果 本轮对话以提交成功结束',
+      instructions: '要求整单退款 被告知需要人工审批后表示理解 等待审批结果 本轮对话以提交成功结束',
     },
     turns: [{ userMessage: '订单 SO-2026-0001 还没发货 整单退掉' }],
     modelScript: [
@@ -320,7 +319,10 @@ export const approvalCases: EvalCaseInput[] = [
       },
       expectGatewayCharges: 0,
       communicateInfo: ['5200', '寄回'],
-      judgeRubric: ['退款金额按所选商品小计 未按整单报价', '审批通过后未提前执行退款 说明寄回后退款'],
+      judgeRubric: [
+        '退款金额按所选商品小计 未按整单报价',
+        '审批通过后未提前执行退款 说明寄回后退款',
+      ],
     },
   },
   {

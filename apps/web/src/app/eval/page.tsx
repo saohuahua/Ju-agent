@@ -326,11 +326,11 @@ function ReportColumn({ report, level }: { report: EvalReportSummary; level: 'L1
           通过 {report.passed}/{report.total}
         </div>
         <div className="mt-1 truncate font-mono text-stone-500">{report.model}</div>
-        {level === 'L2' && (
-          <div className="mt-0.5 truncate font-mono text-stone-400">
-            模拟器 {report.userModel ?? '-'} · judge {report.judgeModel ?? '-'}
-          </div>
-        )}
+        <div className="mt-0.5 truncate font-mono text-stone-400">
+          提示词 {report.promptVersion || '-'}
+          {level === 'L2' &&
+            ` · 模拟器 ${report.userModel ?? '-'} · judge ${report.judgeModel ?? '-'}`}
+        </div>
         <div className="mt-1 tabular-nums text-stone-400">
           {new Date(report.startedAt).toLocaleString('zh-CN')}
         </div>
@@ -401,6 +401,79 @@ function ImprovementStrip({
         </div>
       </div>
     </div>
+  )
+}
+
+/**
+ * 任选两份 L2 报告对比 缺省相邻两份
+ * 提示词版本随选项展示 改进曲线迭代的前后对照
+ */
+function ComparePanel({
+  reports,
+  baseline,
+  current,
+  onSelect,
+}: {
+  reports: EvalReportSummary[]
+  baseline: EvalReportSummary
+  current: EvalReportSummary
+  onSelect: (index: 0 | 1, reportId: string) => void
+}) {
+  const label = (report: EvalReportSummary) =>
+    `${report.reportId} · ${report.passed}/${report.total} · ${report.promptVersion || 'v?'}`
+  const delta = tsrOf(current) - tsrOf(baseline)
+  const options = reports.map((report) => (
+    <option key={report.reportId} value={report.reportId}>
+      {label(report)}
+    </option>
+  ))
+
+  return (
+    <section className="mt-4">
+      <h2 className="mb-2 text-sm font-medium text-stone-700">L2 报告对比（任选两份）</h2>
+      <div className="rounded-container border border-hairline bg-white px-4 py-3">
+        <div className="flex flex-wrap items-center gap-3 text-xs">
+          <label className="flex items-center gap-1.5">
+            <span className="text-stone-500">基线</span>
+            <select
+              value={baseline.reportId}
+              onChange={(event) => onSelect(0, event.target.value)}
+              className="rounded-control border border-hairline bg-white px-2 py-1 font-mono text-xs text-stone-700 transition-colors duration-200 hover:border-stone-300"
+            >
+              {options}
+            </select>
+          </label>
+          <span className="text-stone-300" aria-hidden="true">
+            →
+          </span>
+          <label className="flex items-center gap-1.5">
+            <span className="text-stone-500">对照</span>
+            <select
+              value={current.reportId}
+              onChange={(event) => onSelect(1, event.target.value)}
+              className="rounded-control border border-hairline bg-white px-2 py-1 font-mono text-xs text-stone-700 transition-colors duration-200 hover:border-stone-300"
+            >
+              {options}
+            </select>
+          </label>
+          <span
+            className={`ml-auto rounded-badge border px-2 py-0.5 font-medium tabular-nums ${
+              delta > 0
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                : delta < 0
+                  ? 'border-red-200 bg-red-50 text-red-800'
+                  : 'border-stone-200 bg-stone-100 text-stone-600'
+            }`}
+          >
+            TSR {delta >= 0 ? '+' : ''}
+            {(delta * 100).toFixed(1)}pp
+          </span>
+        </div>
+        <div className="mt-3">
+          <ImprovementStrip previous={baseline} latest={current} />
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -708,6 +781,27 @@ export default function EvalPage() {
   const l2Reports = reports.filter((report) => report.level === 'L2')
   const previousL2 = l2Reports[1]
 
+  // 对比面板选择 未选时缺省相邻两份 选中的报告不存在时回退
+  const [compareSelection, setCompareSelection] = useState<{
+    baseline: string
+    current: string
+  } | null>(null)
+  const compareBaseline =
+    l2Reports.find((report) => report.reportId === compareSelection?.baseline) ?? previousL2
+  const compareCurrent =
+    l2Reports.find((report) => report.reportId === compareSelection?.current) ?? latestL2
+
+  const onCompareSelect = (index: 0 | 1, reportId: string) => {
+    setCompareSelection((prev) => {
+      const base: { baseline: string; current: string } = {
+        baseline: compareBaseline?.reportId ?? reportId,
+        current: compareCurrent?.reportId ?? reportId,
+      }
+      if (prev) Object.assign(base, prev)
+      base[index === 0 ? 'baseline' : 'current'] = reportId
+      return base
+    })
+  }
   // 明细数据 L2 优先 无 L2 报告时用最新 L1
   const detailReport = latestL2 ?? latestL1
   const detailCases = detailReport?.report.caseResults ?? []
@@ -882,6 +976,15 @@ export default function EvalPage() {
               </div>
             )}
 
+            {l2Reports.length >= 2 && compareBaseline && compareCurrent && (
+              <ComparePanel
+                reports={l2Reports}
+                baseline={compareBaseline}
+                current={compareCurrent}
+                onSelect={onCompareSelect}
+              />
+            )}
+
             <p className="mt-4 text-xs text-stone-400">
               诚实声明：所有数字来自实际运行结果。L1 为 111 条脚本回放，L2 为抽样用户模拟评测；
               Wilson 95% 置信区间仅 L2 计算，未配置密钥时不输出模拟成绩。
@@ -1031,6 +1134,7 @@ export default function EvalPage() {
                       <th className="px-4 py-2.5 font-medium">报告</th>
                       <th className="px-4 py-2.5 font-medium">来源</th>
                       <th className="px-4 py-2.5 font-medium">模型</th>
+                      <th className="px-4 py-2.5 font-medium">提示词</th>
                       <th className="px-4 py-2.5 font-medium">通过率</th>
                       <th className="px-4 py-2.5 font-medium">Pass^k</th>
                       <th className="px-4 py-2.5 font-medium">门禁</th>
@@ -1056,6 +1160,9 @@ export default function EvalPage() {
                           </td>
                           <td className="px-4 py-2.5 font-mono text-xs text-stone-600">
                             {report.model}
+                          </td>
+                          <td className="px-4 py-2.5 font-mono text-xs text-stone-600">
+                            {report.promptVersion || '-'}
                           </td>
                           <td className="px-4 py-2.5 tabular-nums text-stone-700">
                             {report.passed}/{report.total}

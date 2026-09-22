@@ -6,13 +6,7 @@
  */
 
 import type { EvalCaseInput } from '@aftersales/contracts'
-import {
-  NEW_PRICE_PROTECTION_NO,
-  action,
-  final,
-  runStatus,
-  toolCall,
-} from './helpers.js'
+import { NEW_PRICE_PROTECTION_NO, action, final, runStatus, toolCall } from './helpers.js'
 
 export const priceProtectionCases: EvalCaseInput[] = [
   {
@@ -24,7 +18,11 @@ export const priceProtectionCases: EvalCaseInput[] = [
     scenario: {
       persona: 'normal',
       reasonForContact: '订单 SO-2026-0011 签收后三天发现音箱降价了 要求退还差价',
-      known: ['订单号 SO-2026-0011', '音箱当时 299 元买入 现在只卖 259 元', '买了两个音箱 数据线没有降价'],
+      known: [
+        '订单号 SO-2026-0011',
+        '音箱当时 299 元买入 现在只卖 259 元',
+        '买了两个音箱 数据线没有降价',
+      ],
       instructions: '发现商品降价 要求退还差价 确认差价金额后满意结束',
     },
     turns: [
@@ -103,7 +101,11 @@ export const priceProtectionCases: EvalCaseInput[] = [
     scenario: {
       persona: 'normal',
       reasonForContact: '订单 SO-2026-0011 里音箱降价了 只申请音箱的差价',
-      known: ['订单号 SO-2026-0011', '音箱当时 299 元买入 现在 259 元', '明确只退音箱差价 数据线不申请'],
+      known: [
+        '订单号 SO-2026-0011',
+        '音箱当时 299 元买入 现在 259 元',
+        '明确只退音箱差价 数据线不申请',
+      ],
       instructions: '明确只申请音箱的价保 确认差价金额后满意结束',
     },
     turns: [{ userMessage: 'SO-2026-0011 里音箱降价了 我就申请音箱的差价 数据线别算' }],
@@ -174,8 +176,7 @@ export const priceProtectionCases: EvalCaseInput[] = [
     },
     turns: [
       {
-        userMessage:
-          'SO-2026-0011 的音箱又降价了 再退一次差价 之前那次不算',
+        userMessage: 'SO-2026-0011 的音箱又降价了 再退一次差价 之前那次不算',
       },
     ],
     modelScript: [
@@ -183,10 +184,7 @@ export const priceProtectionCases: EvalCaseInput[] = [
       action('price_protection', { orderNo: 'SO-2026-0011' }, '首次价保申请'),
       final('差价 80.00元 已原路退回', '首次价保完成'),
       action('price_protection', { orderNo: 'SO-2026-0011' }, '重复申请价保'),
-      final(
-        '很抱歉 该订单已经办理过价保 同一订单仅可价保一次 不能重复退还差价',
-        '重复价保被拦截',
-      ),
+      final('很抱歉 该订单已经办理过价保 同一订单仅可价保一次 不能重复退还差价', '重复价保被拦截'),
     ],
     assertions: {
       expectedState: [
@@ -234,10 +232,7 @@ export const priceProtectionCases: EvalCaseInput[] = [
     modelScript: [
       toolCall('get_order', { orderNo: 'SO-2026-0011' }),
       action('price_protection', { orderNo: 'SO-2026-0011' }, '顾客要求价保 交由系统判定'),
-      final(
-        '很抱歉 您的订单自签收起已超过 7 天 超出价保窗口 无法申请价保',
-        '价保窗口过期拒赔',
-      ),
+      final('很抱歉 您的订单自签收起已超过 7 天 超出价保窗口 无法申请价保', '价保窗口过期拒赔'),
     ],
     assertions: {
       expectedState: [
@@ -293,10 +288,7 @@ export const priceProtectionCases: EvalCaseInput[] = [
         { orderNo: 'SO-2026-0011', itemIds: ['item-0011-2'] },
         '只申请数据线的价保',
       ),
-      final(
-        '经系统查证 该订单商品当前售价未低于成交价 不满足价保条件 无法退还差价',
-        '无降价拒赔',
-      ),
+      final('经系统查证 该订单商品当前售价未低于成交价 不满足价保条件 无法退还差价', '无降价拒赔'),
     ],
     assertions: {
       expectedState: [
@@ -345,10 +337,7 @@ export const priceProtectionCases: EvalCaseInput[] = [
     modelScript: [
       toolCall('get_order', { orderNo: 'SO-2026-0011' }),
       action('price_protection', { orderNo: 'SO-2026-0011' }, '顾客要求价保 交由系统判定'),
-      final(
-        '您的订单尚未签收 不满足价保申请条件 请在签收后 7 天内再来申请',
-        '未签收拒赔',
-      ),
+      final('您的订单尚未签收 不满足价保申请条件 请在签收后 7 天内再来申请', '未签收拒赔'),
     ],
     assertions: {
       expectedState: [

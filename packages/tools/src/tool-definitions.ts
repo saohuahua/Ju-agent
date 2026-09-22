@@ -16,6 +16,8 @@ import type {
   PolicyRepository,
   PolicySearchService,
   PriceProtectionService,
+  RefundRepository,
+  ReturnRepository,
   ShipmentRepository,
 } from '@aftersales/domain'
 import { createToolError } from '@aftersales/contracts'
@@ -28,6 +30,8 @@ export interface ToolDependencies {
   orderRepo: OrderRepository
   shipmentRepo: ShipmentRepository
   policyRepo: PolicyRepository
+  returnRepo: ReturnRepository
+  refundRepo: RefundRepository
   afterSaleService: AfterSaleService
   compensationService: CompensationService
   priceProtectionService: PriceProtectionService
@@ -104,6 +108,21 @@ export function buildToolRegistry(deps: ToolDependencies): ToolRegistry {
       {},
       context.runId ?? undefined,
     )
+    // 售后历史随单返回 重复申请与已退款订单的判定依据 模型据此如实答复
+    const returns = await deps.returnRepo.listByOrderNo(order.orderNo)
+    const history = await Promise.all(
+      returns.map(async (record) => {
+        const refund = await deps.refundRepo.findByReturnNo(record.returnNo)
+        return {
+          returnNo: record.returnNo,
+          type: record.type,
+          reason: record.reason,
+          status: record.status,
+          refundStatus: refund?.status ?? null,
+          refundAmountCents: refund?.amountCents ?? null,
+        }
+      }),
+    )
     return {
       orderNo: order.orderNo,
       customerId: order.customerId,
@@ -115,6 +134,7 @@ export function buildToolRegistry(deps: ToolDependencies): ToolRegistry {
       paidAt: order.paidAt,
       deliveredAt: order.deliveredAt,
       createdAt: order.createdAt,
+      returns: history,
     }
   })
 

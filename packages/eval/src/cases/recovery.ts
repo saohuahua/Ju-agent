@@ -394,7 +394,8 @@ export const recoveryCases: EvalCaseInput[] = [
       persona: 'normal',
       reasonForContact: '订单 SO-2026-0003 的键盘按键失灵 走质量问题退货',
       known: ['订单号 SO-2026-0003', '键盘按键失灵', '签收没几天', '愿意之后寄回商品'],
-      instructions: '质量问题要求退货退款 确认售后单已创建并知道寄回收货后退款即结束 对话结束后会寄出商品',
+      instructions:
+        '质量问题要求退货退款 确认售后单已创建并知道寄回收货后退款即结束 对话结束后会寄出商品',
     },
     turns: [{ userMessage: '订单 SO-2026-0003 的键盘按键失灵 质量问题退货退款' }],
     modelScript: [

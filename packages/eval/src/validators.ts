@@ -230,6 +230,15 @@ export function checkToolArgs(
         message: `断言失败 ${assertion.tool} 参数 ${assertion.argPath} 期望 ${JSON.stringify(assertion.value)} 实际 ${JSON.stringify(actual)}`,
       })
     }
+    if (
+      assertion.op === 'contains' &&
+      !String(actual ?? '').includes(String(assertion.value ?? ''))
+    ) {
+      failures.push({
+        kind: 'trajectory',
+        message: `断言失败 ${assertion.tool} 参数 ${assertion.argPath} 期望包含 ${JSON.stringify(assertion.value)} 实际 ${JSON.stringify(actual)}`,
+      })
+    }
     if (assertion.op === 'ne' && actual === assertion.value) {
       failures.push({
         kind: 'trajectory',

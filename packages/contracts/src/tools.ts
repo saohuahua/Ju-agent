@@ -49,6 +49,17 @@ export const ToolIO = {
       paidAt: z.string().nullable(),
       deliveredAt: z.string().nullable(),
       createdAt: z.string(),
+      /** 该订单的售后历史 含退款终态 重复申请拦截的判定依据 */
+      returns: z.array(
+        z.object({
+          returnNo: z.string(),
+          type: z.string(),
+          reason: z.string(),
+          status: z.string(),
+          refundStatus: z.string().nullable(),
+          refundAmountCents: z.number().int().nullable(),
+        }),
+      ),
     }),
   },
   get_shipment: {
@@ -342,7 +353,8 @@ export const TOOL_CATALOG: readonly ToolDescriptor[] = [
     exposedTo: 'workflow',
     timeoutMs: 3000,
     idempotent: false,
-    description: '创建补偿单并完成分级判定 小额自动发放 大额转人工审批 同订单同原因仅一次 由工作流调用',
+    description:
+      '创建补偿单并完成分级判定 小额自动发放 大额转人工审批 同订单同原因仅一次 由工作流调用',
   },
   {
     name: 'execute_compensation',
@@ -350,7 +362,8 @@ export const TOOL_CATALOG: readonly ToolDescriptor[] = [
     exposedTo: 'workflow',
     timeoutMs: 5000,
     idempotent: true,
-    description: '执行现金红包补偿 原路退回支付渠道 幂等键绑定补偿单 重试不会重复发放 由工作流调用 大额路径需审批令牌',
+    description:
+      '执行现金红包补偿 原路退回支付渠道 幂等键绑定补偿单 重试不会重复发放 由工作流调用 大额路径需审批令牌',
   },
   {
     name: 'create_price_protection',
@@ -358,7 +371,8 @@ export const TOOL_CATALOG: readonly ToolDescriptor[] = [
     exposedTo: 'workflow',
     timeoutMs: 3000,
     idempotent: false,
-    description: '创建价保单 系统对比成交价与当前售价 自签收起 7 天内降价商品按单价差乘数量计算差价 同一订单仅可价保一次 由工作流调用',
+    description:
+      '创建价保单 系统对比成交价与当前售价 自签收起 7 天内降价商品按单价差乘数量计算差价 同一订单仅可价保一次 由工作流调用',
   },
   {
     name: 'execute_price_protection',
@@ -366,7 +380,8 @@ export const TOOL_CATALOG: readonly ToolDescriptor[] = [
     exposedTo: 'workflow',
     timeoutMs: 5000,
     idempotent: true,
-    description: '执行价保差价退还 原路退回支付渠道 幂等键绑定价保单 重试不会重复退款 由工作流调用 大额路径需审批令牌',
+    description:
+      '执行价保差价退还 原路退回支付渠道 幂等键绑定价保单 重试不会重复退款 由工作流调用 大额路径需审批令牌',
   },
   {
     name: 'escalate_to_human',

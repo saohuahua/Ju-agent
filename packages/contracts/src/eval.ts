@@ -51,12 +51,12 @@ export const StateAssertion = z.object({
 })
 export type StateAssertion = z.infer<typeof StateAssertion>
 
-/** 工具参数断言 支持取 args 内嵌套字段 */
+/** 工具参数断言 支持取 args 内嵌套字段 contains 为子串匹配 语义等价措辞用 */
 export const ToolArgAssertion = z.object({
   tool: z.string(),
   /** 点路径访问 args 如 orderNo 或 items 0 itemId */
   argPath: z.string(),
-  op: z.enum(['eq', 'ne']),
+  op: z.enum(['eq', 'ne', 'contains']),
   value: z.unknown(),
 })
 export type ToolArgAssertion = z.infer<typeof ToolArgAssertion>

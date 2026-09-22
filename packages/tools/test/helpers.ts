@@ -72,6 +72,8 @@ export function composeTestSystem(faults: FaultPlanEntry[] = [], timeoutOverride
     orderRepo: repos.orderRepo,
     shipmentRepo: repos.shipmentRepo,
     policyRepo: repos.policyRepo,
+    returnRepo: repos.returnRepo,
+    refundRepo: repos.refundRepo,
     afterSaleService,
     compensationService,
     priceProtectionService,

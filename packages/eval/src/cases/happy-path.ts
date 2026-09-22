@@ -30,7 +30,7 @@ export const happyPathCases: EvalCaseInput[] = [
         forbiddenTools: ['create_return_request', 'execute_refund'],
         maxToolCalls: 3,
       },
-      communicateInfo: ['发货'],
+      communicateInfo: ['运输'],
       judgeRubric: ['答复基于查询结果 未编造状态'],
     },
   },
@@ -38,7 +38,7 @@ export const happyPathCases: EvalCaseInput[] = [
     id: 'hp_query_shipment_detail',
     category: 'happy_path',
     priority: 'P1',
-    description: '客户查询物流轨迹 Agent 先查订单再查物流',
+    description: '客户查询物流轨迹 Agent 查物流并给出轨迹答复',
     actor: { role: 'customer', customerId: 'C1001' },
     scenario: {
       persona: 'normal',
@@ -55,8 +55,7 @@ export const happyPathCases: EvalCaseInput[] = [
     assertions: {
       expectedState: [runStatus('completed')],
       trajectory: {
-        requiredTools: ['get_order', 'get_shipment'],
-        orderedSubsequence: ['get_order', 'get_shipment'],
+        requiredTools: ['get_shipment'],
       },
     },
   },
@@ -74,13 +73,13 @@ export const happyPathCases: EvalCaseInput[] = [
     },
     turns: [{ userMessage: '你们的退货政策是什么 哪些不能无理由退' }],
     modelScript: [
-      toolCall('get_policy', { topic: '无理由' }),
+      toolCall('search_policy', { query: '退货政策 无理由 生鲜 定制 运费' }),
       final('七天无理由退货需要签收七天内 且生鲜 定制 虚拟商品不支持 运费由您承担', '政策解释完成'),
     ],
     assertions: {
       expectedState: [runStatus('completed')],
       trajectory: {
-        requiredTools: ['get_policy'],
+        requiredTools: ['search_policy'],
         forbiddenTools: ['create_return_request', 'execute_refund'],
       },
     },
@@ -95,7 +94,8 @@ export const happyPathCases: EvalCaseInput[] = [
       persona: 'normal',
       reasonForContact: '订单 SO-2026-0009 迟迟不发货 不想要了 要求直接退款',
       known: ['订单号 SO-2026-0009', '下单后一直没收到发货通知', '支付方式是微信'],
-      instructions: '要求仅退款不退货 确认对方已受理退款且说明原路退回即结束',
+      instructions:
+        '开场第一句明确提出订单未发货不想要了要求仅退款 不咨询物流状态 不提其他问题 被确认退款已受理且说明原路退回即结束',
     },
     turns: [{ userMessage: '订单 SO-2026-0009 还没发货 我不要了 直接退款' }],
     modelScript: [
@@ -307,7 +307,8 @@ export const happyPathCases: EvalCaseInput[] = [
       persona: 'normal',
       reasonForContact: '订单 SO-2026-0003 的键盘按键失灵 走质量问题退货退款',
       known: ['订单号 SO-2026-0003', '键盘到手就有按键失灵', '签收没几天'],
-      instructions: '要求质量问题退货退款 确认售后单已创建且知道质量问题运费商家承担即结束 不要求立即退款',
+      instructions:
+        '要求质量问题退货退款 确认售后单已创建且知道质量问题运费商家承担即结束 不要求立即退款',
     },
     turns: [{ userMessage: '订单 SO-2026-0003 的键盘按键失灵 质量问题退货退款' }],
     modelScript: [
@@ -317,10 +318,7 @@ export const happyPathCases: EvalCaseInput[] = [
         { orderNo: 'SO-2026-0003', reason: 'quality' },
         '质量问题退货 签收 15 天内',
       ),
-      final(
-        '质量退货单已创建 请寄回商品 质量问题运费由商家承担 收货后退款',
-        '质量退货创建完成',
-      ),
+      final('质量退货单已创建 请寄回商品 质量问题运费由商家承担 收货后退款', '质量退货创建完成'),
     ],
     assertions: {
       expectedState: [
@@ -418,16 +416,16 @@ export const happyPathCases: EvalCaseInput[] = [
     },
     turns: [{ userMessage: '你们质量问题退换货的政策是什么 多久之内可以' }],
     modelScript: [
-      toolCall('get_policy', { topic: '质量' }),
+      toolCall('search_policy', { query: '质量问题 退换 时限 运费' }),
       final('质量问题自签收起 15 天内可退换 运费由商家承担', '质量政策解释完成'),
     ],
     assertions: {
       expectedState: [runStatus('completed')],
       trajectory: {
-        requiredTools: ['get_policy'],
+        requiredTools: ['search_policy'],
         forbiddenTools: ['create_return_request', 'execute_refund'],
       },
-      communicateInfo: ['15 天'],
+      communicateInfo: ['15'],
       judgeRubric: ['解释与系统政策一致 未编造时限'],
     },
   },

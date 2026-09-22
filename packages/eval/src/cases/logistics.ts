@@ -20,9 +20,13 @@ export const logisticsCases: EvalCaseInput[] = [
       persona: 'normal',
       reasonForContact: '订单 SO-2026-0002 的蓝牙音箱一直没到 询问物流进展',
       known: ['订单号 SO-2026-0002', '快递已经走了好几天'],
-      instructions: '询问物流进展 客服主动告知延误原因与预计时效后 接受并结束',
+      instructions:
+        '询问物流进展 开场不提供订单号 被客服询问后提供 SO-2026-0002 客服主动告知延误原因与预计时效后 接受并结束',
     },
-    turns: [{ userMessage: 'SO-2026-0002 的快递怎么还没到 帮我查一下' }],
+    turns: [
+      { userMessage: '我的快递怎么还没到 帮我查一下' },
+      { userMessage: '订单号是 SO-2026-0002' },
+    ],
     modelScript: [
       toolCall('get_shipment', { orderNo: 'SO-2026-0002' }),
       clarify('正在为您查询物流信息 请稍候', ['orderNo']),
@@ -72,7 +76,12 @@ export const logisticsCases: EvalCaseInput[] = [
           op: 'contains',
           value: 'logistics_event',
         },
-        { table: 'audit_logs', where: { action: 'logistics_event_injected' }, field: 'id', op: 'exists' },
+        {
+          table: 'audit_logs',
+          where: { action: 'logistics_event_injected' },
+          field: 'id',
+          op: 'exists',
+        },
       ],
     },
   },
@@ -87,9 +96,13 @@ export const logisticsCases: EvalCaseInput[] = [
       personaNotes: '等待多日 语气不耐烦',
       reasonForContact: '订单 SO-2026-0002 的包裹好几天没更新 来质问',
       known: ['订单号 SO-2026-0002', '物流信息停了好几天'],
-      instructions: '质问物流 若客服告知丢件并给出补救方案 接受并结束',
+      instructions:
+        '质问物流 开场不提供订单号 被客服询问后提供 SO-2026-0002 若客服告知丢件并给出补救方案 接受并结束',
     },
-    turns: [{ userMessage: 'SO-2026-0002 到底怎么回事 物流好几天不更新了' }],
+    turns: [
+      { userMessage: '我的快递到底怎么回事 物流好几天不更新了' },
+      { userMessage: '订单号是 SO-2026-0002' },
+    ],
     modelScript: [
       toolCall('get_shipment', { orderNo: 'SO-2026-0002' }),
       clarify('正在为您核实物流信息 请稍候', ['orderNo']),
@@ -139,9 +152,13 @@ export const logisticsCases: EvalCaseInput[] = [
       persona: 'normal',
       reasonForContact: '订单 SO-2026-0002 物流迟迟未到 询问进展',
       known: ['订单号 SO-2026-0002', '物流三天没有更新'],
-      instructions: '询问物流进展 若被告知丢件且可全额退款 接受退款并结束',
+      instructions:
+        '询问物流进展 开场不提供订单号 被客服询问后提供 SO-2026-0002 若被告知丢件且可全额退款 接受退款并结束',
     },
-    turns: [{ userMessage: 'SO-2026-0002 的快递怎么一直没动静' }],
+    turns: [
+      { userMessage: '我的快递怎么一直没动静 帮我看看' },
+      { userMessage: '订单号是 SO-2026-0002' },
+    ],
     modelScript: [
       toolCall('get_shipment', { orderNo: 'SO-2026-0002' }),
       clarify('正在为您查询 请稍候', ['orderNo']),
@@ -285,9 +302,7 @@ export const logisticsCases: EvalCaseInput[] = [
       instructions: '简单咨询 客服正常回答即可结束',
     },
     turns: [{ userMessage: '你们售后电话是多少' }],
-    modelScript: [
-      final('售后热线 400-888-8888 工作时间为每日 9 点到 21 点', '简单咨询'),
-    ],
+    modelScript: [final('售后热线 400-888-8888 工作时间为每日 9 点到 21 点', '简单咨询')],
     logisticsEvents: [
       {
         at: 'after_turn',
@@ -324,7 +339,12 @@ export const logisticsCases: EvalCaseInput[] = [
           op: 'eq',
           value: 'in_transit',
         },
-        { table: 'audit_logs', where: { action: 'logistics_event_injected' }, field: 'id', op: 'missing' },
+        {
+          table: 'audit_logs',
+          where: { action: 'logistics_event_injected' },
+          field: 'id',
+          op: 'missing',
+        },
       ],
     },
   },

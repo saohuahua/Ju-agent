@@ -72,7 +72,7 @@ export const clarificationCases: EvalCaseInput[] = [
       reasonForContact: '订单 SO-2026-0003 的东西不想要了 想退货',
       known: ['订单号 SO-2026-0003', '签收没几天 商品完好'],
       instructions:
-        '先只说想退货 不主动说明原因 被问到原因时回答没什么问题 就是不想要了 确认退货单已创建并知道寄回后退款即结束',
+        '开场只说想退货并给出订单号 绝不主动说出任何退货原因（不说不要了 不想要 没问题等字眼）被客服追问原因时才回答 没什么问题 就是不想要了 确认退货单已创建并知道寄回后退款即结束',
     },
     turns: [
       { userMessage: '订单 SO-2026-0003 我想退货' },
@@ -213,9 +213,7 @@ export const clarificationCases: EvalCaseInput[] = [
     ],
     modelScript: [
       toolCall('get_order', { orderNo: 'SO-2026-0002' }),
-      clarify('经查询订单 SO-2026-0002 的商品是便携蓝牙音箱 您想了解的是这个订单吗', [
-        'orderNo',
-      ]),
+      clarify('经查询订单 SO-2026-0002 的商品是便携蓝牙音箱 您想了解的是这个订单吗', ['orderNo']),
       final('您的蓝牙音箱已发货 正在运输途中 预计两天内送达', '核对商品后完成查询'),
     ],
     assertions: {

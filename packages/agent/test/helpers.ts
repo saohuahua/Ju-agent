@@ -26,11 +26,7 @@ import type { AgentOutput } from '@aftersales/contracts'
 
 export const AGENT_TEST_TIME = '2026-09-20T12:00:00.000Z'
 
-export function composeAgentSystem(
-  script: AgentOutput[],
-  maxSteps = 8,
-  modelOverride?: ChatModel,
-) {
+export function composeAgentSystem(script: AgentOutput[], maxSteps = 8, modelOverride?: ChatModel) {
   const repos = testing.createInMemoryRepositories()
   const clock = new FrozenClock(AGENT_TEST_TIME)
   const auditService = new AuditService(repos.auditRepo, clock)
@@ -81,6 +77,8 @@ export function composeAgentSystem(
     orderRepo: repos.orderRepo,
     shipmentRepo: repos.shipmentRepo,
     policyRepo: repos.policyRepo,
+    returnRepo: repos.returnRepo,
+    refundRepo: repos.refundRepo,
     afterSaleService,
     compensationService,
     priceProtectionService,

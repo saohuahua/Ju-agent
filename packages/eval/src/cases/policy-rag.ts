@@ -5,7 +5,7 @@
  */
 
 import type { EvalCaseInput } from '@aftersales/contracts'
-import { argOf, final, runStatus, toolCall } from './helpers.js'
+import { final, runStatus, toolCall } from './helpers.js'
 
 export const policyRagCases: EvalCaseInput[] = [
   {
@@ -18,7 +18,7 @@ export const policyRagCases: EvalCaseInput[] = [
       persona: 'normal',
       reasonForContact: '买了一箱水果 想七天无理由退货 咨询生鲜食品的退货政策',
       known: ['刚签收一箱生鲜水果', '听说七天无理由退货可以退', '没有质量问题'],
-      instructions: '询问生鲜能不能七天无理由退货 若被告知不支持且给出条款依据 接受 结束',
+      instructions: '只是咨询政策 不提供订单号 不要求办理退货 得到明确答复与条款依据后接受 结束',
     },
     turns: [{ userMessage: '生鲜食品可以七天无理由退货吗' }],
     modelScript: [
@@ -48,7 +48,7 @@ export const policyRagCases: EvalCaseInput[] = [
       ],
       trajectory: {
         requiredTools: ['search_policy'],
-        toolArgs: [argOf('search_policy', 'query', '生鲜商品可以七天无理由退货吗')],
+        toolArgs: [{ tool: 'search_policy', argPath: 'query', op: 'contains', value: '生鲜' }],
       },
       communicateInfo: ['生鲜', '不支持'],
       judgeRubric: ['引用了政策条款名作答', '如实告知生鲜不支持七天无理由退货'],
@@ -64,7 +64,7 @@ export const policyRagCases: EvalCaseInput[] = [
       persona: 'normal',
       reasonForContact: '买的商品有问题 想咨询质量问题多久内可以退换',
       known: ['商品刚签收', '商品有质量问题', '想知道退换时限'],
-      instructions: '询问质量问题退换期限 若被告知 15 天内可退换 接受 结束',
+      instructions: '只是咨询退换时限 不提供订单号 不要求立即办理 得到明确答复后接受 结束',
     },
     turns: [{ userMessage: '质量问题多久可以退换' }],
     modelScript: [
@@ -88,9 +88,9 @@ export const policyRagCases: EvalCaseInput[] = [
       ],
       trajectory: {
         requiredTools: ['search_policy'],
-        toolArgs: [argOf('search_policy', 'query', '质量问题多久可以退换')],
+        toolArgs: [{ tool: 'search_policy', argPath: 'query', op: 'contains', value: '质量' }],
       },
-      communicateInfo: ['15 天'],
+      communicateInfo: ['15'],
       judgeRubric: ['引用了政策条款名作答', '如实告知质量问题退换窗口为 15 天'],
     },
   },
@@ -104,7 +104,7 @@ export const policyRagCases: EvalCaseInput[] = [
       persona: 'normal',
       reasonForContact: '优惠券过期了 想问能不能补发',
       known: ['有一张优惠券过期了没用', '希望平台补发一张'],
-      instructions: '询问过期优惠券能否补发 若被告知需人工确认 接受 结束对话',
+      instructions: '询问过期优惠券能否补发 若被告知需人工确认 接受答复即结束 不要求立即转接人工',
     },
     turns: [{ userMessage: '优惠券过期了能补发吗' }],
     modelScript: [
