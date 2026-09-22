@@ -346,6 +346,23 @@
 
 验收 逐条核对 README STAR LIMITATIONS 与最新报告一致
 
+**执行记录 2026-09-22 追问稿与文档更新 完成 全量 L2 数字落库**
+
+- 决策已确认（问询拍板） L2 数字先跑一次 105 条全量再落材料 追问稿独立成篇 顺带新立 ADR-011
+- ADR-011 工具接入不走 MCP 保持进程内直调 入 [docs/adr/DECISIONS.md](adr/DECISIONS.md) 决策记录增至十一条
+  MCP 价值在跨进程工具接入与生态共享 本项目工具全是仓库内函数 引入 MCP 增加运维面 转换层 轨迹序列化成本 且外部 server 是新增信任边界 接外部生态时再评估 接口已预留
+- 追问稿落 [docs/interview/adr004-defense.md](interview/adr004-defense.md) 主问题 40 秒标准回答 五条逐条追问含攻击性问法 口径红线四条 每条回答锚定仓库文件
+- STAR.md 数字替换 96→105 条 九类→十一类风险面 测试 148→184 条 高频追问加 Mastra/MCP 一条并链接追问稿 数字诚实声明同步
+- README 96→105 四处 核心能力补价保流程与政策 RAG 两条 ADR 十条→十一条 文档索引加追问稿 L2 表格行落真实数字
+- LIMITATIONS 夹具 11 个订单 政策引擎补价保与政策 RAG 边界 用例 105 条已超 100 条目标 Pass^3 声明更新 L2 成绩与主要失败模式如实入册
+- 全量 L2 单轮跑分 2026-09-22 报告 evr_11d079d1 33/105 31.4% Wilson 95% [23.3% 40.8%] P0 门禁未通过
+  总耗时 3526.3s 平均 1.7 轮 Agent token 431858 模拟器 token 218194
+  13 条为代理 503 环境异常 剔除后模型行为口径 33/92 35.9%
+  分类通过率 happy_path 50% compensation 50% price_protection 50% clarification 37.5% fault_injection 36.4% policy_boundary 33.3% recovery 30% security 23.1% approval 12.5% rejection 8.3% policy_rag 0%
+  主要失败模式三类 未调用 conclude 悬停 awaiting_input 拒绝路径误升级 escalated 政策判据解释不完整 是下一轮提示词迭代目标 失败明细已导出 eval/failures
+- 校验 pnpm typecheck 全绿 pnpm test 184 条全过 pnpm eval 105/105 报告 evr_582b96ce
+- 验收达成 逐条核对 README STAR LIMITATIONS 无过期数字 L1 与 L2 成绩始终分列 数字诚实声明保持
+
 ## 四、前端设计约定
 
 所有新增或改动的 UI 一律走项目设计 skill 流程 项目 .claude/skills 已装 design-taste-frontend 等全套
