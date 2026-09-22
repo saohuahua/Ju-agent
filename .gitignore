@@ -24,3 +24,6 @@ eval/failures/
 # 编辑器与系统
 .DS_Store
 Thumbs.db
+
+# 会话级评测日志 临时分析文件
+eval-sim-*.log
