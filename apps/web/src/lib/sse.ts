@@ -15,6 +15,8 @@ import type { AgentEvent } from './types'
 export interface SseSession {
   state: RunViewState
   connected: boolean
+  /** 原始事件流 按序去重 供工具目录面板等需要逐事件的视图消费 */
+  events: AgentEvent[]
 }
 
 /**
@@ -26,17 +28,22 @@ export interface SseSession {
 export function useRunEvents(runId: string | null): SseSession {
   const [state, setState] = useState<RunViewState>(initialViewState)
   const [connected, setConnected] = useState(false)
+  const [events, setEvents] = useState<AgentEvent[]>([])
   const stateRef = useRef(state)
+  const eventsRef = useRef<AgentEvent[]>([])
 
   useEffect(() => {
     if (!runId) {
       setState(initialViewState())
+      setEvents([])
       setConnected(false)
       return
     }
 
     setState(initialViewState())
     stateRef.current = initialViewState()
+    eventsRef.current = []
+    setEvents([])
 
     // EventSource 不支持自定义头 演示环境通过查询参数传递令牌
     const source = new EventSource(
@@ -54,6 +61,11 @@ export function useRunEvents(runId: string | null): SseSession {
         const reduced = reduceEvent(stateRef.current, parsed)
         stateRef.current = reduced
         setState(reduced)
+        // 原始事件按序号去重追加 重连补发与首连全量都可能重复
+        if (parsed.sequence > (eventsRef.current[eventsRef.current.length - 1]?.sequence ?? 0)) {
+          eventsRef.current = [...eventsRef.current, parsed]
+          setEvents(eventsRef.current)
+        }
       } catch {
         // 忽略无法解析的心跳注释
       }
@@ -95,5 +107,5 @@ export function useRunEvents(runId: string | null): SseSession {
     }
   }, [runId])
 
-  return { state, connected }
+  return { state, connected, events }
 }

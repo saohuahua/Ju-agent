@@ -47,6 +47,68 @@ describe('查单流程', () => {
   })
 })
 
+describe('工具目录事件化', () => {
+  it('初始目录含 escalate 门控六个动作工具 查单成功后目录翻转且不重复发', async () => {
+    const system = composeAgentSystem([
+      { kind: 'tool_call', tool: 'get_order', args: { orderNo: 'SO-2026-0003' }, reason: '查订单' },
+      {
+        kind: 'final',
+        answer: '您的订单已签收 如需退货请告知',
+        escalated: false,
+        summary: '查单完成',
+      },
+    ])
+    seedOrder(system.repos, {
+      orderNo: 'SO-2026-0003',
+      status: 'delivered',
+      deliveredAt: '2026-09-15T12:00:00.000Z',
+    })
+    const { runId } = await startRun(system, customer, '订单 SO-2026-0003 到哪了')
+    const events = await system.repos.eventRepo.listByRun(runId)
+    const catalogs = events.filter((e) => e.type === 'tools.catalog_changed')
+
+    // 第一步 initial 第六个动作工具被门控 escalate 作为通道工具例外可见
+    const initial = catalogs.find(
+      (e) => (e.payload as { reason?: string }).reason === 'initial',
+    )
+    expect(initial).toBeDefined()
+    expect((initial!.payload as { gated: string[] }).gated).toEqual([
+      'submit_return',
+      'submit_refund_only',
+      'submit_exchange',
+      'cancel_return',
+      'compensation',
+      'price_protection',
+    ])
+    expect((initial!.payload as { visible: string[] }).visible).toContain('escalate')
+    expect((initial!.payload as { visible: string[] }).visible).not.toContain('submit_return')
+
+    // 查单成功后目录翻转 动作工具解禁
+    const flipped = catalogs.find(
+      (e) => (e.payload as { reason?: string }).reason === 'order_loaded',
+    )
+    expect(flipped).toBeDefined()
+    expect((flipped!.payload as { gated: string[] }).gated).toEqual([])
+    expect((flipped!.payload as { visible: string[] }).visible).toContain('submit_return')
+    expect((flipped!.payload as { visible: string[] }).visible).toContain('compensation')
+
+    // 目录未变化的轮次不重复发 查单前后的纯文本轮不产生新目录事件
+    expect(catalogs).toHaveLength(2)
+  })
+
+  it('未查订单的纯问答只发一次 initial 目录', async () => {
+    const system = composeAgentSystem([
+      { kind: 'final', answer: '请问有什么可以帮您', escalated: false, summary: '欢迎' },
+    ])
+    const { runId } = await startRun(system, customer, '在吗')
+    const catalogs = (await system.repos.eventRepo.listByRun(runId)).filter(
+      (e) => e.type === 'tools.catalog_changed',
+    )
+    expect(catalogs).toHaveLength(1)
+    expect((catalogs[0]!.payload as { reason?: string }).reason).toBe('initial')
+  })
+})
+
 describe('补问流程', () => {
   it('缺失订单号先补问 用户答复后继续执行', async () => {
     const system = composeAgentSystem([

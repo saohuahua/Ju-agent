@@ -11,6 +11,7 @@ import {
   INTENT_SLOT_SCHEMAS,
   type Intent,
   type ToolErrorShape,
+  type ToolGateReason,
 } from '@aftersales/contracts'
 import { createToolError } from '@aftersales/contracts'
 import { DomainError, redactText } from '@aftersales/domain'
@@ -423,9 +424,15 @@ export class AgentRunner {
     return { blocks, text, stopReason }
   }
 
-  /** 每步工具目录 能力门控 未查过订单时动作工具不进目录 结构性防盲提交
+  /**
+   * 每步工具目录 能力门控 未查过订单时动作工具不进目录 结构性防盲提交
    *  escalate 例外 它是通道管理工具 上游整体故障导致订单查不到时恰需升级
-   *  若随动作工具一起门控 模型将无法在唯一需要升级的场景调用升级 */
+   *  若随动作工具一起门控 模型将无法在唯一需要升级的场景调用升级
+   *
+   * 目录内容相对上一次事件化记录有变化时追加 tools.catalog_changed
+   * 「未查订单前动作工具不进目录」由此从代码行为变成事件流里可回放的事实
+   * 从事件流（而非内存）取上次目录 断点恢复后判定依然正确
+   */
   private async prepareStepTools(runId: string): Promise<ToolDefinition[]> {
     const events = await this.deps.eventRepo.listByRun(runId)
     const orderLoaded = events.some(
@@ -435,7 +442,30 @@ export class AgentRunner {
         (event.payload as { status?: string }).status === 'succeeded',
     )
     const actions: Intent[] = orderLoaded ? ACTION_TOOLS : ['escalate']
-    return buildStepTools({ actions })
+    const tools = buildStepTools({ actions })
+
+    const visible = tools.map((tool) => tool.name)
+    const gated = ACTION_TOOLS.filter((intent) => !visible.includes(intent))
+    const reason: ToolGateReason = orderLoaded ? 'order_loaded' : 'initial'
+    const signature = JSON.stringify({ visible, gated, reason })
+    const lastCatalog = [...events]
+      .reverse()
+      .find((event) => event.type === 'tools.catalog_changed')
+    const lastSignature = lastCatalog
+      ? JSON.stringify({
+          visible: (lastCatalog.payload as { visible?: string[] }).visible,
+          gated: (lastCatalog.payload as { gated?: string[] }).gated,
+          reason: (lastCatalog.payload as { reason?: string }).reason,
+        })
+      : null
+    if (signature !== lastSignature) {
+      await this.deps.eventRepo.append(runId, 'tools.catalog_changed', {
+        visible,
+        gated,
+        reason,
+      })
+    }
+    return tools
   }
 
   /** ask_user 提问落为助手消息并暂停 */

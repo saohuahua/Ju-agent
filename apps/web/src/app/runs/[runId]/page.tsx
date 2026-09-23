@@ -18,6 +18,7 @@ import { Skeleton } from '@/components/Skeleton'
 import { StatusBadge } from '@/components/StatusBadge'
 import { Timeline } from '@/components/Timeline'
 import { ToolCard } from '@/components/ToolCard'
+import { ToolCatalogPanel } from '@/components/ToolCatalogPanel'
 import { api, currentToken } from '@/lib/api'
 import { reduceEvents, initialViewState } from '@/lib/runReducer'
 import { projectTimeline } from '@/lib/timeline'
@@ -214,8 +215,9 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
           </p>
         )}
 
-        {/* 单栏主体 时间轴与轨迹 门控与防线面板随功能 21 22 加入 */}
-        <div className="mt-6 min-w-0 space-y-4">
+        {/* 双栏主体：主栏时间轴与轨迹 右栏门控面板 */}
+        <div className="mt-6 grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="min-w-0 space-y-4">
             {nodes.length > 0 ? (
               <Timeline
                 nodes={nodes}
@@ -357,6 +359,11 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
                 </div>
               )}
             </section>
+          </div>
+
+          <aside className="xl:sticky xl:top-6">
+            <ToolCatalogPanel events={events} />
+          </aside>
         </div>
       </div>
     </AppShell>

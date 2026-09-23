@@ -14,6 +14,7 @@ import { LogisticsCard } from '@/components/LogisticsCard'
 import { Skeleton } from '@/components/Skeleton'
 import { StatusBadge } from '@/components/StatusBadge'
 import { ToolCard } from '@/components/ToolCard'
+import { ToolCatalogPanel } from '@/components/ToolCatalogPanel'
 import { api, ApiError } from '@/lib/api'
 import { useRunEvents } from '@/lib/sse'
 import type { RunRatingView } from '@/lib/types'
@@ -28,7 +29,9 @@ export default function WorkbenchPage() {
   const [ratingScore, setRatingScore] = useState(0)
   const [ratingComment, setRatingComment] = useState('')
   const [ratingBusy, setRatingBusy] = useState(false)
-  const { state, connected } = useRunEvents(runId)
+  // 工具目录侧栏 默认收起 客户正常聊天不需要它 演示与调试时展开
+  const [catalogOpen, setCatalogOpen] = useState(false)
+  const { state, connected, events } = useRunEvents(runId)
   const messageEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -136,6 +139,17 @@ export default function WorkbenchPage() {
           <div className="flex items-center gap-3 text-xs">
             {runId && <span className="font-mono text-stone-400">{runId}</span>}
             {runId && <StatusBadge status={state.status} />}
+            {/* 工具目录侧栏开关 默认收起 不打扰正常客户 会话进行中可随时展开看门控翻转 */}
+            {runId && (
+              <button
+                onClick={() => setCatalogOpen(!catalogOpen)}
+                aria-pressed={catalogOpen}
+                aria-expanded={catalogOpen}
+                className="rounded-control border border-hairline bg-surface px-2.5 py-1 text-stone-600 transition-colors duration-200 hover:border-stone-300 hover:text-stone-900"
+              >
+                {catalogOpen ? '收起目录' : '工具目录'}
+              </button>
+            )}
             {runId && (
               <span className="inline-flex items-center gap-1.5 text-stone-500">
                 <span
@@ -168,7 +182,9 @@ export default function WorkbenchPage() {
           </div>
         )}
 
-        <div className="flex-1 space-y-3 overflow-y-auto px-6 py-4">
+        {/* 会话区 + 可折叠目录侧栏 侧栏只在展开时挤占宽度 聊天列保持居中 */}
+        <div className="flex min-h-0 flex-1">
+          <div className="flex-1 space-y-3 overflow-y-auto px-6 py-4">
           {!runId && (
             <div className="mx-auto max-w-xl pt-16 text-center">
               <div className="text-2xl font-semibold tracking-tight">您好 我是售后专员 Copilot</div>
@@ -312,6 +328,14 @@ export default function WorkbenchPage() {
             </div>
           )}
           <div ref={messageEndRef} />
+          </div>
+
+          {/* 工具目录侧栏 展开时挤占右侧 客户视角默认不可见 */}
+          {catalogOpen && runId && (
+            <aside className="hidden w-80 shrink-0 overflow-y-auto border-l border-hairline px-3 py-4 lg:block">
+              <ToolCatalogPanel events={events} />
+            </aside>
+          )}
         </div>
 
         <footer className="border-t border-hairline px-6 py-4">
