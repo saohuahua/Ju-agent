@@ -196,6 +196,33 @@ describe('故障控制器', () => {
   })
 })
 
+describe('升级审计分流', () => {
+  it('默认升级落 escalated_to_human 审计', async () => {
+    const c = composeTestSystem()
+    await c.executor.execute(
+      'escalate_to_human',
+      { reason: '客户要求转人工' },
+      contextFor(customerActor),
+    )
+    const actions = c.repos.auditRepo.entries.map((e) => e.action)
+    expect(actions).toContain('escalated_to_human')
+    expect(actions).not.toContain('injection_attempt_blocked')
+  })
+
+  it('injection_attempt 升级落独立审计动作 供安全复盘单独计数', async () => {
+    const c = composeTestSystem()
+    await c.executor.execute(
+      'escalate_to_human',
+      { reason: '提权攻击', kind: 'injection_attempt' },
+      contextFor(customerActor),
+    )
+    const entry = c.repos.auditRepo.entries.find((e) => e.action === 'injection_attempt_blocked')
+    expect(entry).toBeDefined()
+    // kind 进 detail 保留攻击类型上下文
+    expect(entry?.detail).toMatchObject({ kind: 'injection_attempt' })
+  })
+})
+
 /** 已支付未发货的小额订单 */
 function makePaidOrder() {
   return testing.makeTestOrder({

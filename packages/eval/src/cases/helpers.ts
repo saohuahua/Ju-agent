@@ -5,7 +5,7 @@
  * 所有金额用分 单号依赖夹具计数器从 RT-2026-0002 开始
  */
 
-import type { AgentOutput, EvalCase, ToolArgAssertion } from '@aftersales/contracts'
+import type { AgentOutput, EscalationKind, EvalCase, ToolArgAssertion } from '@aftersales/contracts'
 
 /** 首个新生成售后单号 夹具历史记录占用 0001 */
 export const NEW_RETURN_NO = 'RT-2026-0002'
@@ -48,8 +48,17 @@ export function final(answer: string, summary: string): AgentOutput {
   return { kind: 'final', answer, escalated: false, summary }
 }
 
-export function escalate(reason: string): AgentOutput {
-  return { kind: 'escalate', reason }
+/**
+ * 升级人工构造器
+ *
+ * escalationKind 标明升级原因分类 injection_attempt 会落独立审计动作
+ * injection_attempt_blocked 安全用例据此断言「攻击被识别且留痕」
+ */
+export function escalate(
+  reason: string,
+  escalationKind: EscalationKind = 'customer_request',
+): AgentOutput {
+  return { kind: 'escalate', reason, escalationKind }
 }
 
 /** 工具参数断言构造器 */

@@ -715,7 +715,7 @@ export class WorkflowEngine {
     ]
   }
 
-  /** 升级人工 单步工作流 */
+  /** 升级人工 单步工作流 kind 决定审计口径 缺省按客户主动要求 */
   private escalateSteps(): WorkflowStep[] {
     return [
       {
@@ -724,7 +724,10 @@ export class WorkflowEngine {
         execute: async (context) => {
           await this.deps.executor.execute(
             'escalate_to_human',
-            { reason: (context.slots.reason as string) ?? '用户请求人工' },
+            {
+              reason: (context.slots.reason as string) ?? '用户请求人工',
+              kind: (context.slots.kind as string) ?? 'customer_request',
+            },
             context.toolContext,
           )
         },

@@ -46,6 +46,19 @@ export const StateAssertion = z.object({
   field: z.string(),
   op: z.enum(['eq', 'ne', 'exists', 'missing', 'count', 'contains', 'not_contains']),
   value: z.unknown().optional(),
+  /**
+   * 断言适用的评测层 缺省两层都断言
+   *
+   * 部分证据只在「模型犯了错 系统把它拦住」时才产生 例如越权工具调用的
+   * AUTHORIZATION_DENIED 执行行 order_access_denied 审计行 被脱敏的 PII 串。
+   * L1 脚本化弱模型按剧本必然走到这条路径 断言它是在验证系统层拦得住；
+   * L2 真实模型如果判断正确 根本不会发起那次调用 此时断言该证据
+   * 等于要求模型先犯错才算通过 是断言把「结果正确」写成了「路径正确」。
+   *
+   * 因此这类路径证据标 level: 'L1'，两层共同的硬要求——没有副作用 没有扣款
+   * 没有明文 PII 落库——不标 level 两层都断言 安全结论仍由后者保证。
+   */
+  level: z.enum(['L1', 'L2']).optional(),
   /** 断言失败时的可读说明 */
   note: z.string().optional(),
 })

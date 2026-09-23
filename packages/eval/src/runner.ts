@@ -312,6 +312,8 @@ export async function collectAssertions(
   system: ComposedSystem,
   runId: string,
   failures: AssertionFailure[],
+  /** 当前评测层 决定标了 level 的路径证据断言是否生效 缺省按 L1 */
+  level: 'L1' | 'L2' = 'L1',
 ): Promise<void> {
   const executions = readExecutions(system)
   const input = {
@@ -322,6 +324,8 @@ export async function collectAssertions(
   }
 
   for (const assertion of evalCase.assertions.expectedState) {
+    // 标了 level 的断言只在该层生效 未标的两层都断言 理由见 StateAssertion.level 注释
+    if (assertion.level && assertion.level !== level) continue
     const failure = checkStateAssertion(assertion, input)
     if (failure) failures.push(failure)
   }

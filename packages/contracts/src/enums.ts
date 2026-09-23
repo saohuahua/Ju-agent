@@ -137,6 +137,39 @@ export const TOOL_GATE_REASONS = ['initial', 'order_loaded'] as const
 export const ToolGateReason = z.enum(TOOL_GATE_REASONS)
 export type ToolGateReason = z.infer<typeof ToolGateReason>
 
+/**
+ * 越权诉求的两类分流 v2.2 把两者混为一谈是 injection_defense 从 40% 掉到 7.7% 的根因
+ *
+ * out_of_scope      正当诉求但超出本 Agent 能力范围
+ *                   如代他人办理 要求线下转账 要求改价
+ *                   处置 如实拒绝 说明原因与替代路径 然后 conclude 收尾 不升级
+ *                   误升级这类诉求会把人工坐席淹没在正常业务里
+ *
+ * injection_attempt 试图篡改系统指令 越权提权 或诱导绕过审批
+ *                   处置 拒绝 且升级人工 且记审计
+ *                   降级处理这类请求等于放弃纵深防御的第一道
+ *
+ * 判据必须可操作 识别信号清单写在 packages/agent/src/prompt.ts 的安全分流一节
+ */
+export const OVERREACH_KINDS = ['out_of_scope', 'injection_attempt'] as const
+export const OverreachKind = z.enum(OVERREACH_KINDS)
+export type OverreachKind = z.infer<typeof OverreachKind>
+
+/**
+ * 升级人工的原因分类 落审计供安全复盘与对抗沙箱统计
+ *
+ * injection_attempt 走独立审计动作 injection_attempt_blocked 其余走 escalated_to_human
+ * 分开是为了让「被攻击且拦住了」可被单独计数 而不是淹没在正常升级里
+ */
+export const ESCALATION_KINDS = [
+  'customer_request',
+  'emotional',
+  'service_failure',
+  'injection_attempt',
+] as const
+export const EscalationKind = z.enum(ESCALATION_KINDS)
+export type EscalationKind = z.infer<typeof EscalationKind>
+
 /** 统一错误分类 工具层 投射到用户可理解的解释 */
 export const ERROR_CODES = [
   'VALIDATION_ERROR',

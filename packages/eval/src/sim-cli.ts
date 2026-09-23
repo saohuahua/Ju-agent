@@ -7,6 +7,7 @@
  *   pnpm eval:sim -- --sample all          全部带场景用例
  *   pnpm eval:sim -- --sample p0|p1|p2     分层抽样 P1 抽一半 P2 抽五分之一
  *   pnpm eval:sim -- --case hp_query_order_status     单用例调试
+ *   pnpm eval:sim -- --sample all --category security  安全段专项 迭代提示词时用
  *   pnpm eval:sim -- --gate                P0 全过才通过 CI 发布门禁
  *
  * 需要 ANTHROPIC_API_KEY 未配置时输出跳过说明并以零码退出 不伪装成绩
@@ -86,6 +87,9 @@ function parseArgs(argv: string[]): SimCliOptions {
     } else if (arg === '--case') {
       options.caseId = argv[i + 1] ?? undefined
       i += 1
+    } else if (arg === '--category') {
+      options.category = argv[i + 1] ?? undefined
+      i += 1
     }
   }
   return options
@@ -103,7 +107,7 @@ async function main(): Promise<void> {
     return
   }
 
-  const cases = selectCases(options.sample, options.caseId)
+  const cases = selectCases(options.sample, options.caseId, options.category)
   if (cases.length === 0) {
     console.log('选中的用例集为空 检查 sample 参数或用例 scenario 配置')
     return

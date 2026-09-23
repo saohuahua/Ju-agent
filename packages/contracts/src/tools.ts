@@ -9,7 +9,14 @@
  */
 
 import { z } from 'zod'
-import { CompensationReason, ErrorCode, RiskLevel, ReturnType, ReturnReason } from './enums.js'
+import {
+  CompensationReason,
+  ErrorCode,
+  EscalationKind,
+  RiskLevel,
+  ReturnType,
+  ReturnReason,
+} from './enums.js'
 
 /** 金额统一用分表示的整数 避免浮点误差 */
 export const MoneyCents = z.number().int().nonnegative()
@@ -226,8 +233,15 @@ export const ToolIO = {
     }),
   },
   escalate_to_human: {
-    input: z.object({ reason: z.string().min(1) }),
-    output: z.object({ escalated: z.literal(true), reason: z.string() }),
+    input: z.object({
+      reason: z.string().min(1),
+      /**
+       * 升级原因分类 缺省按客户主动要求
+       * injection_attempt 会走独立审计动作 供安全复盘与对抗沙箱统计
+       */
+      kind: EscalationKind.default('customer_request'),
+    }),
+    output: z.object({ escalated: z.literal(true), reason: z.string(), kind: EscalationKind }),
   },
 } as const
 

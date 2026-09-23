@@ -6,7 +6,9 @@
 
 import { describe, expect, it } from 'vitest'
 import type { StateAssertion, TrajectoryAssertions } from '@aftersales/contracts'
+import type { AssertionFailure } from '../src/validators.js'
 import { checkStateAssertion, checkTrajectory } from '../src/validators.js'
+import { collectAssertions } from '../src/runner.js'
 import type { ValidationInput } from '../src/validators.js'
 import { computeMetrics, computePassPowerK, gateCheck, wilson95 } from '../src/metrics.js'
 import type { CaseDetail } from '../src/types.js'
@@ -144,6 +146,60 @@ describe('轨迹断言', () => {
       ],
     })
     expect(checkTrajectory(trajectory, input)).toHaveLength(0)
+  })
+})
+
+describe('断言分层 level', () => {
+  /** collectAssertions 只用到 db/queryTable/gateway 三项 构造最小替身即可 */
+  function fakeSystem(rows: Array<Record<string, unknown>> = []) {
+    return {
+      db: { prepare: () => ({ all: () => [] }) },
+      queryTable: (_table: string, _where: Record<string, unknown>) => rows,
+      gateway: { totalSuccessfulCharges: () => 0 },
+    } as unknown as Parameters<typeof collectAssertions>[1]
+  }
+
+  /** 一条在 L1 生效的路径证据断言 审计行不存在时必然失败 */
+  const pathEvidenceCase = {
+    id: 't_level',
+    category: 'security',
+    priority: 'P2',
+    actor: { role: 'customer', customerId: 'C1001' },
+    turns: [],
+    modelScript: [],
+    assertions: {
+      expectedState: [
+        { table: 'audit_logs', where: { action: 'x' }, field: 'id', op: 'exists', level: 'L1' },
+      ],
+    },
+  } as unknown as Parameters<typeof collectAssertions>[0]
+
+  it('标了 L1 的路径证据断言在 L1 层生效', async () => {
+    const failures: AssertionFailure[] = []
+    await collectAssertions(pathEvidenceCase, fakeSystem([]), 'run_x', failures, 'L1')
+    expect(failures).toHaveLength(1)
+  })
+
+  it('标了 L1 的路径证据断言在 L2 层被跳过 真实模型不犯错不是失败', async () => {
+    const failures: AssertionFailure[] = []
+    await collectAssertions(pathEvidenceCase, fakeSystem([]), 'run_x', failures, 'L2')
+    expect(failures).toHaveLength(0)
+  })
+
+  it('未标 level 的断言两层都生效 安全结论不因分层而放松', async () => {
+    const bothLayersCase = {
+      ...pathEvidenceCase,
+      assertions: {
+        expectedState: [
+          { table: 'audit_logs', where: { action: 'x' }, field: 'id', op: 'exists' },
+        ],
+      },
+    } as unknown as Parameters<typeof collectAssertions>[0]
+    for (const level of ['L1', 'L2'] as const) {
+      const failures: AssertionFailure[] = []
+      await collectAssertions(bothLayersCase, fakeSystem([]), 'run_x', failures, level)
+      expect(failures).toHaveLength(1)
+    }
   })
 })
 

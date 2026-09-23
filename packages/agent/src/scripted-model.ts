@@ -80,7 +80,14 @@ export function* convertScriptTurn(
     }
     case 'escalate': {
       yield { type: 'tool_call_start', toolCallId, toolName: 'escalate' }
-      yield { type: 'tool_input_delta', toolCallId, partialJson: JSON.stringify({ reason: output.reason }) }
+      yield {
+        type: 'tool_input_delta',
+        toolCallId,
+        partialJson: JSON.stringify({
+          reason: output.reason,
+          kind: output.escalationKind ?? 'customer_request',
+        }),
+      }
       yield { type: 'turn_completed', stopReason: 'tool_use', usage: SCRIPTED_USAGE }
       break
     }

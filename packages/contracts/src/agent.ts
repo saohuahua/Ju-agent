@@ -6,7 +6,7 @@
  */
 
 import { z } from 'zod'
-import { Intent, LogisticsEventStatus, RunStatus } from './enums.js'
+import { EscalationKind, Intent, LogisticsEventStatus, RunStatus } from './enums.js'
 import { CompensationReason } from './enums.js'
 import { ToolIO, MoneyCents } from './tools.js'
 import type { ToolName } from './tools.js'
@@ -50,10 +50,11 @@ export const AgentOutput = z.discriminatedUnion('kind', [
     escalated: z.boolean().default(false),
     summary: z.string().default(''),
   }),
-  /** 升级人工 */
+  /** 升级人工 escalationKind 为升级原因分类 字段名避开判别键 kind */
   z.object({
     kind: z.literal('escalate'),
     reason: z.string().min(1),
+    escalationKind: EscalationKind.default('customer_request'),
   }),
 ])
 export type AgentOutput = z.infer<typeof AgentOutput>
@@ -160,7 +161,16 @@ export const INTENT_SLOT_SCHEMAS = {
     /** 部分价保时指定的商品 为空表示整单 差价由系统按当前售价计算 */
     itemIds: z.array(z.string()).optional(),
   }),
-  escalate: z.object({ reason: z.string().min(1) }),
+  escalate: z.object({
+    reason: z.string().min(1),
+    /**
+     * 升级原因分类 模型自评 缺省按客户主动要求
+     *
+     * 分类只影响审计口径 不影响是否真的升级——是否升级由模型调用本工具这件事本身决定
+     * 模型误分类不会放过攻击 只会让安全统计偏低 这是保守的失败方向
+     */
+    kind: EscalationKind.default('customer_request'),
+  }),
 } as const
 
 export type IntentSlotValidation =

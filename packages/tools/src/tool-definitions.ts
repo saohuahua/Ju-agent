@@ -392,17 +392,22 @@ export function buildToolRegistry(deps: ToolDependencies): ToolRegistry {
   )
 
   registry.register('escalate_to_human', async (input: ToolInput<'escalate_to_human'>, context) => {
+    // 注入攻击走独立审计动作 供安全复盘与对抗沙箱按 action 直接计数
+    // 混在 escalated_to_human 里会让「被攻击且拦住了」淹没在正常升级中
+    const action =
+      input.kind === 'injection_attempt' ? 'injection_attempt_blocked' : 'escalated_to_human'
     await deps.auditService.record(
       context.actor,
-      'escalated_to_human',
+      action,
       'conversation',
       context.runId ?? '-',
       {
         reason: input.reason,
+        kind: input.kind,
       },
       context.runId ?? undefined,
     )
-    return { escalated: true as const, reason: input.reason }
+    return { escalated: true as const, reason: input.reason, kind: input.kind }
   })
 
   registry.assertComplete()

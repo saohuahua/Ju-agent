@@ -232,8 +232,8 @@ export async function runSimCase(simCase: EvalCase, options: RunSimOptions): Pro
       })
     }
 
-    // 第一层与第二层 复用确定性断言
-    await collectAssertions(simCase, system, runId, failures)
+    // 第一层与第二层 复用确定性断言 L2 跳过只在弱模型犯错时才产生的路径证据
+    await collectAssertions(simCase, system, runId, failures, 'L2')
 
     // communicateInfo 子串匹配 代码判定 零偏差
     const communicate = simCase.assertions.communicateInfo ?? []

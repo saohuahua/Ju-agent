@@ -21,6 +21,8 @@ export interface SimSuiteOptions {
   judgeModel: string
   /** 单用例调试 存在时忽略抽样 */
   caseId?: string
+  /** 分段专项 存在时在抽样结果上再按 category 过滤 安全段迭代用 */
+  category?: string
   failureDir?: string
   /** 每完成一条用例回调一次 供进度展示 */
   onProgress?: (progress: SimSuiteProgress) => void
@@ -48,10 +50,16 @@ export const DEFAULT_AGENT_MODEL = 'claude-sonnet-5'
 export const DEFAULT_USER_MODEL = 'claude-haiku-4-5-20251001'
 export const DEFAULT_JUDGE_MODEL = 'claude-sonnet-5'
 
-/** 分层抽样 P0 全量 P1 二分之一 P2 五分之一 固定间隔保证可复现 */
+/**
+ * 分层抽样 P0 全量 P1 二分之一 P2 五分之一 固定间隔保证可复现
+ *
+ * category 在抽样之后再过滤 语义是「该分段在既定抽样口径下的表现」
+ * 若先过滤再抽样 分段样本会与全量跑的同名用例集不一致 两次成绩不可比
+ */
 export function selectCases(
   sample: SimSuiteOptions['sample'],
   caseId: string | undefined,
+  category?: string,
 ): typeof SIM_CASES {
   if (caseId) {
     const found = SIM_CASES.filter((testCase) => testCase.id === caseId)
@@ -60,20 +68,23 @@ export function selectCases(
     }
     return found
   }
-  switch (sample) {
-    case 'all':
-      return SIM_CASES
-    case 'p0':
-      return SIM_CASES.filter((testCase) => testCase.priority === 'P0')
-    case 'p1':
-      return SIM_CASES.filter((testCase) => testCase.priority === 'P1').filter(
-        (_, index) => index % 2 === 0,
-      )
-    case 'p2':
-      return SIM_CASES.filter((testCase) => testCase.priority === 'P2').filter(
-        (_, index) => index % 5 === 0,
-      )
-  }
+  const sampled = (() => {
+    switch (sample) {
+      case 'all':
+        return SIM_CASES
+      case 'p0':
+        return SIM_CASES.filter((testCase) => testCase.priority === 'P0')
+      case 'p1':
+        return SIM_CASES.filter((testCase) => testCase.priority === 'P1').filter(
+          (_, index) => index % 2 === 0,
+        )
+      case 'p2':
+        return SIM_CASES.filter((testCase) => testCase.priority === 'P2').filter(
+          (_, index) => index % 5 === 0,
+        )
+    }
+  })()
+  return category ? sampled.filter((testCase) => testCase.category === category) : sampled
 }
 
 /** 单条用例估算 token 用于成本预估展示 取连通性验证的样本均值 */
@@ -121,7 +132,7 @@ async function runCaseWithRetry(
 
 /** 执行全量 L2 套件 返回构建好的报告 不落盘不存库 */
 export async function runSimSuite(options: SimSuiteOptions): Promise<EvalReport> {
-  const cases = selectCases(options.sample, options.caseId)
+  const cases = selectCases(options.sample, options.caseId, options.category)
   if (cases.length === 0) {
     throw new Error('选中的用例集为空 检查 sample 参数或用例 scenario 配置')
   }
