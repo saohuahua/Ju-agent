@@ -209,7 +209,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
         )}
 
         {isOperator && !loading && (
-          <section className="mt-6 rounded-container border border-hairline bg-white px-4 py-3">
+          <section className="mt-6 rounded-container border border-hairline bg-surface px-4 py-3">
             <h2 className="text-sm font-medium text-stone-700">运营操作 物流事件注入</h2>
             <p className="mt-0.5 text-xs text-stone-500">
               向会话推送物流状态变化 空闲会话即时触达 忙时会话挂起至下一轮 已签收订单不可回退
@@ -223,7 +223,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
                 value={injectOrderNo}
                 onChange={(event) => setInjectOrderNo(event.target.value)}
                 placeholder="订单号 如 SO-2026-0002"
-                className="w-52 rounded-control border border-hairline bg-white px-3 py-1.5 font-mono text-xs text-stone-900 transition-colors duration-200 placeholder:text-stone-400 focus:border-sage-300 focus:outline-none"
+                className="w-52 rounded-control border border-hairline bg-surface px-3 py-1.5 font-mono text-xs text-stone-900 transition-colors duration-200 placeholder:text-stone-400 focus:border-sage-300 focus:outline-none"
               />
               <label htmlFor="inject-status" className="sr-only">
                 物流状态
@@ -232,7 +232,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
                 id="inject-status"
                 value={injectStatus}
                 onChange={(event) => setInjectStatus(event.target.value as 'delayed' | 'lost')}
-                className="rounded-control border border-hairline bg-white px-3 py-1.5 text-xs text-stone-900 transition-colors duration-200 focus:border-sage-300 focus:outline-none"
+                className="rounded-control border border-hairline bg-surface px-3 py-1.5 text-xs text-stone-900 transition-colors duration-200 focus:border-sage-300 focus:outline-none"
               >
                 <option value="delayed">运输延误</option>
                 <option value="lost">包裹丢失</option>
@@ -245,7 +245,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
                 value={injectDescription}
                 onChange={(event) => setInjectDescription(event.target.value)}
                 placeholder="描述 如 上海浦东分拨中心积压 预计延迟两天"
-                className="min-w-64 flex-1 rounded-control border border-hairline bg-white px-3 py-1.5 text-xs text-stone-900 transition-colors duration-200 placeholder:text-stone-400 focus:border-sage-300 focus:outline-none"
+                className="min-w-64 flex-1 rounded-control border border-hairline bg-surface px-3 py-1.5 text-xs text-stone-900 transition-colors duration-200 placeholder:text-stone-400 focus:border-sage-300 focus:outline-none"
               />
               <button
                 type="submit"
@@ -291,7 +291,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
 
         <section className="mt-6">
           <h2 className="mb-2 text-sm font-medium text-stone-700">事件时间线</h2>
-          <div className="overflow-x-auto rounded-container border border-hairline bg-white">
+          <div className="overflow-x-auto rounded-container border border-hairline bg-surface">
             <table className="w-full text-xs">
               <thead className="text-left text-stone-500">
                 <tr className="border-b border-hairline">

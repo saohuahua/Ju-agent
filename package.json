@@ -13,6 +13,7 @@
     "build": "pnpm --filter web build",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
+    "check:contrast": "node scripts/check-console-contrast.mjs",
     "format": "prettier --write \"**/*.{ts,tsx,css,md,json}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,css,md,json}\"",
     "test": "pnpm -r test",

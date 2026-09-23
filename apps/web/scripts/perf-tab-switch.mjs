@@ -70,10 +70,9 @@ console.log('=== 站内点击切换 click→视觉提交 ===')
 for (let round = 1; round <= 2; round++) {
   for (const route of ROUTES) {
     await page.goto(`${BASE}/workbench`, { waitUntil: 'load' })
-    // 页面级令牌 整页刷新会丢失
-    const tokenBefore = await page.evaluate(() => {
+    // 页面级令牌 整页刷新会丢失 这里只做写入 不需要读回
+    await page.evaluate(() => {
       window.__perfToken = 'alive'
-      return window.__perfToken
     })
     const result = await page.evaluate(
       (target) =>

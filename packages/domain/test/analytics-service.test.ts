@@ -19,7 +19,7 @@ function stubReadModel(overrides: Partial<AnalyticsReadModel> = {}): AnalyticsRe
             { status: 'failed', count: 2 },
           ]
         : [{ status: 'completed', count: 99 }],
-    runsByDay: async (source, days) =>
+    runsByDay: async (source, _days) =>
       source === 'customer'
         ? [
             { day: '2026-09-21', count: 3 },

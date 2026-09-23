@@ -116,6 +116,27 @@ export const LOGISTICS_EVENT_STATUSES = ['delayed', 'lost'] as const
 export const LogisticsEventStatus = z.enum(LOGISTICS_EVENT_STATUSES)
 export type LogisticsEventStatus = z.infer<typeof LogisticsEventStatus>
 
+/**
+ * 副作用防线层级 三道闸串联 任一拦截即不产生资金动作
+ *
+ * idempotency    业务幂等键 同键重放直接返回首次结果
+ * approval_token 一次性审批令牌 同一令牌只接受一次有效决定
+ * gateway        支付网关级去重 最后一道兜底 防止前两道被绕过
+ */
+export const GUARD_LAYERS = ['idempotency', 'approval_token', 'gateway'] as const
+export const GuardLayer = z.enum(GUARD_LAYERS)
+export type GuardLayer = z.infer<typeof GuardLayer>
+
+/**
+ * 工具目录变更原因 能力门控的状态说明 供前端渲染稳定文案
+ *
+ * initial      会话起始目录 未查过订单 动作工具不暴露给模型
+ * order_loaded 订单已载入 动作工具解禁进入目录
+ */
+export const TOOL_GATE_REASONS = ['initial', 'order_loaded'] as const
+export const ToolGateReason = z.enum(TOOL_GATE_REASONS)
+export type ToolGateReason = z.infer<typeof ToolGateReason>
+
 /** 统一错误分类 工具层 投射到用户可理解的解释 */
 export const ERROR_CODES = [
   'VALIDATION_ERROR',
@@ -161,6 +182,9 @@ export const EVENT_TYPES = [
   'run.handover',
   'operator.message',
   'run.resolved',
+  // v4 深度可视化：门控与防线状态从 agent 内部计算提升为一等事件 供前端回放
+  'tools.catalog_changed',
+  'guard.blocked',
 ] as const
 export const EventType = z.enum(EVENT_TYPES)
 export type EventType = z.infer<typeof EventType>

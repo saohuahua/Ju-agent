@@ -35,7 +35,7 @@ export function ToolCard({ tool }: { tool: ToolItem }) {
       ? ((tool.resultSummary?.articles as PolicyArticleSummary[] | undefined) ?? [])
       : []
   return (
-    <div className="relative rounded-container border border-hairline bg-white px-3 py-2 text-xs">
+    <div className="relative rounded-container border border-hairline bg-surface px-3 py-2 text-xs">
       <span
         aria-hidden="true"
         className={`absolute top-1.5 bottom-1.5 left-0 w-0.5 rounded-full ${STATUS_BAR[tool.status]}`}

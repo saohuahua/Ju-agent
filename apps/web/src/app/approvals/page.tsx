@@ -108,7 +108,7 @@ export default function ApprovalsPage() {
             {[0, 1, 2].map((index) => (
               <div
                 key={index}
-                className="rounded-container border border-hairline bg-white px-5 py-4"
+                className="rounded-container border border-hairline bg-surface px-5 py-4"
               >
                 <div className="flex items-center gap-3">
                   <Skeleton className="h-6 w-28" />
@@ -132,7 +132,7 @@ export default function ApprovalsPage() {
           {approvals.map((approval) => (
             <div
               key={approval.approvalId}
-              className="rounded-container border border-hairline bg-white px-5 py-4"
+              className="rounded-container border border-hairline bg-surface px-5 py-4"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">

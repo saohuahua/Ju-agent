@@ -92,7 +92,7 @@ export default function AnalyticsPage() {
               </p>
             </div>
           </div>
-          <div className="inline-flex rounded-control border border-hairline bg-white p-0.5">
+          <div className="inline-flex rounded-control border border-hairline bg-surface p-0.5">
             {DAY_OPTIONS.map((option) => (
               <button
                 key={option.value}
@@ -153,7 +153,7 @@ export default function AnalyticsPage() {
             </div>
 
             {/* 比例仪表 */}
-            <section className="rounded-container border border-hairline bg-white px-5 py-4">
+            <section className="rounded-container border border-hairline bg-surface px-5 py-4">
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
                   <div className="flex items-baseline justify-between">
@@ -182,7 +182,7 @@ export default function AnalyticsPage() {
 
             {/* 趋势与分布 */}
             <div className="grid gap-4 md:grid-cols-2">
-              <section className="rounded-container border border-hairline bg-white px-5 py-4">
+              <section className="rounded-container border border-hairline bg-surface px-5 py-4">
                 <h2 className="text-sm font-medium text-stone-700">按日会话量</h2>
                 {overview.sessionsByDay.length > 0 ? (
                   <div className="mt-3">
@@ -193,7 +193,7 @@ export default function AnalyticsPage() {
                 )}
               </section>
 
-              <section className="rounded-container border border-hairline bg-white px-5 py-4">
+              <section className="rounded-container border border-hairline bg-surface px-5 py-4">
                 <h2 className="text-sm font-medium text-stone-700">会话终态分布</h2>
                 <div className="mt-3">
                   <HBarList
@@ -207,7 +207,7 @@ export default function AnalyticsPage() {
             </div>
 
             {/* 工具调用分布 */}
-            <section className="rounded-container border border-hairline bg-white px-5 py-4">
+            <section className="rounded-container border border-hairline bg-surface px-5 py-4">
               <h2 className="text-sm font-medium text-stone-700">工具调用分布</h2>
               {overview.toolDistribution.length > 0 ? (
                 <div className="mt-3">
@@ -228,7 +228,7 @@ export default function AnalyticsPage() {
             </section>
 
             {/* 审批时效 */}
-            <section className="rounded-container border border-hairline bg-white px-5 py-4">
+            <section className="rounded-container border border-hairline bg-surface px-5 py-4">
               <h2 className="text-sm font-medium text-stone-700">人工审批时效</h2>
               <div className="mt-3 flex items-baseline gap-4">
                 <span className="text-2xl font-semibold tracking-tight text-stone-900">
@@ -241,7 +241,7 @@ export default function AnalyticsPage() {
             </section>
 
             {/* 满意度 */}
-            <section className="rounded-container border border-hairline bg-white px-5 py-4">
+            <section className="rounded-container border border-hairline bg-surface px-5 py-4">
               <div className="flex items-baseline justify-between">
                 <h2 className="text-sm font-medium text-stone-700">会话满意度 CSAT</h2>
                 <span className="text-xs text-stone-500">
@@ -257,7 +257,7 @@ export default function AnalyticsPage() {
 
             {/* CSAT 与终态交叉 */}
             {overview.ratingByFinalStatus.length > 0 && (
-              <section className="rounded-container border border-hairline bg-white px-5 py-4">
+              <section className="rounded-container border border-hairline bg-surface px-5 py-4">
                 <h2 className="text-sm font-medium text-stone-700">满意度 × 会话终态</h2>
                 <p className="mt-1 text-xs text-stone-500">
                   AI 解决与人工解决的满意度对照 升级人工但满意 是人工价值的直接证据

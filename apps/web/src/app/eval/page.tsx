@@ -243,7 +243,7 @@ function Segment<T extends string | number>({
   onChange: (value: T) => void
 }) {
   return (
-    <div className="inline-flex rounded-control border border-zinc-200 bg-white p-0.5">
+    <div className="inline-flex rounded-control border border-zinc-200 bg-surface p-0.5">
       {options.map((option) => (
         <button
           key={String(option.value)}
@@ -273,7 +273,7 @@ function ReportColumn({ report, level }: { report: EvalReportSummary; level: 'L1
   const ci = report.report.confidenceIntervals?.['task_success_rate']
 
   return (
-    <div className="min-w-0 flex-1 rounded-container border border-hairline bg-white px-5 py-4">
+    <div className="min-w-0 flex-1 rounded-container border border-hairline bg-surface px-5 py-4">
       <div className="flex items-center justify-between gap-2">
         <Badge tone={level === 'L1' ? 'l1' : 'l2'}>
           {level === 'L1' ? 'L1 脚本回归' : 'L2 用户模拟'}
@@ -361,7 +361,7 @@ function ImprovementStrip({
 
   if (!prevCi || !latestCi) {
     return (
-      <div className="rounded-container border border-hairline bg-white px-4 py-3 text-xs text-stone-500">
+      <div className="rounded-container border border-hairline bg-surface px-4 py-3 text-xs text-stone-500">
         最近两份 L2 报告缺少置信区间，无法判断改进显著性。
       </div>
     )
@@ -375,7 +375,7 @@ function ImprovementStrip({
       : { tone: 'fail' as const, text: '最新区间整体低于上份，明显下降' }
 
   return (
-    <div className="rounded-container border border-hairline bg-white px-4 py-3">
+    <div className="rounded-container border border-hairline bg-surface px-4 py-3">
       <div className="flex items-center justify-between gap-4">
         <span className="shrink-0 text-xs font-medium text-stone-600">改进显著性</span>
         <Badge tone={verdict.tone}>{verdict.text}</Badge>
@@ -431,14 +431,14 @@ function ComparePanel({
   return (
     <section className="mt-4">
       <h2 className="mb-2 text-sm font-medium text-stone-700">L2 报告对比（任选两份）</h2>
-      <div className="rounded-container border border-hairline bg-white px-4 py-3">
+      <div className="rounded-container border border-hairline bg-surface px-4 py-3">
         <div className="flex flex-wrap items-center gap-3 text-xs">
           <label className="flex items-center gap-1.5">
             <span className="text-stone-500">基线</span>
             <select
               value={baseline.reportId}
               onChange={(event) => onSelect(0, event.target.value)}
-              className="rounded-control border border-hairline bg-white px-2 py-1 font-mono text-xs text-stone-700 transition-colors duration-200 hover:border-stone-300"
+              className="rounded-control border border-hairline bg-surface px-2 py-1 font-mono text-xs text-stone-700 transition-colors duration-200 hover:border-stone-300"
             >
               {options}
             </select>
@@ -451,7 +451,7 @@ function ComparePanel({
             <select
               value={current.reportId}
               onChange={(event) => onSelect(1, event.target.value)}
-              className="rounded-control border border-hairline bg-white px-2 py-1 font-mono text-xs text-stone-700 transition-colors duration-200 hover:border-stone-300"
+              className="rounded-control border border-hairline bg-surface px-2 py-1 font-mono text-xs text-stone-700 transition-colors duration-200 hover:border-stone-300"
             >
               {options}
             </select>
@@ -482,7 +482,7 @@ function ComparePanel({
 function LayerMetrics({ results }: { results: EvalCaseResultView[] }) {
   const total = results.length
   return (
-    <div className="rounded-container border border-hairline bg-white">
+    <div className="rounded-container border border-hairline bg-surface">
       {FAILURE_LAYERS.map((layer, index) => {
         const { failedCases } = layerItems(results, layer.kinds)
         const rate = total > 0 ? 1 - failedCases / total : 0
@@ -551,7 +551,7 @@ function FailureRow({
       {expanded && (
         <tr className="bg-stone-50/60">
           <td colSpan={4} className="px-3 pb-4 pt-1">
-            <div className="space-y-3 rounded-control border border-hairline bg-white px-4 py-3">
+            <div className="space-y-3 rounded-control border border-hairline bg-surface px-4 py-3">
               {FAILURE_LAYERS.map((layer) => {
                 // judge 失败单独渲染判据与理由 避免与 fail-item 重复
                 const kinds = layer.kinds.filter((kind) => kind !== 'judge')
@@ -844,7 +844,7 @@ export default function EvalPage() {
         </div>
 
         {/* 运行评测 */}
-        <section className="mt-8 rounded-container border border-hairline bg-white px-5 py-4">
+        <section className="mt-8 rounded-container border border-hairline bg-surface px-5 py-4">
           <h2 className="text-sm font-medium text-stone-700">运行评测</h2>
 
           <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
@@ -858,7 +858,7 @@ export default function EvalPage() {
               type="button"
               onClick={triggerL1}
               disabled={runningL1}
-              className="shrink-0 rounded-control border border-zinc-200 bg-white px-4 py-2 text-xs font-medium text-stone-700 transition-colors duration-200 hover:bg-blue-50 active:scale-[0.98] disabled:opacity-50"
+              className="shrink-0 rounded-control border border-zinc-200 bg-surface px-4 py-2 text-xs font-medium text-stone-700 transition-colors duration-200 hover:bg-blue-50 active:scale-[0.98] disabled:opacity-50"
             >
               {runningL1 ? '评测执行中' : '运行 L1 脚本回归'}
             </button>
@@ -882,7 +882,7 @@ export default function EvalPage() {
                 aria-label={
                   key === 'agent' ? '被测模型' : key === 'user' ? '用户模拟器模型' : 'Judge 模型'
                 }
-                className="w-48 rounded-control border border-zinc-200 bg-white px-3 py-1.5 font-mono text-xs text-stone-700 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none"
+                className="w-48 rounded-control border border-zinc-200 bg-surface px-3 py-1.5 font-mono text-xs text-stone-700 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none"
               />
             ))}
             <div className="flex min-w-0 flex-1 items-center justify-end gap-4">
@@ -927,7 +927,7 @@ export default function EvalPage() {
               {[0, 1].map((index) => (
                 <div
                   key={index}
-                  className="rounded-container border border-hairline bg-white px-5 py-4"
+                  className="rounded-container border border-hairline bg-surface px-5 py-4"
                 >
                   <Skeleton className="h-4 w-24" />
                   <Skeleton className="mt-3 h-9 w-40" />
@@ -1044,11 +1044,11 @@ export default function EvalPage() {
                 <section className="mt-8">
                   <h2 className="mb-2 text-sm font-medium text-stone-700">失败明细</h2>
                   {failedCases.length === 0 ? (
-                    <div className="rounded-container border border-hairline bg-white px-4 py-6 text-center text-sm text-stone-400">
+                    <div className="rounded-container border border-hairline bg-surface px-4 py-6 text-center text-sm text-stone-400">
                       本报告无失败用例
                     </div>
                   ) : (
-                    <div className="overflow-x-auto rounded-container border border-hairline bg-white">
+                    <div className="overflow-x-auto rounded-container border border-hairline bg-surface">
                       <table className="w-full text-sm">
                         <thead className="text-left text-xs text-stone-500">
                           <tr className="border-b border-hairline">

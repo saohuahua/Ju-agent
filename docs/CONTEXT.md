@@ -48,6 +48,33 @@
 - **审批时效** 已决审批从创建到决定的平均耗时
 - **token 成本** 单 run usage 当前无落库来源 如实未纳入运营指标
 
+## 双轨主题与深度可视化（功能 18 阶段 0）
+
+- **前台轨（light track）** 客户侧界面 `/workbench` `/my` 暖白 stone + sage 浅色
+  目的是安抚情绪 沿用 v1-v3 既有 token 不变
+- **控制台轨（console track）** 运营侧与工程侧界面 近黑带绿调深色
+  目的是暴露系统真相 根节点标注 `data-theme="console"` 切轨
+- **区域语义而非用户偏好** 主题由路由决定 不用 Tailwind `dark:`（那表达 prefers-color-scheme）
+  也不提供用户切换开关 深浅交界本身即前台后台的视觉证据
+- **切轨机制** 重定义既有 token 取值 而非给元素换类名
+  Tailwind v4 调色板本身是 CSS 变量 改变量即整轨生效 既有页面 JSX 未动
+- **待建占位（planned）** 导航登记但尚未落地的页面 渲染为不可点的「待建」标记
+  分组结构从第一天完整可见 又不给出会 404 的链接
+
+- **工具目录变更（tools.catalog_changed）** 能力门控的可观测化事件
+  agent 每轮构建工具目录时发出 `visible` 本轮喂给模型的工具 `gated` 被门控挡住的
+  把「未查订单前动作工具不进目录」从代码行为变成可回放事实
+- **防线拦截（guard.blocked）** 三道闸任一挡下重复副作用时落的事件
+  `layer` 取 idempotency 业务幂等键 approval_token 一次性审批令牌 gateway 网关级去重
+  拦截即代表未产生资金动作 是幂等三道防线的直接证据
+- **上下文分段（context segments）** `context.compacted` 的可选 payload 字段
+  分 workingMemory 状态便签 recent 最近消息 compacted 已清理历史三段
+  由 agent 实测而非前端估算 让「上下文工程可量化」有后端数据撑腰
+
+- **token 计量口径（TokenSource）** measured 真实模型 API usage 实测值
+  estimated 脚本化模型按字符数估算 仅证明系统层正确性
+  两者永不混算 口径写进数据本身 而不靠调用方记得区分
+
 ## 既有概念（沿用 不另起名）
 
 - **审批令牌（approval token）** 一次性 只存断点不经过模型

@@ -148,7 +148,7 @@ export default function ConsolePage() {
             </span>
             <button
               onClick={() => loadInbox()}
-              className="inline-flex items-center gap-1 rounded-control border border-hairline bg-white px-2.5 py-1 text-stone-600 transition-colors duration-200 hover:bg-stone-100 active:scale-[0.98]"
+              className="inline-flex items-center gap-1 rounded-control border border-hairline bg-surface px-2.5 py-1 text-stone-600 transition-colors duration-200 hover:bg-stone-100 active:scale-[0.98]"
             >
               <ArrowsClockwise size={14} aria-hidden="true" />
               刷新
@@ -190,7 +190,7 @@ export default function ConsolePage() {
                   className={`mb-1.5 w-full rounded-container border px-3 py-2.5 text-left transition-colors duration-200 active:scale-[0.99] ${
                     selectedRunId === run.runId
                       ? 'border-violet-300 bg-violet-50'
-                      : 'border-hairline bg-white hover:border-stone-300 hover:bg-stone-50'
+                      : 'border-hairline bg-surface hover:border-stone-300 hover:bg-stone-50'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
@@ -247,19 +247,19 @@ export default function ConsolePage() {
                         message.role === 'user'
                           ? 'ml-auto border border-sage-200 bg-sage-100 text-sage-900'
                           : message.role === 'assistant'
-                            ? 'border border-hairline bg-white text-stone-800'
+                            ? 'border border-hairline bg-surface text-stone-800'
                             : message.role === 'operator'
                               ? 'ml-auto border border-violet-200 bg-violet-50 text-violet-900'
                               : 'mx-auto bg-transparent text-center text-xs text-stone-400'
                       }`}
                     >
                       {message.role === 'operator' && (
-                        <span className="mr-1.5 inline-flex items-center rounded-badge border border-violet-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-violet-700">
+                        <span className="mr-1.5 inline-flex items-center rounded-badge border border-violet-200 bg-surface px-1.5 py-0.5 text-[10px] font-medium text-violet-700">
                           我
                         </span>
                       )}
                       {message.role === 'user' && (
-                        <span className="mr-1.5 inline-flex items-center rounded-badge border border-sage-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-sage-700">
+                        <span className="mr-1.5 inline-flex items-center rounded-badge border border-sage-200 bg-surface px-1.5 py-0.5 text-[10px] font-medium text-sage-700">
                           客户
                         </span>
                       )}
@@ -269,7 +269,7 @@ export default function ConsolePage() {
                   ))}
 
                   {state.tools.length > 0 && (
-                    <details className="max-w-2xl rounded-container border border-hairline bg-white px-4 py-2.5">
+                    <details className="max-w-2xl rounded-container border border-hairline bg-surface px-4 py-2.5">
                       <summary className="cursor-pointer text-xs text-stone-500">
                         工具调用轨迹 {state.tools.length} 条
                       </summary>
@@ -300,7 +300,7 @@ export default function ConsolePage() {
                         value={reply}
                         onChange={(event) => setReply(event.target.value)}
                         placeholder="以坐席身份回复客户 消息实时送达客户工作台"
-                        className="flex-1 rounded-control border border-hairline bg-white px-4 py-2.5 text-sm text-stone-900 transition-colors duration-200 placeholder:text-stone-500"
+                        className="flex-1 rounded-control border border-hairline bg-surface px-4 py-2.5 text-sm text-stone-900 transition-colors duration-200 placeholder:text-stone-500"
                       />
                       <button
                         type="submit"
@@ -320,7 +320,7 @@ export default function ConsolePage() {
                         onChange={(event) => setSummary(event.target.value)}
                         rows={2}
                         placeholder="解决摘要 必填 会随解决事件落库审计 客户侧可见"
-                        className="flex-1 rounded-control border border-hairline bg-white px-4 py-2.5 text-sm text-stone-900 transition-colors duration-200 placeholder:text-stone-500"
+                        className="flex-1 rounded-control border border-hairline bg-surface px-4 py-2.5 text-sm text-stone-900 transition-colors duration-200 placeholder:text-stone-500"
                       />
                       <button
                         onClick={resolve}

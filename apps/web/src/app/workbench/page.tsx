@@ -154,7 +154,7 @@ export default function WorkbenchPage() {
                   setInput('')
                   setError(null)
                 }}
-                className="rounded-control border border-hairline bg-white px-2.5 py-1 text-stone-600 transition-colors duration-200 hover:bg-stone-100 hover:text-stone-900 active:scale-[0.98]"
+                className="rounded-control border border-hairline bg-surface px-2.5 py-1 text-stone-600 transition-colors duration-200 hover:bg-stone-100 hover:text-stone-900 active:scale-[0.98]"
               >
                 新会话
               </button>
@@ -190,7 +190,7 @@ export default function WorkbenchPage() {
                     key={sample}
                     onClick={() => submit(sample)}
                     disabled={sending}
-                    className="rounded-container border border-hairline bg-white px-4 py-2.5 text-left text-sm text-stone-700 transition-colors duration-200 hover:border-stone-300 hover:bg-stone-50 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="rounded-container border border-hairline bg-surface px-4 py-2.5 text-left text-sm text-stone-700 transition-colors duration-200 hover:border-stone-300 hover:bg-stone-50 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {sample}
                   </button>
@@ -200,7 +200,7 @@ export default function WorkbenchPage() {
           )}
 
           {pendingAssistant && (
-            <div className="max-w-2xl rounded-container border border-hairline bg-white px-4 py-2.5">
+            <div className="max-w-2xl rounded-container border border-hairline bg-surface px-4 py-2.5">
               <Skeleton className="h-4 w-3/4" />
               <Skeleton className="mt-2 h-4 w-1/2" />
             </div>
@@ -213,14 +213,14 @@ export default function WorkbenchPage() {
                 message.role === 'user'
                   ? 'ml-auto border border-sage-200 bg-sage-100 text-sage-900'
                   : message.role === 'assistant'
-                    ? 'border border-hairline bg-white text-stone-800'
+                    ? 'border border-hairline bg-surface text-stone-800'
                     : message.role === 'operator'
                       ? 'border border-violet-200 bg-violet-50 text-violet-900'
                       : 'mx-auto bg-transparent text-center text-xs text-stone-400'
               }`}
             >
               {message.role === 'operator' && (
-                <span className="mr-1.5 inline-flex items-center rounded-badge border border-violet-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-violet-700">
+                <span className="mr-1.5 inline-flex items-center rounded-badge border border-violet-200 bg-surface px-1.5 py-0.5 text-[10px] font-medium text-violet-700">
                   人工坐席
                 </span>
               )}
@@ -253,7 +253,7 @@ export default function WorkbenchPage() {
 
           {/* 终态评分卡 全终态可评 一会话一评 */}
           {runId && ratingEligible && (
-            <div className="max-w-2xl rounded-container border border-hairline bg-white px-4 py-3">
+            <div className="max-w-2xl rounded-container border border-hairline bg-surface px-4 py-3">
               {rating ? (
                 <div className="flex items-center gap-2 text-sm">
                   <span className="text-amber-500" aria-hidden="true">
@@ -290,7 +290,7 @@ export default function WorkbenchPage() {
                       onChange={(event) => setRatingComment(event.target.value)}
                       maxLength={200}
                       placeholder="可选 一句话评价"
-                      className="flex-1 rounded-control border border-hairline bg-white px-3 py-1.5 text-xs text-stone-800 transition-colors duration-200 placeholder:text-stone-400"
+                      className="flex-1 rounded-control border border-hairline bg-surface px-3 py-1.5 text-xs text-stone-800 transition-colors duration-200 placeholder:text-stone-400"
                     />
                     <button
                       type="button"
@@ -331,7 +331,7 @@ export default function WorkbenchPage() {
               onChange={(event) => setInput(event.target.value)}
               disabled={!canInteract}
               placeholder={inputPlaceholder}
-              className="flex-1 rounded-control border border-hairline bg-white px-4 py-2.5 text-sm text-stone-900 transition-colors duration-200 placeholder:text-stone-500 disabled:opacity-50"
+              className="flex-1 rounded-control border border-hairline bg-surface px-4 py-2.5 text-sm text-stone-900 transition-colors duration-200 placeholder:text-stone-500 disabled:opacity-50"
             />
             <button
               type="submit"

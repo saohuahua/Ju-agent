@@ -134,7 +134,7 @@ export function MetricTile({
   const valueClass =
     tone === 'sage' ? 'text-sage-700' : tone === 'amber' ? 'text-amber-700' : 'text-stone-900'
   return (
-    <div className="rounded-container border border-hairline bg-white px-4 py-3">
+    <div className="rounded-container border border-hairline bg-surface px-4 py-3">
       <div className="text-xs text-stone-500">{label}</div>
       <div className={`mt-1 text-2xl font-semibold tracking-tight ${valueClass}`}>{value}</div>
       {sub && <div className="mt-0.5 text-[11px] text-stone-400">{sub}</div>}

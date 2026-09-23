@@ -22,7 +22,7 @@ const STATUS_LABEL = {
 
 export function LogisticsCard({ item }: { item: LogisticsItem }) {
   return (
-    <div className="relative mx-auto max-w-2xl rounded-container border border-hairline bg-white px-4 py-2.5">
+    <div className="relative mx-auto max-w-2xl rounded-container border border-hairline bg-surface px-4 py-2.5">
       <span
         aria-hidden="true"
         className={`absolute top-1.5 bottom-1.5 left-0 w-0.5 rounded-full ${STATUS_BAR[item.status]}`}

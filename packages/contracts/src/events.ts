@@ -7,7 +7,14 @@
  */
 
 import { z } from 'zod'
-import { ErrorCode, EventType, LogisticsEventStatus, RiskLevel } from './enums.js'
+import {
+  ErrorCode,
+  EventType,
+  GuardLayer,
+  LogisticsEventStatus,
+  RiskLevel,
+  ToolGateReason,
+} from './enums.js'
 
 /** 持久化事件行 内含自增全局 id 与 run 内单调 sequence */
 export const AgentEventRow = z.object({
@@ -77,6 +84,22 @@ export const EVENT_PAYLOAD_SCHEMAS = {
     strategy: z.enum(['tool_result_clearing', 'summarization']),
     beforeTokens: z.number().int().nonnegative(),
     afterTokens: z.number().int().nonnegative(),
+    /**
+     * 压缩后三段各自的 token 占比 由 agent 实测而非前端估算
+     *
+     * 可选字段 历史事件没有这一段 前端需按缺省降级为只展示总量
+     * 加这个字段是为了让「上下文工程可量化」有后端实测撑腰 估算值撑不住该说法
+     */
+    segments: z
+      .object({
+        /** 状态便签 从事件流派生的结构化摘要 */
+        workingMemory: z.number().int().nonnegative(),
+        /** 保留的最近消息 */
+        recent: z.number().int().nonnegative(),
+        /** 被清理的历史工具结果 压缩腾出的空间 */
+        compacted: z.number().int().nonnegative(),
+      })
+      .optional(),
   }),
   'step.started': z.object({
     stepId: z.string(),
@@ -169,6 +192,30 @@ export const EVENT_PAYLOAD_SCHEMAS = {
   'run.resolved': z.object({
     summary: z.string(),
     resolvedBy: z.string(),
+  }),
+  /**
+   * 工具目录变更 能力门控的可观测化
+   *
+   * agent 每轮构建工具目录时发出 目录内容不变则不重复发
+   * visible 是本轮真正喂给模型的工具 gated 是存在但被门控挡住的
+   * 「未查过订单前动作工具不进目录」这条结构性防盲提交由此从代码行为变成可回放事实
+   */
+  'tools.catalog_changed': z.object({
+    visible: z.array(z.string()),
+    gated: z.array(z.string()),
+    reason: ToolGateReason,
+  }),
+  /**
+   * 防线拦截 三道闸任一挡下重复副作用时落事件
+   *
+   * 拦截即代表未产生资金动作 这是幂等三道防线的直接证据
+   * key 为拦截所依据的键（幂等键 审批令牌 或网关请求指纹）已脱敏
+   */
+  'guard.blocked': z.object({
+    layer: GuardLayer,
+    key: z.string(),
+    /** 被拦下的动作 如 execute_refund */
+    action: z.string(),
   }),
 } as const
 

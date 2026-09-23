@@ -1,12 +1,24 @@
 @import 'tailwindcss';
 
 /*
- * AfterSales Copilot 设计系统（阶段 0）
+ * AfterSales Copilot 设计系统（双轨）
  *
- * 视觉方向：极简 editorial 浅色主题，暖白 monochrome（stone 系）
- * 主色：sage（唯一低饱和交互色，全站锁定）
- * 状态色：muted pastel（浅底 + 深字 + 细边）
- * 圆角体系：容器 10px / 控件 8px / 徽章 6px
+ * 一个产品两个面（ADR-013）：同一 sage 色相，前台浅色后台深色。
+ *
+ * 前台轨（客户侧 /workbench /my）
+ *   视觉方向：极简 editorial 浅色，暖白 monochrome（stone 系）
+ *   主色：sage（唯一低饱和交互色，全站锁定）
+ *   状态色：muted pastel（浅底 + 深字 + 细边）
+ *
+ * 控制台轨（运营侧与工程侧，根节点标注 data-theme="console"）
+ *   视觉方向：近黑带绿调的深色控制台，暴露系统真相
+ *   主色：sage 提亮到 400 档保证深底对比度
+ *   对比度：全部组合过 WCAG AA，凭据见 scripts/check-console-contrast.mjs
+ *
+ * 用区域语义而非用户偏好：主题由路由决定，不用 Tailwind dark: 变体，
+ * 也不提供用户切换开关——深浅交界本身就是「前台/后台」的视觉证据。
+ *
+ * 圆角体系：容器 10px / 控件 8px / 徽章 6px（两轨共用）
  * 动效：仅 200-300ms CSS 过渡，全部尊重 prefers-reduced-motion
  * 规则来源：docs/redesign-audit.md
  */
@@ -41,6 +53,35 @@
   --radius-control: 8px; /* 按钮 输入框 导航项 */
   --radius-badge: 6px; /* 徽章 pill */
 
+  /*
+   * 控制台深色轨（后台专用）
+   *
+   * 三层背景递进 canvas 页面底 < surface 面板 < raised 浮起卡片与 hover
+   * 前景分三级 ink 正文 / muted 次要 / dim 禁用与装饰
+   * 对比度门槛与实测值由 scripts/check-console-contrast.mjs 守护 改色必须重跑
+   */
+  --color-console-canvas: #0d100e; /* 页面底 近黑带绿调 */
+  --color-console-surface: #151a17; /* 面板 */
+  --color-console-raised: #1d2420; /* 浮起卡片 / hover */
+
+  /* 两档边框：hairline 仅作装饰性分隔 border 用于控件边界需过 1.4.11 的 3:1 */
+  --color-console-hairline: #323b35;
+  --color-console-border: #6b756e;
+
+  --color-console-ink: #e6eae7; /* 主文本 对 raised 13.04:1 */
+  --color-console-muted: #8b948d; /* 次要文本 对 raised 5.07:1 */
+  --color-console-dim: #7a847d; /* 三级文本与禁用 大字档 对 raised 4.09:1 */
+
+  /* 深色下主交互色提亮到 sage-400 档 accent-dim 仅用于非文本描边与填充 */
+  --color-console-accent: #86a489;
+  --color-console-accent-dim: #5a7d62;
+
+  /* 状态色深色版 深底亮字 全部过 AA */
+  --color-console-ok: #6ee7a8;
+  --color-console-warn: #f5c563;
+  --color-console-danger: #f78a8a;
+  --color-console-info: #7fb4e8;
+
   /* 评测进度呼吸圆点 1.6s 全局 reduced-motion 兜底降为瞬时 */
   --animate-breathe: breathe 1.6s ease-in-out infinite;
 
@@ -64,16 +105,183 @@ body {
   color: var(--color-ink);
 }
 
+/*
+ * 控制台作用域
+ *
+ * 后台页面在自己的根节点标注 data-theme="console" 即可切轨。
+ *
+ * 切轨方式是「重定义既有 token 的取值」而不是「给每个元素换类名」：
+ * 页面里写的 text-stone-500 语义是「次要文本」，在深色轨它就该解析成
+ * 一个亮的灰绿；bg-surface 语义是「面板」，深色轨解析成近黑。
+ * Tailwind 4 的调色板本身就是 CSS 变量，因此这里改变量即可整轨生效，
+ * 既有页面一行 JSX 都不用动——这也是 ADR-013「组件不得写死颜色」的兑现。
+ *
+ * 只有一类情况必须按工具类而非按变量覆盖：同一档色号既当文字又当背景。
+ * 例如 emerald-700 既是 text-emerald-700（徽章文字 深色轨要提亮）
+ * 又是 bg-emerald-700（通过按钮底色 深色轨要维持深底压白字）。
+ * 这种冲突在下方用 .text-* 选择器单独处理 不动变量。
+ */
+[data-theme='console'] {
+  color-scheme: dark;
+  background-color: var(--color-console-canvas);
+  color: var(--color-console-ink);
+
+  /* 语义中性色 直接指向控制台轨取值 */
+  --color-canvas: var(--color-console-canvas);
+  --color-surface: var(--color-console-surface);
+  --color-ink: var(--color-console-ink);
+  --color-hairline: var(--color-console-hairline);
+
+  /*
+   * 中性 ramp 反转：浅色轨「数字越大越深」在深色轨变成「数字越大越亮」。
+   * 语义不变——900 仍是主文本 500 仍是次要文本 100 仍是填充底。
+   */
+  --color-stone-50: #151a17;
+  --color-stone-100: #1d2420;
+  --color-stone-200: #323b35;
+  --color-stone-300: #6b756e;
+  --color-stone-400: #7a847d;
+  --color-stone-500: #8b948d;
+  --color-stone-600: #a2aba5;
+  --color-stone-700: #b9c1bc;
+  --color-stone-800: #d0d6d2;
+  --color-stone-900: #e6eae7;
+
+  --color-zinc-50: #151a17;
+  --color-zinc-100: #1d2420;
+  --color-zinc-200: #323b35;
+  --color-zinc-500: #8b948d;
+  --color-zinc-600: #a2aba5;
+
+  /*
+   * 状态徽章底与边：浅底深字反转为深底亮字。
+   * 只重定义 50/100/200 三档——这三档在本项目里只做徽章底与细边，
+   * 没有当文字用的场合 故可安全按变量整体替换。
+   * 对应的亮字色在下方按工具类覆盖 实测对比度见 scripts/check-console-contrast.mjs
+   */
+  --color-emerald-50: #102a1f;
+  --color-emerald-100: #16382a;
+  --color-emerald-200: #1f4e39;
+
+  --color-red-50: #2e1414;
+  --color-red-100: #3d1a1a;
+  --color-red-200: #552424;
+
+  --color-amber-50: #2d2310;
+  --color-amber-100: #3c2f15;
+  --color-amber-200: #54421d;
+
+  --color-orange-50: #2f1f12;
+  --color-orange-100: #3e2917;
+  --color-orange-200: #573920;
+
+  --color-sky-50: #10222e;
+  --color-sky-100: #162e3d;
+  --color-sky-200: #1f4055;
+
+  --color-blue-50: #121f33;
+  --color-blue-100: #182943;
+  --color-blue-200: #21395d;
+
+  --color-purple-50: #241a2e;
+  --color-purple-100: #30233d;
+  --color-purple-200: #433155;
+
+  --color-violet-50: #201a2e;
+  --color-violet-100: #2b233d;
+  --color-violet-200: #3c3155;
+
+  --color-sage-50: #141a15;
+  --color-sage-100: #1b231d;
+  --color-sage-200: #26332a;
+}
+
+/*
+ * 深色轨的状态文字：浅色轨用 700-900 档表示「压在浅底上的深字」，
+ * 深色轨需要反过来提亮。按 .text-* 选择器覆盖 不碰同名的 bg-* 工具类，
+ * 因为 bg-emerald-700 这类实心按钮底色在深色轨本就合适（白字压饱和色）。
+ */
+[data-theme='console']
+  :is(.text-emerald-600, .text-emerald-700, .text-emerald-800, .text-emerald-900) {
+  color: var(--color-console-ok);
+}
+
+[data-theme='console'] :is(.text-red-600, .text-red-700, .text-red-800, .text-red-900) {
+  color: var(--color-console-danger);
+}
+
+[data-theme='console']
+  :is(
+    .text-amber-600,
+    .text-amber-700,
+    .text-amber-800,
+    .text-amber-900,
+    .text-orange-600,
+    .text-orange-700,
+    .text-orange-800,
+    .text-orange-900
+  ) {
+  color: var(--color-console-warn);
+}
+
+[data-theme='console']
+  :is(
+    .text-sky-600,
+    .text-sky-700,
+    .text-sky-800,
+    .text-sky-900,
+    .text-blue-600,
+    .text-blue-700,
+    .text-blue-800,
+    .text-blue-900
+  ) {
+  color: var(--color-console-info);
+}
+
+[data-theme='console']
+  :is(
+    .text-purple-600,
+    .text-purple-700,
+    .text-purple-800,
+    .text-purple-900,
+    .text-violet-600,
+    .text-violet-700,
+    .text-violet-800,
+    .text-violet-900
+  ) {
+  color: #c4a5f0;
+}
+
+[data-theme='console'] :is(.text-sage-600, .text-sage-700, .text-sage-800, .text-sage-900) {
+  color: var(--color-console-accent);
+}
+
+/* 300 档描边在深色轨降为可辨深边 同名的 bg-*-300 是进度条填充 保持原亮度 */
+[data-theme='console']
+  :is(.border-emerald-300, .border-amber-300, .border-blue-300, .border-sky-300, .border-red-300) {
+  border-color: var(--color-console-border);
+}
+
 /* 全局可见焦点环：组件不写 outline-none，键盘可达性由这里兜底 */
 :focus-visible {
   outline: 2px solid var(--color-sage-600);
   outline-offset: 2px;
 }
 
+/* 深色轨焦点环换用提亮后的 accent sage-600 在近黑底上不可见 */
+[data-theme='console'] :focus-visible {
+  outline-color: var(--color-console-accent);
+}
+
 /* 文本选中 */
 ::selection {
   background-color: var(--color-sage-100);
   color: var(--color-ink);
+}
+
+[data-theme='console'] ::selection {
+  background-color: var(--color-console-accent-dim);
+  color: var(--color-console-ink);
 }
 
 /* 全局滚动条：浅色细滚动条 */
@@ -93,6 +301,14 @@ body {
 
 ::-webkit-scrollbar-track {
   background: transparent;
+}
+
+[data-theme='console'] ::-webkit-scrollbar-thumb {
+  background: var(--color-console-hairline);
+}
+
+[data-theme='console'] ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-console-border);
 }
 
 /*
