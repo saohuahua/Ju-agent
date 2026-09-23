@@ -155,10 +155,15 @@ export interface LeaseRepository {
  * 网关必须支持幂等键 相同键的重复请求返回同一结果且只扣款一次
  */
 export interface PaymentGatewayPort {
+  /**
+   * deduped 为 true 表示网关按幂等键命中了已有结果 未产生新的成功扣款
+   * 只有业务幂等记录意外丢失（如进程在网关成功与落记录之间崩溃）时才会出现
+   * 是三道防线的最后一道 该标志向上传播供审计与 guard.blocked 事件使用
+   */
   withRefund(
     idempotencyKey: string,
     request: { refundNo: string; amountCents: number; currency: string; channel: string },
-  ): Promise<{ gatewayRefundId: string }>
+  ): Promise<{ gatewayRefundId: string; deduped: boolean }>
   /** 评测与演示用 读取网关侧成功扣款次数 */
   chargeCount(idempotencyKey: string): number
   totalSuccessfulCharges(): number

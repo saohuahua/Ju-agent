@@ -51,6 +51,8 @@ export interface ExecuteCompensationResult {
   amountCents: number
   idempotencyKey: string
   replayed: boolean
+  /** 网关级去重命中 仅在业务幂等记录丢失的崩溃恢复场景出现 */
+  gatewayDeduped?: boolean
 }
 
 /** 仍占位的补偿状态 同订单同原因不允许重复发起 */
@@ -251,6 +253,12 @@ export class CompensationService {
     const key = compensationIdempotencyKey(input.compensationNo)
     const recorded = await this.idempotencyRepo.find(key)
     if (recorded) {
+      // 第一道防线拦截 幂等键命中 重复请求短路返回首次结果 未触碰网关
+      await this.audit.record(actor, 'guard_idempotency_replay', 'compensation', input.compensationNo, {
+        layer: 'idempotency',
+        key,
+        action: 'execute_compensation',
+      }, runId)
       return {
         compensationNo: input.compensationNo,
         status: 'succeeded',
@@ -333,13 +341,22 @@ export class CompensationService {
         runId,
       )
 
-      return {
-        compensationNo: input.compensationNo,
-        status: 'succeeded',
-        amountCents: compensation.amountCents,
-        idempotencyKey: key,
-        replayed: false,
-      }
+      // 第三道防线兜底 业务幂等记录丢失但网关按幂等键去重了 未产生重复扣款
+        if (gatewayResult.deduped) {
+          await this.audit.record(actor, 'guard_gateway_dedup', 'compensation', input.compensationNo, {
+            layer: 'gateway',
+            key,
+            action: 'execute_compensation',
+          }, runId)
+        }
+        return {
+          compensationNo: input.compensationNo,
+          status: 'succeeded',
+          amountCents: compensation.amountCents,
+          idempotencyKey: key,
+          replayed: false,
+          gatewayDeduped: gatewayResult.deduped,
+        }
     } catch (error) {
       // 网关失败回到可重试状态 重试走同一幂等键
       assertCompensationTransition(compensation.status, 'failed')

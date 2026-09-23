@@ -13,6 +13,7 @@
 
 import { use, useCallback, useEffect, useState, type FormEvent } from 'react'
 import { AppShell } from '@/components/AppShell'
+import { GuardPanel } from '@/components/GuardPanel'
 import { NodeDetail } from '@/components/NodeDetail'
 import { Skeleton } from '@/components/Skeleton'
 import { StatusBadge } from '@/components/StatusBadge'
@@ -233,6 +234,8 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
             )}
 
             <NodeDetail node={selected} />
+
+            <GuardPanel events={events} />
 
             {view.tools.length > 0 && (
               <section>

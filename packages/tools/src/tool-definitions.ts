@@ -291,6 +291,9 @@ export function buildToolRegistry(deps: ToolDependencies): ToolRegistry {
       status: result.status,
       amountCents: result.amountCents,
       idempotencyKey: result.idempotencyKey,
+      // 防线拦截标志透传 执行器据此落 guard.blocked 事件
+      replayed: result.replayed,
+      gatewayDeduped: result.gatewayDeduped ?? false,
     }
   })
 
@@ -344,6 +347,9 @@ export function buildToolRegistry(deps: ToolDependencies): ToolRegistry {
         status: result.status,
         amountCents: result.amountCents,
         idempotencyKey: result.idempotencyKey,
+        // 防线拦截标志透传 执行器据此落 guard.blocked 事件
+        replayed: result.replayed,
+        gatewayDeduped: result.gatewayDeduped ?? false,
       }
     },
   )
@@ -387,6 +393,9 @@ export function buildToolRegistry(deps: ToolDependencies): ToolRegistry {
         status: result.status,
         amountCents: result.amountCents,
         idempotencyKey: result.idempotencyKey,
+        // 防线拦截标志透传 执行器据此落 guard.blocked 事件
+        replayed: result.replayed,
+        gatewayDeduped: result.gatewayDeduped ?? false,
       }
     },
   )

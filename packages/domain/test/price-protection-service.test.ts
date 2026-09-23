@@ -435,7 +435,7 @@ describe('执行退还', () => {
           failFirst = false
           throw new Error('gateway down')
         }
-        return { gatewayRefundId: `gw_${request.refundNo}` }
+        return { gatewayRefundId: `gw_${request.refundNo}`, deduped: false }
       },
     }
     const flaky = setup(flakyGateway)

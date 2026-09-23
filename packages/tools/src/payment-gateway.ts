@@ -24,7 +24,7 @@ export class MockPaymentGateway implements PaymentGatewayPort {
   async withRefund(
     idempotencyKey: string,
     request: { refundNo: string; amountCents: number; currency: string; channel: string },
-  ): Promise<{ gatewayRefundId: string }> {
+  ): Promise<{ gatewayRefundId: string; deduped: boolean }> {
     this.callLog.push({
       idempotencyKey,
       refundNo: request.refundNo,
@@ -33,12 +33,12 @@ export class MockPaymentGateway implements PaymentGatewayPort {
     })
     const existing = this.settled.get(idempotencyKey)
     if (existing) {
-      // 幂等命中 返回首次结果 不再产生新的成功扣款
-      return { gatewayRefundId: existing.gatewayRefundId }
+      // 幂等命中 返回首次结果 不再产生新的成功扣款 deduped 标志供上层审计
+      return { gatewayRefundId: existing.gatewayRefundId, deduped: true }
     }
     const gatewayRefundId = `gw_${request.refundNo}`
     this.settled.set(idempotencyKey, { refundNo: request.refundNo, gatewayRefundId })
-    return { gatewayRefundId }
+    return { gatewayRefundId, deduped: false }
   }
 
   chargeCount(idempotencyKey: string): number {

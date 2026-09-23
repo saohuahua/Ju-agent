@@ -112,6 +112,9 @@ export class ToolExecutor {
       )
 
       if (outcome.status === 'succeeded') {
+        // 三道防线的拦截在工具结果上可见 幂等重放与网关去重命中即落 guard.blocked
+        // 事件是拦截的直接证据 拦截代表未产生新的资金动作
+        await this.emitGuardEvents(context, toolName, rawArgs, outcome.resultSummary)
         return outcome.resultSummary ?? {}
       }
 
@@ -131,12 +134,55 @@ export class ToolExecutor {
       errorMessage: '未知执行失败',
       retryable: false,
     }
+    // 一次性审批令牌失效属于第二道防线拦截 失败路径同样落证据
+    if (
+      failure.errorCode === 'APPROVAL_TOKEN_INVALID' ||
+      failure.errorCode === 'APPROVAL_EXPIRED'
+    ) {
+      await this.emitEvent(context, 'guard.blocked', {
+        layer: 'approval_token',
+        key: String(
+          rawArgs.returnNo ?? rawArgs.compensationNo ?? rawArgs.protectionNo ?? '-',
+        ),
+        action: toolName,
+      })
+    }
     throw new ToolExecutionError(
       toolName,
       failure.errorCode ?? 'INTERNAL_ERROR',
       failure.errorMessage ?? `${toolName} 执行失败`,
       failure.retryable,
     )
+  }
+
+  /**
+   * 成功结果中的防线拦截证据
+   *
+   * replayed        第一道 业务幂等键命中 重复请求短路返回首次结果
+   * gatewayDeduped  第三道 网关级去重命中 仅在幂等记录丢失的崩溃恢复场景出现
+   * 第二道 审批令牌拦截走失败路径 在上方失败分支处理
+   */
+  private async emitGuardEvents(
+    context: ToolContext,
+    toolName: string,
+    rawArgs: Record<string, unknown>,
+    resultSummary: Record<string, unknown> | undefined,
+  ): Promise<void> {
+    if (!resultSummary) return
+    if (resultSummary.replayed === true) {
+      await this.emitEvent(context, 'guard.blocked', {
+        layer: 'idempotency',
+        key: String(resultSummary.idempotencyKey ?? '-'),
+        action: toolName,
+      })
+    }
+    if (resultSummary.gatewayDeduped === true) {
+      await this.emitEvent(context, 'guard.blocked', {
+        layer: 'gateway',
+        key: String(resultSummary.idempotencyKey ?? '-'),
+        action: toolName,
+      })
+    }
   }
 
   /** 单次尝试 含异常归一 超时控制 输出校验与轨迹写入 */

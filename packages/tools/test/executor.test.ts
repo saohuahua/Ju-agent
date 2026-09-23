@@ -158,6 +158,91 @@ describe('副作用工具', () => {
     expect(c.repos.gateway.totalSuccessfulCharges()).toBe(1)
   })
 
+  it('幂等重放触发 guard.blocked 事件 携带层级与幂等键', async () => {
+    const c = composeTestSystem()
+    c.repos.orderRepo.orders.set('SO-2026-0009', makePaidOrder())
+    const created = await c.executor.execute(
+      'create_return_request',
+      { orderNo: 'SO-2026-0009', type: 'refund_only', reason: 'unshipped_cancel' },
+      contextFor({ role: 'customer', customerId: 'C1001' }),
+    )
+    await c.executor.execute(
+      'execute_refund',
+      { returnNo: created.returnNo as string },
+      contextFor({ role: 'customer', customerId: 'C1001' }),
+    )
+    await c.executor.execute(
+      'execute_refund',
+      { returnNo: created.returnNo as string },
+      contextFor({ role: 'customer', customerId: 'C1001' }),
+    )
+    const guardEvents = c.repos.eventRepo.events.filter(
+      (event) => event.type === 'guard.blocked',
+    )
+    // 第二次执行被第一道防线拦截 事件是拦截的直接证据
+    expect(guardEvents).toHaveLength(1)
+    expect(guardEvents[0]!.payload).toMatchObject({
+      layer: 'idempotency',
+      action: 'execute_refund',
+    })
+    expect(String((guardEvents[0]!.payload as { key?: string }).key)).toContain(
+      String(created.returnNo),
+    )
+  })
+
+  it('无效审批令牌触发 approval_token 层 guard.blocked 事件', async () => {
+    const c = composeTestSystem()
+    // 大额未发货订单 走 needs_approval 路径
+    c.repos.orderRepo.orders.set(
+      'SO-2026-0001',
+      testing.makeTestOrder({
+        orderNo: 'SO-2026-0001',
+        customerId: 'C1001',
+        status: 'paid',
+        totalAmountCents: 699_900,
+        shippedAt: null,
+        deliveredAt: null,
+      }),
+    )
+    const created = await c.executor.execute(
+      'create_return_request',
+      { orderNo: 'SO-2026-0001', type: 'refund_only', reason: 'unshipped_cancel' },
+      contextFor({ role: 'customer', customerId: 'C1001' }),
+    )
+    // 审批通过后售后单进入可执行态 一次性令牌已签发
+    const approval = await c.approvalService.create({
+      runId: 'run_test',
+      resourceType: 'return_request',
+      resourceId: created.returnNo as string,
+      reason: '大额退款',
+      amountCents: 699_900,
+      requestedBy: 'system',
+    })
+    await c.approvalService.decide(operatorActor, approval.approvalId, 'approved')
+    const record = await c.repos.returnRepo.findByReturnNo(created.returnNo as string)
+    if (record) {
+      record.status = 'approved'
+      await c.repos.returnRepo.update(record)
+    }
+    // 伪造令牌执行 高风险路径被第二道防线拦下
+    await expect(
+      c.executor.execute(
+        'execute_refund',
+        { returnNo: created.returnNo as string, approvalToken: 'forged-token' },
+        contextFor({ role: 'customer', customerId: 'C1001' }),
+      ),
+    ).rejects.toThrow()
+    const guardEvents = c.repos.eventRepo.events.filter(
+      (event) => event.type === 'guard.blocked',
+    )
+    expect(guardEvents).toHaveLength(1)
+    expect(guardEvents[0]!.payload).toMatchObject({
+      layer: 'approval_token',
+      action: 'execute_refund',
+      key: created.returnNo,
+    })
+  })
+
   it('客户不能调用运营工具 receive_return_goods', async () => {
     const c = composeTestSystem()
     await expect(

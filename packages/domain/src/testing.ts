@@ -369,14 +369,14 @@ export class InMemoryPaymentGateway implements PaymentGatewayPort {
   async withRefund(
     idempotencyKey: string,
     request: { refundNo: string; amountCents: number; currency: string; channel: string },
-  ): Promise<{ gatewayRefundId: string }> {
+  ): Promise<{ gatewayRefundId: string; deduped: boolean }> {
     const existing = this.charges.get(idempotencyKey)
     if (existing) {
-      return { gatewayRefundId: existing.gatewayRefundId }
+      return { gatewayRefundId: existing.gatewayRefundId, deduped: true }
     }
     const gatewayRefundId = `gw_${request.refundNo}`
     this.charges.set(idempotencyKey, { refundNo: request.refundNo, gatewayRefundId })
-    return { gatewayRefundId }
+    return { gatewayRefundId, deduped: false }
   }
   chargeCount(idempotencyKey: string): number {
     return this.charges.has(idempotencyKey) ? 1 : 0

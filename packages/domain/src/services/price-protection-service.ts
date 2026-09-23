@@ -55,6 +55,8 @@ export interface ExecutePriceProtectionResult {
   amountCents: number
   idempotencyKey: string
   replayed: boolean
+  /** 网关级去重命中 仅在业务幂等记录丢失的崩溃恢复场景出现 */
+  gatewayDeduped?: boolean
 }
 
 /** 仍占位的价保状态 同一订单不允许重复发起 拒绝与过期后允许重新申请 */
@@ -297,6 +299,12 @@ export class PriceProtectionService {
     const key = priceProtectionIdempotencyKey(input.protectionNo)
     const recorded = await this.idempotencyRepo.find(key)
     if (recorded) {
+      // 第一道防线拦截 幂等键命中 重复请求短路返回首次结果 未触碰网关
+      await this.audit.record(actor, 'guard_idempotency_replay', 'price_protection', input.protectionNo, {
+        layer: 'idempotency',
+        key,
+        action: 'execute_price_protection',
+      }, runId)
       return {
         protectionNo: input.protectionNo,
         status: 'succeeded',
@@ -379,13 +387,22 @@ export class PriceProtectionService {
         runId,
       )
 
-      return {
-        protectionNo: input.protectionNo,
-        status: 'succeeded',
-        amountCents: protection.amountCents,
-        idempotencyKey: key,
-        replayed: false,
-      }
+      // 第三道防线兜底 业务幂等记录丢失但网关按幂等键去重了 未产生重复扣款
+        if (gatewayResult.deduped) {
+          await this.audit.record(actor, 'guard_gateway_dedup', 'price_protection', input.protectionNo, {
+            layer: 'gateway',
+            key,
+            action: 'execute_price_protection',
+          }, runId)
+        }
+        return {
+          protectionNo: input.protectionNo,
+          status: 'succeeded',
+          amountCents: protection.amountCents,
+          idempotencyKey: key,
+          replayed: false,
+          gatewayDeduped: gatewayResult.deduped,
+        }
     } catch (error) {
       // 网关失败回到可重试状态 重试走同一幂等键
       assertPriceProtectionTransition(protection.status, 'failed')

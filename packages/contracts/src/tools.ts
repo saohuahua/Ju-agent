@@ -159,6 +159,10 @@ export const ToolIO = {
       status: z.string(),
       amountCents: MoneyCents,
       idempotencyKey: z.string(),
+      /** 第一道防线命中 重复请求短路返回首次结果 */
+      replayed: z.boolean().optional(),
+      /** 第三道防线命中 网关级去重 未产生新的成功扣款 */
+      gatewayDeduped: z.boolean().optional(),
     }),
   },
   cancel_return_request: {
@@ -191,6 +195,10 @@ export const ToolIO = {
       status: z.string(),
       amountCents: MoneyCents,
       idempotencyKey: z.string(),
+      /** 第一道防线命中 重复请求短路返回首次结果 */
+      replayed: z.boolean().optional(),
+      /** 第三道防线命中 网关级去重 未产生新的成功扣款 */
+      gatewayDeduped: z.boolean().optional(),
     }),
   },
   create_price_protection: {
@@ -230,6 +238,10 @@ export const ToolIO = {
       status: z.string(),
       amountCents: MoneyCents,
       idempotencyKey: z.string(),
+      /** 第一道防线命中 重复请求短路返回首次结果 */
+      replayed: z.boolean().optional(),
+      /** 第三道防线命中 网关级去重 未产生新的成功扣款 */
+      gatewayDeduped: z.boolean().optional(),
     }),
   },
   escalate_to_human: {
