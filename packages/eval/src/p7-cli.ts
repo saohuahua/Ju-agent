@@ -7,6 +7,8 @@ import { runBudgetedL1, saveP7EvalEvidence } from './p7-suite-entry.js'
 import { offlineEvalRoles } from './p7-offline-roles.js'
 import { runSimSuite } from './sim-suite.js'
 import { renderMarkdownReport } from './report.js'
+import { P7Error } from '@aftersales/contracts'
+import { exportQualityBundle } from './p9-report.js'
 
 /** 不读取环境密钥 默认独立评测库跨实验保留累计预算 */
 export async function runEvalCli(level: 'L1' | 'L2'): Promise<void> {
@@ -15,6 +17,7 @@ export async function runEvalCli(level: 'L1' | 'L2'): Promise<void> {
   let dbPath = 'data/eval-p7.db'
   let output = 'eval/reports'
   let caseId: string | undefined
+  let fault = 'none'
   let category: string | undefined
   let sample: 'p0' | 'p1' | 'p2' | 'all' = 'p0'
   const args = process.argv.slice(2)
@@ -28,6 +31,7 @@ export async function runEvalCli(level: 'L1' | 'L2'): Promise<void> {
     else if (key === '--db') dbPath = value
     else if (key === '--output') output = value
     else if (key === '--case') caseId = value
+    else if (key === '--fault' && value === 'protocol-repeat-2') fault = value
     else if (key === '--category') category = value
     else if (key === '--sample' && ['p0', 'p1', 'p2', 'all'].includes(value))
       sample = value as typeof sample
@@ -35,13 +39,31 @@ export async function runEvalCli(level: 'L1' | 'L2'): Promise<void> {
     else throw new Error(`不支持参数 ${key} 或真实模型配置 仅允许离线预算评测`)
   }
   if (!experimentId.trim()) throw new Error('实验标识不能为空')
+  if (fault !== 'none' && repeat < 2) throw new Error('受控故障要求至少两轮')
   const db = openDatabase(resolve(dbPath))
   const controller = new AbortController()
   const cancel = () => controller.abort(new Error('评测已取消'))
   process.once('SIGINT', cancel)
   try {
     const started = Date.now()
-    const budget = { db, experimentId, roles: offlineEvalRoles, signal: controller.signal }
+    const budget = {
+      db,
+      experimentId,
+      roles: (item: (typeof EVAL_CASES)[number], round?: number) => {
+        const roles = offlineEvalRoles(item)
+        if (fault === 'protocol-repeat-2' && round === 2) {
+          // 在原网关内部注入协议故障 保留原身份和未知费用
+          roles.main_agent.transport = {
+            mode: 'simulation',
+            stream() {
+              throw new P7Error('PROTOCOL')
+            },
+          }
+        }
+        return roles
+      },
+      signal: controller.signal,
+    }
     const cases = EVAL_CASES.filter((item) =>
       caseId ? item.id === caseId : !category || item.category === category,
     )
@@ -66,6 +88,7 @@ export async function runEvalCli(level: 'L1' | 'L2'): Promise<void> {
     }).immediate()
     const directory = resolve(output)
     mkdirSync(directory, { recursive: true })
+    exportQualityBundle(resolve(directory, report.reportId), result, fault)
     writeFileSync(resolve(directory, `${report.reportId}.json`), JSON.stringify(report, null, 2))
     writeFileSync(
       resolve(directory, `${report.reportId}.evidence.json`),
@@ -91,7 +114,7 @@ export async function runEvalCli(level: 'L1' | 'L2'): Promise<void> {
         output: directory,
       }),
     )
-    if (!report.gatePassed) process.exitCode = 1
+    if (!report.gatePassed || report.failed > 0) process.exitCode = 1
   } finally {
     process.removeListener('SIGINT', cancel)
     db.close()

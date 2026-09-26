@@ -257,6 +257,8 @@ export type EvalFailure = z.infer<typeof EvalFailure>
 
 /** 单用例执行结果 */
 export const EvalCaseResult = z.object({
+  /** 旧报告缺省表示未记录轮次 */
+  repeat: z.number().int().positive().optional(),
   caseId: z.string(),
   category: EvalCategory,
   priority: z.enum(['P0', 'P1', 'P2']),
@@ -297,6 +299,9 @@ export type MetricKey = (typeof METRIC_KEYS)[number]
 
 /** 评测报告 */
 export const EvalReport = z.object({
+  /** 新报告统计所有计划轮次 旧报告保持原有口径 */
+  metricVersion: z.literal('p9-v1').optional(),
+  metricDenominators: z.record(z.string(), z.number().int().nonnegative()).optional(),
   reportId: z.string(),
   startedAt: z.string(),
   /** L1 脚本化回归 或 L2 真实模型加用户模拟 */

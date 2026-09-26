@@ -16,6 +16,7 @@ import { FrozenClock, KeywordPolicyScorer } from '@aftersales/domain'
 import type { Actor } from '@aftersales/domain'
 import { BASELINE_FROZEN_TIME, composeSystem, type ComposedSystem } from '@aftersales/runtime'
 import type { CaseDetail, ToolExecution } from './types.js'
+import { captureBusinessEvidence } from './p9-evidence.js'
 import {
   checkStateAssertion,
   checkTrajectory,
@@ -173,8 +174,10 @@ export async function runCase(
   }
 
   const stateFailures = failures.filter((f) => f.kind === 'state' || f.kind === 'exception')
+  const evidence = captureBusinessEvidence(system, evalCase, businessRunId ?? '', 'L1')
   system.db.close()
   return {
+    evidence,
     runId: businessRunId,
     caseId: evalCase.id,
     category: evalCase.category,

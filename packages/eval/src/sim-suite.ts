@@ -11,10 +11,10 @@ import { buildReport } from './report.js'
 import { runSimCase } from './sim-runner.js'
 import { SIM_CASES } from './cases.js'
 import type { CaseDetail } from './types.js'
+import { evaluationMetadata } from './p9-metadata.js'
 import {
-  suiteModels,
+  executeBudgetedCase,
   suiteEvidence,
-  applyModelFailures,
   type P7SuiteBudget,
   type P7CaseEvidence,
   type P7SuiteResult,
@@ -111,6 +111,7 @@ export async function runSimSuite(options: SimSuiteOptions): Promise<P7SuiteResu
   }
 
   const evidence: P7CaseEvidence[] = []
+  const metadata = evaluationMetadata(cases, options.repeat, 'L2')
   const ledger = new P7Ledger(options.budget.db)
 
   const rounds: CaseDetail[][] = []
@@ -123,21 +124,16 @@ export async function runSimSuite(options: SimSuiteOptions): Promise<P7SuiteResu
     let caseIndex = 0
     for (const simCase of cases) {
       // 角色及用例覆盖只经受信配置解析器 网关之外不再重跑整条业务链
-      const models = suiteModels(options.budget, simCase, round, ledger)
-      const detail = await runSimCase(simCase, {
-        agentModel: models.agentModel,
-        userModel: models.userModel,
-        judgeModel: models.judgeModel,
-        failureDir: options.failureDir,
-      })
-      applyModelFailures(detail, models.errors)
-      evidence.push({
-        identity: models.identity,
-        modelRunIds: models.runIds,
-        businessRunId: detail.runId ?? null,
-        passed: detail.passed,
-        failures: detail.failures,
-      })
+      const observed = await executeBudgetedCase(options.budget, simCase, round, ledger, (models) =>
+        runSimCase(simCase, {
+          agentModel: models.agentModel,
+          userModel: models.userModel,
+          judgeModel: models.judgeModel,
+          failureDir: options.failureDir,
+        }),
+      )
+      const detail = observed.detail
+      evidence.push(observed.evidence)
       details.push(detail)
       caseIndex += 1
       if (detail.passed) passed += 1
@@ -153,11 +149,9 @@ export async function runSimSuite(options: SimSuiteOptions): Promise<P7SuiteResu
         elapsedMs: Date.now() - startedAt,
         failures: detail.failures.map((f) => ({ kind: f.kind, message: f.message })),
       })
-      if (options.budget.signal?.aborted) break
     }
     rounds.push(details)
     roundDurationsMs.push(Date.now() - startedAt)
-    if (options.budget.signal?.aborted) break
   }
 
   const report = buildReport({
@@ -175,5 +169,5 @@ export async function runSimSuite(options: SimSuiteOptions): Promise<P7SuiteResu
   report.confidenceIntervals = undefined
   if (options.budget.signal?.aborted || evidence.length !== cases.length * options.repeat)
     report.gatePassed = false
-  return suiteEvidence(options.budget, report, evidence)
+  return suiteEvidence(options.budget, report, evidence, metadata)
 }

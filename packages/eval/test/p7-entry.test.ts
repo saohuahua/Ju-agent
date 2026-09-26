@@ -134,16 +134,19 @@ it('先前实验费用阻断后续入口 保留零行拒绝证据', async () => 
   ).toBe(true)
 })
 
-it('调用前取消不创建账本记录', async () => {
+it('调用前取消不创建账本记录且仍计入端到端分母', async () => {
   const db = database()
   const controller = new AbortController()
   controller.abort()
-  await expect(
-    runSimSuite({
-      ...options,
-      budget: { db, experimentId: 'cancelled', roles: offlineEvalRoles, signal: controller.signal },
-    }),
-  ).rejects.toThrow()
+  const result = await runSimSuite({
+    ...options,
+    budget: { db, experimentId: 'cancelled', roles: offlineEvalRoles, signal: controller.signal },
+  })
+  expect(result.report.total).toBe(1)
+  expect(result.report.failed).toBe(1)
+  expect(
+    result.evidence.cases[0]?.failures.some((item) => item.message.includes('CANCELLED')),
+  ).toBe(true)
   expect(db.prepare('SELECT count(*) AS n FROM p7_calls').get()).toEqual({ n: 0 })
 })
 
