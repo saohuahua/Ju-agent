@@ -277,6 +277,7 @@ export async function runSimCase(simCase: EvalCase, options: RunSimOptions): Pro
   }
 
   const stateFailures = failures.filter((f) => f.kind === 'state' || f.kind === 'exception')
+  system.db.close()
   return {
     caseId: simCase.id,
     category: simCase.category,

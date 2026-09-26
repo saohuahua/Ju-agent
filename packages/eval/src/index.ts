@@ -27,3 +27,7 @@ export {
 } from './sim-suite.js'
 export { UserSimulator, STOP_SENTINEL, TRANSFER_SENTINEL } from './simulator.js'
 export { judgeTranscript, type TranscriptTurn } from './judge.js'
+export * from './p7-eval-models.js'
+export * from './p7-suite-entry.js'
+export * from './p7-offline-roles.js'
+export * from './p7-cost-report.js'

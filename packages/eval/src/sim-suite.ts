@@ -5,15 +5,23 @@
  * 进度回调供调用方呈现 落盘与存库由调用方负责
  */
 
-import { AnthropicModel, PROMPT_VERSION } from '@aftersales/agent'
-import type { ChatModel } from '@aftersales/agent'
-import type { EvalReport } from '@aftersales/contracts'
+import { PROMPT_VERSION } from '@aftersales/agent'
+import { P7Ledger } from '@aftersales/persistence'
 import { buildReport } from './report.js'
 import { runSimCase } from './sim-runner.js'
 import { SIM_CASES } from './cases.js'
 import type { CaseDetail } from './types.js'
+import {
+  suiteModels,
+  suiteEvidence,
+  applyModelFailures,
+  type P7SuiteBudget,
+  type P7CaseEvidence,
+  type P7SuiteResult,
+} from './p7-suite-entry.js'
 
 export interface SimSuiteOptions {
+  budget: P7SuiteBudget
   repeat: number
   sample: 'p0' | 'p1' | 'p2' | 'all'
   agentModel: string
@@ -92,54 +100,18 @@ export function estimateSuiteTokens(count: number, repeat: number): number {
   return Math.round(count * repeat * 3500)
 }
 
-function buildModel(model: string): ChatModel {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error('MISSING_KEY')
-  }
-  return new AnthropicModel({ model })
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-/** 判定失败是否为模型服务瞬态错误 中转站限流与上游抖动 按结构化 kind 判定 */
-function isTransientFailure(detail: CaseDetail): boolean {
-  return (
-    (detail.turns ?? 0) === 0 &&
-    detail.failures.some(
-      (failure) =>
-        failure.kind === 'exception' &&
-        (failure.message.includes('模型服务异常') || failure.message.includes('模型服务限流')),
-    )
-  )
-}
-
-/** 用例级重试 瞬态模型服务错误不计入 Agent 成绩 */
-async function runCaseWithRetry(
-  simCase: Parameters<typeof runSimCase>[0],
-  options: Parameters<typeof runSimCase>[1],
-  maxAttempts = 3,
-): Promise<CaseDetail> {
-  let detail = await runSimCase(simCase, options)
-  for (let attempt = 2; attempt <= maxAttempts && isTransientFailure(detail); attempt++) {
-    console.log(`      ${simCase.id} 模型服务瞬态错误 第 ${attempt} 次重试`)
-    await sleep(3000)
-    detail = await runSimCase(simCase, options)
-  }
-  return detail
-}
-
 /** 执行全量 L2 套件 返回构建好的报告 不落盘不存库 */
-export async function runSimSuite(options: SimSuiteOptions): Promise<EvalReport> {
+export async function runSimSuite(options: SimSuiteOptions): Promise<P7SuiteResult> {
+  if (!options.budget) throw new Error('评测必须提供共享预算账本')
+  if (!Number.isSafeInteger(options.repeat) || options.repeat < 1 || options.repeat > 20)
+    throw new Error('重复轮次须为一至二十的整数')
   const cases = selectCases(options.sample, options.caseId, options.category)
   if (cases.length === 0) {
     throw new Error('选中的用例集为空 检查 sample 参数或用例 scenario 配置')
   }
 
-  const agentModel = buildModel(options.agentModel)
-  const userModel = buildModel(options.userModel)
-  const judgeModel = buildModel(options.judgeModel)
+  const evidence: P7CaseEvidence[] = []
+  const ledger = new P7Ledger(options.budget.db)
 
   const rounds: CaseDetail[][] = []
   const roundDurationsMs: number[] = []
@@ -150,13 +122,21 @@ export async function runSimSuite(options: SimSuiteOptions): Promise<EvalReport>
     let failed = 0
     let caseIndex = 0
     for (const simCase of cases) {
-      // 用例级模拟器模型覆盖 安全对抗类用例 Haiku 拒绝扮演攻击者 需按用例指定更强模型
-      const caseUserModel = simCase.userModel ? buildModel(simCase.userModel) : userModel
-      const detail = await runCaseWithRetry(simCase, {
-        agentModel,
-        userModel: caseUserModel,
-        judgeModel,
+      // 角色及用例覆盖只经受信配置解析器 网关之外不再重跑整条业务链
+      const models = suiteModels(options.budget, simCase, round, ledger)
+      const detail = await runSimCase(simCase, {
+        agentModel: models.agentModel,
+        userModel: models.userModel,
+        judgeModel: models.judgeModel,
         failureDir: options.failureDir,
+      })
+      applyModelFailures(detail, models.errors)
+      evidence.push({
+        identity: models.identity,
+        modelRunIds: models.runIds,
+        businessRunId: detail.runId ?? null,
+        passed: detail.passed,
+        failures: detail.failures,
       })
       details.push(detail)
       caseIndex += 1
@@ -173,22 +153,27 @@ export async function runSimSuite(options: SimSuiteOptions): Promise<EvalReport>
         elapsedMs: Date.now() - startedAt,
         failures: detail.failures.map((f) => ({ kind: f.kind, message: f.message })),
       })
-      // 用例间节流 缓解中转站突发限流 评测测 Agent 不测基建
-      await sleep(1500)
+      if (options.budget.signal?.aborted) break
     }
     rounds.push(details)
     roundDurationsMs.push(Date.now() - startedAt)
+    if (options.budget.signal?.aborted) break
   }
 
-  return buildReport({
-    model: options.agentModel,
+  const report = buildReport({
+    model: 'p7-simulation',
     promptVersion: PROMPT_VERSION,
     rounds,
     repeat: options.repeat,
     roundDurationsMs,
     cases,
     level: 'L2',
-    userModel: options.userModel,
-    judgeModel: options.judgeModel,
+    userModel: 'p7-simulation-simulator',
+    judgeModel: 'p7-simulation-judge',
   })
+  // 当前套件只接受模拟传输 不将确定性回放包装成统计采样区间
+  report.confidenceIntervals = undefined
+  if (options.budget.signal?.aborted || evidence.length !== cases.length * options.repeat)
+    report.gatePassed = false
+  return suiteEvidence(options.budget, report, evidence)
 }
