@@ -6,7 +6,7 @@
  */
 
 import type { EventRepository } from '@aftersales/domain'
-import { encodeSseChunk, type EventType } from '@aftersales/contracts'
+import { encodeSseChunk, type AgentEventRow, type EventType } from '@aftersales/contracts'
 
 /** 实时轮询间隔 毫秒 单节点轮询足够 Redis 发布订阅是横向扩展路径 */
 const POLL_INTERVAL_MS = 250
@@ -17,6 +17,10 @@ export interface SseDependencies {
   /** 只依赖查询能力 写入永远走领域服务 */
   listEvents: (runId: string, fromSequence: number) => ReturnType<EventRepository['listByRun']>
   isRunTerminal: (runId: string) => Promise<boolean>
+  projectEvent?: (event: AgentEventRow) => AgentEventRow | null
+  getRunStatus?: (runId: string) => Promise<string>
+  /** 测试可缩短轮询间隔 线上保留默认值 */
+  pollIntervalMs?: number
 }
 
 function sleep(ms: number): Promise<void> {
@@ -35,40 +39,62 @@ export function createEventStream(
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder()
   let closed = false
+  let cursor = lastEventId
 
   return new ReadableStream<Uint8Array>({
-    async start(controller) {
+    start(controller) {
+      // 初始提示立即返回 避免代理等待首个业务事件
+      controller.enqueue(encoder.encode(': connected\n\n'))
+    },
+    async pull(controller) {
       const send = (chunk: string) => {
         if (!closed) controller.enqueue(encoder.encode(chunk))
       }
 
-      // 初始提示 注释行立即返回 避免代理超时
-      send(': connected\n\n')
-
-      let cursor = lastEventId
       try {
-        for (;;) {
+        while (!closed) {
           const events = await deps.listEvents(runId, cursor + 1)
+          if (closed) break
+          let deliveredCursor = cursor
           for (const event of events) {
-            send(encodeSseChunk(event as never))
+            const visible = deps.projectEvent ? deps.projectEvent(event) : event
+            if (visible) {
+              send(encodeSseChunk(visible))
+              deliveredCursor = event.sequence
+            }
             cursor = event.sequence
           }
+
+          // 只发送隐藏批次的水位 不公开原始事件内容
+          if (cursor > deliveredCursor) {
+            send(
+              `id: ${cursor}\nevent: stream.cursor\ndata: ${JSON.stringify({ sequence: cursor })}\n\n`,
+            )
+          }
+
+          // 每次只交付一个批次 等待消费者继续读取再查下一批
+          if (events.length > 0) return
+
           // 追平且到达终态则收尾
           if (events.length === 0 && (await deps.isRunTerminal(runId))) {
-            send(': stream-complete\n\n')
+            // 终态检查可能让出执行权 再读一次防止遗漏刚提交的最后事件
+            if ((await deps.listEvents(runId, cursor + 1)).length > 0) continue
+            const status = await deps.getRunStatus?.(runId)
+            send(
+              `event: stream.complete\ndata: ${JSON.stringify({ sequence: cursor, status })}\n\n`,
+            )
             break
           }
-          await sleep(POLL_INTERVAL_MS)
+          await sleep(deps.pollIntervalMs ?? POLL_INTERVAL_MS)
         }
       } catch {
         // 轮询异常直接结束流 客户端会重连
-      } finally {
-        closed = true
-        try {
-          controller.close()
-        } catch {
-          // 已关闭
-        }
+      }
+      closed = true
+      try {
+        controller.close()
+      } catch {
+        // 消费者取消后不重复关闭
       }
     },
     cancel() {
