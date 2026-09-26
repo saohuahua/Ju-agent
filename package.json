@@ -20,6 +20,8 @@
     "db:reset": "tsx scripts/db-reset.ts",
     "eval": "tsx packages/eval/src/cli.ts",
     "eval:dataset": "tsx scripts/export-dataset.ts",
+    "rag:check": "tsx scripts/rag-dataset-check.ts",
+    "rag:baseline": "tsx scripts/rag-baseline.ts",
     "demo": "tsx scripts/demo.ts",
     "eval:sim": "tsx packages/eval/src/sim-cli.ts"
   },

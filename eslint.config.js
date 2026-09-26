@@ -74,6 +74,18 @@ export default tseslint.config(
     languageOptions: { globals: { ...NODE_GLOBALS, ...BROWSER_GLOBALS } },
   },
   {
+    // 归档脚本在浏览器上下文执行片段 仅声明这四份实验文件需要的全局量
+    files: [
+      'docs/experiments/customer-return-shipment-ui-evidence/browser-check.mjs',
+      'docs/experiments/customer-return-shipment-ui-evidence/final-ui-check.mjs',
+      'docs/experiments/customer-return-shipment-ui-evidence/finish-check.mjs',
+      'docs/experiments/customer-return-shipment-ui-evidence/pending-switch-check.mjs',
+    ],
+    languageOptions: {
+      globals: { document: 'readonly', innerWidth: 'readonly', fetch: 'readonly' },
+    },
+  },
+  {
     // 故障注入测试替身用「只抛不产出」的异步生成器模拟上游中断 是有意为之
     files: ['**/test/**/*.ts'],
     rules: { 'require-yield': 'off' },
