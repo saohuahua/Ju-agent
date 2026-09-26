@@ -1,0 +1,542 @@
+'use client'
+
+import Link from 'next/link'
+import { useState } from 'react'
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { ArrowLeft, ArrowUpRight, FileText, RefreshCw, Send } from 'lucide-react'
+
+import { StatusBadge } from '@/components/StatusBadge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
+import { api } from '@/lib/api'
+import { deskApi, type DeskCase, type PolicyDocument } from '@/lib/desk-api'
+import { ATTENTION_STATUSES, deskTime, orderStatusLabel } from '@/lib/desk-format'
+import { useIdentity } from '@/lib/identity'
+import { useRunEvents } from '@/lib/sse'
+import { cn } from '@/lib/utils'
+import { DeskEmpty } from './DeskEmpty'
+import { PolicyDialog } from './PolicyDialog'
+
+const MESSAGE_ROLES = {
+  user: '客户',
+  assistant: '有据 Agent',
+  operator: '售后专员',
+  system: '系统',
+}
+
+/** 错误保留服务端说明以便用户区分权限冲突与网络故障 */
+function errorText(error: unknown): string {
+  return error instanceof Error ? error.message : '请求失败 请稍后重试'
+}
+
+/**
+ * 工作台只在团队身份下挂载查询与事件订阅
+ * 案件选择属于当前身份的临时状态并随身份子树一起销毁
+ */
+export function CaseWorkspace() {
+  const { role } = useIdentity()
+
+  if (role === 'customer') {
+    return (
+      <DeskEmpty
+        title="这是售后团队工作台"
+        description="请从客户服务入口查看自己的会话 或切换到售后专员身份"
+      />
+    )
+  }
+
+  return <StaffWorkspace />
+}
+
+function StaffWorkspace() {
+  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('all')
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const cases = useInfiniteQuery({
+    queryKey: ['desk', 'cases', search.trim(), filter],
+    initialPageParam: null as string | null,
+    queryFn: ({ signal, pageParam }) =>
+      deskApi.cases({ query: search.trim(), filter, cursor: pageParam }, signal),
+    getNextPageParam: (page) => page.nextCursor,
+    refetchInterval: 5000,
+  })
+
+  // 搜索由服务端覆盖全库 统计只描述当前加载页
+  // 筛选状态在翻页间可能变化 因此按运行编号去重
+  const loaded = [
+    ...new Map(
+      cases.data?.pages.flatMap((page) => page.cases).map((item) => [item.runId, item]) ?? [],
+    ).values(),
+  ]
+  const visible = loaded
+
+  // 不回退到另一案件避免筛选或刷新后误将回复发送给不同客户
+  const selected = visible.find((item) => item.runId === selectedId)
+
+  return (
+    <div className="youju-desk">
+      <div className="youju-page-heading">
+        <div>
+          <p className="youju-eyebrow">把每一次处理 建立在依据之上</p>
+          <h1>处理工作台</h1>
+          <p>从客户问题出发 让会话 处理进度与证据始终在一起</p>
+        </div>
+        <Button variant="outline" onClick={() => void cases.refetch()} disabled={cases.isFetching}>
+          <RefreshCw data-icon="inline-start" />
+          刷新案件
+        </Button>
+      </div>
+
+      <div className="youju-overview">
+        <span>
+          <strong>{loaded.length}</strong> 已加载案件
+        </span>
+        <span>
+          <strong>{loaded.filter((item) => ATTENTION_STATUSES.has(item.status)).length}</strong>{' '}
+          需要关注
+        </span>
+        <span>
+          <strong>{loaded.filter((item) => item.status === 'handling_human').length}</strong>{' '}
+          人工处理中
+        </span>
+        <small>按创建时间排序 · 统计仅限已加载案件</small>
+      </div>
+
+      {cases.error && (
+        <Alert variant="destructive">
+          <AlertDescription>{errorText(cases.error)} · 可点击刷新重试</AlertDescription>
+        </Alert>
+      )}
+
+      <div className={cn('youju-workspace', selected && 'has-selection')}>
+        <aside className="youju-queue" aria-label="案件队列">
+          <div className="youju-queue-tools">
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="case-search">搜索案件</FieldLabel>
+                <Input
+                  id="case-search"
+                  placeholder="客户 问题或会话编号"
+                  value={search}
+                  maxLength={200}
+                  onChange={(event) => {
+                    setSearch(event.target.value)
+                    setSelectedId(null)
+                  }}
+                />
+              </Field>
+            </FieldGroup>
+            <Tabs
+              value={filter}
+              onValueChange={(value) => {
+                setFilter(value)
+                setSelectedId(null)
+              }}
+            >
+              <TabsList aria-label="案件状态筛选">
+                <TabsTrigger value="all">全部</TabsTrigger>
+                <TabsTrigger value="attention">需关注</TabsTrigger>
+                <TabsTrigger value="active">处理中</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <p>{visible.length} 个案件</p>
+          </div>
+
+          {cases.isPending ? (
+            <div className="youju-loading">
+              <Skeleton className="h-24" />
+              <Skeleton className="h-24" />
+              <Skeleton className="h-24" />
+            </div>
+          ) : visible.length === 0 ? (
+            <DeskEmpty
+              title="暂无匹配案件"
+              description="调整筛选条件 或在客户入口提交新的售后问题"
+            />
+          ) : (
+            visible.map((item) => (
+              <button
+                key={item.runId}
+                className={cn('youju-case-row', selected?.runId === item.runId && 'selected')}
+                aria-pressed={selected?.runId === item.runId}
+                onClick={() => setSelectedId(item.runId)}
+              >
+                <div>
+                  <span>{item.customerName || item.customerId}</span>
+                  <small>{deskTime(item.updatedAt)}</small>
+                </div>
+                <h2>{item.title || '尚未收到客户消息'}</h2>
+                <p>{item.preview || '等待会话内容'}</p>
+                <footer>
+                  <StatusBadge status={item.status} />
+                  <Badge variant="outline">{item.source === 'sim' ? '评测' : '客户会话'}</Badge>
+                </footer>
+              </button>
+            ))
+          )}
+          {cases.hasNextPage && (
+            <div className="youju-queue-tools">
+              <Button
+                variant="outline"
+                disabled={cases.isFetching}
+                onClick={() => void cases.fetchNextPage()}
+              >
+                {cases.isFetchingNextPage ? '正在加载' : '加载更多案件'}
+              </Button>
+            </div>
+          )}
+        </aside>
+
+        {selected ? (
+          <CaseDetail key={selected.runId} item={selected} onBack={() => setSelectedId(null)} />
+        ) : (
+          <div className="youju-unselected">
+            <DeskEmpty
+              title="选择一个案件开始处理"
+              description="会话与处理记录显示在中间 订单和政策依据显示在右侧"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * 案件组件以运行标识为键隔离输入草稿与政策弹窗
+ * 服务端读模型负责事实与归属校验 事件流负责会话增量展示
+ * 内部备注与对外回复使用独立操作并在提交前绑定当前案件
+ */
+function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
+  const client = useQueryClient()
+  const detail = useQuery({
+    queryKey: ['desk', item.runId],
+    queryFn: ({ signal }) => deskApi.detail(item.runId, signal),
+    refetchInterval: 5000,
+  })
+  const { state, connected, complete } = useRunEvents(item.runId)
+  const [draft, setDraft] = useState('')
+  const [mode, setMode] = useState('note')
+  const [document, setDocument] = useState<PolicyDocument | null>(null)
+  const [notice, setNotice] = useState('')
+  const status = detail.data?.run.status ?? item.status
+  const canResolve = detail.data?.closure?.canResolve === true && !detail.isError
+
+  const action = useMutation({
+    mutationFn: async ({
+      kind,
+      text = '',
+    }: {
+      kind: 'note' | 'reply' | 'takeover' | 'resolve'
+      text?: string
+    }) => {
+      if (kind === 'takeover') return api.takeOverRun(item.runId)
+      if (kind === 'resolve') return api.resolveRun(item.runId, text)
+      if (kind === 'reply') return api.sendOperatorMessage(item.runId, text)
+      return deskApi.note(item.runId, text)
+    },
+    onSuccess: async (_result, input) => {
+      setDraft('')
+      setNotice(
+        input.kind === 'note'
+          ? '内部备注已保存 客户不可见'
+          : input.kind === 'reply'
+            ? '回复已发送给客户'
+            : input.kind === 'resolve'
+              ? '人工会话已结案'
+              : '已接管案件',
+      )
+      await client.invalidateQueries({ queryKey: ['desk'] })
+    },
+    onError: async (_error, input) => {
+      if (input.kind === 'resolve') await client.invalidateQueries({ queryKey: ['desk'] })
+    },
+  })
+
+  return (
+    <>
+      <section className="youju-conversation" aria-label="案件会话">
+        <header className="youju-case-heading">
+          <Button variant="ghost" size="sm" onClick={onBack} className="youju-mobile-back">
+            <ArrowLeft data-icon="inline-start" />
+            返回队列
+          </Button>
+          <h2>{detail.data?.title || item.title || '售后案件'}</h2>
+          <div>
+            <StatusBadge status={status} />
+            <span>{complete ? '记录已同步' : connected ? '事件流已连接' : '事件流未连接'}</span>
+            <span>{item.customerName || item.customerId}</span>
+          </div>
+          <small>{item.runId}</small>
+        </header>
+
+        {detail.error && (
+          <Alert variant="destructive">
+            <AlertDescription>
+              {errorText(detail.error)}{' '}
+              <Button variant="link" onClick={() => void detail.refetch()}>
+                重试
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <Tabs defaultValue="messages" className="youju-conversation-tabs">
+          <TabsList variant="line" aria-label="会话视图">
+            <TabsTrigger value="messages">会话与处理</TabsTrigger>
+            <TabsTrigger value="trace">执行轨迹</TabsTrigger>
+            <TabsTrigger value="notes">内部备注 {detail.data?.notes.length ?? 0}</TabsTrigger>
+          </TabsList>
+          <TabsContent value="messages" className="youju-message-list">
+            {state.messages.length === 0 && (
+              <DeskEmpty
+                title="尚无会话消息"
+                description={
+                  connected ? '等待客户或处理流程产生消息' : '正在读取会话 连接失败时请刷新页面'
+                }
+              />
+            )}
+            {state.messages.map((message, index) => (
+              <article key={index} className={cn('youju-message', `youju-message-${message.role}`)}>
+                <header>
+                  <span className="youju-avatar">
+                    {message.role === 'assistant' ? '据' : MESSAGE_ROLES[message.role].slice(0, 1)}
+                  </span>
+                  <strong>{MESSAGE_ROLES[message.role]}</strong>
+                  {message.streaming && <small>正在生成</small>}
+                </header>
+                <div>{message.text}</div>
+              </article>
+            ))}
+            {state.error && (
+              <Alert variant="destructive">
+                <AlertDescription>{state.error}</AlertDescription>
+              </Alert>
+            )}
+            {status === 'awaiting_approval' && (
+              <Alert>
+                <AlertDescription>
+                  方案正在等待主管审批 审批同意后仍需执行并核验业务结果{' '}
+                  <Link href="/approvals">前往审批中心</Link>
+                </AlertDescription>
+              </Alert>
+            )}
+          </TabsContent>
+          <TabsContent value="trace" className="youju-message-list">
+            {state.tools.length === 0 && (
+              <DeskEmpty
+                title="尚无工具执行记录"
+                description="工具实际执行后将在这里显示结果与错误"
+              />
+            )}
+            {state.tools.map((tool) => (
+              <article className="youju-trace-item" key={tool.executionId}>
+                <strong>{tool.toolName}</strong>
+                <Badge variant="outline">
+                  {tool.status === 'succeeded'
+                    ? '执行成功'
+                    : tool.status === 'failed'
+                      ? '执行失败'
+                      : '执行中'}
+                </Badge>
+                <p>
+                  尝试 {tool.attempt} ·{' '}
+                  {tool.latencyMs === undefined ? '耗时待确认' : `${tool.latencyMs} ms`}
+                </p>
+                {tool.errorCode && <p>{tool.errorCode}</p>}
+              </article>
+            ))}
+            <Button asChild variant="outline">
+              <Link href={`/runs/${item.runId}`}>
+                查看完整运行记录
+                <ArrowUpRight data-icon="inline-end" />
+              </Link>
+            </Button>
+          </TabsContent>
+          <TabsContent value="notes" className="youju-message-list">
+            {!detail.data?.notes.length && (
+              <DeskEmpty
+                title="还没有内部备注"
+                description="备注仅供团队协作 不会发送给客户或加入模型上下文"
+              />
+            )}
+            {detail.data?.notes.map((note) => (
+              <article className="youju-note" key={note.id}>
+                <header>
+                  {note.author} · {deskTime(note.createdAt)}
+                </header>
+                <p>{note.body}</p>
+              </article>
+            ))}
+          </TabsContent>
+        </Tabs>
+
+        <form
+          className="youju-composer"
+          onSubmit={(event) => {
+            event.preventDefault()
+            if (mode === 'resolve' && !canResolve) return
+            if (draft.trim() && !action.isPending)
+              action.mutate({
+                kind: mode === 'note' ? 'note' : mode === 'resolve' ? 'resolve' : 'reply',
+                text: draft.trim(),
+              })
+          }}
+        >
+          {status === 'escalated' && (
+            <Button
+              type="button"
+              variant="outline"
+              disabled={action.isPending}
+              onClick={() => action.mutate({ kind: 'takeover' })}
+            >
+              接管案件并回复客户
+            </Button>
+          )}
+          <Tabs
+            value={mode}
+            onValueChange={(value) => {
+              setMode(value)
+              setDraft('')
+              setNotice('')
+              action.reset()
+            }}
+          >
+            <TabsList aria-label="编辑类型">
+              <TabsTrigger value="note" disabled={action.isPending}>
+                内部备注
+              </TabsTrigger>
+              <TabsTrigger value="reply" disabled={action.isPending || status !== 'handling_human'}>
+                回复客户
+              </TabsTrigger>
+              <TabsTrigger
+                value="resolve"
+                disabled={action.isPending || status !== 'handling_human'}
+              >
+                人工结案
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          {/* 核验提示只属于人工处理中 终态不再显示空阻塞信息 */}
+          {mode === 'resolve' && status === 'handling_human' && (
+            <Alert variant={canResolve ? 'default' : 'destructive'}>
+              <AlertDescription>
+                {canResolve
+                  ? '关联业务已核验 请确认处理结论后填写摘要'
+                  : '当前不能结案 请先处理以下阻塞项'}
+                {detail.data?.closure?.blockers.map((blocker) => (
+                  <p key={`${blocker.resourceType}:${blocker.resourceId}`}>
+                    {blocker.resourceId} · {blocker.reason}
+                  </p>
+                ))}
+                {!detail.data?.closure && <p>尚未取得结案核验结果 请刷新后重试</p>}
+              </AlertDescription>
+            </Alert>
+          )}
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="case-draft">
+                {mode === 'note'
+                  ? '仅团队可见'
+                  : mode === 'resolve'
+                    ? '结案摘要将对客户可见'
+                    : '将发送给客户'}
+              </FieldLabel>
+              <Textarea
+                id="case-draft"
+                rows={3}
+                maxLength={2000}
+                value={draft}
+                onChange={(event) => setDraft(event.target.value)}
+                disabled={action.isPending || (mode !== 'note' && status !== 'handling_human')}
+                placeholder={
+                  mode === 'note'
+                    ? '记录核验结论或下一步安排'
+                    : mode === 'resolve'
+                      ? '请在核实业务处理完成后填写解决摘要'
+                      : '请输入给客户的回复'
+                }
+              />
+            </Field>
+          </FieldGroup>
+          {action.error && (
+            <Alert variant="destructive">
+              <AlertDescription>{errorText(action.error)}</AlertDescription>
+            </Alert>
+          )}
+          <footer>
+            <span role="status">
+              {notice ||
+                (mode === 'note'
+                  ? '备注不会触发业务执行'
+                  : mode === 'resolve'
+                    ? '人工结案不会执行退款或补偿'
+                    : '资金处理仍需走受控业务流程')}
+            </span>
+            <Button
+              type="submit"
+              disabled={
+                !draft.trim() ||
+                action.isPending ||
+                (mode === 'resolve' && !canResolve) ||
+                (mode !== 'note' && status !== 'handling_human')
+              }
+            >
+              <Send data-icon="inline-start" />
+              {action.isPending
+                ? '正在提交'
+                : mode === 'note'
+                  ? '保存备注'
+                  : mode === 'resolve'
+                    ? '确认结案'
+                    : '发送回复'}
+            </Button>
+          </footer>
+        </form>
+      </section>
+
+      <aside className="youju-evidence" aria-label="订单与政策证据">
+        <h2>案件依据</h2>
+        <p>来自实际查询与检索记录</p>
+        <h3>关联订单</h3>
+        {detail.isPending && <Skeleton className="h-28" />}
+        {detail.data?.orders.length === 0 && <p>尚未查询到关联订单</p>}
+        {detail.data?.orders.map((order) => (
+          <article className="youju-evidence-card" key={order.orderNo}>
+            <strong>{order.orderNo}</strong>
+            <p>{orderStatusLabel(order.status)}</p>
+            <b>¥ {(order.totalAmountCents / 100).toFixed(2)}</b>
+            {order.items.map((product, index) => (
+              <p key={index}>
+                {product.title || product.sku || '订单商品'} × {product.quantity ?? 1}
+              </p>
+            ))}
+          </article>
+        ))}
+        <h3>政策与条款</h3>
+        {detail.data?.policies.length === 0 && <p>尚无检索依据 不代表没有适用政策</p>}
+        {detail.data?.policies.map((policy) => (
+          <button
+            className="youju-evidence-card youju-policy-button"
+            key={policy.articleId}
+            onClick={() => setDocument(policy)}
+          >
+            <FileText aria-hidden="true" />
+            <strong>{policy.title}</strong>
+            <p>版本 {policy.policyVersion}</p>
+            <span>查看原文与来源</span>
+          </button>
+        ))}
+        <p className="youju-evidence-footnote">检索命中代表候选依据 适用条件与业务结果仍需核验</p>
+      </aside>
+
+      <PolicyDialog document={document} onClose={() => setDocument(null)} />
+    </>
+  )
+}
