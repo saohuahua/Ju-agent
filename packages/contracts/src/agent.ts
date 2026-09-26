@@ -69,8 +69,36 @@ export type CreateRunRequest = z.infer<typeof CreateRunRequest>
 /** 补问答复请求 */
 export const ContinueRunRequest = z.object({
   message: z.string().min(1),
+  returnShipment: z
+    .object({ returnNo: z.string().min(1), trackingNo: z.string().trim().min(1).max(100) })
+    .optional(),
 })
 export type ContinueRunRequest = z.infer<typeof ContinueRunRequest>
+
+/** 客户原售后只读进度 不公开内部授权与任务 */
+export const CustomerRefundProgress = z.object({
+  runId: z.string(),
+  returnNo: z.string(),
+  orderNo: z.string(),
+  type: z.enum(['return', 'refund_only']),
+  progress: z.enum([
+    'awaiting_approval',
+    'awaiting_shipment',
+    'awaiting_receipt',
+    'processing',
+    'succeeded',
+    'rejected',
+    'expired',
+    'cancelled',
+    'failed',
+    'unknown',
+    'human',
+  ]),
+  canRegisterShipment: z.boolean(),
+  shipmentRegistered: z.boolean(),
+  trackingNo: z.string().nullable(),
+})
+export type CustomerRefundProgress = z.infer<typeof CustomerRefundProgress>
 
 /** 审批决定请求 */
 export const ApprovalDecisionRequest = z.object({
