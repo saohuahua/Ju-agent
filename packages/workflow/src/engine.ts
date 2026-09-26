@@ -131,6 +131,24 @@ export class WorkflowEngine {
     // 审批关联的业务资源类型 旧断点无此字段 默认售后单
     const approvalResourceType = (state.approvalResourceType as string) ?? 'return_request'
 
+    // 断点和审批共同绑定具体资源 不接受调用方凭参数伪造批准结果
+    const resourceId =
+      approvalResourceType === 'compensation'
+        ? state.compensationNo
+        : approvalResourceType === 'price_protection'
+          ? state.protectionNo
+          : returnNo
+    if (state.approvalId !== approvalId || typeof resourceId !== 'string') {
+      throw new DomainError(createToolError('CONFLICT', '审批与当前断点不匹配'))
+    }
+    await this.deps.approvalService.assertStoredDecision(
+      runId,
+      approvalId,
+      approvalResourceType,
+      resourceId,
+      decision,
+    )
+
     await this.deps.runService.emit(runId, 'approval.decided', { approvalId, decision, decidedBy })
 
     // 决定先落业务状态 再续跑剩余步骤 拒绝与过期直接收尾 不再执行副作用

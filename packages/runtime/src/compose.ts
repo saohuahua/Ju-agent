@@ -15,6 +15,7 @@ import {
   HumanHandoverService,
   LogisticsEventService,
   PolicySearchService,
+  KeywordPolicyScorer,
   PriceProtectionService,
   RatingService,
   RunService,
@@ -22,11 +23,15 @@ import {
   type Clock,
   type PolicyArticleScorer,
 } from '@aftersales/domain'
-import { AgentRunner, ChatModelPolicyScorer } from '@aftersales/agent'
+import { AgentRunner } from '@aftersales/agent'
 import type { ChatModel } from '@aftersales/agent'
 import {
   BASELINE_FROZEN_TIME,
   SqliteAgentRunRepository,
+  SqliteCaseClosureRepository,
+  P6TaskRepository,
+  P7Ledger,
+  ExecutionOwnershipRepository,
   SqliteAnalyticsReadModel,
   SqliteApprovalRepository,
   SqliteAuditRepository,
@@ -56,8 +61,13 @@ import {
 } from '@aftersales/persistence'
 import { MockPaymentGateway, ToolExecutor, buildToolRegistry } from '@aftersales/tools'
 import { WorkflowEngine } from '@aftersales/workflow'
+import { DurableConversation, type DurableConversationOptions } from './durable-conversation.js'
+import { DurableBusiness, type DurableBusinessOptions } from './durable-business.js'
 
 export interface ComposeOptions {
+  durableBusiness?: DurableBusinessOptions
+  /** 显式开启普通会话持久执行 退款能力须同时装配持久业务 */
+  durableConversation?: DurableConversationOptions
   /** SQLite 数据库路径 :memory: 为内存库 缺省内存库 */
   dbPath?: string
   /** 已有连接传入时忽略 dbPath 评测复用连接自建库 */
@@ -73,15 +83,20 @@ export interface ComposeOptions {
   /** 夹具补丁 */
   fixturePatch?: FixturePatch[]
   /**
-   * 政策检索打分器 缺省用 LLM 打分 走现有代理
-   * 评测传入确定性打分器 保证检索结果同构可复现
+   * 政策检索默认使用确定性关键词基线 不隐式消费主模型
+   * 显式注入属于可信组合边界 付费打分器须经过现有网关
    */
   policyScorer?: PolicyArticleScorer
 }
 
 /** 装配完成的系统句柄 */
 export interface ComposedSystem {
+  durableBusiness?: DurableBusiness
+  conversations?: DurableConversation
   db: SqliteDatabase
+  /** 共享同一连接保存任务和调用费用 业务夹具重置不会清空累计账本 */
+  durableTasks: P6TaskRepository
+  modelLedger: P7Ledger
   clock: Clock
   gateway: MockPaymentGateway
   runService: RunService
@@ -106,12 +121,15 @@ export interface ComposedSystem {
 export function composeSystem(options: ComposeOptions): ComposedSystem {
   const db = options.db ?? (options.dbPath ? openDatabase(options.dbPath) : createMemoryDatabase())
   const clock = options.clock
+  const durableTasks = new P6TaskRepository(db)
+  const modelLedger = new P7Ledger(db)
 
   if (options.withFixture !== false) {
     loadFixture(db, options.fixturePatch ?? [])
   }
 
   const gateway = new MockPaymentGateway()
+  const executionOwnership = new ExecutionOwnershipRepository(db)
   const auditService = new AuditService(new SqliteAuditRepository(db), clock)
   const approvalService = new ApprovalService(new SqliteApprovalRepository(db), clock)
   const afterSaleService = new AfterSaleService(
@@ -126,6 +144,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     approvalService,
     auditService,
     clock,
+    executionOwnership,
   )
   const compensationService = new CompensationService(
     new SqliteOrderRepository(db),
@@ -136,6 +155,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     approvalService,
     auditService,
     clock,
+    executionOwnership,
   )
   const priceProtectionService = new PriceProtectionService(
     new SqliteOrderRepository(db),
@@ -148,6 +168,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     approvalService,
     auditService,
     clock,
+    executionOwnership,
   )
   const runService = new RunService(
     new SqliteAgentRunRepository(db),
@@ -161,7 +182,12 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     auditService,
     clock,
   )
-  const handoverService = new HumanHandoverService(runService, auditService)
+  const handoverService = new HumanHandoverService(
+    runService,
+    auditService,
+    new SqliteCaseClosureRepository(db),
+    clock,
+  )
   const ratingService = new RatingService(
     runService,
     new SqliteRatingRepository(db),
@@ -171,7 +197,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
   const analyticsService = new AnalyticsService(new SqliteAnalyticsReadModel(db))
   const policySearchService = new PolicySearchService(
     new SqlitePolicyArticleRepository(db),
-    options.policyScorer ?? new ChatModelPolicyScorer(options.model),
+    options.policyScorer ?? new KeywordPolicyScorer(),
     auditService,
   )
 
@@ -217,7 +243,21 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
   })
 
   return {
+    durableBusiness: options.durableBusiness
+      ? new DurableBusiness(db, options.durableBusiness)
+      : undefined,
+    conversations: options.durableConversation
+      ? new DurableConversation(
+          db,
+          options.durableConversation,
+          options.durableBusiness
+            ? { afterSale: afterSaleService, approvals: approvalService }
+            : undefined,
+        )
+      : undefined,
     db,
+    durableTasks,
+    modelLedger,
     clock,
     gateway,
     runService,

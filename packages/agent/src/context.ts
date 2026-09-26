@@ -64,11 +64,46 @@ export function rebuildMessages(events: EventRow[]): ModelMessage[] {
     }
   }
 
+  // 有真实结果的挂起动作先完成协议配对 再交付其执行期间到达的物流通知
+  // 只调整模型消息顺序 原始审计事件和实际发生时间保持不变
+  const ordered: EventRow[] = []
+  const deferred: EventRow[] = []
+  const active = new Set<string>()
   for (const event of events) {
+    // 原退款执行期间的补充消息在真实结果之后交付 不生成虚假工具结果
+    const businessReply =
+      event.type === 'message.user'
+        ? (event.payload as { businessToolCallId?: string }).businessToolCallId
+        : undefined
+    if (businessReply && active.has(businessReply) && !unansweredCalls.has(businessReply)) {
+      deferred.push(event)
+      continue
+    }
+    if (event.type === 'logistics.event' && [...active].some((id) => !unansweredCalls.has(id))) {
+      deferred.push(event)
+      continue
+    }
+    ordered.push(event)
+    if (event.type === 'agent.turn') {
+      for (const block of (event.payload as { blocks: Array<Record<string, unknown>> }).blocks)
+        if (block.type === 'tool_use') active.add(String(block.toolCallId))
+    } else if (event.type === 'agent.tool_results') {
+      for (const result of (event.payload as { results: Array<{ toolCallId: string }> }).results)
+        active.delete(result.toolCallId)
+    } else if (event.type === 'message.user') {
+      const reply = (event.payload as { replyToToolCallId?: string }).replyToToolCallId
+      if (reply) active.delete(reply)
+    }
+    if (![...active].some((id) => !unansweredCalls.has(id))) ordered.push(...deferred.splice(0))
+  }
+  ordered.push(...deferred)
+  const seenCalls = new Set<string>()
+  for (const event of ordered) {
     if (event.type === 'message.user') {
       flushResults()
       const payload = event.payload as { text: string; replyToToolCallId?: string }
       if (payload.replyToToolCallId) {
+        seenCalls.delete(payload.replyToToolCallId)
         messages.push({
           role: 'user',
           content: [
@@ -91,6 +126,7 @@ export function rebuildMessages(events: EventRow[]): ModelMessage[] {
         if (raw.type === 'text') {
           return { type: 'text' as const, text: String(raw.text) }
         }
+        seenCalls.add(String(raw.toolCallId))
         return {
           type: 'tool_use' as const,
           toolCallId: String(raw.toolCallId),
@@ -102,6 +138,7 @@ export function rebuildMessages(events: EventRow[]): ModelMessage[] {
     } else if (event.type === 'agent.tool_results') {
       const payload = event.payload as { results: Array<Record<string, unknown>> }
       for (const raw of payload.results) {
+        seenCalls.delete(String(raw.toolCallId))
         pendingResults.push({
           type: 'tool_result',
           toolCallId: String(raw.toolCallId),
@@ -119,11 +156,16 @@ export function rebuildMessages(events: EventRow[]): ModelMessage[] {
         description?: string
       }
       const statusText =
-        payload.status === 'lost' ? '包裹丢失' : payload.status === 'delayed' ? '运输延误' : '状态更新'
+        payload.status === 'lost'
+          ? '包裹丢失'
+          : payload.status === 'delayed'
+            ? '运输延误'
+            : '状态更新'
       const content: ContextBlock[] = []
       // 挂起的调用以合成 tool_result 配对 补问未答时告知模型客户尚未回复
       // 配对后从集合移除 多次推送不重复配对同一调用
       for (const [toolCallId, toolName] of unansweredCalls) {
+        if (!seenCalls.has(toolCallId)) continue
         content.push({
           type: 'tool_result',
           toolCallId,
@@ -135,6 +177,7 @@ export function rebuildMessages(events: EventRow[]): ModelMessage[] {
           isError: false,
         })
         unansweredCalls.delete(toolCallId)
+        seenCalls.delete(toolCallId)
       }
       content.push({
         type: 'text',

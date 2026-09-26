@@ -176,9 +176,7 @@ describe('副作用工具', () => {
       { returnNo: created.returnNo as string },
       contextFor({ role: 'customer', customerId: 'C1001' }),
     )
-    const guardEvents = c.repos.eventRepo.events.filter(
-      (event) => event.type === 'guard.blocked',
-    )
+    const guardEvents = c.repos.eventRepo.events.filter((event) => event.type === 'guard.blocked')
     // 第二次执行被第一道防线拦截 事件是拦截的直接证据
     expect(guardEvents).toHaveLength(1)
     expect(guardEvents[0]!.payload).toMatchObject({
@@ -218,7 +216,7 @@ describe('副作用工具', () => {
       amountCents: 699_900,
       requestedBy: 'system',
     })
-    await c.approvalService.decide(operatorActor, approval.approvalId, 'approved')
+    await c.approvalService.decide({ role: 'supervisor' }, approval.approvalId, 'approved')
     const record = await c.repos.returnRepo.findByReturnNo(created.returnNo as string)
     if (record) {
       record.status = 'approved'
@@ -232,9 +230,7 @@ describe('副作用工具', () => {
         contextFor({ role: 'customer', customerId: 'C1001' }),
       ),
     ).rejects.toThrow()
-    const guardEvents = c.repos.eventRepo.events.filter(
-      (event) => event.type === 'guard.blocked',
-    )
+    const guardEvents = c.repos.eventRepo.events.filter((event) => event.type === 'guard.blocked')
     expect(guardEvents).toHaveLength(1)
     expect(guardEvents[0]!.payload).toMatchObject({
       layer: 'approval_token',
