@@ -186,6 +186,28 @@ CREATE TABLE IF NOT EXISTS agent_runs (
   updated_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_runs_status ON agent_runs(status);
+CREATE INDEX IF NOT EXISTS idx_runs_created_cursor ON agent_runs(created_at DESC, run_id DESC);
+
+CREATE TABLE IF NOT EXISTS approval_execution_intents (
+  approval_id TEXT PRIMARY KEY REFERENCES approval_requests(approval_id),
+  run_id TEXT NOT NULL REFERENCES agent_runs(run_id),
+  decision TEXT NOT NULL CHECK (decision IN ('approved', 'rejected')),
+  decided_by TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('pending', 'running', 'completed', 'failed')),
+  last_error TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_approval_intents_status ON approval_execution_intents(status, created_at);
+
+CREATE TABLE IF NOT EXISTS internal_notes (
+  id TEXT PRIMARY KEY,
+  run_id TEXT NOT NULL REFERENCES agent_runs(run_id),
+  author TEXT NOT NULL,
+  body TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_notes_run ON internal_notes(run_id, created_at);
 
 CREATE TABLE IF NOT EXISTS ratings (
   run_id TEXT PRIMARY KEY,

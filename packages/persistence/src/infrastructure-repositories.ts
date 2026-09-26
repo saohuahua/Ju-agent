@@ -92,10 +92,12 @@ export class SqliteEventRepository implements EventRepository {
     return sequence
   }
 
-  async listByRun(runId: string, fromSequence = 1) {
+  async listByRun(runId: string, fromSequence = 1, limit = -1) {
     const rows = this.db
-      .prepare('SELECT * FROM agent_events WHERE run_id = ? AND sequence >= ? ORDER BY sequence')
-      .all(runId, fromSequence) as Array<{
+      .prepare(
+        'SELECT * FROM agent_events WHERE run_id = ? AND sequence >= ? ORDER BY sequence LIMIT ?',
+      )
+      .all(runId, fromSequence, limit) as Array<{
       run_id: string
       sequence: number
       type: string
@@ -284,6 +286,29 @@ export class SqliteAgentRunRepository implements AgentRunRepository {
          WHERE run_id = ?`,
       )
       .run(record.status, record.intent, record.error, record.updatedAt, record.runId)
+  }
+
+  /** 状态检查与写入合并 避免两个接管请求都认领成功 */
+  async transition(
+    record: AgentRunRecord,
+    expectedStatus: AgentRunRecord['status'],
+  ): Promise<boolean> {
+    return (
+      this.db
+        .prepare(
+          `UPDATE agent_runs SET status = ?, error = ?, updated_at = ?
+      WHERE run_id = ? AND status = ?`,
+        )
+        .run(record.status, record.error, record.updatedAt, record.runId, expectedStatus)
+        .changes === 1
+    )
+  }
+
+  /** 更新意图不能携带旧状态覆盖另一请求刚完成的状态迁移 */
+  async setIntent(runId: string, intent: string, updatedAt: string): Promise<void> {
+    this.db
+      .prepare('UPDATE agent_runs SET intent = ?, updated_at = ? WHERE run_id = ?')
+      .run(intent, updatedAt, runId)
   }
 
   async list(options?: {

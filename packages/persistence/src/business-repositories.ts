@@ -20,6 +20,7 @@ import type {
 } from '@aftersales/domain'
 import type {
   ApprovalRepository,
+  ApprovalDecisionWrite,
   CompensationRepository,
   CustomerRepository,
   OrderRepository,
@@ -73,6 +74,11 @@ export class SqliteOrderRepository implements OrderRepository {
   constructor(private readonly db: SqliteDatabase) {}
 
   async findByOrderNo(orderNo: string): Promise<Order | null> {
+    return this.findByOrderNoSync(orderNo)
+  }
+
+  /** 同步事务复用原行映射 */
+  findByOrderNoSync(orderNo: string): Order | null {
     const row = this.db.prepare('SELECT * FROM orders WHERE order_no = ?').get(orderNo) as
       OrderRow | undefined
     return row ? rowToOrder(row) : null
@@ -89,6 +95,11 @@ export class SqliteShipmentRepository implements ShipmentRepository {
   constructor(private readonly db: SqliteDatabase) {}
 
   async findByOrderNo(orderNo: string): Promise<Shipment | null> {
+    return this.findByOrderNoSync(orderNo)
+  }
+
+  /** 同步事务复用原行映射 */
+  findByOrderNoSync(orderNo: string): Shipment | null {
     const row = this.db.prepare('SELECT * FROM shipments WHERE order_no = ?').get(orderNo) as
       | {
           shipment_id: string
@@ -202,6 +213,11 @@ export class SqliteReturnRepository implements ReturnRepository {
   constructor(private readonly db: SqliteDatabase) {}
 
   async create(record: ReturnRequest): Promise<void> {
+    this.createSync(record)
+  }
+
+  /** 同步受理不跨异步边界 */
+  createSync(record: ReturnRequest): void {
     this.db
       .prepare(
         `INSERT INTO return_requests
@@ -229,6 +245,11 @@ export class SqliteReturnRepository implements ReturnRepository {
   }
 
   async findByReturnNo(returnNo: string): Promise<ReturnRequest | null> {
+    return this.findByReturnNoSync(returnNo)
+  }
+
+  /** 同步事务复用原行映射 */
+  findByReturnNoSync(returnNo: string): ReturnRequest | null {
     const row = this.db
       .prepare('SELECT * FROM return_requests WHERE return_no = ?')
       .get(returnNo) as ReturnRow | undefined
@@ -236,6 +257,11 @@ export class SqliteReturnRepository implements ReturnRepository {
   }
 
   async listByOrderNo(orderNo: string): Promise<ReturnRequest[]> {
+    return this.listByOrderNoSync(orderNo)
+  }
+
+  /** 同步事务复用原行映射 */
+  listByOrderNoSync(orderNo: string): ReturnRequest[] {
     const rows = this.db
       .prepare('SELECT * FROM return_requests WHERE order_no = ?')
       .all(orderNo) as ReturnRow[]
@@ -301,6 +327,11 @@ export class SqliteRefundRepository implements RefundRepository {
   constructor(private readonly db: SqliteDatabase) {}
 
   async create(record: Refund): Promise<void> {
+    this.createSync(record)
+  }
+
+  /** 同步受理不跨异步边界 */
+  createSync(record: Refund): void {
     this.db
       .prepare(
         `INSERT INTO refunds
@@ -332,6 +363,11 @@ export class SqliteRefundRepository implements RefundRepository {
   }
 
   async findByReturnNo(returnNo: string): Promise<Refund | null> {
+    return this.findByReturnNoSync(returnNo)
+  }
+
+  /** 同步事务复用原行映射 */
+  findByReturnNoSync(returnNo: string): Refund | null {
     const row = this.db.prepare('SELECT * FROM refunds WHERE return_no = ?').get(returnNo) as
       RefundRow | undefined
     return row ? rowToRefund(row) : null
@@ -555,9 +591,7 @@ export class SqliteSkuPriceRepository implements SkuPriceRepository {
     if (skus.length === 0) return []
     const placeholders = skus.map(() => '?').join(', ')
     const rows = this.db
-      .prepare(
-        `SELECT * FROM sku_prices WHERE sku IN (${placeholders})`,
-      )
+      .prepare(`SELECT * FROM sku_prices WHERE sku IN (${placeholders})`)
       .all(...skus) as SkuPriceRow[]
     return rows.map((row) => ({
       sku: row.sku,
@@ -617,6 +651,11 @@ export class SqliteApprovalRepository implements ApprovalRepository {
   }
 
   async create(record: ApprovalRequest): Promise<void> {
+    this.createSync(record)
+  }
+
+  /** 审批与原方案在同一受理事务保存 */
+  createSync(record: ApprovalRequest): void {
     this.db
       .prepare(
         `INSERT INTO approval_requests
@@ -660,20 +699,65 @@ export class SqliteApprovalRepository implements ApprovalRepository {
     return rows.map((row) => this.rowToApproval(row as Record<string, unknown>))
   }
 
-  async update(record: ApprovalRequest): Promise<void> {
-    this.db
+  /** 决定与执行意图同步提交 任一步失败都会回滚整个事务 */
+  async decidePending(input: ApprovalDecisionWrite): Promise<ApprovalRequest | null> {
+    return this.db.transaction(() => {
+      const row = this.db
+        .prepare(
+          `UPDATE approval_requests
+        SET status = ?, decided_by = ?, decided_at = ?
+        WHERE approval_id = ? AND status = 'pending' AND expires_at > ?
+        ${
+          input.runId
+            ? `AND run_id = ? AND EXISTS (
+          SELECT 1 FROM agent_runs WHERE run_id = ? AND status = 'awaiting_approval'
+        )`
+            : ''
+        }
+        ${input.checkpointId !== undefined ? 'AND (SELECT MAX(id) FROM checkpoints WHERE run_id = approval_requests.run_id) = ?' : ''}
+        RETURNING *`,
+        )
+        .get(
+          input.decision,
+          input.decidedBy,
+          input.now,
+          input.approvalId,
+          input.now,
+          ...(input.runId ? [input.runId, input.runId] : []),
+          ...(input.checkpointId !== undefined ? [input.checkpointId] : []),
+        ) as Record<string, unknown> | undefined
+
+      if (!row) return null
+      if (input.runId) {
+        this.db
+          .prepare(
+            `INSERT INTO approval_execution_intents
+          (approval_id, run_id, decision, decided_by, status, created_at, updated_at)
+          VALUES (?, ?, ?, ?, 'pending', ?, ?)`,
+          )
+          .run(input.approvalId, input.runId, input.decision, input.decidedBy, input.now, input.now)
+      }
+      return this.rowToApproval(row)
+    })()
+  }
+
+  /** 单条条件更新消费令牌 空字符串永远不是有效凭据 */
+  async consumeToken(
+    approvalId: string,
+    token: string,
+    resourceType: string,
+    resourceId: string,
+    now: string,
+  ): Promise<boolean> {
+    if (!token) return false
+    const result = this.db
       .prepare(
-        `UPDATE approval_requests
-         SET status = ?, one_time_token = ?, decided_by = ?, decided_at = ?
-         WHERE approval_id = ?`,
+        `UPDATE approval_requests SET one_time_token = ''
+      WHERE approval_id = ? AND resource_type = ? AND resource_id = ?
+        AND status = 'approved' AND one_time_token = ? AND one_time_token <> '' AND expires_at > ?`,
       )
-      .run(
-        record.status,
-        record.oneTimeToken,
-        record.decidedBy,
-        record.decidedAt,
-        record.approvalId,
-      )
+      .run(approvalId, resourceType, resourceId, token, now)
+    return result.changes === 1
   }
 }
 

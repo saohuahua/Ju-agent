@@ -11,6 +11,9 @@ import Database from 'better-sqlite3'
 import { mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { SCHEMA_SQL } from './schema.js'
+import { migrateP6 } from './p6-migration.js'
+import { migrateP7 } from './p7-migration.js'
+import { migrateExecutionOwnership } from './execution-ownership-migration.js'
 
 export type SqliteDatabase = Database.Database
 
@@ -35,6 +38,14 @@ export function migrate(db: SqliteDatabase): void {
   if (!runColumns.some((column) => column.name === 'source')) {
     db.exec("ALTER TABLE agent_runs ADD COLUMN source TEXT NOT NULL DEFAULT 'customer'")
   }
+  // 持久任务与预算只做增量迁移 不自动认领历史任务或释放未知费用
+  migrateP6(db)
+  migrateP7(db)
+  migrateExecutionOwnership(db)
+  // 评测归因附件独立于业务夹具和费用账本 保留历史实验关联
+  db.exec(`CREATE TABLE IF NOT EXISTS eval_budget_evidence (
+    report_id TEXT PRIMARY KEY, experiment_id TEXT NOT NULL, evidence_json TEXT NOT NULL
+  )`)
 }
 
 /** 评测与测试用 每次全新内存库 */
@@ -48,6 +59,17 @@ export function createMemoryDatabase(): SqliteDatabase {
 /** 清空业务数据 保留表结构 用于夹具重置 */
 export function clearBusinessData(db: SqliteDatabase): void {
   const tables = [
+    'p6_conversation_refunds',
+    'execution_ownership',
+    'p6_events',
+    'p6_steps',
+    'p6_effects',
+    'p6_tasks',
+    'p6_commands',
+    // 业务夹具重置不清空费用账本 防止重置业务数据绕过累计预算
+    'approval_execution_intents',
+    // 先删除引用运行的内部备注以满足外键约束
+    'internal_notes',
     'audit_logs',
     'tool_executions',
     'agent_events',
