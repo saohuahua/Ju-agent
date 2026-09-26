@@ -1,0 +1,223 @@
+{
+  "requests": [
+    {
+      "url": "http://127.0.0.1:59135/api/runs",
+      "key": "dbd04161-b9cd-4ecb-b72a-b99b5a5f333c",
+      "body": "{\"message\":\"订单 SO-2026-0001 商品质量问题 申请退货退款\"}"
+    },
+    {
+      "url": "http://127.0.0.1:59135/api/runs/run_fbc9f716-ccaf-4047-90c7-82b0c673e89f/messages",
+      "key": "c6617833-a656-49ef-a238-7e9f5236d561",
+      "body": "{\"message\":\"已寄回商品 请核对寄回信息\",\"returnShipment\":{\"returnNo\":\"RT-2026-0002\",\"trackingNo\":\"LOCAL-网页寄回-001\"}}"
+    },
+    {
+      "url": "http://127.0.0.1:59135/api/runs/run_fbc9f716-ccaf-4047-90c7-82b0c673e89f/messages",
+      "key": "c6617833-a656-49ef-a238-7e9f5236d561",
+      "body": "{\"message\":\"已寄回商品 请核对寄回信息\",\"returnShipment\":{\"returnNo\":\"RT-2026-0002\",\"trackingNo\":\"LOCAL-网页寄回-001\"}}"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "message": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "type": "error",
+      "message": "Failed to load resource: net::ERR_CONNECTION_RESET"
+    },
+    {
+      "type": "error",
+      "message": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "error",
+      "message": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "checks": [
+    "审批前无寄回表单",
+    "键盘空单号校验反馈",
+    "失败不假成功 刷新恢复原请求键和请求体",
+    "390px 窄屏无水平溢出",
+    "身份切换隔离与恢复",
+    "浏览器离线明确提示 恢复联网重查事实",
+    "API 进程重启真实断开 SSE 原会话自动续传",
+    "SSE 重连和刷新无重复结果 收货后渠道业务及页面一致成功"
+  ],
+  "screenshots": [
+    "desktop-awaiting-approval",
+    "desktop-validation",
+    "desktop-network-retry",
+    "desktop-waiting-receipt",
+    "mobile-waiting-receipt",
+    "browser-failure",
+    "desktop-offline",
+    "desktop-sse-disconnected",
+    "desktop-confirmed-refund",
+    "mobile-confirmed-refund"
+  ],
+  "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+  "approvedProgress": {
+    "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+    "returnNo": "RT-2026-0002",
+    "orderNo": "SO-2026-0001",
+    "type": "return",
+    "progress": "awaiting_shipment",
+    "canRegisterShipment": true,
+    "shipmentRegistered": false,
+    "trackingNo": null
+  },
+  "beforeReceive": {
+    "submissions": 0,
+    "charges": 0
+  },
+  "final": {
+    "counts": {
+      "submissions": 1,
+      "charges": 1
+    },
+    "registered": {
+      "n": 1
+    },
+    "commands": {
+      "n": 1
+    },
+    "progress": {
+      "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+      "returnNo": "RT-2026-0002",
+      "orderNo": "SO-2026-0001",
+      "type": "return",
+      "progress": "succeeded",
+      "canRegisterShipment": false,
+      "shipmentRegistered": true,
+      "trackingNo": "LOCAL-网页寄回-001"
+    },
+    "refund": {
+      "refund_no": "RF-2026-0002",
+      "return_no": "RT-2026-0002",
+      "status": "succeeded"
+    },
+    "afterSale": {
+      "return_no": "RT-2026-0002",
+      "status": "completed"
+    },
+    "events": [
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 1,
+        "type": "run.started",
+        "createdAt": "2026-09-26T05:07:56.328Z",
+        "payload": {}
+      },
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 2,
+        "type": "message.user",
+        "createdAt": "2026-09-26T05:07:56.328Z",
+        "payload": {
+          "text": "订单 SO-2026-0001 商品质量问题 申请退货退款"
+        }
+      },
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 11,
+        "type": "message.completed",
+        "createdAt": "2026-09-26T05:07:56.368Z",
+        "payload": {
+          "text": "售后单 RT-2026-0002 等待主管审批 尚未退款"
+        }
+      },
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 12,
+        "type": "run.paused",
+        "createdAt": "2026-09-26T05:07:56.368Z",
+        "payload": {
+          "reason": "awaiting_approval"
+        }
+      },
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 13,
+        "type": "message.completed",
+        "createdAt": "2026-09-26T05:07:56.588Z",
+        "payload": {
+          "text": "售后单 RT-2026-0002 已批准 等待寄回或收货 尚未退款"
+        }
+      },
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 14,
+        "type": "run.paused",
+        "createdAt": "2026-09-26T05:07:56.588Z",
+        "payload": {
+          "reason": "awaiting_input"
+        }
+      },
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 15,
+        "type": "message.completed",
+        "createdAt": "2026-09-26T05:07:58.249Z",
+        "payload": {
+          "text": "已登记寄回 等待仓库确认收货 尚未退款"
+        }
+      },
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 16,
+        "type": "message.user",
+        "createdAt": "2026-09-26T05:07:58.249Z",
+        "payload": {
+          "text": "已寄回商品 请核对寄回信息"
+        }
+      },
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 17,
+        "type": "message.completed",
+        "createdAt": "2026-09-26T05:07:58.322Z",
+        "payload": {
+          "text": "售后单 RT-2026-0002 已批准 等待寄回或收货 尚未退款"
+        }
+      },
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 18,
+        "type": "run.paused",
+        "createdAt": "2026-09-26T05:07:58.323Z",
+        "payload": {
+          "reason": "awaiting_input"
+        }
+      },
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 21,
+        "type": "message.completed",
+        "createdAt": "2026-09-26T05:11:05.645Z",
+        "payload": {
+          "text": "模拟渠道已确认退款成功"
+        }
+      },
+      {
+        "runId": "run_fbc9f716-ccaf-4047-90c7-82b0c673e89f",
+        "sequence": 22,
+        "type": "run.completed",
+        "createdAt": "2026-09-26T05:11:05.645Z",
+        "payload": {}
+      }
+    ],
+    "assistantResults": [
+      "售后单 RT-2026-0002 等待主管审批 尚未退款",
+      "售后单 RT-2026-0002 已批准 等待寄回或收货 尚未退款",
+      "已登记寄回 等待仓库确认收货 尚未退款",
+      "售后单 RT-2026-0002 已批准 等待寄回或收货 尚未退款",
+      "模拟渠道已确认退款成功"
+    ]
+  },
+  "page": {
+    "url": "http://127.0.0.1:59130/workbench",
+    "title": "有据 · AfterSales 售后工作台",
+    "hasOverlay": false
+  }
+}

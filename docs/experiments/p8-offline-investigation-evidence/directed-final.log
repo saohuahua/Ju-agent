@@ -1,0 +1,46 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/runtime
+
+ ✓ test/p6-durable.test.ts (12 tests) 86ms
+ ✓ test/p7-gateway.test.ts (38 tests) 208ms
+ ✓ test/p7-persistence.test.ts (1 test) 464ms
+   ✓ 两个独立进程竞争累计预算且重启保留预占和不可变快照  463ms
+ ✓ test/p8-investigation.test.ts (22 tests) 882ms
+ ✓ test/p8-process.test.ts (4 tests) 7916ms
+   ✓ P8 跨进程持久恢复 > 模型已记账但分支未确认时保守停止且不换号重发  2445ms
+   ✓ P8 跨进程持久恢复 > accepted 后真实退出再恢复  1893ms
+   ✓ P8 跨进程持久恢复 > one-confirmed 后真实退出再恢复  1786ms
+   ✓ P8 跨进程持久恢复 > both-confirmed 后真实退出再恢复  1791ms
+ ✓ test/p6-p7-integration.test.ts (4 tests) 9853ms
+   ✓ P6 与 P7 跨进程集成 > during-model 后恢复保留费用并跳过已确认调用  3408ms
+   ✓ P6 与 P7 跨进程集成 > after-model-response 后恢复保留费用并跳过已确认调用  1778ms
+   ✓ P6 与 P7 跨进程集成 > after-model-checkpoint 后恢复保留费用并跳过已确认调用  1802ms
+   ✓ P6 与 P7 跨进程集成 > 连续强退耗尽任务上限后不再调用模型  2863ms
+stdout | test/p6-process.test.ts
+P6 进程证据 D:\project\agent-new\aftersales\docs\experiments\p6-results\2026-09-26T05-08-22.855Z
+
+ ✓ test/p6-process.test.ts (18 tests) 62176ms
+   ✓ P6 真实子进程与独立持久渠道 > accepted-before-worker 退出后续跑  4210ms
+   ✓ P6 真实子进程与独立持久渠道 > before-model 退出后续跑  3890ms
+   ✓ P6 真实子进程与独立持久渠道 > mid-stream 退出后续跑  3802ms
+   ✓ P6 真实子进程与独立持久渠道 > after-model-checkpoint 退出后续跑  3504ms
+   ✓ P6 真实子进程与独立持久渠道 > after-payment-response 退出后续跑  3493ms
+   ✓ P6 真实子进程与独立持久渠道 > after-payment-checkpoint 退出后续跑  3591ms
+   ✓ P6 真实子进程与独立持久渠道 > 审批受理进程退出后由持久意图入队并消费原授权  2819ms
+   ✓ P6 真实子进程与独立持久渠道 > 独立渠道 response_lost 保留正确业务语义  2564ms
+   ✓ P6 真实子进程与独立持久渠道 > 独立渠道 rejected 保留正确业务语义  2642ms
+   ✓ P6 真实子进程与独立持久渠道 > 独立渠道 unknown 保留正确业务语义  3670ms
+   ✓ P6 真实子进程与独立持久渠道 > 独立渠道 delayed 保留正确业务语义  3305ms
+   ✓ P6 真实子进程与独立持久渠道 > 发送意图后退出且渠道无记录时保持未知 不猜测未发生  3737ms
+   ✓ P6 真实子进程与独立持久渠道 > 两个同时启动的 Worker 只有一个认领并产生副作用  2862ms
+   ✓ P6 真实子进程与独立持久渠道 > 旧进程代次返回时无法覆盖新进程终态  3418ms
+   ✓ P6 真实子进程与独立持久渠道 > 只读超时跨进程重试有界且不重复已确认模型步骤  3523ms
+   ✓ P6 真实子进程与独立持久渠道 > 资金成功后取消只停止后续工作 不隐瞒已确认资金事实  2531ms
+   ✓ P6 真实子进程与独立持久渠道 > 取消运行中的长只读任务会传播信号并停止资金发送  2586ms
+   ✓ P6 真实子进程与独立持久渠道 > 独立渠道自身重启后保留原交易 跨新运行编号也不重复资金动作  6024ms
+
+ Test Files  7 passed (7)
+      Tests  99 passed (99)
+   Start at  13:08:21
+   Duration  63.61s (transform 2.75s, setup 0ms, collect 5.98s, tests 81.59s, environment 2ms, prepare 1.95s)
+

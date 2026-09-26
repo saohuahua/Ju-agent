@@ -1,0 +1,4 @@
+Error: No element found for selector: #demo-identity
+    at assert (file:///D:/project/agent-new/aftersales/node_modules/.pnpm/puppeteer-core@25.11.0/node_modules/puppeteer-core/lib/puppeteer/util/assert.js:15:15)
+    at CdpFrame.select (file:///D:/project/agent-new/aftersales/node_modules/.pnpm/puppeteer-core@25.11.0/node_modules/puppeteer-core/lib/puppeteer/api/Frame.js:830:17)
+    at async file:///C:/Users/htlocal/AppData/Local/Temp/customer-return-ui-20260926-124648/browser-check.mjs:33:3

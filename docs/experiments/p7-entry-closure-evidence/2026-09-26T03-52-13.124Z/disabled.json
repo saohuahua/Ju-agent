@@ -1,0 +1,51 @@
+{
+  "mode": "disabled",
+  "directory": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\p7-entry-closure-jwAhRv",
+  "probe": "",
+  "log": "已载入演示数据 客户令牌 cust-token-1001 cust-token-1002 cust-token-1003\n售后 API 已启动 http://127.0.0.1:50109\n模型 真实模型入口已关闭\n健康检查 GET /api/health\n",
+  "result": {
+    "health": {
+      "status": "ok",
+      "modelAvailable": false,
+      "conversationMode": "legacy",
+      "promptVersion": "v2.5"
+    },
+    "runs": [
+      {
+        "run_id": "legacy-run",
+        "status": "failed"
+      },
+      {
+        "run_id": "legacy-recovery",
+        "status": "failed"
+      }
+    ],
+    "events": [
+      {
+        "type": "run.resumed",
+        "payload_json": "{\"resumePoint\":\"user_message\"}"
+      },
+      {
+        "type": "message.user",
+        "payload_json": "{\"text\":\"继续查询\"}"
+      },
+      {
+        "type": "tools.catalog_changed",
+        "payload_json": "{\"visible\":[\"lookup_customer\",\"get_order\",\"get_shipment\",\"get_policy\",\"search_policy\",\"escalate\",\"ask_user\",\"conclude\"],\"gated\":[\"submit_return\",\"submit_refund_only\",\"submit_exchange\",\"cancel_return\",\"compensation\",\"price_protection\"],\"reason\":\"initial\"}"
+      },
+      {
+        "type": "run.failed",
+        "payload_json": "{\"errorCode\":\"INTERNAL_ERROR\",\"message\":\"LIVE_DISABLED\"}"
+      },
+      {
+        "type": "tools.catalog_changed",
+        "payload_json": "{\"visible\":[\"lookup_customer\",\"get_order\",\"get_shipment\",\"get_policy\",\"search_policy\",\"escalate\",\"ask_user\",\"conclude\"],\"gated\":[\"submit_return\",\"submit_refund_only\",\"submit_exchange\",\"cancel_return\",\"compensation\",\"price_protection\"],\"reason\":\"initial\"}"
+      },
+      {
+        "type": "run.failed",
+        "payload_json": "{\"errorCode\":\"INTERNAL_ERROR\",\"message\":\"LIVE_DISABLED\"}"
+      }
+    ],
+    "modelCalls": 0
+  }
+}

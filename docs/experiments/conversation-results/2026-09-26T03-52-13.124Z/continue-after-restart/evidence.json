@@ -1,0 +1,30 @@
+{
+  "accepted": {
+    "runId": "run_a735320b-7c82-4d90-bb50-f10738a82922",
+    "commandId": "21033cc1-5185-47ac-91f9-d0c027687c43",
+    "taskId": "8a7bd04c-dd4a-4b98-aed5-2b2a862be99f",
+    "accepted": true
+  },
+  "messages": [
+    {
+      "payload_json": "{\"text\":\"帮我查询订单\"}"
+    },
+    {
+      "payload_json": "{\"text\":\"SO-2026-0003\",\"replyToToolCallId\":\"demo-1-ask_user\"}"
+    }
+  ],
+  "calls": [
+    {
+      "operation_id": "[\"21033cc1-5185-47ac-91f9-d0c027687c43\",\"turn\",1,\"claim\",1]",
+      "status": "settled"
+    },
+    {
+      "operation_id": "[\"38214e14-a20f-40f1-a45d-13081fca778d\",\"turn\",1,\"claim\",1]",
+      "status": "settled"
+    },
+    {
+      "operation_id": "[\"38214e14-a20f-40f1-a45d-13081fca778d\",\"turn\",2,\"claim\",1]",
+      "status": "settled"
+    }
+  ]
+}

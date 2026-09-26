@@ -1,0 +1,210 @@
+{
+  "generatedAt": "2026-09-26T05:22:40.879Z",
+  "node": "v22.19.0",
+  "p8Tests": 27,
+  "p8MatrixTests": 23,
+  "processTests": 4,
+  "previousDirectedRun": {
+    "total": 99,
+    "p8": 26,
+    "existingP6P7": 73
+  },
+  "fullWorkspaceRegression": "deferred_until_A_B_frozen",
+  "formalL1": "not_run_this_task",
+  "sourceHashes": {
+    "packages/contracts/src/p8-investigation.ts": "c181361df991a4a8d6f17c1a9835ed71cc6b2b23fa709fa72de6f18695166857",
+    "packages/persistence/src/p8-investigation-repository.ts": "390ec41c67015c4bb9f92f4544a38433a7b0b36cd29127320684a3e9c86851ce",
+    "packages/runtime/src/p6-worker.ts": "e518403e1710248cf84ace341243e34d646db09405b4411699ff9561371f17da",
+    "packages/runtime/src/p8-investigation.ts": "a25eed46cb3b962a886bc3aa4c7d041f48bb7d0844021081c1d47bc7b20dad89",
+    "packages/runtime/test/p8-investigation.test.ts": "a56a7ae0e43ee57bac0ac956a394e1e490c75e774c7203d5bc892a8d09544f32",
+    "packages/runtime/test/p8-process.test.ts": "dca1bc694ca336b3d7e751073b3a5b9461bd88489026720ddee0fdf6769ca0bd",
+    "packages/runtime/test/fixtures/p8-process.ts": "8a69b8e848deb823d1b869411c19701d6c57920bb5c4523e7f66a873394ec1df",
+    "packages/eval/src/p8-offline-fixture.ts": "0b91aa969bef2e44c2beaa097328281c0858b804e02ead10a2d773476c5f9b09",
+    "packages/eval/src/p8-offline-report.ts": "b1dba89a31f9c1aae198cd7220bad89e11801104040ffc107c22f701dfa2df98",
+    "packages/eval/src/p8-offline-cli.ts": "c37939b1f47c0e02cf2a8a891b1e07af212afe11eb88073636b64b2bf4b68cd9",
+    "docs/handoffs/p8-offline-investigation.md": "5d3cac2b099bed24a9c9bc3266911bbe9f4eea391cdcb380ce643c1423f46635",
+    "docs/experiments/p8-offline-investigation.md": "87e583087671c4fd08f057258df43a8e7a35e6b55e3997704270137f5cc3fb3d"
+  },
+  "archivedDatabases": [
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\001",
+      "test": "P8 离线调查和运行记忆 > 失败分支不能通过持久确认接口夹带成功事实",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\002",
+      "test": "P8 离线调查和运行记忆 > 双分支使用共享账本并确认可追溯证据且无业务写入",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\003",
+      "test": "P8 离线调查和运行记忆 > 串行与并行使用相同原文且得出兼容建议",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\004",
+      "test": "P8 离线调查和运行记忆 > 串行与并行使用相同原文且得出兼容建议",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\005",
+      "test": "P8 离线调查和运行记忆 > 分支 failure 不伪装为完整调查",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\006",
+      "test": "P8 离线调查和运行记忆 > 分支 timeout 不伪装为完整调查",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\007",
+      "test": "P8 离线调查和运行记忆 > 分支 missing-usage 不伪装为完整调查",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\008",
+      "test": "P8 离线调查和运行记忆 > 分支 conflict 不伪装为完整调查",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\009",
+      "test": "P8 离线调查和运行记忆 > 分支 foreign-ref 不伪装为完整调查",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\010",
+      "test": "P8 离线调查和运行记忆 > 分支 money-tool 不伪装为完整调查",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\011",
+      "test": "P8 离线调查和运行记忆 > 缺少物流关键证据保留补问",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\012",
+      "test": "P8 离线调查和运行记忆 > 领域原文出现签收与丢件冲突时升级人工",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\013",
+      "test": "P8 离线调查和运行记忆 > 父任务取消传递给在途分支且迟到结果不写回",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\014",
+      "test": "P8 离线调查和运行记忆 > 重复受理派发完成通知只汇总一次",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\015",
+      "test": "P8 离线调查和运行记忆 > 跨客户订单和原文引用被拒绝",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\016",
+      "test": "P8 离线调查和运行记忆 > 共享预算不足在传输前拒绝 不为分支建预算",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\017",
+      "test": "P8 离线调查和运行记忆 > 失去租约的旧 Worker 无法确认结果",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\018",
+      "test": "P8 离线调查和运行记忆 > 保留原业务未知状态与客户原话 不提升权限",
+      "reports": 2,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\019",
+      "test": "P8 离线调查和运行记忆 > 已确认分支恢复不重复调用且冻结配置不被当前对象替换",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\020",
+      "test": "P8 离线调查和运行记忆 > 确定性调用的在途峰值串行为一并行为二",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\021",
+      "test": "P8 离线调查和运行记忆 > 确定性调用的在途峰值串行为一并行为二",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\022",
+      "test": "P8 离线调查和运行记忆 > 即使重算引用哈希也不能把客户伪造内容升级为源事实",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\023",
+      "test": "P8 离线调查和运行记忆 > 受理事务失败不留下半套父子任务",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\024",
+      "test": "P8 离线调查和运行记忆 > 子任务归属限定到指定父运行 不误消费另一实验",
+      "reports": 2,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\matrix-2026-09-26T05-16-29.930Z\\025",
+      "test": "P8 离线调查和运行记忆 > 网关独占三次尝试 Worker 不叠加重试或变更逻辑身份",
+      "reports": 2,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\process-2026-09-26T05-16-29.930Z\\accepted",
+      "test": "accepted",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\process-2026-09-26T05-16-29.930Z\\both-confirmed",
+      "test": "both-confirmed",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\process-2026-09-26T05-16-29.930Z\\model-unconfirmed",
+      "test": "model-unconfirmed",
+      "reports": 1,
+      "integrity": "ok"
+    },
+    {
+      "directory": "docs\\experiments\\p8-offline-investigation-evidence\\process-2026-09-26T05-16-29.930Z\\one-confirmed",
+      "test": "one-confirmed",
+      "reports": 1,
+      "integrity": "ok"
+    }
+  ],
+  "comparison": {
+    "pairs": 4,
+    "calls": 16,
+    "settledMicroYuan": 160,
+    "sharedBudgetRows": 1
+  }
+}

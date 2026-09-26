@@ -1,0 +1,29 @@
+   ▲ Next.js 15.5.25
+   - Local:        http://127.0.0.1:59130
+   - Network:      http://127.0.0.1:59130
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+ ✓ Starting...
+ ✓ Ready in 2.7s
+ ○ Compiling /workbench ...
+ ✓ Compiled /workbench in 5.3s (1026 modules)
+ GET /workbench 200 in 6985ms
+ GET /workbench 200 in 55ms
+ ✓ Compiled /icon.svg in 361ms (595 modules)
+ GET /icon.svg 200 in 1364ms
+ GET /workbench 200 in 212ms
+ GET /icon.svg 200 in 18ms
+ ✓ Compiled in 336ms (439 modules)
+ ✓ Compiled /workbench in 259ms (578 modules)
+ GET /workbench 200 in 1471ms
+ ✓ Compiled /icon.svg in 122ms (595 modules)
+ GET /icon.svg 200 in 1041ms
+ GET /workbench 200 in 213ms
+ GET /icon.svg 200 in 13ms
+ ✓ Compiled in 481ms (1026 modules)
+ GET /workbench 200 in 340ms
+ ✓ Compiled /icon.svg in 213ms (595 modules)
+ GET /icon.svg 200 in 1176ms
+ GET /workbench 200 in 218ms
+ GET /icon.svg 200 in 16ms

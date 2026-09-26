@@ -1,0 +1,2 @@
+$ tsx packages/eval/src/cli.ts "--offline" "--db" "C:\\Users\\htlocal\\AppData\\Local\\Temp\\p7-entry-l1-565aea27-c674-46ed-b283-f1fa7d0ddda8.db" "--output" "docs/experiments/p7-entry-closure-evidence/l1-reports" "--experiment-id" "p7-entry-closure-l1"
+{"reportId":"evr_10c92f48","experimentId":"p7-entry-closure-l1","mode":"simulation","total":124,"passed":124,"gatePassed":true,"costUnit":"micro_yuan","scopeCommitted":3390,"hasUncertainCost":false,"blocked":false,"output":"D:\\project\\agent-new\\aftersales\\docs\\experiments\\p7-entry-closure-evidence\\l1-reports"}

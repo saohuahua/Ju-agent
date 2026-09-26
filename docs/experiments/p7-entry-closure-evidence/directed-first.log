@@ -1,0 +1,153 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/apps/api
+
+ ❯ test/p7-entry-closure-process.test.ts (3 tests | 3 failed) 346ms
+   × 实际 main 即使存在虚构供应商配置也关闭新建和旧运行恢复的真实模型调用 133ms
+     → node:internal/modules/esm/load:184
+    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+          ^
+
+Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'd:'
+    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:184:11)
+    at defaultLoad (node:internal/modules/esm/load:82:3)
+    at ModuleLoader.load (node:internal/modules/esm/loader:801:12)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:586:43)
+    at #createModuleJob (node:internal/modules/esm/loader:610:36)
+    at #getJobFromResolveResult (node:internal/modules/esm/loader:341:34)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:309:41)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:650:25) {
+  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+}
+
+Node.js v22.19.0
+
+   × 实际 main 的 live 模式在数据库初始化前拒绝且不读取环境文件 84ms
+     → expected 'node:internal/modules/esm/load:184\r\…' to contain 'LIVE_DISABLED'
+   × 实际 main 的 simulation 继续通过 P7 持久会话完成查询 129ms
+     → node:internal/modules/esm/load:184
+    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+          ^
+
+Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'd:'
+    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:184:11)
+    at defaultLoad (node:internal/modules/esm/load:82:3)
+    at ModuleLoader.load (node:internal/modules/esm/loader:801:12)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:586:43)
+    at #createModuleJob (node:internal/modules/esm/loader:610:36)
+    at #getJobFromResolveResult (node:internal/modules/esm/loader:341:34)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:309:41)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:650:25) {
+  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+}
+
+Node.js v22.19.0
+
+ ✓ test/p7-entry-closure.test.ts (4 tests) 35ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/p7-entry-closure-process.test.ts > 实际 main 即使存在虚构供应商配置也关闭新建和旧运行恢复的真实模型调用
+Error: node:internal/modules/esm/load:184
+    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+          ^
+
+Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'd:'
+    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:184:11)
+    at defaultLoad (node:internal/modules/esm/load:82:3)
+    at ModuleLoader.load (node:internal/modules/esm/loader:801:12)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:586:43)
+    at #createModuleJob (node:internal/modules/esm/loader:610:36)
+    at #getJobFromResolveResult (node:internal/modules/esm/loader:341:34)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:309:41)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:650:25) {
+  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+}
+
+Node.js v22.19.0
+
+ ❯ ready test/p7-entry-closure-process.test.ts:79:19
+     77|   )
+     78|   const url = process.log().match(/http:\/\/127\.0\.0\.1:\d+/)?.[0]
+     79|   if (!url) throw new Error(process.log())
+       |                   ^
+     80|   return url
+     81| }
+ ❯ test/p7-entry-closure-process.test.ts:103:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/p7-entry-closure-process.test.ts > 实际 main 的 live 模式在数据库初始化前拒绝且不读取环境文件
+AssertionError: expected 'node:internal/modules/esm/load:184\r\…' to contain 'LIVE_DISABLED'
+
+- Expected
++ Received
+
+- LIVE_DISABLED
++ node:internal/modules/esm/load:184
++     throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
++           ^
++ 
++ Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'd:'
++     at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:184:11)
++     at defaultLoad (node:internal/modules/esm/load:82:3)
++     at ModuleLoader.load (node:internal/modules/esm/loader:801:12)
++     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:586:43)
++     at #createModuleJob (node:internal/modules/esm/loader:610:36)
++     at #getJobFromResolveResult (node:internal/modules/esm/loader:341:34)
++     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:309:41)
++     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:650:25) {
++   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
++ }
++ 
++ Node.js v22.19.0
++
+
+ ❯ test/p7-entry-closure-process.test.ts:181:27
+    179|   try {
+    180|     expect(await process.exited).not.toBe(0)
+    181|     expect(process.log()).toContain('LIVE_DISABLED')
+       |                           ^
+    182|     expect(existsSync(process.dbPath)).toBe(false)
+    183|     expect(readFileSync(process.probePath, 'utf8')).toBe('')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/p7-entry-closure-process.test.ts > 实际 main 的 simulation 继续通过 P7 持久会话完成查询
+Error: node:internal/modules/esm/load:184
+    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);
+          ^
+
+Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'd:'
+    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:184:11)
+    at defaultLoad (node:internal/modules/esm/load:82:3)
+    at ModuleLoader.load (node:internal/modules/esm/loader:801:12)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:586:43)
+    at #createModuleJob (node:internal/modules/esm/loader:610:36)
+    at #getJobFromResolveResult (node:internal/modules/esm/loader:341:34)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:309:41)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:650:25) {
+  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+}
+
+Node.js v22.19.0
+
+ ❯ ready test/p7-entry-closure-process.test.ts:79:19
+     77|   )
+     78|   const url = process.log().match(/http:\/\/127\.0\.0\.1:\d+/)?.[0]
+     79|   if (!url) throw new Error(process.log())
+       |                   ^
+     80|   return url
+     81| }
+ ❯ test/p7-entry-closure-process.test.ts:193:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  3 failed | 4 passed (7)
+   Start at  11:44:57
+   Duration  2.09s (transform 667ms, setup 0ms, collect 2.15s, tests 381ms, environment 0ms, prepare 382ms)
+
+undefined
+D:\project\agent-new\aftersales\apps\api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run test/p7-entry-closure.test.ts test/p7-entry-closure-process.test.ts

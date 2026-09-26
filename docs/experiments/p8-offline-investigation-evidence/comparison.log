@@ -1,0 +1,205 @@
+{
+  "output": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p8-offline-investigation-evidence\\comparison-final",
+  "pairs": [
+    {
+      "scenario": "lost",
+      "sameEvidence": true,
+      "samePolicy": true,
+      "compatible": true,
+      "single": {
+        "taskCompleted": true,
+        "investigationComplete": true,
+        "factsAndCitationsValid": true,
+        "unresolved": [],
+        "calls": 2,
+        "logicalCalls": 2,
+        "purposes": {
+          "main_agent": 2,
+          "sub_agent": 0
+        },
+        "settledMicroYuan": 20,
+        "unknownReservedMicroYuan": 0,
+        "heldReservedMicroYuan": 0,
+        "endToEndMs": 136,
+        "investigationCriticalPathMs": 119,
+        "failedBranches": 0,
+        "cancelledTasks": 0,
+        "actualModelCharge": 0
+      },
+      "parallel": {
+        "taskCompleted": true,
+        "investigationComplete": true,
+        "factsAndCitationsValid": true,
+        "unresolved": [],
+        "calls": 2,
+        "logicalCalls": 2,
+        "purposes": {
+          "main_agent": 0,
+          "sub_agent": 2
+        },
+        "settledMicroYuan": 20,
+        "unknownReservedMicroYuan": 0,
+        "heldReservedMicroYuan": 0,
+        "endToEndMs": 75,
+        "investigationCriticalPathMs": 68,
+        "failedBranches": 0,
+        "cancelledTasks": 0,
+        "actualModelCharge": 0
+      },
+      "recommendation": "controlled_review"
+    },
+    {
+      "scenario": "not-lost",
+      "sameEvidence": true,
+      "samePolicy": true,
+      "compatible": true,
+      "single": {
+        "taskCompleted": true,
+        "investigationComplete": false,
+        "factsAndCitationsValid": true,
+        "unresolved": [
+          "需补充承运商丢件认定"
+        ],
+        "calls": 2,
+        "logicalCalls": 2,
+        "purposes": {
+          "main_agent": 2,
+          "sub_agent": 0
+        },
+        "settledMicroYuan": 20,
+        "unknownReservedMicroYuan": 0,
+        "heldReservedMicroYuan": 0,
+        "endToEndMs": 135,
+        "investigationCriticalPathMs": 127,
+        "failedBranches": 0,
+        "cancelledTasks": 0,
+        "actualModelCharge": 0
+      },
+      "parallel": {
+        "taskCompleted": true,
+        "investigationComplete": false,
+        "factsAndCitationsValid": true,
+        "unresolved": [
+          "需补充承运商丢件认定"
+        ],
+        "calls": 2,
+        "logicalCalls": 2,
+        "purposes": {
+          "main_agent": 0,
+          "sub_agent": 2
+        },
+        "settledMicroYuan": 20,
+        "unknownReservedMicroYuan": 0,
+        "heldReservedMicroYuan": 0,
+        "endToEndMs": 74,
+        "investigationCriticalPathMs": 67,
+        "failedBranches": 0,
+        "cancelledTasks": 0,
+        "actualModelCharge": 0
+      },
+      "recommendation": "ask_user"
+    },
+    {
+      "scenario": "conflicting-records",
+      "sameEvidence": true,
+      "samePolicy": true,
+      "compatible": true,
+      "single": {
+        "taskCompleted": true,
+        "investigationComplete": false,
+        "factsAndCitationsValid": true,
+        "unresolved": [
+          "订单与物流证据冲突"
+        ],
+        "calls": 2,
+        "logicalCalls": 2,
+        "purposes": {
+          "main_agent": 2,
+          "sub_agent": 0
+        },
+        "settledMicroYuan": 20,
+        "unknownReservedMicroYuan": 0,
+        "heldReservedMicroYuan": 0,
+        "endToEndMs": 137,
+        "investigationCriticalPathMs": 127,
+        "failedBranches": 0,
+        "cancelledTasks": 0,
+        "actualModelCharge": 0
+      },
+      "parallel": {
+        "taskCompleted": true,
+        "investigationComplete": false,
+        "factsAndCitationsValid": true,
+        "unresolved": [
+          "订单与物流证据冲突"
+        ],
+        "calls": 2,
+        "logicalCalls": 2,
+        "purposes": {
+          "main_agent": 0,
+          "sub_agent": 2
+        },
+        "settledMicroYuan": 20,
+        "unknownReservedMicroYuan": 0,
+        "heldReservedMicroYuan": 0,
+        "endToEndMs": 84,
+        "investigationCriticalPathMs": 76,
+        "failedBranches": 0,
+        "cancelledTasks": 0,
+        "actualModelCharge": 0
+      },
+      "recommendation": "human_review"
+    },
+    {
+      "scenario": "missing-policy",
+      "sameEvidence": true,
+      "samePolicy": true,
+      "compatible": true,
+      "single": {
+        "taskCompleted": true,
+        "investigationComplete": false,
+        "factsAndCitationsValid": true,
+        "unresolved": [
+          "缺少丢件政策原文"
+        ],
+        "calls": 2,
+        "logicalCalls": 2,
+        "purposes": {
+          "main_agent": 2,
+          "sub_agent": 0
+        },
+        "settledMicroYuan": 20,
+        "unknownReservedMicroYuan": 0,
+        "heldReservedMicroYuan": 0,
+        "endToEndMs": 128,
+        "investigationCriticalPathMs": 118,
+        "failedBranches": 0,
+        "cancelledTasks": 0,
+        "actualModelCharge": 0
+      },
+      "parallel": {
+        "taskCompleted": true,
+        "investigationComplete": false,
+        "factsAndCitationsValid": true,
+        "unresolved": [
+          "缺少丢件政策原文"
+        ],
+        "calls": 2,
+        "logicalCalls": 2,
+        "purposes": {
+          "main_agent": 0,
+          "sub_agent": 2
+        },
+        "settledMicroYuan": 20,
+        "unknownReservedMicroYuan": 0,
+        "heldReservedMicroYuan": 0,
+        "endToEndMs": 75,
+        "investigationCriticalPathMs": 69,
+        "failedBranches": 0,
+        "cancelledTasks": 0,
+        "actualModelCharge": 0
+      },
+      "recommendation": "ask_user"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "fault": "after-payment-response",
+  "tasks": [
+    {
+      "task_id": "78a80fc5-b0d3-4d09-82d3-9429f7944bbd",
+      "status": "completed",
+      "attempt": 2
+    }
+  ],
+  "ownership": [
+    {
+      "business_key": "refund:RT1",
+      "owner": "p6",
+      "holder": "841feb60-cf39-49f5-8f28-7a20c27b3800",
+      "state": "succeeded"
+    },
+    {
+      "business_key": "refund:RT-2026-0001",
+      "owner": "unassigned",
+      "holder": "",
+      "state": "succeeded"
+    }
+  ],
+  "channel": [
+    {
+      "business_key": "refund:RT1",
+      "submissions": 1,
+      "charges": 1
+    }
+  ],
+  "logs": [
+    "",
+    "",
+    ""
+  ]
+}

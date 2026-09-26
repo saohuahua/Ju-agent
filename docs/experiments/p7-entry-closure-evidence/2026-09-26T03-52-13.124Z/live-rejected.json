@@ -1,0 +1,10 @@
+{
+  "mode": "live-rejected",
+  "directory": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\p7-entry-closure-MDfHkU",
+  "probe": "",
+  "log": "D:\\project\\agent-new\\aftersales\\apps\\api\\src\\model-entry.ts:17\r\n  if (mode && mode !== 'simulation') throw new P7Error('LIVE_DISABLED')\r\n                                           ^\r\n\r\n\r\nP7Error: LIVE_DISABLED\r\n    at resolveApiModelEntry (D:\\project\\agent-new\\aftersales\\apps\\api\\src\\model-entry.ts:17:44)\r\n    at <anonymous> (D:\\project\\agent-new\\aftersales\\apps\\api\\src\\main.ts:30:5)\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)\r\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:651:26)\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\r\n  code: 'LIVE_DISABLED'\r\n}\r\n\r\nNode.js v22.19.0\r\n",
+  "result": {
+    "databaseCreated": false,
+    "modelCalls": 0
+  }
+}

@@ -1,0 +1,16 @@
+{"pid":87628,"event":"ready","detail":{"url":"http://127.0.0.1:59701"},"time":"2026-09-25T14:52:45.765Z"}
+{"pid":133104,"event":"accepted","detail":{"taskId":"fb094848-d87a-4e7f-b0ab-15efd5e5ec8a","runId":"run_0aa4d7b1-d587-4826-9627-4b175aaecff3"},"time":"2026-09-25T14:52:46.691Z"}
+{"pid":132628,"event":"claimed","detail":{"taskId":"fb094848-d87a-4e7f-b0ab-15efd5e5ec8a","generation":1},"time":"2026-09-25T14:52:47.280Z"}
+{"pid":132628,"event":"before-model","detail":{"taskId":"fb094848-d87a-4e7f-b0ab-15efd5e5ec8a","generation":1},"time":"2026-09-25T14:52:47.282Z"}
+{"pid":132628,"event":"model-called","detail":{"snapshot":{"snapshotId":"scripted-frozen-v1","provider":"scripted","model":"scripted-v1","promptVersion":"p6-v1","value":{"scenario":"normal","paid":false}}},"time":"2026-09-25T14:52:47.283Z"}
+{"pid":132628,"event":"after-model-checkpoint","detail":{"taskId":"fb094848-d87a-4e7f-b0ab-15efd5e5ec8a","generation":1},"time":"2026-09-25T14:52:47.283Z"}
+{"pid":132628,"event":"read-called","detail":null,"time":"2026-09-25T14:52:47.284Z"}
+{"pid":132628,"event":"after-payment-intent","detail":{"taskId":"fb094848-d87a-4e7f-b0ab-15efd5e5ec8a","generation":1},"time":"2026-09-25T14:52:47.295Z"}
+{"pid":132628,"event":"after-payment-response","detail":{"taskId":"fb094848-d87a-4e7f-b0ab-15efd5e5ec8a","generation":1},"time":"2026-09-25T14:52:47.315Z"}
+{"pid":132628,"event":"after-payment-checkpoint","detail":{"taskId":"fb094848-d87a-4e7f-b0ab-15efd5e5ec8a","generation":1},"time":"2026-09-25T14:52:47.315Z"}
+{"pid":132628,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-25T14:52:47.316Z"}
+{"pid":136072,"event":"claimed","detail":{"taskId":"fb094848-d87a-4e7f-b0ab-15efd5e5ec8a","generation":2},"time":"2026-09-25T14:52:48.234Z"}
+{"pid":136072,"event":"after-payment-intent","detail":{"taskId":"fb094848-d87a-4e7f-b0ab-15efd5e5ec8a","generation":2},"time":"2026-09-25T14:52:48.245Z"}
+{"pid":136072,"event":"after-payment-response","detail":{"taskId":"fb094848-d87a-4e7f-b0ab-15efd5e5ec8a","generation":2},"time":"2026-09-25T14:52:48.261Z"}
+{"pid":136072,"event":"after-payment-checkpoint","detail":{"taskId":"fb094848-d87a-4e7f-b0ab-15efd5e5ec8a","generation":2},"time":"2026-09-25T14:52:48.262Z"}
+{"pid":136072,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-25T14:52:48.263Z"}

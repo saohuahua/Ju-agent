@@ -1,0 +1,6 @@
+: connected
+
+id: 1
+event: task.progress
+data: {"taskId":"2e1dcbcb-afc2-4f0f-94cb-4815f8af2c29","step":"model"}
+

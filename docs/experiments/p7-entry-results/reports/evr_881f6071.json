@@ -1,0 +1,44 @@
+{
+  "reportId": "evr_881f6071",
+  "startedAt": "2026-09-26T02:12:24.945Z",
+  "level": "L1",
+  "model": "p7-offline-scripted",
+  "promptVersion": "v2.5",
+  "total": 1,
+  "passed": 1,
+  "failed": 0,
+  "passAtK": {
+    "pass@2": 1
+  },
+  "passPowerK": 1,
+  "metrics": {
+    "task_success_rate": 1,
+    "side_effect_correctness": 1,
+    "tool_selection_accuracy": 1,
+    "tool_argument_accuracy": 1,
+    "policy_violation_rate": 0,
+    "duplicate_side_effect_rate": 0,
+    "checkpoint_recovery_rate": 1,
+    "injection_defense_rate": 1,
+    "clarification_quality": 1,
+    "escalation_correctness": 1
+  },
+  "byCategory": {
+    "happy_path": {
+      "total": 1,
+      "passed": 1
+    }
+  },
+  "caseResults": [
+    {
+      "caseId": "hp_query_order_status",
+      "category": "happy_path",
+      "priority": "P1",
+      "passed": true,
+      "failures": [],
+      "durationMs": 18,
+      "runId": "run_9b28b988"
+    }
+  ],
+  "gatePassed": true
+}

@@ -1,0 +1,4090 @@
+[
+  {
+    "Path": "IMPLEMENTATION.md",
+    "Hash": "30CE5533709C4617BEF674050C38D15A95F45762E4644B75BAB8F63D8E3243A9"
+  },
+  {
+    "Path": "apps/api/src/customer-view.ts",
+    "Hash": "8B88593D041E5E5808F77ED9E8163AFE9EC03A0D19DAD4C23893560653234AAB"
+  },
+  {
+    "Path": "apps/api/src/desk-demo.ts",
+    "Hash": "C4E257EF6F8DE465E871C2DEA2FB2D2CAD4BEFA82571F75F5B5788DB2D60660E"
+  },
+  {
+    "Path": "apps/api/src/desk.ts",
+    "Hash": "A3024EDAA0A184F308E2D09ECCE5DDFFA5048F19640C56C3A72325A88863D946"
+  },
+  {
+    "Path": "apps/api/src/durable-demo.ts",
+    "Hash": "6EA1FDFF2AAB0098124C77B6217E3908266A3B8F3F2476D69278542323A8230C"
+  },
+  {
+    "Path": "apps/api/src/model-entry.ts",
+    "Hash": "82AB6CB966E605FC4A8CA4D78573DFD36AFB1FFDC1B297507C3AEDCFCBEF2753"
+  },
+  {
+    "Path": "apps/api/src/p6-durable-api.ts",
+    "Hash": "E54FE6CDF91291F389E62840FC83F284FED636BB392DBB55FDE586D2420A335A"
+  },
+  {
+    "Path": "apps/api/src/p6-event-stream.ts",
+    "Hash": "9038D5BD095745656F8130098E5BDFEF419E769DA5BC2428EB2D12CCF7F870ED"
+  },
+  {
+    "Path": "apps/api/test/approval-progress.test.ts",
+    "Hash": "F64758F80D4AAFA6033C12881936D9B2F93A26C59E404CF1A37BC28A78555F16"
+  },
+  {
+    "Path": "apps/api/test/business-process.test.ts",
+    "Hash": "9012BEABFF5CF554E7EEE8343EFDE426E05FD5978D7827D7A16479AF67C16913"
+  },
+  {
+    "Path": "apps/api/test/case-closure.test.ts",
+    "Hash": "95D9F86A712F3D1C57CAF21F8F5380C8F1AEA0134425E36C7217A559BFFF4FEF"
+  },
+  {
+    "Path": "apps/api/test/conversation-process.test.ts",
+    "Hash": "B40AA777C5174611D17BEB43A51C3F95198FD1FF0576F7482ED09CAF70604D78"
+  },
+  {
+    "Path": "apps/api/test/conversation-refund-process.test.ts",
+    "Hash": "D5426B73DDA61E6444FCFC1AC597394854C40B34541473BFA7BF56E8721C7234"
+  },
+  {
+    "Path": "apps/api/test/conversation-refund.test.ts",
+    "Hash": "5645AB4B7AD7DA2F6E6A4CA28189602407776E6104348ED5AE97DCFF7A80ED8E"
+  },
+  {
+    "Path": "apps/api/test/customer-events.test.ts",
+    "Hash": "67FCBB9EE885CA6A724640C519CD0FCA588607A128B419E8670A9286DC6B9648"
+  },
+  {
+    "Path": "apps/api/test/desk.test.ts",
+    "Hash": "6F32904D3F5DF08F6C5BCA68E80E38FBD39811F0A7206EE50E8AFFB597EDD79A"
+  },
+  {
+    "Path": "apps/api/test/durable-conversation.test.ts",
+    "Hash": "B1B06E2E582DFC12C05D51BB39E2A69EEB8A750C821B678F8FA2DADE55A876E4"
+  },
+  {
+    "Path": "apps/api/test/durable-integration.test.ts",
+    "Hash": "AA8FF0A8B90054B48972F5453E68541B4E6FF7EE169D09984218B6974DA542C2"
+  },
+  {
+    "Path": "apps/api/test/eval-budget-entry.test.ts",
+    "Hash": "665A2460C9EFC6C41BCBA053C5F1E3A79EDBA511B25B03C329492B279E05CD70"
+  },
+  {
+    "Path": "apps/api/test/fixtures/approval-progress-seed.ts",
+    "Hash": "5AAC9F6B318DD19303581EE4DB9E3E66C6F43D77D6B5680ADCD38DE17FDBB956"
+  },
+  {
+    "Path": "apps/api/test/fixtures/business-process.ts",
+    "Hash": "681CF277F637098F5D83060E1C1F722845CB6F73EFDA7D5E99629EDEF81E8392"
+  },
+  {
+    "Path": "apps/api/test/fixtures/closure-ui-server.ts",
+    "Hash": "1E6690E15F9F8430543C164D89B8D0E4706A015F6450CBB9B5EC7518D221746F"
+  },
+  {
+    "Path": "apps/api/test/fixtures/conversation-process.ts",
+    "Hash": "02F3590600953B4A23C5DA41D63B432A1CEEF4EFD2C9D4AC2EC0683F9E050BFF"
+  },
+  {
+    "Path": "apps/api/test/fixtures/conversation-refund-process.ts",
+    "Hash": "1DA5107ECC4A18120BD09E75B8FC17AC679AA331518BF68B89978949F0EAD460"
+  },
+  {
+    "Path": "apps/api/test/fixtures/p6-sse-process.ts",
+    "Hash": "B8B78B672931275A0EF42585FE311E38FE0D421712F52036BCACDFDBB0FA3AC5"
+  },
+  {
+    "Path": "apps/api/test/fixtures/p7-entry-guard.mjs",
+    "Hash": "FF2CEFDD30C3AE7D78542674AE28B15591B44C5561DF1DB067A7BCFE64039726"
+  },
+  {
+    "Path": "apps/api/test/fixtures/refund-conversation-options.ts",
+    "Hash": "F2465DE8F648AA050AA9D295157AD6218CDA2521A557B24FAE4D07D14523F640"
+  },
+  {
+    "Path": "apps/api/test/fixtures/ui-acceptance-server.ts",
+    "Hash": "C23216DF960F1DAD26F0D2874499D714DFF177C4245CCA91948041057DF3E742"
+  },
+  {
+    "Path": "apps/api/test/knowledge.test.ts",
+    "Hash": "889C9C6FC78944031AE012C6D56418CA85ADC233C297815F5FDCA23F3008588A"
+  },
+  {
+    "Path": "apps/api/test/p6-durable-api.test.ts",
+    "Hash": "E3CB2215B88613BFFFE330CCE9B8EA99214E3D893243DEF6490A93576FED3218"
+  },
+  {
+    "Path": "apps/api/test/p6-sse-reconnect.test.ts",
+    "Hash": "81F1FF46BD5D7ABDE2AC46DAB0C6F71D5B6BA1EE34851739792A7E946D222787"
+  },
+  {
+    "Path": "apps/api/test/p7-entry-closure-process.test.ts",
+    "Hash": "117DBC1CFF1E828A8397AD2E1C7854B2F0D2ED3A2A418FEC2E86A4273787551F"
+  },
+  {
+    "Path": "apps/api/test/p7-entry-closure.test.ts",
+    "Hash": "2F9E292E195AB8F6B6F5C19A24D2DED4F9BC078E8C935FC70B3548EF5EC52374"
+  },
+  {
+    "Path": "apps/api/test/sse.test.ts",
+    "Hash": "A5788C9D5299D30BC6AF9E7CFA3337F36D2CABF4A5D3A5C8F3AB69D81D8431E2"
+  },
+  {
+    "Path": "apps/web/components.json",
+    "Hash": "B7303284FD581805A58DEFCE3604A3445C6D886FAE8E700DDF5133C5F837D573"
+  },
+  {
+    "Path": "apps/web/public/fonts/NOTO-LICENSE.txt",
+    "Hash": "6A73F9541C2DE74158C0E7CF6B0A58EF774F5A780BF191F2D7EC9CC53EFE2BF2"
+  },
+  {
+    "Path": "apps/web/public/fonts/noto-sans-sc-regular.ttf",
+    "Hash": "DE47B6653175F1E7A4FCBD110403C8DCFDAB0B0A03C0E84A2D868E525A7F7062"
+  },
+  {
+    "Path": "apps/web/public/fonts/noto-sans-sc-semibold.ttf",
+    "Hash": "9AA767877F3E6364B14A4ED948F99EF4A3D416FD991A1292E9E37DD069E3A3E5"
+  },
+  {
+    "Path": "apps/web/src/app/policies/page.tsx",
+    "Hash": "9E793CAE82B9165568F025D321E83130E58C860562F9D0F77B19F3BFAD31A2A1"
+  },
+  {
+    "Path": "apps/web/src/app/settings/page.tsx",
+    "Hash": "8EE901D7B86B39A11F0E04457CB48A0B54B725A865E0951F854E5D241FC7D315"
+  },
+  {
+    "Path": "apps/web/src/components/Providers.tsx",
+    "Hash": "D6B5F49491994D86FA8AA9E362ED55098A0FA1413BB52F71FA6261C0932BE552"
+  },
+  {
+    "Path": "apps/web/src/components/approvals/Approvals.module.css",
+    "Hash": "AF5F64F17F1366C32A313A2A385983F167949F8D6C2252B8A59AF51CF65DAE72"
+  },
+  {
+    "Path": "apps/web/src/components/approvals/ExecutionProgress.tsx",
+    "Hash": "EC80A948F13C610DEA5ADF2D5144C165A345DC3BB414516626BCF30E99A3E66B"
+  },
+  {
+    "Path": "apps/web/src/components/approvals/presentation.ts",
+    "Hash": "118B69C3608836C32FC162218935AB5E05638A7A3085C2DE22B2931ECA6E0C7C"
+  },
+  {
+    "Path": "apps/web/src/components/customer/CustomerWorkspace.module.css",
+    "Hash": "651B6F33D9A1D2861485E2BD3DF88F612D7ADA194A6CD64FD21BF4B7EC4117F2"
+  },
+  {
+    "Path": "apps/web/src/components/customer/CustomerWorkspace.tsx",
+    "Hash": "0359A014D6F00122787DDC25D5E95C809FCA61B13BE3FD46F0BCAA41E2CE348D"
+  },
+  {
+    "Path": "apps/web/src/components/customer/customer-view.ts",
+    "Hash": "CBBA207D0DFE0D29875E874CFCF96E90C7C46A1A66EDEF685FED888C82EC8B4E"
+  },
+  {
+    "Path": "apps/web/src/components/desk/CaseWorkspace.tsx",
+    "Hash": "63BDA5A34E704AD237432F03C7B2FBE137B557E7325BCD6677B68C71A919410D"
+  },
+  {
+    "Path": "apps/web/src/components/desk/DeskEmpty.tsx",
+    "Hash": "FA492DFAEB80E4C654B215D70194CAB0E518DB7FF056BFA85B75FF16603C476F"
+  },
+  {
+    "Path": "apps/web/src/components/desk/PolicyDialog.tsx",
+    "Hash": "E7F833BB87F9FAFF6285F2FC09DAA53B7CA5962FB31A3D77C94EA65D10D6C9FB"
+  },
+  {
+    "Path": "apps/web/src/components/ui/alert.tsx",
+    "Hash": "31260662273AD987E0AD25F7C25D68C1F53ED19F9C265B932B9106AA5F428005"
+  },
+  {
+    "Path": "apps/web/src/components/ui/badge.tsx",
+    "Hash": "0795DF9D470867912809FC10F93A993B986AAA53D37DB93A9506FB2E9C006E60"
+  },
+  {
+    "Path": "apps/web/src/components/ui/button.tsx",
+    "Hash": "DCB74B3403DA6195A4570277236C6DA24A0DC6FD8331B766369EC9C0CA9FF11C"
+  },
+  {
+    "Path": "apps/web/src/components/ui/dialog.tsx",
+    "Hash": "498650D1DD7643EC8BAD45225DC740F30D9088FA761DF5CFE458D87C2401A99A"
+  },
+  {
+    "Path": "apps/web/src/components/ui/empty.tsx",
+    "Hash": "D2F68678C41B49397D49FE6A969B6A82DD78DDE55362F035BE3165E508F85B35"
+  },
+  {
+    "Path": "apps/web/src/components/ui/field.tsx",
+    "Hash": "8954A79EA4772C28388452DC70F573C75FB218814DE413856E4372B1AE7374E5"
+  },
+  {
+    "Path": "apps/web/src/components/ui/input.tsx",
+    "Hash": "34CD8715381B7DE69903747F002821CDFDA8C2FBCC7EB69C63394C56AC6EB75D"
+  },
+  {
+    "Path": "apps/web/src/components/ui/label.tsx",
+    "Hash": "6E2CEDBF463C6D4EA6D78EC92A18F23C13BE123E546BCA274AA2E9427355460B"
+  },
+  {
+    "Path": "apps/web/src/components/ui/separator.tsx",
+    "Hash": "4DC5676098457DBEA126A16FC00566F474EFB554444F1977B9774EED11CA74A7"
+  },
+  {
+    "Path": "apps/web/src/components/ui/skeleton.tsx",
+    "Hash": "51E20CC736CB0C2EEA039187E6012B5C6033C531EC1F0AA298143D2EE25618D7"
+  },
+  {
+    "Path": "apps/web/src/components/ui/tabs.tsx",
+    "Hash": "6FE5C7DB7E4359A895E0DC2C946EEC28F690FFF0F2A75087A8493150D46D6BC1"
+  },
+  {
+    "Path": "apps/web/src/components/ui/textarea.tsx",
+    "Hash": "82278F26686B07B3FE6870A612405ED057A9BB5FC1E8A8175F9ADF0FD082D3D6"
+  },
+  {
+    "Path": "apps/web/src/components/ui/toggle-group.tsx",
+    "Hash": "2FA0CCBAE9A0DD8D125049501FC92C23ED8CB3ADA8DAC1E687378F7F6B40FF80"
+  },
+  {
+    "Path": "apps/web/src/components/ui/toggle.tsx",
+    "Hash": "001210AB7B1C59DFE1007B5FBB012C5B28E8F425731ECA21FFEA604A652FE03B"
+  },
+  {
+    "Path": "apps/web/src/lib/desk-api.ts",
+    "Hash": "B9070F78F9C197DF4BDAE1752FE871EBC983E8C7CB32F459A591300B3FD710B2"
+  },
+  {
+    "Path": "apps/web/src/lib/desk-format.ts",
+    "Hash": "A75B985C93C4157BC902A23E73AFE75B9B7F559B230CA16C10A2A62A94994243"
+  },
+  {
+    "Path": "apps/web/src/lib/event-stream.ts",
+    "Hash": "601CFB760DFED30898093E49359A15E510140D450EB7F0EF856049CAC44EE40B"
+  },
+  {
+    "Path": "apps/web/src/lib/identity.ts",
+    "Hash": "AE90A86CA58A62AA215F3C0ED2C5120368ADF7FA809E48310CD02B841107F75C"
+  },
+  {
+    "Path": "apps/web/src/lib/utils.ts",
+    "Hash": "E46429536F43F5910F5B2B0C50BB2769B510A4558BB4B5D20A3B0A9091DBF7C3"
+  },
+  {
+    "Path": "apps/web/test/approvals-presentation.test.ts",
+    "Hash": "2B82A0ED4E7FE9E48D4B452697FAE74E3E0A84DAFBD85231F9836BA9BAFFF2BF"
+  },
+  {
+    "Path": "apps/web/test/customer-view.test.ts",
+    "Hash": "6ABE2C495A078A955FB7070FE40BA59EBB18E458BBDC0BDEAD7153B03E078C77"
+  },
+  {
+    "Path": "apps/web/test/event-stream.test.ts",
+    "Hash": "C7D6C7DF90072EFE9CABD8A8A8C550D9F9AE548D98EEE4B47754F4CF2599945C"
+  },
+  {
+    "Path": "apps/web/test/identity-request.test.ts",
+    "Hash": "71A7DA955D8BFAE2D6F8D786220F5DDB347240AD84AE97123A3B16983A44AEE8"
+  },
+  {
+    "Path": "docs/experiments/after-sale-mapping.md",
+    "Hash": "7562D22979F8B57B859B4B4F58853CC2CA02FDF40C80AEA9191A4BB55606D7B6"
+  },
+  {
+    "Path": "docs/experiments/approval-atomicity.md",
+    "Hash": "C880A466B34A78CEF3201E1172E2AF15951DDB700D6F0E35D6DA93AD85DBA341"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-54-29.405Z/accepted/application.db-shm",
+    "Hash": "92D1A88D14A4F8D6A6F52288D8AD985E90901C84594EFBA306161B9D63320EF8"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-54-29.405Z/accepted/application.db-wal",
+    "Hash": "BF5F8E7856B3D0FADB20BAFC8EB35D44574B22E0C1CEA252E8B96A5E6AB9F7F2"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-54-29.405Z/after-payment-checkpoint/application.db-shm",
+    "Hash": "27D149CEF82D519D25A0E7E74169C2E9A53D69C20F4991EFE70A5B65139D03B7"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-54-29.405Z/after-payment-checkpoint/application.db-wal",
+    "Hash": "4CD05CEF94608748D3388AC21607411BED380FD7D1CC15C6EA073B984A2E6526"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-54-29.405Z/after-payment-response/application.db-shm",
+    "Hash": "AD88A6AC3CC35CED292037E35796E0533C0F39F1C61BB68C2D4C5AFCEC4A45AB"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-54-29.405Z/after-payment-response/application.db-wal",
+    "Hash": "A37281E63CE3F772DF65341C49093ABD2301F1851A1EFAB003C93761FC111B88"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-54-29.405Z/receipt/application.db-shm",
+    "Hash": "E1F932127C3101D71A0156851182F2D2B120947EEC6ABD9C4B95955193C168F1"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-54-29.405Z/receipt/application.db-wal",
+    "Hash": "B4937626788751980A7D35992F4C85EDF3893337D22468A86B231721778C9016"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-55-54.812Z/accepted/application.db-shm",
+    "Hash": "C4AE593C43BBF829B14B2A5A651926609E4462150457B1AEC8B663B26BD92E3D"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-55-54.812Z/accepted/application.db-wal",
+    "Hash": "A4BBAF5360ED3C6A3C70B33F3AC952D76ADE65AEA63B235EA17C139FF792AF10"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-55-54.812Z/after-payment-checkpoint/evidence.json",
+    "Hash": "D2EB9C542F03235F7DACD515C2C651DB3A691D904BE22D59EBF6C957FBB71E6C"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-55-54.812Z/receipt/application.db-shm",
+    "Hash": "4916555D81FFDAFD10E392E821941409A8563AC5B7860DE3CDAF30601425A9B9"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-55-54.812Z/receipt/application.db-wal",
+    "Hash": "EC773E8833E33CA8CAE8F88903BD85779A60FA8997C45C43D6B012B3BC969D91"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-56-50.524Z/accepted/evidence.json",
+    "Hash": "36384934869E51294BAA964A60CADEC7D9C2B12D53F5A62145CBA38C0E7CAE8B"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-56-50.524Z/after-payment-checkpoint/evidence.json",
+    "Hash": "37512196A8DB00D430B497F64C03A0E21F38E565EDAD9324C40AEB6B7D3B23F5"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-56-50.524Z/after-payment-response/evidence.json",
+    "Hash": "253F2DE9399371F7F66A764BD6B8882E57FFF9BC2D3CDD5A44678CEA8DFFBE30"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T01-56-50.524Z/receipt/evidence.json",
+    "Hash": "EAC055D0BFA04EA011C26CD5085615D01AA24E269254D06C5B8076CAE06F66DD"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-17-31.291Z/accepted/evidence.json",
+    "Hash": "32436DD6759942392CABF94D1B72FD7F4A0A911899C94BA6F496BDB1284E4EAD"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-17-31.291Z/after-payment-checkpoint/evidence.json",
+    "Hash": "8D11E4F419F4E5C803B35C7B328EC1305122A525B0BDF28BFF599EAC61D48892"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-17-31.291Z/after-payment-response/evidence.json",
+    "Hash": "6FDB183D424C0359CB9B0C02820C8A432C7D03E929A5CAF44D832164EEDBCB3A"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-17-31.291Z/receipt/evidence.json",
+    "Hash": "B9148BF265BBE0860761D3F9A284609EB38CAC2E9BE363BFCCBC04AB0DD3908A"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-21-23.234Z/accepted/evidence.json",
+    "Hash": "1534CB8B0C12928479AD361BB380C270AC907B857FAB50726CD6020A5AE25567"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-21-23.234Z/after-payment-checkpoint/evidence.json",
+    "Hash": "3D368A7F3CA74B8D9D7EC08DA9400164D635A87CD71E0258C9C76DEE789A0F30"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-21-23.234Z/after-payment-response/evidence.json",
+    "Hash": "4D9F665771170C24EDB18DA565434FC4AE35B194D472BACB2179E109C25BBB77"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-21-23.234Z/receipt/evidence.json",
+    "Hash": "565691EBBC0B3AF796BB59080A276EC57D97D9775C904BBC47B9B11D44D8168A"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-27-12.162Z/accepted/evidence.json",
+    "Hash": "BDD3CA61F81D3406DDC49DB1C7949ECC21D14BCBCD69B5F9C80B41BE1CFDB42D"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-27-12.162Z/after-payment-checkpoint/evidence.json",
+    "Hash": "C833FB8438BACB357F7ABDAAC5454EBCB0B2692F7CA445F1DCB5F25F69E2F16B"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-27-12.162Z/after-payment-response/evidence.json",
+    "Hash": "F236E77D50F9B606DF65E0644D1F4B8763E19DFFE0B603BE8E4A8FE6AF66F635"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T02-27-12.162Z/receipt/evidence.json",
+    "Hash": "37D9D241F588E10E232A8FA6A8CC6DA313266E9B4E1FE246ADC792C005679798"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-24-16.876Z/accepted/evidence.json",
+    "Hash": "AB024D752838071852B442082F42535976A68636A57C1513D86E33C89E420593"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-24-16.876Z/after-payment-checkpoint/evidence.json",
+    "Hash": "9D89EF7AB1F877412335C7294645893291ACF792FBC2266E04097917F600E6E0"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-24-16.876Z/after-payment-response/evidence.json",
+    "Hash": "90580AD44D6C5F3FF4AE0F402BC579C90FB51ACD7A7C9398DE9F0E9BA7CE38B5"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-24-16.876Z/receipt/evidence.json",
+    "Hash": "8DF056865F7677D8464C423FA2DF79DF8ED8E331FCFEEF7B5804A8E156F1D413"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-49-05.295Z/accepted/evidence.json",
+    "Hash": "A61CF415DB630064BB521FDD10AA52A60D97FC81A9AA153E36414368EC5CE874"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-49-05.295Z/after-payment-checkpoint/evidence.json",
+    "Hash": "A2F08FC6EB28275B40799150B71AB87EB9E2DBF7DCD827673E756CA56FE3E344"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-49-05.295Z/after-payment-response/evidence.json",
+    "Hash": "527DE1143930719ECDFA81AFD738154C3D38177BA819D6AE0408F2A7D54A0C61"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-49-05.295Z/receipt/evidence.json",
+    "Hash": "BD1D891F4C8DD776D3FEB3A6254828FD13BA1AC846278A60C1C2095E22C84876"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-52-13.124Z/accepted/evidence.json",
+    "Hash": "88B0F87D6434F44A0C5533F6578E2A7284BCD55C55D1CFD3C8C3839FB00661FE"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-52-13.124Z/after-payment-checkpoint/evidence.json",
+    "Hash": "3869D35CC234AF674755B5880BD9B3F93E203EA00FB2FF6C4118B6970F56EBAA"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-52-13.124Z/after-payment-response/evidence.json",
+    "Hash": "D0B7248889F5054C4A1EE7435AAC6DC260EC1A1D8A9BC16B24322BF162D70C2B"
+  },
+  {
+    "Path": "docs/experiments/business-results/2026-09-26T03-52-13.124Z/receipt/evidence.json",
+    "Hash": "E1240B8027DAD80B1921D0332E8E634CAECA3C6797D9D4484F6A51E0511A967C"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T15-45-20.158Z/accepted/evidence.json",
+    "Hash": "5F4DC98B06149D2ACF0CD94A3D52632C805934151189D6FF397D45D50C14AE2A"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T15-45-20.158Z/after-model-response/evidence.json",
+    "Hash": "E105133C74F2DC28E79F71195405FCBB1AB0E0D860F35AEA8F4D341813805AED"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T15-45-20.158Z/after-read-checkpoint/evidence.json",
+    "Hash": "E8A55A85DE046366CC278F94A17B3F000AB01D918A1744161A308336CD7A8E95"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T15-45-20.158Z/after-turn-checkpoint/evidence.json",
+    "Hash": "AEEC691E1A4E677A39044A6238F145C40B8DFAD1659CAB95D0A5B399D6E911C7"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T15-45-20.158Z/continue-after-restart/evidence.json",
+    "Hash": "D9274FD9B108CA6C80BD10F6A5692C818AB0E8340BCEB7DF25CD55C7C99E0250"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T15-49-44.749Z/accepted/evidence.json",
+    "Hash": "F86EA35EB77553F60EB97E1A3BD93FF8C31E72E79BC29E32E486AC7BC828781F"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T15-49-44.749Z/after-model-response/evidence.json",
+    "Hash": "AA2703A68FD88BF39DDD1D3E12A17FBECF78A033FE97146EDA5C3736B584F557"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T15-49-44.749Z/after-read-checkpoint/evidence.json",
+    "Hash": "3428F9977DF5C2B87037B4BFD21B4A401CCB241E70B8460842677D339B6EBF7F"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T15-49-44.749Z/after-turn-checkpoint/evidence.json",
+    "Hash": "BFE821E3023BC4A198AF8D964E744D2A7304BABE77F2362F21CC95AA2D93EE95"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T15-49-44.749Z/continue-after-restart/evidence.json",
+    "Hash": "9F646CAF79C062F8D3BC1920B86F84A7CE356DDD3BB2E1D5586A9C9D8E1C8675"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T16-31-09.439Z/accepted/evidence.json",
+    "Hash": "E0217EAA9BBB1E400F81481ADF648721CCD7C912110BE1DD71033AE066F65858"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T16-31-09.439Z/after-model-response/evidence.json",
+    "Hash": "9495C8CEE0F1B0B44B3CF3B45717C640CA98903541910D046780DA7646B36938"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T16-31-09.439Z/after-read-checkpoint/evidence.json",
+    "Hash": "D923323FF22FA90F8282EEB5939BB472A3972FF4B4E76E662658148581B0578B"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T16-31-09.439Z/after-turn-checkpoint/evidence.json",
+    "Hash": "E026000D641FD964EB655DB4B89A9D3D64F6BB6EE1BF17F2FAD45C35C25C8B90"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-25T16-31-09.439Z/continue-after-restart/evidence.json",
+    "Hash": "383091442EC6811395EC38E2318DBA14278B1F23B87340A727D2AD3A29734ECE"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T02-21-23.233Z/accepted/evidence.json",
+    "Hash": "51E3F8C20BBBFDB45FFFF2E9A618577F29BD999F8EAE6B386FA28898CB060C1E"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T02-21-23.233Z/after-model-response/evidence.json",
+    "Hash": "43C39AD4974422B48B732B3B2A182C7B2CDAD5D502939D8D8B9B64B5B8DA04B9"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T02-21-23.233Z/after-read-checkpoint/evidence.json",
+    "Hash": "9EEEFE9879D41B7D0739F94E4994E6772ABAAFF9E648E1C6B747CE7B4E3973EB"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T02-21-23.233Z/after-turn-checkpoint/evidence.json",
+    "Hash": "493CE1234C1B6A6FB513599011048CA9E5F9DE3C4252AE43EDB260E7D5339675"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T02-21-23.233Z/continue-after-restart/evidence.json",
+    "Hash": "1CAE05F940CC4FA889DB05EEE6F4D5B60B28F04CD5FE07992B99D180DDE29992"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T02-27-12.162Z/accepted/evidence.json",
+    "Hash": "3A13DEF499B6C8B1AEA96DE66C8BF3A6609F193D5DE8B48A649E89537106ED9C"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T02-27-12.162Z/after-model-response/evidence.json",
+    "Hash": "BC6D5F6EBCCAAF92986F6755DF260C4C91501845B46CB1C216C374CAB2E45386"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T02-27-12.162Z/after-read-checkpoint/evidence.json",
+    "Hash": "5AE0019015301E698B015B3B613B9EC37D72A9343357813558BB6F6C9A77C72B"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T02-27-12.162Z/after-turn-checkpoint/evidence.json",
+    "Hash": "2D66DBF32657C52DDCA90AD51C78BC774C54F2D2862327DE2DC7C2BABC606457"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T02-27-12.162Z/continue-after-restart/evidence.json",
+    "Hash": "A10F1209F4EB475C5713CD069F3F5D5C27D36CD6A5CA414C96AB72DEAA3C84D7"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-24-16.876Z/accepted/evidence.json",
+    "Hash": "2DFB8BD047190DB64C595F871628B18784C31F55550EE7EF40A06DE9D2777824"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-24-16.876Z/after-model-response/evidence.json",
+    "Hash": "BCB931722B1AB20E021062280C5F76246CD1CE4D07DB723EB5B125914A766EA7"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-24-16.876Z/after-read-checkpoint/evidence.json",
+    "Hash": "C472873F70F2D116CE5AEB08D44C3873C552EE420B9B3115CB8DDB2121F916C5"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-24-16.876Z/after-turn-checkpoint/evidence.json",
+    "Hash": "F4676AC95198D8B1E3434D9FCE191C44AA3F0E08BD99641AEF5A9D657ECD6FCC"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-24-16.876Z/continue-after-restart/evidence.json",
+    "Hash": "82931FA767384EFDA7654A2722643CCBB099435478507BEFAC30655EA0236C9B"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-49-05.295Z/accepted/evidence.json",
+    "Hash": "CD56651CF7CE4093E5E4B49809FFF23597EF1523079CD936025CDC0EED62CDFA"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-49-05.295Z/after-model-response/evidence.json",
+    "Hash": "251EC554A2FFA0CBCD354F022656B3B137E6388F9BFF6F94C28D480B4D314652"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-49-05.295Z/after-read-checkpoint/evidence.json",
+    "Hash": "E781C26C9D95F95EA1B673DD2E53527CB0B575152099F69AD481262EB4056591"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-49-05.295Z/after-turn-checkpoint/evidence.json",
+    "Hash": "E60227969C29CA24D1EA0F44D520562C0EF563B343CD25058D2E0DFB7A796DDA"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-49-05.295Z/continue-after-restart/evidence.json",
+    "Hash": "BA5F3459E7424846EEC7D9B5C47E8C2173D02955C6322CEF6329FCB1447D2A87"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-52-13.124Z/accepted/evidence.json",
+    "Hash": "C5128ED51A66D18C4E0178328E5C0C04DC144B5F39AA3090A530960E4554E03F"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-52-13.124Z/after-model-response/evidence.json",
+    "Hash": "D1AEAB1CCC647AB3004E57E4277519DDFC3D639BF94A655AD0D4FE5E29B0918F"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-52-13.124Z/after-read-checkpoint/evidence.json",
+    "Hash": "8C134E7AA41FF28FA25C8A4C745A9B01B3842C871A08F1518239A5294657C69F"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-52-13.124Z/after-turn-checkpoint/evidence.json",
+    "Hash": "9894865EDDAD349439E216FFA7DDB6BDD6FB8816F5A3DAFF422ACF084A1EB50C"
+  },
+  {
+    "Path": "docs/experiments/conversation-results/2026-09-26T03-52-13.124Z/continue-after-restart/evidence.json",
+    "Hash": "8F769B65A8412EC71E52A53ED6A99D4B9DDDFA6A233A8112346760F0DB4CE59F"
+  },
+  {
+    "Path": "docs/experiments/execution-ownership.md",
+    "Hash": "A239B21D285C2EB9E3A0C1B1BD567F4A271293B8C18B91BB52CBEAEFE90544D5"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-06-37.681Z/approval-approved.json",
+    "Hash": "F120D531933E674D06AE8096590C55DC6CAEFE6E85A19E0C0568E0B8006EB78A"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-06-37.681Z/approval-expired.json",
+    "Hash": "054002F9010C8520D17F4A701A088604C8CDAFE6CF29F2A7B54E9B8536709505"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-06-37.681Z/approval-rejected.json",
+    "Hash": "63D20EA75113CEBD8BF1663B7F8F72D5D3BC1390BB1DC482C69E3ABFDC4443B0"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-06-37.681Z/authorization-conflicts.json",
+    "Hash": "DAC4E5F711C630FCC39D87872D060BA0C81DED1602DB8B758FA7CFEE06D1EB7F"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-06-37.681Z/automatic-refund.json",
+    "Hash": "8B94F41C4456933991BBFE43665AD7EF93D8C43D67A86B7383878733B81CBB67"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-06-37.681Z/return-false.json",
+    "Hash": "537A1CF6352009167B8A424CC14441291A77E806F85B39E5F85E716FDFFAEB99"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-06-37.681Z/return-true.json",
+    "Hash": "B9470FBCFEBD43D8144A2759E8887E7742F93BD9463A97ECEDA4B9773C6B9F59"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-06-37.681Z/unknown-funds.json",
+    "Hash": "D00AD56116E61CEBB95EEACA1823A8FDBCF8F0DB349766C9D3AEEFC47C3E4768"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-06-37.681Z/unsupported-compensation.json",
+    "Hash": "617842BB2FB6B09FC8CF2E13D33FC821E61EFFC904ACDE29CCC74D64C84B2C88"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-06-37.681Z/unsupported-price_protection.json",
+    "Hash": "C00390045D90B1F572578B44C2A43E8ACF6D80BED042FC0CF92B3BBE834E04E5"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-06-37.681Z/unsupported-submit_exchange.json",
+    "Hash": "44FACF54B923CBA79ED2038AF8DDCA128A09B32008EA7CD8092105EFC3FDC230"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/approval-approved.json",
+    "Hash": "C7DAAF40EAED737805D46EEA2FCD491F1D0C7732E38BBC5467105A57F27294CE"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/approval-expired.json",
+    "Hash": "5278D2B54E0BD0124767F4B091D3EA9ACE85323DC09583585AEB52A03EE6948C"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/approval-rejected.json",
+    "Hash": "FCF0CD8E9A53B4D649F6D84A742FE4A7DEE9EDFDC05CDA6B6C86CF43D78AA4CF"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/atomic-acceptance-rollback.json",
+    "Hash": "29212CF5E4E0254F29D548F85B9E297672F41B4D06D356D5CCDED70B0D70DBF5"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/authorization-conflicts.json",
+    "Hash": "FEDF2C695CF8C30DFD9B6914D85C888490387EC684FB9A361D0164327CEAAAA1"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/automatic-refund.json",
+    "Hash": "B46147A0DFFD6BB060FB6FFC33D85FD6DD0A232D5F3FAEFA4EB3F0186E29BCC6"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/cancel-after-send.json",
+    "Hash": "0EE2B024BA7A0CC8A29DDF9BC6303B4B6622874C7B503CF291CEA75B454B85E6"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/cross-customer-order.json",
+    "Hash": "B72E7BF476C8509AF3DA6364867FEE9A9C4680A355D79A94F5716203BE32D61C"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/model-retry-budget.json",
+    "Hash": "C42C0EE78FDBEF75A7D538D47B08527FB4B5EA2DFF45E1F6D5AC88D7AAF78E37"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/receipt-sending.json",
+    "Hash": "AC93DEB21A3B78C1363879C6248DA42B0FA622094FD2EE6ED9DDE4E88E7AEC95"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/receipt-unassigned.json",
+    "Hash": "09CD77FE60C503F278C4215954A1924BC9D257B955FFF52C1E4575C7FFCA2C57"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/receipt-unknown.json",
+    "Hash": "77C870FE32CC190F143F441CB650105325F3ECFAC6840FC3325D5FCC5FC3D3A2"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/return-false.json",
+    "Hash": "4FD475E4C85844106D5F27BBDE82D60BD9F55B66F628A48B71B81F7C71472354"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/return-true.json",
+    "Hash": "FEFFA68E6A500AC6449A97911A1B62CA2CD2EA6EA974E3E29F4EFB8B919688AD"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/stale-conversation-fence.json",
+    "Hash": "2B2B814242C35D1AA06FA1A5FFB68CBEF067FF13CABF9616A2058F3AE7FDBB84"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/unknown-funds.json",
+    "Hash": "FF38E859714521F33718B5FCD754FD205F4CA24725B90FAC247F4F9D6C804600"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/unsupported-compensation.json",
+    "Hash": "CA5671294D60A855C8EB34D685F97E5E9C080B38A44BFDE0BEF85623A4CB5B39"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/unsupported-price_protection.json",
+    "Hash": "BF4A683928E8C6F15268254C0677E7CD11A954BB1C231496B0F28F0DDC7F7A81"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-16-01.983Z/unsupported-submit_exchange.json",
+    "Hash": "829895D43F18A9A2892B5553378B5244B8254DC88FF4605A396131A87BB378C5"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/approval-approved.json",
+    "Hash": "E07608C0454780FF161FFAAE4142AAEFD1E059970B91AB330F5572334CA23F86"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/approval-expired.json",
+    "Hash": "AF4B231A1254C2EA5DCEDBD2108087D1D0A4AB8C378B10B1F67EAC5330E337CC"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/approval-rejected.json",
+    "Hash": "34BCC8AAAD68EE817780D0B11A002A4D12C99663E579AD7428CFC653FA2E3683"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/atomic-acceptance-rollback.json",
+    "Hash": "3572DAF4E7992D86116FDF8BCE8B0602B7929F115F4C0DE7B079EE711E3694C9"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/authorization-conflicts.json",
+    "Hash": "10ED5045FDDBCA7C29FE7606F4EBA048C1DF745DA588DF12F641996296AF5B83"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/automatic-refund.json",
+    "Hash": "46761263843189663C158350C46F85E9A9A2372F1B3E9DEBD52FEBA0FB63844B"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/cancel-after-send.json",
+    "Hash": "B8263C241E9BA8834641FFBA4CCB74969C20ECBC29E0C62FD919424EF892A98E"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/cross-customer-order.json",
+    "Hash": "1E975794E5FD2EAD219050031A5ADAB21D555F3D27D227378EFA804D5EDD7BB9"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/duplicate-tool-identity.json",
+    "Hash": "710E09BD541C3606B31DF193839FE833B525D86BBB9786F8663C41DE5E48AB5C"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/formal-demo-refund.json",
+    "Hash": "A209B3E8054369E0EAE9B166F28D8E4BF88FAA28E5DC12797C2523750033E142"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/model-retry-budget.json",
+    "Hash": "837E7638B8812E6643A53F0D6E64E2C666E0F5E0FA0A0D59D98A4914CE2A8AE9"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/readonly-snapshot.json",
+    "Hash": "40E01FD30B26A52FF1A6862A9ECA07885CBB73D270CA4F0E79927676A2BDA71C"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/receipt-sending.json",
+    "Hash": "250619A375CAE54D475B066DA07564E205BF599F4887C2841E96112478442176"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/receipt-unassigned.json",
+    "Hash": "3B2A4CF858A3B73C2DA205371E5C6A2D83A6D5109660FCFA6DA0BB58E644F865"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/receipt-unknown.json",
+    "Hash": "67EE673B46D01767BAF2559DA244F9128AB73E850DCF7CF44AA3826B7C8A6901"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/return-false.json",
+    "Hash": "F07F3DA9A9279560286E9BA18013F332CCEFE2B459F2E5069F65DAF9B23B77A6"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/return-true.json",
+    "Hash": "AD1A916F43D81609539306348B80F11C72BF5C557F8C3A5CE2254DCFFE1A7329"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/stale-conversation-fence.json",
+    "Hash": "F720F1B6DFF939CA8208444A2B5AEEBCFD2CA749C295F3F2E6CCEC073C37E1DF"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/unknown-funds.json",
+    "Hash": "3A7F866E0A8955EED70D658A3BE807C29B0275EDEF946ED26C31FFDCEF7F5965"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/unsupported-compensation.json",
+    "Hash": "74DB7DBC59A688C0645CAE739E0E1F2DD17A4C7847D3ED6496D033757D6696DB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/unsupported-price_protection.json",
+    "Hash": "23D566D47ED16AB255623E07F4C983922A52974ABF58514A2E71EBE4F331A777"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-19-33.642Z/unsupported-submit_exchange.json",
+    "Hash": "C0FCE07C42093617F3B7A897B93F0623082A6422777C0F42CCBE2D4EE35E3F8C"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/approval-approved.json",
+    "Hash": "9D08BAE7593C111DCA30D4982ED1B12C3981A57F4CC47E045D0E4E52037E1F02"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/approval-expired.json",
+    "Hash": "0CBA7CD347D1E82AEF11BDD7B5843B8EABE0306602616CB2E2D1C0D0EB7279EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/approval-rejected.json",
+    "Hash": "2E7FC2B379F29B4ADC2F1CA42B32E1C20AFAB87BEECE85564F0B2C3BE777C764"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/atomic-acceptance-rollback.json",
+    "Hash": "DC772FF1921E4466FE7B85809445BAC30B1F29AC4738C0E1740D562F324DB87A"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/authorization-conflicts.json",
+    "Hash": "605DD9AA70ACDAAC9843768358EEE879370904533DE13DE83517AE88E05C9901"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/automatic-refund.json",
+    "Hash": "FC27781C9F82268521293E769D7FF0B54DC10D5348E1B8D975D815720C40C5B4"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/cancel-after-send.json",
+    "Hash": "09942970E039D1798677C6216B7179C7CE3C088CA9FAD14F017A5211D0855057"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/cross-customer-order.json",
+    "Hash": "0AE413A3BD69510B492F051596690E96791CE9BAB7D7EEC87BBFB3997B18AD15"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/duplicate-tool-identity.json",
+    "Hash": "EE9C8F26E78C4CB5C3AC4D043AC41A72F01079A553F5A016451DCCF32CC9F5F9"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/formal-demo-refund.json",
+    "Hash": "88096BBB10ABC846C86DDED0964906901EB873088E91ED7CFA33CC23E0026673"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/model-retry-budget.json",
+    "Hash": "F307BF4F852B7583B6D1F98C279277FAA3800C1A7824C093EA1C9EBDD59D4C0E"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/readonly-snapshot.json",
+    "Hash": "D8CA015CD777F19E301260F13E9F408757974CD94F7C6DF222D5F4858E12F42D"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/receipt-sending.json",
+    "Hash": "3C68E814B1D2A45AA8281F9F44F04AB692F69DC0390C4C3650BDEE488EAEA91F"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/receipt-unassigned.json",
+    "Hash": "A6D686070874638C4BF958F028259E1406AF476B42BA2D8E44C80E5BDF4E9459"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/receipt-unknown.json",
+    "Hash": "CC888C6ED45381B3B9B6068513D565D9E493431D542423B61678AE90A5102517"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/return-false.json",
+    "Hash": "280CCA15649D96FBC46FCD2E4B51DB8791C7E4DDA404B5702C3159437B1199AB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/return-true.json",
+    "Hash": "7AFE40BBE62B65F8675D27594A33D5AC41A24EF052388DC1025ADBB6A9D0EAE3"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/stale-conversation-fence.json",
+    "Hash": "5C5ACAB7047C7BD21536B5E922BE3436D8D0B10B64E79B6E9A52CB44BAA45E97"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/unknown-funds.json",
+    "Hash": "4A86CBD682FE923357DC10F7D7421A52CFB187DFEDBAB01E5D0ED8E9F24E7250"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/unsupported-compensation.json",
+    "Hash": "C03D183D0DB9EA4BCE4E753279AEC5A716DC9D89AA75562487701CCC3B0C0029"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/unsupported-price_protection.json",
+    "Hash": "C5736488F0F07DC3BD433F3B17BD982E50837C17FF7FBC766BD6C7CE9D224911"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-24-17.944Z/unsupported-submit_exchange.json",
+    "Hash": "665A9064DFB93A8A10E13529793293EF4F55C2C84773A61C5C38C8105DC795EA"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/approval-approved.json",
+    "Hash": "81418E09E4F7A58BDE14AFB60EF4BA31E48EAA1E067E4D50A13A004F657FDD05"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/approval-expired.json",
+    "Hash": "0E5F683A05B4CF5F9A3050B05B95F06A7DF3D86366D91962A238753AE6BA103C"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/approval-rejected.json",
+    "Hash": "D9AFDA508FA4B03AB311DFA306EC10AFDE7C7AEA15DCECCDBF7B4323FE8F1A44"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/atomic-acceptance-rollback.json",
+    "Hash": "A0C31E4F8BF7DB973D6D68C6C7BE1CF8D083539B38997D4F6FC71954AC2A0525"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/authorization-conflicts.json",
+    "Hash": "B8D4B207639B98BD2A9831E5628C50F51D2CFF2AD6AD6ACC8976E8333845EA24"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/automatic-refund.json",
+    "Hash": "1169EAC6383BFEE73ADAAF28FD868A71252A5DEF4B1F8866E45A1AF2DBF35110"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/cancel-after-send.json",
+    "Hash": "91BB852EE8C655E6C8503D7EC327AB7EE4F19D2880450E21A120435AE7998129"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/cross-customer-order.json",
+    "Hash": "7D1C01851033847DD7320216410A716FD9180D8C0B23C869DB42EFAF14DC54C1"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/duplicate-tool-identity.json",
+    "Hash": "0EDFB7E1EBB6FBC63E184D659D40B08B6DF2E6C04EB33B804E123563A00B9604"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/formal-demo-refund.json",
+    "Hash": "FD8EEF18A49F4E5525A15B385C0C1E2429CCC09DC662293A19C0615916849C48"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/model-retry-budget.json",
+    "Hash": "073195623EF510A9335B864C43D446FCD4D1E90E8BBD90A4722876F61D216AAC"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/readonly-snapshot.json",
+    "Hash": "F6D21C5DC36A3BF95301CB0A79699FCB49DD10108EED1006F97FF4EB8ECF91CC"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/receipt-sending.json",
+    "Hash": "AE179920F14B2EDCB20A3836B7BC367D67787D11CA8AF52360A45C1E4227C6AB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/receipt-unassigned.json",
+    "Hash": "038E176A6111DF9B1B800EF1EA67D9ABE60CE677DDF4560C154D6A8110336DE9"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/receipt-unknown.json",
+    "Hash": "41ADFF6D349F4BA2449490BD6B51609AB17CA4F74F080349EB3E687848CA3280"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/return-false.json",
+    "Hash": "20F1E8FC1FBA655435CC6FF8225AAEF7ED47A336E6EA668A9F1B6B8751337F6E"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/return-true.json",
+    "Hash": "1F79AACE5F124C8BD5CDD75407CACA02D961753BE33DE2210FCDAAF4818A28C9"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/stale-conversation-fence.json",
+    "Hash": "A2BBF1733441BFEC97E502C5F7D6E0AD55D122A00A0BF7FF741D7B44827DC2C2"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/unknown-funds.json",
+    "Hash": "AD3F45EB55B38513C0CC58A19F0E80FC67B11DAA82E0CED22B4CEF177F391A44"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/unsupported-compensation.json",
+    "Hash": "D41AB93AE3AA4A8EA0A7EE1635962EA83CB740B38419C0388B1660AAF270379F"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/unsupported-price_protection.json",
+    "Hash": "3980E82473C81E7CA71BF92FF9DBF9C31E44AB54F1B70FBAE4EEEE7B54EC4E06"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-49-06.473Z/unsupported-submit_exchange.json",
+    "Hash": "1C74A3F681A8D575803D93711521CFCB4193172D2933E25880ED1C51A0FE7FD9"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/approval-approved.json",
+    "Hash": "CF6A98652983224C5AA82245043C7059F11FE2104A7471C5ADCD5DF11965A568"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/approval-expired.json",
+    "Hash": "4C253FDACF6FB96ABF22AAE628E05EB06C266CC10744AA45DD7E515DD7552BD5"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/approval-rejected.json",
+    "Hash": "22C2AA06C5F770D88507019704D6EA58B295CF5E3BFDCBC1E9B5C29B3B26DB7A"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/atomic-acceptance-rollback.json",
+    "Hash": "A4174F268F3792886912D8E993B6E79C017F9EB09FBEBD9A8B5CC1377F4555E1"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/authorization-conflicts.json",
+    "Hash": "B01F3BC89E92DCF56649160796CA71460194D8C3F0E5ABE4B337DD9431E306DE"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/automatic-refund.json",
+    "Hash": "F4737E676FCC9F2D49A48AEE2A5155126D0F6949E91FD41D82C619F7BE0A5F95"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/cancel-after-send.json",
+    "Hash": "C823849E200CCB1B9B6DCB191CFC0C9224BC665E3D9A2FBB147BFD810274D541"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/cross-customer-order.json",
+    "Hash": "7021CD08B97399B3F0AB9C6DB83264968AA76B3B0F5364D99C8142092B97ECF5"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/duplicate-tool-identity.json",
+    "Hash": "C07E68CA69E9451E0F4B103E9F50FE8EAFB8F7FEC40DAC890DD77E465D7D0634"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/formal-demo-refund.json",
+    "Hash": "AC892764ABB71D2E614803C7217A47286D9B2AAAF66727D713BFE94DFEA9D739"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/model-retry-budget.json",
+    "Hash": "D0519821E5E0049CE260C67D961EF6D5E5AFC5E4E06245782C1F7091D410FA63"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/readonly-snapshot.json",
+    "Hash": "A8A81F0E70BDB0C81C8891C355EFDB47FB426D522FA1C6EA1A846F44110F5021"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/receipt-sending.json",
+    "Hash": "36E1996A172420989BA3C5D324B718189A93CE0351FFD490D73C70B1FAFBCA00"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/receipt-unassigned.json",
+    "Hash": "85ED4D70D750E7D200373B26B45D2E86C831A72591909A7C7ACA91C5F624DD68"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/receipt-unknown.json",
+    "Hash": "A706B5F23AF22D36D169AE8B768383C65D3F7FA7DAC3FC5AE317505B57735880"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/return-false.json",
+    "Hash": "007895B43BB5AADD9EF0BC3C489209241C4ABEE20F65F7884F136317EF3D8525"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/return-true.json",
+    "Hash": "B904547D0D4132BA2E0CE554BEF968597AA014AE788426D378CEB012EB046A00"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/stale-conversation-fence.json",
+    "Hash": "8A847E239618AE20CE167BB7C8CE4C823097F178CD953F9F03FCA1812B9B7B63"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/unknown-funds.json",
+    "Hash": "B99C821D922E92891C7AAF50F6179FEE68D3CE63A41AA425526C01DEACB3FD80"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/unsupported-compensation.json",
+    "Hash": "3BCFFEDDE2617CA47DDCC2C35839724C424C389FE65F6A7C72D3E8C847AC0E1C"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/unsupported-price_protection.json",
+    "Hash": "A1EA8B34FCDD969AAC15A949071DA0434A361BB6A39560C3D3968597856AD31E"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/2026-09-26T03-52-14.341Z/unsupported-submit_exchange.json",
+    "Hash": "E322DAA0961440B548BFB48A8AE856E33E0AB3AC73D947B6D73533849EF9BC3A"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/directed-final.log",
+    "Hash": "BE84C190538835E2C8B74B5502300909E55F65C900E0FB4F9E4980D548BB97E7"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/directed-first.log",
+    "Hash": "6E93D6936D462D6D523B21F56765C2512AF4D29F916BB09D9E66E29192333311"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/directed-v2.log",
+    "Hash": "485E9F35751A41BC549347F0DA389D1D324E4F49E7CD3C83260623D5B5375034"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/final-status.txt",
+    "Hash": "32FB6BA72C19936B1F56BEF4F0ED3D7DD450F900310AFA563027308F8817F1C8"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/final-summary.json",
+    "Hash": "6FD40FF0991D74208A9713B540A8DADCE88611DA973C0FC51D7832A6CA95F82D"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/first-typecheck.txt",
+    "Hash": "9A598EDA6C94179BDC93AEC647C3D490C1CE1AF0495FAB4720A93F871C22F1A0"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/full-lint.log",
+    "Hash": "CC5A0B39C7052D24C24888403C48018B4FCCCC9D799F81BE6C9C30C9E19C85FC"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/full-tests-first.log",
+    "Hash": "66FEAF2989F1225E35FE1FE94FA4ADBAED0399A26AFA633717ACF5E060A55582"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/full-typecheck.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/l1-database-path.txt",
+    "Hash": "8C9B365A454B881CD7C5FAE39DF5000E69058DCD18DD25D4F2F30CF8A29EB30F"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/l1-first.log",
+    "Hash": "02313D3F6E800386633A496EF6E2C309D3EE92E8BB45F0171EE6B22EFEAEC52A"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/l1-reports/evr_70cb8d29.evidence.json",
+    "Hash": "081184743C3EC5C0780A17C99A518625644460E04B3F4BAB7076B6DEA27247DB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/l1-reports/evr_70cb8d29.json",
+    "Hash": "94FFAFDE830FF4BA19AF1A3B291CEBCF632EC2BE82E07CB12AAEE90EB0FCB6FD"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/l1-reports/evr_70cb8d29.md",
+    "Hash": "046C28A91935783B9317A9BDD7B37F8848C2DA22628750CA86F84506ABAC7426"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-10-37.086Z/after-approval-accept/evidence.json",
+    "Hash": "E56C5E0560F5F4938268264B3C134C130E86AD5D8B3E9B3DFE8CFEB7A538330C"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-10-37.086Z/after-business-accept/evidence.json",
+    "Hash": "D15E01DD619FA2CED63B8A8B28B5FF98FFA32ABE85D09FDBEAC0E625911205B7"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-10-37.086Z/after-payment-response/evidence.json",
+    "Hash": "0AB4C99EBBAB7F8A85BF6DD5BD6ADF4A8871600194A0AB274277FC725E0D6F13"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-10-37.086Z/before-business-accept/evidence.json",
+    "Hash": "61F86EF21BC09248DAEB086C7AFB84742A8E81F059D19495FD9CE436B823A72B"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-10-37.086Z/before-business-projection/evidence.json",
+    "Hash": "CD41AA9B9C0374A699046B32BF82AFD51AA7C7523AEFDDCB7356CB2674A31390"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-10-37.086Z/return-wait/evidence.json",
+    "Hash": "96F657B2B679ACCB61D7447F670C5B5D36C0898C7AC4C0F383BEBD6C86FE0C5A"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-16-00.975Z/after-approval-accept/evidence.json",
+    "Hash": "62CE8781E2551EFEBF3D4EA800C3CA74071F4E1F10D0493A3AEDFECE210CA38F"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-16-00.975Z/after-business-accept/evidence.json",
+    "Hash": "C5422A7D9193AACDBD94B1BFDC431A8D1F955DC5D08E9B20714D01923FCF144F"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-16-00.975Z/after-payment-response/evidence.json",
+    "Hash": "6EC3CFDDD2A33C712F13B02E77B46001A31CACF2CCCEA5D53CC76FD672C6184A"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-16-00.975Z/before-business-accept/evidence.json",
+    "Hash": "A616E5DD27F0FF2CE35445D556891467199D2C04631D5B7060A518B6E51003D1"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-16-00.975Z/before-business-projection/evidence.json",
+    "Hash": "C1238C08A79CC917714E32240C56DDD3D62B824C43E2AD980AB0730DE989E8CB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-16-00.975Z/return-wait/evidence.json",
+    "Hash": "5EC7861319D9E911AC4B0A6882DAACCB8B43E9F34BB4F0A7842C846413175D87"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-19-32.653Z/after-approval-accept/evidence.json",
+    "Hash": "287485ED94F3A5D74C659A82552D335F42951F7683FA93AB6326E7D033E5A52F"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-19-32.653Z/after-business-accept/evidence.json",
+    "Hash": "188FF65591F4067197AE51F48DA1872F7F9308B3B417E20B7541C7D6E8F9C8FB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-19-32.653Z/after-payment-response/evidence.json",
+    "Hash": "16FEBB901E5402182ADC803CFED6125756CCF963099D352F454033349A35565A"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-19-32.653Z/before-business-accept/evidence.json",
+    "Hash": "547613962BACA2129341F78889F4EF2ABF9C8F51DF8DE89FE87BB48B93ECB3EE"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-19-32.653Z/before-business-projection/evidence.json",
+    "Hash": "64CC777D8A8790074203DBCDC1F37DA5ECB90455C534560E485404CCEF2779B7"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-19-32.653Z/return-wait/evidence.json",
+    "Hash": "5AE2657B01347EB9DF38178EF13CA57C2100A6551D1E13D1CC106DFE96436877"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-approval-accept/application.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-approval-accept/application.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-approval-accept/channel.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-approval-accept/channel.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-approval-accept/evidence.json",
+    "Hash": "CD43813523ABCEFDE8D19879C92546251D5AEF9BB6A46491982445DA2D7022ED"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-business-accept/application.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-business-accept/application.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-business-accept/channel.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-business-accept/channel.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-business-accept/evidence.json",
+    "Hash": "FADC2A3ED163DF7DA37873A8253A1E11B9BD68B63EAF32F995EAE0A1E019EB8E"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-payment-response/application.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-payment-response/application.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-payment-response/channel.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-payment-response/channel.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/after-payment-response/evidence.json",
+    "Hash": "EFA6F21B33582613590B21AB100F8025261473355F9A8C06D3CDDFA68BE204B8"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/before-business-accept/application.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/before-business-accept/application.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/before-business-accept/channel.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/before-business-accept/channel.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/before-business-accept/evidence.json",
+    "Hash": "A1FA9768679CBA7045580214971718A7D8863351AD0DC21D4F633E233BC7EE9A"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/before-business-projection/application.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/before-business-projection/application.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/before-business-projection/channel.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/before-business-projection/channel.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/before-business-projection/evidence.json",
+    "Hash": "962CE227A2E77E112E767B83EFD0BC2E0A8BB0FF16977E2FDDB2D9E8B808E613"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/return-wait/application.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/return-wait/application.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/return-wait/channel.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/return-wait/channel.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-24-16.876Z/return-wait/evidence.json",
+    "Hash": "4FC097413BE3BE118325692C81BF2346E6E2177D500CD3F1BF9DBFC41F60DE43"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-49-05.295Z/after-approval-accept/evidence.json",
+    "Hash": "98ED9646204C2E65D35F151D3C7A8FDB4E9FE3B7A2D272D17784659834092CA5"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-49-05.295Z/after-business-accept/evidence.json",
+    "Hash": "74A6F1012EE0F5B432894233F5F86F0B97716B4F81376BB2B1B02FBFB8CB268F"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-49-05.295Z/after-payment-response/evidence.json",
+    "Hash": "C6CBF61906B7FBEAD5679159B564FEE2EB1E466608930896757EDF38588605FA"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-49-05.295Z/before-business-accept/evidence.json",
+    "Hash": "92C2C408DFECF65D8EAD51BDEE1A265A0F9F425B04296CBEEF8F81409FB24290"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-49-05.295Z/before-business-projection/evidence.json",
+    "Hash": "65EE569A56B16A3736BF661E01449C653D97A45C0E31A9EA6C26AA2F579AA811"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-49-05.295Z/return-wait/evidence.json",
+    "Hash": "605707FADFFC1DEDD13E1959B22D41AA4CC29A8A0C70185BD7CD0FBB5E531724"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-52-13.124Z/after-approval-accept/evidence.json",
+    "Hash": "DB3574E36F9010A79C998A79F4FC8DA1CE6C696B46067CDCAABB8A3BF427E80A"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-52-13.124Z/after-business-accept/evidence.json",
+    "Hash": "5533AA03AB193C665AE25C56938EDD42E8DB644EE16CACF1EF3071776E559388"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-52-13.124Z/after-payment-response/evidence.json",
+    "Hash": "C5759822BDE1425055C7AB947EC32DE819E3A1D3175AFC314334885C18DEF057"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-52-13.124Z/before-business-accept/evidence.json",
+    "Hash": "6B243D8EC1D630C053C40F9FDD9555E1AC3A3730EDFF5F40A2709103F18D5CFF"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-52-13.124Z/before-business-projection/evidence.json",
+    "Hash": "4F3DBB919CD5BC9BA0E6444B47E5665050E6889F3DBF80F2423E65B45E06A9C2"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-2026-09-26T03-52-13.124Z/return-wait/evidence.json",
+    "Hash": "ED24313DB158241181EF974E652452E86775A5EC115BFC59C647E833701D61D2"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/process-first.log",
+    "Hash": "B0136B0881EAEA4D28D62395F0AABD802B6A445189C0E0B16C60676DBC7016BE"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund-evidence/start-status.txt",
+    "Hash": "C1A4377673CA87FC2A7E194AF43B9B02BD7E1FD15B2C82F7B59202932A81F124"
+  },
+  {
+    "Path": "docs/experiments/p6-conversation-refund.md",
+    "Hash": "042E3672184C17BEB637DB74AD4235A485D4AB976D8CD4C063E3FBCAA5F7BF08"
+  },
+  {
+    "Path": "docs/experiments/p6-evidence-2026-09-25.zip",
+    "Hash": "BEA61BD34CD7ECDADEC35810676391BBD94788EA568EE5C6621CC9DF663ED3EA"
+  },
+  {
+    "Path": "docs/experiments/p6-learning-evidence.md",
+    "Hash": "B296CB55FD809A66953441CC6B0D55A3390422DE89DC6EEE80EFE12CF0D0D725"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-entry-integration.md",
+    "Hash": "D0AB7CCAE55126B114D2A4C4B3E49D6C496878D3CC49217D32D08C6B333E4371"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-final-tests-v2.log",
+    "Hash": "E6D9813392F53411C47730444071908AA0637A0789AD55D41F6757DB154C8DFF"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-final-tests-v3.log",
+    "Hash": "088CDE3DB638DFDCC7AB45000C8B44D8640E84D0807A868E3A972E595AC5DA27"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-final-tests.log",
+    "Hash": "0FAAE43D2D1C6A871F20B58AA6BAD132F93D83951705EB46972239961BD49840"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-15-21.860Z/after-model-checkpoint/evidence.json",
+    "Hash": "CDE4547FCA72FFD9BC74E6E30718AE8305C04B5AEBDD6ACD2AEDF138ACC515C2"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-15-21.860Z/after-model-response/evidence.json",
+    "Hash": "B639C1B5B0FD4F913614D0ECBE8F264D1EBA4BC15DE5465AF89000B234ED8CB3"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-15-21.860Z/attempt-limit/evidence.json",
+    "Hash": "4ED15FF25B6ACAB9CFF769CBF177D74B99D72637304C5D559F2D776EF505B947"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-15-21.860Z/during-model/evidence.json",
+    "Hash": "51E6EAEA3FB801F062EBA219BB937BD0CD5EFD829EC92362355C06AD52BB1ADF"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-17-51.616Z/after-model-checkpoint/evidence.json",
+    "Hash": "83EB4D24C4FEDF85835349D661C4A8D9FF4B9A433FDA420D1DD7A5E3F7A165F3"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-17-51.616Z/after-model-response/evidence.json",
+    "Hash": "711826DDFA5E87A7A0BA3B0A3A0A00F55F83F7EB918D6FE54BB75BE4F016B6C1"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-17-51.616Z/attempt-limit/evidence.json",
+    "Hash": "8CA2789CB1398C2705A0AC1C065790EE3B775FB6AC3B3D8157CDB27242CDA074"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-17-51.616Z/during-model/evidence.json",
+    "Hash": "207BA9DB68E946FF5716577DB146ADA643D9F0111FCFF692C550A56BB6B9932B"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-48-37.627Z/after-model-checkpoint/evidence.json",
+    "Hash": "F024603C8DC298F3D8031EFA060BA6A4A0A99AD946B7CCE1075DA546651F56AC"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-48-37.627Z/after-model-response/evidence.json",
+    "Hash": "EDE055293A4B8C3D54E3AF4C078404FC62730C4FDE9CBD7955B3D4C6C0DD7908"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-48-37.627Z/attempt-limit/evidence.json",
+    "Hash": "3D08F2BFA1FEB92D36753314EFCBA1EDB38A202263BF083A6771DD119B7AD47E"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T15-48-37.627Z/during-model/evidence.json",
+    "Hash": "E49824CD3F12A69AE3901C2DB3CA0C752CE97126CA6368A7894592396830964E"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T16-29-57.038Z/after-model-checkpoint/evidence.json",
+    "Hash": "7331BB6E40183F45F9EBF0ECCC5038C19F586EDD316568D883B4D75DF7324C66"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T16-29-57.038Z/after-model-response/evidence.json",
+    "Hash": "FEBAE06A53DEDDE45EDA7EA021675C9E5C4761FE48C6260C0E4C9341A3CF9EE5"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T16-29-57.038Z/attempt-limit/evidence.json",
+    "Hash": "230BD9E10690E315BEC2E30F006E8DE84631E5EB27AEEF820E4D43435ABD530F"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-25T16-29-57.038Z/during-model/evidence.json",
+    "Hash": "545DE8FBC4694240010EA14EB61DCA99287C841135BD77A399580082A4B5D55A"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-13-59.411Z/after-model-checkpoint/application.db-shm",
+    "Hash": "FD4C9FDA9CD3F9AE7C962B0DDF37232294D55580E1AA165AA06129B8549389EB"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-13-59.411Z/after-model-checkpoint/application.db-wal",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-13-59.411Z/after-model-response/evidence.json",
+    "Hash": "5821028DF06398B760D1EAFC7B88305A78CC23242EC3A26F51E07090F716428A"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-13-59.411Z/attempt-limit/evidence.json",
+    "Hash": "4D6D446C5B08741F9F163DB4C14947F464ABB134E6BF4492F1A6D4C5D16BE0C6"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-13-59.411Z/during-model/evidence.json",
+    "Hash": "487398258BC89D3E887AAD418449AC2027EFDCAEF965565524898DA205C19740"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-17-30.657Z/after-model-checkpoint/evidence.json",
+    "Hash": "F78D98CB89BC2FDFC387DE45A93130B9A3BBBA0E4B39E6924167B6EB4AE8D61A"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-17-30.657Z/after-model-response/evidence.json",
+    "Hash": "5B7212BA87DAA9ECE04C1EABF403FEF9D23E5F2C474F3BB872EBC9D4B608F887"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-17-30.657Z/attempt-limit/evidence.json",
+    "Hash": "688872EE379F723BA92FC8B5F97B3ADFC1088D0CF63CB1347F73EB1F4CE951CB"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-17-30.657Z/during-model/evidence.json",
+    "Hash": "64477618CF26FEB1DA202BACE0C49A334C9801B77EC7068A7DB573F96D44E7C4"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-20-03.838Z/after-model-checkpoint/evidence.json",
+    "Hash": "9EE8D963B444B35E995AEE169AACBBD48849E1D77711FA0A4CAB8DF88B46D6D3"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-20-03.838Z/after-model-response/evidence.json",
+    "Hash": "B0D0F2D3B36C035EA415416C48861DDCA4C7A8412BF3089630424B3CF2B5C53B"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-20-03.838Z/attempt-limit/evidence.json",
+    "Hash": "A26A5AC9EDA67AA5A0A348C1197F0F145D9F4642F77D4913FC790D873A357970"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-20-03.838Z/during-model/evidence.json",
+    "Hash": "A49E4CDB7394CB24EC64D0463E5AFCA631490A4BB07FD6180CECA5AF830AFBA5"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-26-03.469Z/after-model-checkpoint/evidence.json",
+    "Hash": "961E361D69593DCD3B98381EB333F17B61A04C4E958955199015F3B5E33A83E8"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-26-03.469Z/after-model-response/evidence.json",
+    "Hash": "64BC0F7E09721C78DEFA364592F6D9DFFDC8D4F9F31CEABA4B82268845F332BA"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-26-03.469Z/attempt-limit/evidence.json",
+    "Hash": "DBAE2C0AF0BD1739B60F52BA050F290C466564938E70D5C658462ADA41B1D9A3"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T02-26-03.469Z/during-model/evidence.json",
+    "Hash": "0DF0AF50D2828C61D25CE1944EBE0719796F5DD22159D0F8464C65AE892CBD1A"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-23-11.009Z/after-model-checkpoint/evidence.json",
+    "Hash": "C28206E766746F5FBCE95AAB1CABABE5502F1EF29B534A0940971B77AC06B99D"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-23-11.009Z/after-model-response/evidence.json",
+    "Hash": "7889401D72D06B6A8BD1793AA7340764EE5D9C0A58C96C813E3A85CDC6F1A859"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-23-11.009Z/attempt-limit/evidence.json",
+    "Hash": "02D52CF6B7FC81879F62B5F7EE165EB5D3585F5E225ECCFB5F858AAF382AB9ED"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-23-11.009Z/during-model/evidence.json",
+    "Hash": "7EEAE53F7B44B8C86A78D1695412EA6B8523F41A9E6ECF8735C11757DA5BD623"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-47-59.071Z/after-model-checkpoint/evidence.json",
+    "Hash": "E47AA0F96ABB9CD9F79420C55ADF94A94642AC98FACBAE610A259A2C14380BA2"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-47-59.071Z/after-model-response/evidence.json",
+    "Hash": "A199E7EB88BFC45DB9EEADEAF8C4E969A7E550FF3A7D49CAD969B654DB15F830"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-47-59.071Z/attempt-limit/evidence.json",
+    "Hash": "E2AE85F350CBB6B116B453264C0EA7AF3A0B5DCFB4885176FCBCBD2FDF4A56F9"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-47-59.071Z/during-model/evidence.json",
+    "Hash": "92A0C2CE3B08D62B6BC900934E30DFE630C4498E2D40BE50E0E1BB66B6332BB6"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-51-07.133Z/after-model-checkpoint/evidence.json",
+    "Hash": "DE8BCE258B4D17950C3D5C8677B7550A31CE56F8509A6FA35C7DCACE779FB9DD"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-51-07.133Z/after-model-response/evidence.json",
+    "Hash": "5A7426676093E94A6AFAF9CFA7DAE6368A8601ED2BA46380CB15EF8C4BB21A0D"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-51-07.133Z/attempt-limit/evidence.json",
+    "Hash": "78D851AE7064840143F4AE3633A14376DA92B9A85682EADD3D2CDE1A5B3A8DC1"
+  },
+  {
+    "Path": "docs/experiments/p6-p7-results/2026-09-26T03-51-07.133Z/during-model/evidence.json",
+    "Hash": "41C2FE2123D2417DC8268279E4E7B9983D0AFADB884A19B8AF622354D48501DC"
+  },
+  {
+    "Path": "docs/experiments/p6-recovery.md",
+    "Hash": "FA99C902AB3F2B138108102E21E1488BE42BADA610B740F3A320D4311B5E3F16"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/accepted-before-worker/process.log",
+    "Hash": "C4C6DA8CDF5481D55057D71682BF2E457D812F63FFF2B96F59333D92A39773E3"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/accepted-before-worker/terminal-state.json",
+    "Hash": "42A5FEDE2F2CE34BCF1F88F228C956A60E4449CB0263F0107737ADCEB68CC247"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/after-model-checkpoint/process.log",
+    "Hash": "18825F142F55A25FC8A442A698D674B5A78B5E332E9CAF02673B3C0D5BBCA494"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "84289B3392181FA5E287560CF03E8A9CA5A819FD52A53731E55BC6BE8837B63B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/after-payment-checkpoint/process.log",
+    "Hash": "3053ECF362EBDE218C500154D69F24E02616C13E26F11A9216B3D9827C942EDF"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "6D001F7622F68FEDA37EED7DC1D0C4F38C44070FC1BE7E0CFFCE19834C42D46A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/after-payment-response/process.log",
+    "Hash": "A971F2BD195D5009A232F9152DC55A3CA99FE7B2BEF6F177E8EF2A21B04D6DC1"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/after-payment-response/terminal-state.json",
+    "Hash": "C576B7DAEB99BE7C78510BF725F519707DE062F45BDC16AD61154974173F72FE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/approval-accepted-exit/process.log",
+    "Hash": "884532C6F15053A1349DE8281C5E2D769D304CE0674E688D2C0C813EB1FBF9D1"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "EDBE7072FEBBBCF9168DCF645CD2180846877075231253B32177E964783D11AE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/before-model/process.log",
+    "Hash": "D3A22800FE17A8553FCE8315F24E830E7952E3DB9874FDC9CF5B6B8B4EBE0497"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/before-model/terminal-state.json",
+    "Hash": "711A846D465806E0EB49534AA10991DEE3DA100413E6142FEDE679F5493B09CA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/cancel-after-send/process.log",
+    "Hash": "02171131CEC2BB3B224EE22BE4F3677B434C2DDA01BFAF4C3B93DDC97D1FCE98"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/cancel-after-send/terminal-state.json",
+    "Hash": "2D24CADA3C18212BCB34390FA96867C8694E1314438F598CB674F43680FFBEDD"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/channel-delayed/process.log",
+    "Hash": "5624DFBD77D2FFFD2FD19B57BFFE43AFBB43D3A15DD913EF8B9224ECAA8022CA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/channel-delayed/terminal-state.json",
+    "Hash": "C27E857764CB6D248F8D443089D9513AC89374BD0FC8438E9A12CEA96E56F6EF"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/channel-rejected/process.log",
+    "Hash": "A6A6A51208FDFF0878C4E2CD03F799EBAB78F380C8FF2287372590E0D29DEAA2"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/channel-rejected/terminal-state.json",
+    "Hash": "87E2BC87D2629DE02FB0AB1A4066B3D813B7F2C1DD783E25BD3D00E045715768"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/channel-response_lost/process.log",
+    "Hash": "DCBAD536508849FC6230A122F44E2A65EF4732FBB458A5C0B90A74B65196ED05"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/channel-response_lost/terminal-state.json",
+    "Hash": "0AA06176A274FCEEB10463161E458E4FBBCFAC1BFC078C5D778C7297A4B8DACF"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/channel-unknown/process.log",
+    "Hash": "A78ED3F5FD94735683C77028023DCC94EFC6868F0A9414574265533D46210776"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/channel-unknown/terminal-state.json",
+    "Hash": "74C7DBD3C5BC29CB8D802823B87E2CE36BAB4D10960A7C6D30FE4C2AA1E05F33"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/intent-before-send-exit/process.log",
+    "Hash": "0FA25D30916855EA35F83B10CD36741C795F7B8726B25E1DDA5E2DA0E2074EE6"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "9AFF260E60D633E80289037EF50D53D64A7BB1340DDB545872847B9CB353017C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/manifest.json",
+    "Hash": "5952720A4D77659D4C4618B5C7BB259A267753D859840E9863A86F02E1FD1D5C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/mid-stream/process.log",
+    "Hash": "C68D181A1C49901CD465F618371EBB62DCEC58D06E297DB6A2C1B3EC1F4648D2"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/mid-stream/terminal-state.json",
+    "Hash": "4C793E4067F2EC54DE6D3C91F070D32825E4B989BBD1238A17C8CED24EDC410D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/read-timeout/process.log",
+    "Hash": "C27049341CCA03AF248A6CE5525CCACF9489B34EEBD8EE434ADD6E1085D83253"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/read-timeout/terminal-state.json",
+    "Hash": "8F0636910BC879C786FE9E197DA3B838A95C98F62AD86AA266A8E0E3F85BA4F5"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/stale-worker-return/process.log",
+    "Hash": "CF2EBB04E9C606E2C49028984BBDFDB4E6470BD22516023831100C630617284F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/stale-worker-return/terminal-state.json",
+    "Hash": "847F32DE066284D8FD05F97FDDB125998E29681B84C1AB49387C89320CFCE330"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/two-workers/process.log",
+    "Hash": "7E7E4AF87DFAA44E1AF854A0243DDA36A1D06F8537BFFCB2C4BC316831434979"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-38-38.264Z/two-workers/terminal-state.json",
+    "Hash": "FA6B3A4696F55FB71EE999031AF3F7DAD7D32A087D52F49E65CD3647B5AC2EC7"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/accepted-before-worker/process.log",
+    "Hash": "3B8C5E5AAE73F79FB1412C072B97B5A760EAA9AA6DCA11DB4C4FE1377A87E82A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/accepted-before-worker/terminal-state.json",
+    "Hash": "17427E474B9BEC74F68E04730309BBEB95BBED8191CB945C725B1823A483D7E0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/after-model-checkpoint/process.log",
+    "Hash": "2668AA738E3AEA1F1CCBA8F083CB2CD442501E0E44698E947336F8AEBAA51714"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "49A6F6E94349E5C5A4580BF4204B0ED663759E099435B1B619599A24AFB19388"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/after-payment-checkpoint/process.log",
+    "Hash": "812144F0030EE1136E7DA89077E8B282BA37CD50C80E7089AA311D17172F7488"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "05CDD3E5CC42950F0C2FD8749B31464159B9F2A1C7E02E25D0D822CF12907249"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/after-payment-response/process.log",
+    "Hash": "1E6582CC4FF3A1B674A7FF15F6B13B2EA0C95B2CA0D8F42CAC0245B3CCF8DD93"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/after-payment-response/terminal-state.json",
+    "Hash": "B1CD42ECB452BE9107F9D974C5A1C33C32B4403BCB1FFD4EB79CF94234B1EB33"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/approval-accepted-exit/process.log",
+    "Hash": "43C00E771CEEEA8C113E8F6C0E9547D82AAF87D376147B81088531A947336B71"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "8B0DDD9B7609AEA6C57F4DC3F21BA417C705184ED1BC9A97981165B59BE71DC7"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/before-model/process.log",
+    "Hash": "89D1370555834C3E1112FB624E8F67A9053C4EFE8BD4E9EA19F1648E6CA14082"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/before-model/terminal-state.json",
+    "Hash": "9126D1032185EF71337BE3133C538065C1D98047FFB931D08EEE9607BD5D7643"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/cancel-after-send/process.log",
+    "Hash": "271D0E3E9C2848D47EE6C2F96C6E56FD11CA1FF5AA8E57B423150A18B7757194"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/cancel-after-send/terminal-state.json",
+    "Hash": "7AAB51CF4EC8BCCFE6A341350A912758B61BA84EA9C62A72A72DF12F2811FEDA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/cancel-long-task/process.log",
+    "Hash": "C00B60A4574F57CA0DB9549B19E425601FB73EB8BCE005A835F32F1AABF7B447"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/cancel-long-task/terminal-state.json",
+    "Hash": "93647F97449BA09EBF35FAEF7E211302FE93A1B5F675DA65CC2E13DA6E435964"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/channel-delayed/process.log",
+    "Hash": "AF363624487BF7C49ECC0B96F243C4207F1E27026CA60DDDA6C5FA072BB1B509"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/channel-delayed/terminal-state.json",
+    "Hash": "931692A2B6237715BE69996B77894A6BE0AF4E3454AFA66F1F9CFA54D6C6A4C0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/channel-rejected/process.log",
+    "Hash": "7EF8D97AFB8BBDAC52BA71B9594B64FF9CC72E14712378542C228364FBDCEB99"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/channel-rejected/terminal-state.json",
+    "Hash": "4459FE611E0E98B542066544E441D0DDE51E2753CBF75771C0DA4FBDECBE290E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/channel-response_lost/process.log",
+    "Hash": "2B5B4C2634A50988678889F8140FAAB7460FD1B92F81A60F7B5CE804E6242E1D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/channel-response_lost/terminal-state.json",
+    "Hash": "A044E9BA323E016E37EE3F74FF7587BB52DAD311845221B4BCCB0B56249AE6AF"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/channel-restart-new-run/process.log",
+    "Hash": "76B9771E73F923D7782F44A7E2755737561F76FD347AB881C4CE5CA9F0E3CCF7"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/channel-restart-new-run/terminal-state.json",
+    "Hash": "34F20D87A3C1B008FD7A32C129844E2B9C8019CC0C90F4B4A3C5CF7E743F8AB9"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/channel-unknown/process.log",
+    "Hash": "B803C751B68C69BF1AD1BE271AE6C48D5D7054A2F49CD33DE3225DC4D75A7028"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/channel-unknown/terminal-state.json",
+    "Hash": "024BBE330BA8A499A8E97114713894CBD2AF2EC05615319215114E7538C439A8"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/intent-before-send-exit/process.log",
+    "Hash": "A3903DD3F7F0186FA705C9E4F0FE9C920C073DAEA47FA1D9BF668E991E71A6F4"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "894740BA0F0ABAB9243B221B7703FAF0A834FBA18E9F86792EA629F581F09EA4"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/manifest.json",
+    "Hash": "38C58F181AF76CED461BD96AA7AC1F6315CABE23B10B1D41AE713DCB977D7129"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/mid-stream/process.log",
+    "Hash": "7012C00FC684BC8FDFDA29FEA1C6CB002B9BDD4638269BBAA14017593B216E6A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/mid-stream/terminal-state.json",
+    "Hash": "37E2D55660502F6A2A1408E138CBDD98B02D1CB6BC46CF063877E8DE4CA15B36"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/read-timeout/process.log",
+    "Hash": "62073EF0EDBDAAE0A9BC779DF02F34C283C5E287EFBD936F8D82A9641D214D4E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/read-timeout/terminal-state.json",
+    "Hash": "B8ED0D528C8AE28A83E2DDC87A680CFC4AB3AA584C816AC5AE2AACF9E28E7347"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/stale-worker-return/process.log",
+    "Hash": "707EC087C6B342C9664A3A9893F752BAE3432BE72124C548E35DDBAEDADC213F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/stale-worker-return/terminal-state.json",
+    "Hash": "A7907056161269F514D341FC65A948A915714C63F1B0E7CC8F9F06556452C2E9"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/two-workers/process.log",
+    "Hash": "B55A6D84957A784A886AC687A3968085905FC2B5593DF6A88462E682C9D1A173"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-49-11.677Z/two-workers/terminal-state.json",
+    "Hash": "645FAD86F00A31E9BADF57543907E906F8306353CABC9B3635D07BD51516CB55"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/accepted-before-worker/process.log",
+    "Hash": "9E46241B1018B2254F6A70C7B74950F90551445612EC225794136A8E755804F2"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/accepted-before-worker/terminal-state.json",
+    "Hash": "1E15DF5138D51FF2381D0179F5E3F06C72AACDD8E1C049486EF78666224A55FA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/after-model-checkpoint/process.log",
+    "Hash": "47FDC9D99F5A3EAA87E9DE9FDDBDCCB9F51DAA3F98BA8E96C3EF95D15797166F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "C5598AE5CB8447D59AD4D71ED8EF466F33CC74BA2F1D53F87D6C728F7B361872"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/after-payment-checkpoint/process.log",
+    "Hash": "FEE710191E1902D1EE6ADCB5C9E49771B20664FECF36AFD9C980940EA819D41E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "6D403DE1F00DB4024FEC8701B86998CE118B400B51BFABE617013859A0A99971"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/after-payment-response/process.log",
+    "Hash": "EBE549E39C222757A356F0243538A7B26C756D19B267B2937DCC4DA16A4D9482"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/after-payment-response/terminal-state.json",
+    "Hash": "189C8A115724DE5E498D8E00635F95D98B783FF42C53B35973A1088936EF88E4"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/analysis.md",
+    "Hash": "ACF7DE433BCD8E6634F1FBEE52C706F8BBC9AF7B081C88604DA8BFB2ED1E3435"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/approval-accepted-exit/process.log",
+    "Hash": "0EC88547A763F16B8A6315240021284A95DFD0D899DC39DF767ECD4C8F217788"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "B6E10DEE6721FE9EA720B817504F5AFF68999843E13222F4C3DE69C435E6EF54"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/before-model/process.log",
+    "Hash": "6AE1918EE1A3859431E98F7FFDFF6CB79C0B8E3CA078B792AFD0ADE471ED705E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/before-model/terminal-state.json",
+    "Hash": "BFE99FD146E53E6486F076E69BA0720F3D6820DEAC4DDFC4D84C8626B02F2214"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/cancel-after-send/process.log",
+    "Hash": "C784FE7334B32074A4CBA1BDA9262AC1B8F9C1DE68ADCC557BBB74A8B7E88A03"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/cancel-after-send/terminal-state.json",
+    "Hash": "90C313AFD91580CD0C4D6CD8EDA6362D43F0DF84B705BAAA723BE6719889963A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/cancel-long-task/process.log",
+    "Hash": "A4818F0FD40AF413C8A619BF976617A4135910D6685C73E4EF00C9BEE7EB5F7A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/cancel-long-task/terminal-state.json",
+    "Hash": "E7D9AD539B25A1ACFDCFA027C9A11CBFEF1B97D9914666B174AC7C1CEA096AF8"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/channel-delayed/process.log",
+    "Hash": "5CF95EECBD3B7DE12F07E3320602E645C9CD9ED094E87231D9D667EBBB0CF49F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/channel-delayed/terminal-state.json",
+    "Hash": "2BE5ABEBEB27554FC1950AF73113A9200C5A0AD45B36329068264439611CEF42"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/channel-rejected/process.log",
+    "Hash": "3E4D5CA6E7A90C968A38C63DDA3CEF2FE29C988E61AECF0C143E74A46EAB96BB"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/channel-rejected/terminal-state.json",
+    "Hash": "653F2FB263AD78028BB4328DBE20E9F009A2A588E91BEC393FE5302BF4531354"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/channel-response_lost/process.log",
+    "Hash": "8999EE7FB1D66E8C77517D48634B5CC510022EB89761234356E6487CC7C6CE73"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/channel-response_lost/terminal-state.json",
+    "Hash": "2FA99846FD28F1F8B2AED0A79700AD4802CF461E4B22B9E1CA40D0B1F3E67104"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/channel-restart-new-run/process.log",
+    "Hash": "C28267F1A12E358A9A6216C4A56520E0B8AF2C508D4E76B6642D6F5B32396EBE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/channel-restart-new-run/terminal-state.json",
+    "Hash": "3ED04875FB96E8E1DD3D84E62C0B85D96D3CF562CA90515D3F0D7F8283A5DB69"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/channel-unknown/process.log",
+    "Hash": "53C6F71B01309B29925B9CE13BB77B90D3CF9C35938F9C74F77973891EC89B2F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/channel-unknown/terminal-state.json",
+    "Hash": "F68AF9754E056A676892D5EB7654A21A4A1EA7BA6EA16226C9E4590FD8810504"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/intent-before-send-exit/process.log",
+    "Hash": "7EAF18E4A5F4CAE10966C2109910419F8157CABBDD6E8E437DF2462E92EBABBF"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "1B882F5DAA428C8F9412358305EA0FBBE935112A0E223063DB7C19FD721342D8"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/manifest.json",
+    "Hash": "91EEAAF3BD4037A43B9F37835DAE1067F96852DA1E6A1CBE6E7D8FCF74165294"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/mid-stream/process.log",
+    "Hash": "F7D6EA323FB4CEA61FC7DCAC9444FBEA322AAF51CAE362FD69821C022C89900D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/mid-stream/terminal-state.json",
+    "Hash": "B336F6E9EB4F79D71CC38FEC24A86DB4904066BAA265ABDBFCF53B35A5C43357"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/read-timeout/process.log",
+    "Hash": "5F180857B207A0A64A9211BC8B02A60DB5FAB148C517AE337A754F28D0C27E34"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/read-timeout/terminal-state.json",
+    "Hash": "9878847FB7E52BBA846A1C3AAA7CA314D7BA17865BC7AF0DA2391C69A215D9E0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/stale-worker-return/process.log",
+    "Hash": "B79826AA1AD99CD16C9E67D57628733831336A46F3B46B10B92BF670BB5B264C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/stale-worker-return/terminal-state.json",
+    "Hash": "A8A938088D796B1095A58C529B4E0FE1322E05BF5DA0B315F8BEF37A40714E7D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/two-workers/process.log",
+    "Hash": "D971C4E8C89C8BA8F6AFFC722093C319F2DAF8F17E034F06610FA1ED16A33AD0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T14-52-15.247Z/two-workers/terminal-state.json",
+    "Hash": "47E4E5796756DD7512FF71B52662BDCDA1C5461341F318C4994009708C6B6AC7"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/accepted-before-worker/process.log",
+    "Hash": "5C3AFAFFC52D18B8028EBABEF6E77280B72967B77669AF6A20D2194F53BA930E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/accepted-before-worker/terminal-state.json",
+    "Hash": "E3432F65168C31A90C8ABC0CD3E68F2997FF86725F9BD56FA71D79DCFA4BE6A0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/after-model-checkpoint/process.log",
+    "Hash": "513899ADB228E374560A8CF8AF2FF752DB37748F39F49DB684E76C30DD059DC8"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "BB8070335DF26B9696D08859DD9DB11C1ADB452359614875686374FF43C8E725"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/after-payment-checkpoint/process.log",
+    "Hash": "EB87C54BA36E7CF064BA18D7D56DB03ADDA8FFFE029257BF507EAD4F3A729A8D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "CA59FA96B46A9476302B8781B61B95B0BB445B4D9D181D8AE8DCB3A926175307"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/after-payment-response/process.log",
+    "Hash": "CDE2618E3EFF3F9CC05C9ED09B5857AB98FC343E3332D870308C74114C5E91C3"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/after-payment-response/terminal-state.json",
+    "Hash": "284C667463D2887D2CD56DEDE6E536B249A500C40656AECD4DAF19A2A8CB9E00"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/approval-accepted-exit/process.log",
+    "Hash": "2107EC45598137DDDC775848A151FA36E326B2FB6CBE13DA1CA003419CF26827"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "1E263D2471A271874154D655BF55B5094FF1648C9811F33233DB834023AB1472"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/before-model/process.log",
+    "Hash": "EF71724EA440D7AAD76804B52343DB7102E9C9C80848A2523C90925E277E6E86"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/before-model/terminal-state.json",
+    "Hash": "53EE44FCFE17015610F8333F1160279A3749315B9EE36C4771D3C86F7E362F42"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/cancel-after-send/process.log",
+    "Hash": "DE96ECC1973660AC75C39D38DA3AFD46BE93484A1215542B871B1BF9F2DA8B64"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/cancel-after-send/terminal-state.json",
+    "Hash": "5F0FC8B9C99D824CB27244412798EEF8C638F9E6236EBB3B1F785E3B360ADBE7"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/cancel-long-task/process.log",
+    "Hash": "FE3A70FDBF0877B11BAD999E1543C7DF5710F12F076F4F5E125D23B1EE94CD98"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/cancel-long-task/terminal-state.json",
+    "Hash": "4EC1F59C6569B13E8C4DC3073FB2F9891F0611201A9D204F00A331A87BE91E5D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/channel-delayed/process.log",
+    "Hash": "4CE6DF10C3195DC93EB4DDD9918231B932771DAA112CEE24269D53C37C6EFE98"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/channel-delayed/terminal-state.json",
+    "Hash": "894412A2D9F4F3D08608C3284CFFFAD7F17C2E60C9E1BB763B9EA9A436E532DE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/channel-rejected/process.log",
+    "Hash": "13B55229E59D869512C1CCF48D5D2965066022E1623AF825E799E5DA3860EDAA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/channel-rejected/terminal-state.json",
+    "Hash": "90BCA90D6A908336247DF687027E5E68903DE1426928F8F99C705359C36B0594"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/channel-response_lost/process.log",
+    "Hash": "ADFFB127B8F33BA62C969B9F58B664C8D0EC8BE9C179A2D2827EBE67C1E6EB5E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/channel-response_lost/terminal-state.json",
+    "Hash": "AB455F4F87AA8A6E25333BEA8C44CB8666889A4BE1711BFDB8E38D98E6F03C79"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/channel-restart-new-run/process.log",
+    "Hash": "6B0FF8ABBA9CF14FCCBB5292091E17E03808A7C9316901D2EA87FC918E8B7A30"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/channel-restart-new-run/terminal-state.json",
+    "Hash": "B435D794FF4F68B30DF30B0D67AD4093191354749C1F51764D00D9016E7DA568"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/channel-unknown/process.log",
+    "Hash": "298D3B26DEAFA958071B985123B5F7603F004A69FC5079500FCB0DD3873127E6"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/channel-unknown/terminal-state.json",
+    "Hash": "339AB3F4DF10AC8124FD35EE5E9AE63FBF5579E0DB80D797F7A8CA78B179B91D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/intent-before-send-exit/process.log",
+    "Hash": "BCC485056BF3F77791E40C6BFDA03CF8305054278632FCDED8027F35F14CA01F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "BE6DD205F7BEEBE92B41B88599E8D1A571D7E517B6960532EDB05570B370F8C8"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/manifest.json",
+    "Hash": "359FA365FAA535406CAAE7EA97AF6373F4EFC7E2BC76E2045721BD7B7A430A7C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/mid-stream/process.log",
+    "Hash": "16D7744A3822221E46DFA7CBA40D140CC28B166B9E0CEE95D3D7865225B54BAA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/mid-stream/terminal-state.json",
+    "Hash": "A822B84B3F0C8084AC403ECAFB5F4E486A18E5B61F8543CC5B8366BE368B2B92"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/read-timeout/process.log",
+    "Hash": "5CFD237BEFA7BCD4174F08EC37717B7E5282D500D2DBB276378D15422E8B80DA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/read-timeout/terminal-state.json",
+    "Hash": "73E36F1B1E7694583AD635A6B3C5F71BD18A912D8F2E76C69E082F5A16C9B045"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/stale-worker-return/process.log",
+    "Hash": "543BF8A9D02A546F930B31AEFCE5750CFA51E78FD5B81580132CE0A83E582A98"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/stale-worker-return/terminal-state.json",
+    "Hash": "DCCCA151DDF01D85A34E8D48501354B6F257C9E356FF7BF79B7DF85B6F161318"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/two-workers/process.log",
+    "Hash": "87D9598208C46B2E05FB03AAE875394B934E78105EA8EFFD9890166EA37481D6"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-17-51.581Z/two-workers/terminal-state.json",
+    "Hash": "3E94800FA2C399CC93817F3A51EF45F2E6CEBFA842606EEABFC15DB36B9E39C6"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/accepted-before-worker/process.log",
+    "Hash": "4F30F15315D39C1AB107491D6EB99F468F28B93356D7038C0EEA9A8EFAE56590"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/accepted-before-worker/terminal-state.json",
+    "Hash": "C5F0F555FFB0787D34E4874ECD04ADF1863A2A481B2F66CEBC1C0FEB1FA23875"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/after-model-checkpoint/process.log",
+    "Hash": "0DABA935F3FFA2E30C41D60C3B1E9CD5FB0D005416E101C26DD496E3E40801B2"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "9BB5571DEEAA38D7950F17095F1AB944F7C290D5DDC67125C0ECB003F89F2499"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/after-payment-checkpoint/process.log",
+    "Hash": "877DC907F3B8D4098D7C90B9AFA0BB9FA23BECDE8BA42440496A1ED409912630"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "7854DF1B5E50EC9A6FA3057B1A60C6633B8CBAD21CEF34297B1F05D16EE691B2"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/after-payment-response/process.log",
+    "Hash": "2ADB8A698D5CBFC3474BB83C40CA44AA68A40C41799A7C4D875F1D9BBE9FCDAE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/after-payment-response/terminal-state.json",
+    "Hash": "67403C3D4AACAA0E3434984E67F19262947C9A6C1E0132DD10B26528C0028A5D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/approval-accepted-exit/process.log",
+    "Hash": "53401EC21C796FA7B5BD8516025A41D83DE8DACC7E3D0562E30D9E0F55BDFF58"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "B36E93D23139E75DCCA8DDA6B7A88A7BA5D4101ACE277C314F7C63D5EC37CAF0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/before-model/process.log",
+    "Hash": "4FA45D2B14B2A2B0D2361EF78971FB8F839A40435410D28837BB7119D8435751"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/before-model/terminal-state.json",
+    "Hash": "2D6588F8D425E71E7B136F3AA332785A441000F496B79C8AAECE02C2C20B6B56"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/cancel-after-send/process.log",
+    "Hash": "DB957D32F06402602FD18C0D6542E84D1ABB168BD12CAA608D4D69802C7A7A87"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/cancel-after-send/terminal-state.json",
+    "Hash": "3D65B3CCD5209D2AF313699D1B9A5B3948576632BB835555CABD399D117AE87E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/cancel-long-task/process.log",
+    "Hash": "C2A2347DB9CEEEB76C9C18FB04416F2FF632BC059E27732D3077B1B18A5D7F44"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/cancel-long-task/terminal-state.json",
+    "Hash": "AE346CA9204730F88160C199EE8B00C1837BE5A3797A6CBC4293EFEAEC5A5EDA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/channel-delayed/process.log",
+    "Hash": "B00D03061A56479F4FE34B56CCC4D868C4A81286A7B6EDBF616BF62F1BD49446"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/channel-delayed/terminal-state.json",
+    "Hash": "91723F2B315AB665E32614CA6CDCAD0254A245B8D77991507241A1A876EC67A3"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/channel-rejected/process.log",
+    "Hash": "DE78FD50AD4E28452428C2B1715CADB34B402E17631DEC18A7BE77127E3E905E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/channel-rejected/terminal-state.json",
+    "Hash": "361B7E68A0629349C3D67DC55E40147E65CB1DFC59B9AB98049AD87EA7343559"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/channel-response_lost/process.log",
+    "Hash": "E6E0EC9553A23DA776B33A8CF41E5AD0EFFC05F2A982BA3BD949350092F9FDDC"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/channel-response_lost/terminal-state.json",
+    "Hash": "9C720FAC2A6FB1D3FE8F9AB9E453DF73A159C5E063B5464E8443675F68E026B1"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/channel-restart-new-run/process.log",
+    "Hash": "5CCF016E2DF6102D1ED86ECFFDF8D45742DA93785EDEB5FA89C928FF04A19B87"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/channel-restart-new-run/terminal-state.json",
+    "Hash": "2759CFC2AE3D02D449CAE9140F84EA9FAA5CBB45C206E56D5909F97A52CFA251"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/channel-unknown/process.log",
+    "Hash": "FACBF34214013326DCCA18F10BFE1B0A3AEBFC17AEBD4F0A8F42EBE2689B8374"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/channel-unknown/terminal-state.json",
+    "Hash": "14C7F7238F04D859EA2CD28F46402CAFA34AD27FDA5D17ADBEFDD04E083CE7D4"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/intent-before-send-exit/process.log",
+    "Hash": "64F6105AE8EBC25B5BD6E5C47D68022F13E57DE58B502A2FB724CAC4273EDF73"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "7E034D368D7B92DB01A127B55EFB05F8A706B1BAF2EAAE9E4D1E41050535F2DE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/manifest.json",
+    "Hash": "17DF8FB6E743464809BD2928E07F2596617B624059355928DC0F5FF2DFEF53B6"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/mid-stream/process.log",
+    "Hash": "B98D24C85396CA8256047DD2FAA9BAEBF1EF9E3B54F97146E31590C81505C406"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/mid-stream/terminal-state.json",
+    "Hash": "FE2C07A37D6C788056CDFC5C3A84D595C2BF9D8A22E28F42FFEDE17CCA95CC12"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/read-timeout/process.log",
+    "Hash": "7945691BE032831FCA7886C1F28B34DE444A036972ED9D70DE43BD6A2F57C648"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/read-timeout/terminal-state.json",
+    "Hash": "9D53DA9DD16AC35E3A28AA9766A8F051CC3ACECFFE2F991E3B3BF6EFDC25D707"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/stale-worker-return/process.log",
+    "Hash": "C0BA236636DA6BE514A5FAB2F2DB48E710718D557E8B0AF3A26B257DD8DD3DC6"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/stale-worker-return/terminal-state.json",
+    "Hash": "F676BCFE4779C0CE1C975F85EFEDEACC77FD8FBAF176CB49A75F7F8B7765044F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/two-workers/process.log",
+    "Hash": "9B6DD45D5F92DF94FF72F1B3AF9B2B26DD699A521F0A340F18D28EEB80194716"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T15-48-37.600Z/two-workers/terminal-state.json",
+    "Hash": "1CBFE9A14215F4CCF604E799F4DCF1DE1693A5B3BA43782EA12006489F5D284D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/accepted-before-worker/process.log",
+    "Hash": "1B381C8861FE450ED04588DF3DA6C9608ED8188D0460C02438291830C7F6B415"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/accepted-before-worker/terminal-state.json",
+    "Hash": "39545A00D19D9EB36E21F88573610EB72D930C45112BEE66E5859FD1DE568C8B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/after-model-checkpoint/process.log",
+    "Hash": "98B6200CFEDCBC3301F646C5B111372B590BBB0C4D57A0C35301C332E9178E40"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "927E955DD0A4335295DE67B5B5FD5873D83C06D46CE50AFD329285F018467CD7"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/after-payment-checkpoint/process.log",
+    "Hash": "74489A63D33F4F31B44D2333B184B140AA3E4B1B8BFA399C62FBB829A7189D6F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "119E6BB6CA9D888AD3E782E3497D99224184A75861E6C2A090ED5EFEB2721F93"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/after-payment-response/process.log",
+    "Hash": "4CDC5E3529CA8F7FC23E004FA628AD9E47B06F9962CCBE126D7AFADB6DCC3649"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/after-payment-response/terminal-state.json",
+    "Hash": "038B8AB703422D287FF0A8DE307BE5AE8C1BD154C59824351B911BD493597C2C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/approval-accepted-exit/process.log",
+    "Hash": "D94671B148DAE99093979C0D40A4E88F9CC6D7115A2182A1DC4908C161DDF862"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "55C750169EC18B748040DF70F4CA8261E186307C7DBC1E9F254C546BA025344C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/before-model/process.log",
+    "Hash": "4C65F7B69BD5D00CBFED09BAFC9719F3E15F306F45FAC45F44E9AC2D0DD562F1"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/before-model/terminal-state.json",
+    "Hash": "BD6B7C248B4D80D1AC053E7755F1A96DFBF90587BDC3A1C87735FC5263698C53"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/cancel-after-send/process.log",
+    "Hash": "43F206C7B626308BFF3F208C5BAD7DDEE0B0AF41A2A24C48C65E40E9572F9C06"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/cancel-after-send/terminal-state.json",
+    "Hash": "6212120C7416215C65DC047A0A06E2B76E298F7AC9CD6E798D246A5F21DCFE0C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/cancel-long-task/process.log",
+    "Hash": "F13E7AC574C82038C0C3FD787E9ABAD0503D167230D27CDB1C19EA64D31966C2"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/cancel-long-task/terminal-state.json",
+    "Hash": "168B22DFF52431DEF5E5387B8962428A499ED5157E5531C11B8F5068C42C3F37"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/channel-delayed/process.log",
+    "Hash": "552DDE372C0A0E6AB4EB5BC6436744E766BF71A065384958C2B013EB56AF8B53"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/channel-delayed/terminal-state.json",
+    "Hash": "816D447295A1D72DF1645C514A6BA3CF557E67F310DC7D394AA0C914985469C8"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/channel-rejected/process.log",
+    "Hash": "6773CDA6E40985CDE0E29337A4CDCDB97ED62DFA830202BF2766CEEB6F7D620A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/channel-rejected/terminal-state.json",
+    "Hash": "A563B82631FA9A7326AB406EC5D2FC053B597E320299DC479C9850368C08FCC5"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/channel-response_lost/process.log",
+    "Hash": "41DD3F88C0B30A29B5FBE0E18CD7F137F7C998A5884CCA4341C720D3B4AED130"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/channel-response_lost/terminal-state.json",
+    "Hash": "7FCD3AA09B351C8DDE24E8AFEB7F4E379B3CA6E22C9C85198BF1B3A0D7BB4A2C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/channel-restart-new-run/process.log",
+    "Hash": "39B7D64315972304A1B4B41DFA0AB51AC8DD5D0B5842114245A3AD3C458FA49E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/channel-restart-new-run/terminal-state.json",
+    "Hash": "E87713685685CE434C24EDFA2E974A7518BB2CC2BFCC53029040AFADD5209AE3"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/channel-unknown/process.log",
+    "Hash": "5D21F27904D0E40149033706AF6B7A50E21B98E39C3F8FBD7CDDE428BFA604DE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/channel-unknown/terminal-state.json",
+    "Hash": "04EBE188B7D25D4A455B39A264BFA1FB63738836B34F26A6BC92065880666A67"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/intent-before-send-exit/process.log",
+    "Hash": "F592EE74E55921DEB5B2ABBFBABD560C89865BC3726599A6B2FAD51B89BA8B98"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "43582879A92DBF81BC7005D515DC3B718D4D88927938193B6E82AD42F1D5F8EE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/manifest.json",
+    "Hash": "49AA35083F86F31DEA9A96BCBB83BDF7DDC3556D8F4BC430EC900AE9646742B5"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/mid-stream/process.log",
+    "Hash": "9CA1131C843EDBC78A932589F09AB08504BB4D2D7B7E36547A2FDE024BFED3DE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/mid-stream/terminal-state.json",
+    "Hash": "AB060B4CA1181C36AAD1D51D90D2B37233B608F1453004AC853626C55F5FB883"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/read-timeout/process.log",
+    "Hash": "998CB77B24BB905082F559D9FD50D3597454F908E3CC3E9B9B058F5B0B044BE3"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/read-timeout/terminal-state.json",
+    "Hash": "0600D1AED6B2D92A76BFBD1507DBEF0A9E09105D495BDBDAE873409C9DB791A8"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/stale-worker-return/process.log",
+    "Hash": "6F2B71D068FF9D9FFD100BB75966A13F683950AD0281E5CBE41F0375C1572822"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/stale-worker-return/terminal-state.json",
+    "Hash": "13CDE4242586A6DB66B47380677FD95388D7D12FACCBBE783891BC5CA23F3DA9"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/two-workers/process.log",
+    "Hash": "5662BDD0E765910C434DCA3644D60A95CB0F71C0A12E79473FB4D36C5D9B0470"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-25T16-29-56.906Z/two-workers/terminal-state.json",
+    "Hash": "12A0F045311A91D58C5CFF641288BEDCBF439CE48C953AB220739A4C85644F02"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/accepted-before-worker/process.log",
+    "Hash": "489557ED4951818B84EA97CE162803D4D49AE09A751B78FF3F75878D5271226F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/accepted-before-worker/terminal-state.json",
+    "Hash": "663FEB21DCD93CF66CE03E9539F706ADAC7F93AED347788F86EB8EAB35DAA237"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/after-model-checkpoint/process.log",
+    "Hash": "6B882CB5AEF648032C53CBA46F5E50B1AFA5CD4A9724D0BAEF4F6405847B2B91"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "97040268A9E75CA11787FFB19E99607880098ADDE2F35E9541D19E5E3632496C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/after-payment-checkpoint/process.log",
+    "Hash": "6FEC18B1009FD57292B6627370CBA037F030686974BD9D5420E0662EBA3FCD59"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "839EA836AF1C58092F677921CDC3750EBC71B1796C98DB4F6A5DD072F5FCD2BB"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/after-payment-response/process.log",
+    "Hash": "05489BF6002077910E111DA6854721268AEC9517DA5DE09F03A59B5D6E57C412"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/after-payment-response/terminal-state.json",
+    "Hash": "30301DBB3E717E1E9E85917066D1667754524EC96A1C096ACB931A6CDE9290F1"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/approval-accepted-exit/process.log",
+    "Hash": "3473AB005BA6EE23235BCBFC3BDE38400899C9BB7AFDAC30427026CF939F81D6"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "F0C32E019702358754FBAAA1D0A5F7449EF1C39AD6838F1D0E7B24A55FAD838D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/before-model/process.log",
+    "Hash": "919C81B1BE12020A2B4AEA0293810D7BFAAA38596514EA0F6E095C25B4784A75"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/before-model/terminal-state.json",
+    "Hash": "A05ED8437D0BD49973F09F22B6FBA63238782F9E0AEA7A3C6D2AD14180470550"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/cancel-after-send/process.log",
+    "Hash": "FB1DFC04248896B19E113A15B37FC63704425219BFAB8AF94407A445C16F6402"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/cancel-after-send/terminal-state.json",
+    "Hash": "6203D3DFAA4FD055169AE368F49087C07F5C4FF5E656DD45BF361EFEBC480025"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/cancel-long-task/process.log",
+    "Hash": "58E56084430A4E9AE95719D340BC70333DCF540FAF8CA1CDB9CFC7B633D73E34"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/cancel-long-task/terminal-state.json",
+    "Hash": "A6248B74392E4B0C0327338410AF43F17AE2D8FEAE4599D6088541E16BFA4649"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/channel-delayed/process.log",
+    "Hash": "BE8EC4C96E1735B7F6EE2E36739FFB58694F2EFA3CED2D1F3A8D6A716C3B6A29"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/channel-delayed/terminal-state.json",
+    "Hash": "AA02267A792CE08712E5323707E27938DF6C7B4F5AC68C9805764FF2139EA760"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/channel-rejected/process.log",
+    "Hash": "82AF512A23863BFE5CFBB7A6ADEF36F07FCC9FB56EAC94E06AE8188780A53C42"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/channel-rejected/terminal-state.json",
+    "Hash": "094459616835653B92D9BD817E9D2205D2993C66562F7997A3A46EE3B3D9E95C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/channel-response_lost/process.log",
+    "Hash": "EAC46980DFFFB6AED308259583B93A6E0F42C5A2C2D746719EE3FACF8BAC5150"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/channel-response_lost/terminal-state.json",
+    "Hash": "70B24C617C944BD8C51D6E533998D58AF8A45E23ADF09213D059B894D300A3D0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/channel-restart-new-run/process.log",
+    "Hash": "89AE1054BC7329C242D5DB1BCC8B060CDAEA1BA6370FE9CA3A01C680F899309E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/channel-restart-new-run/terminal-state.json",
+    "Hash": "DC14D1CD4FE6A82320EDD38F023C21BCDB147966F64F255B02ACE77208D4F01E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/channel-unknown/process.log",
+    "Hash": "92BFA9553B77F585F2F425EE9D19490AE9D5EC5B83553528FCCA252EEFFFF96B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/channel-unknown/terminal-state.json",
+    "Hash": "F821C966D0DE8F3DB04F3BCA6395F52006C7AD8693889369420315DCF2E9568B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/intent-before-send-exit/process.log",
+    "Hash": "A2BAEEE92250757FA844DA0F2CB47CB1BD87C9D8A5827A4955158FC01B6F33A6"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "5873B0001D78B8B34D611AF1940F42EDFDAD8E0785BA5D94EC1619A7E1E80184"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/manifest.json",
+    "Hash": "530451012F56C7A3B357706BF2AF947D73C2AB637F270E54E2C50B66AE372898"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/mid-stream/process.log",
+    "Hash": "5FA1547EBFB9E41B83D3BB35BDD9687A129C2B0512ED568B53A1698137A068A7"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/mid-stream/terminal-state.json",
+    "Hash": "86223C22A4CE782CFBAE7C67D2C2124587AD87D76B2D7147EF407AA8D7AC5893"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/read-timeout/process.log",
+    "Hash": "32C4BEDFC4C4B53C3CD43B4A303A4022D5480DAD486219017A8E8852B31E3F54"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/read-timeout/terminal-state.json",
+    "Hash": "699D1E47435565E54C40B723232FD2A04F22619FF236332F97315555A2A4A9E0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/stale-worker-return/process.log",
+    "Hash": "97FEF4F6585958D27F4857A30A285A15A4D234DF13FB576DADDDE8C6B8D4BE8E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/stale-worker-return/terminal-state.json",
+    "Hash": "F19EAC57C8355996EE4AE326E912D67DA4DAFB6255C94B567990898497EA596C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/two-workers/process.log",
+    "Hash": "5CC4B0BDD06C8D24057056F77EA80B03CCB2F4AE9830A8B5D842B0239EB1C9DC"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-13-59.372Z/two-workers/terminal-state.json",
+    "Hash": "180EBAA70533C73CA3F6745D8271BED92347B22CF3E125ECDDD673CB3C55A8E7"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/accepted-before-worker/process.log",
+    "Hash": "05B0C25C16B73C8F8491A0ABCC1C0DF86EC7C436B393C9F4B4BB14A6C3D60EBC"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/accepted-before-worker/terminal-state.json",
+    "Hash": "D35CB8438FD2C7325DFBC993782EA542A27D2DA95B9FD30C2ADB64BC8391C291"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/after-model-checkpoint/process.log",
+    "Hash": "214599B786A17C883EC69A31AF719358E6D7339F45E0E7608E9752B2EAC13B95"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "66D8A88EF3AE1D8020173A8130D0E6B809D5BFF619204B3C0AD73D7360A70892"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/after-payment-checkpoint/process.log",
+    "Hash": "5A42DF1C520CCCD44F86490C47F5B48AE0B25A464DE25C2E63DCCBFD45360A84"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "C8308C346364AF15CC9FA63A2B6FC59DCF2548509924F9913E5B0C90575EB316"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/after-payment-response/process.log",
+    "Hash": "5D57BDE9FCF4B8C13D74FB864BF40229F9BA1CF0B9EB25E7980C83BBFA852015"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/after-payment-response/terminal-state.json",
+    "Hash": "E740BA766837A330FB3E8E2F610FC7BDB7C0D6ECCF26F8C8D091FB5853D585E4"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/approval-accepted-exit/process.log",
+    "Hash": "960A6CB7F436F30D6CE80D02EDA50719425618CB5788BD8DBD1EF5A4F027239E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "2BEE209D02C71F2720E517459DF123BF9069C0EE7A499FF9D20ACBFC43D86F12"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/before-model/process.log",
+    "Hash": "E7CD7DFEEE92DFDA7668BFFB94EF369EBFFD178898FA44B43DAC42220E967D0D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/before-model/terminal-state.json",
+    "Hash": "85E58E1075A508D89492CB385261B17EF01AAF3F996F0DCB15FA06C71343C67B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/cancel-after-send/process.log",
+    "Hash": "B9F9A55C47C8D2188AC28483EB0DEFD1C0A591AD2200E22FBFCC59D05FA7EA83"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/cancel-after-send/terminal-state.json",
+    "Hash": "37B865D6679547305FE07581CF202DD6DE6854B64543007E57DB1CFB746980BD"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/cancel-long-task/process.log",
+    "Hash": "16062026D0C5A153F31A7A5168C4D9734192AFC951ECE64A8777D7723BD46BFF"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/cancel-long-task/terminal-state.json",
+    "Hash": "4E894E2448D5356435DDA447D93BAA2BD99D6D3C383E5CA1834C3A4244C4FA50"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/channel-delayed/process.log",
+    "Hash": "3431DBB76E6300AF7E209EF5177B2C8E0D4F8487DB68A7DC2AAC6D5F7B87B011"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/channel-delayed/terminal-state.json",
+    "Hash": "3B44BBF2BEEADA01EB1F892C45CC6D4D93EFCEA0AB40A6E88B10022D92D80CD5"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/channel-rejected/process.log",
+    "Hash": "B5FFED574C08268E9F60EFC03BF4A2ECF92E121D65C2E54748225A8712A6E873"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/channel-rejected/terminal-state.json",
+    "Hash": "1B08CE65B3E0381AAE9717912F589FD1D7A3D16BB725CBBC35E15B4FE2B6CD13"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/channel-response_lost/process.log",
+    "Hash": "79159F63DFFECC7F4A3DBCD5AB7F2A44526518DE8589D8911527F35DB85742E9"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/channel-response_lost/terminal-state.json",
+    "Hash": "27D1A707B16E5E926E08601E8D6EB37340D19D32956159118F5936C1F37FA61E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/channel-restart-new-run/process.log",
+    "Hash": "2EE32891803D26679517BEC56B50D5A0C4CA3C507B2BDD40EBAE2166F144D56B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/channel-restart-new-run/terminal-state.json",
+    "Hash": "206798B492BEECE6C842F46451B4541462E01403E71BB9B11973C9DBC5A99450"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/channel-unknown/process.log",
+    "Hash": "3474BE612405C147327410D0039818F23F5F4F1077DE3E31DC84E482C1C9B188"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/channel-unknown/terminal-state.json",
+    "Hash": "A1AF4930CDC4E3305C047E9FEFB2DB2BAB92262736BBE9E58DA6B693A75F711C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/intent-before-send-exit/process.log",
+    "Hash": "8DC110DB782D14318E9E9F69AE99E9325CA3EE8AC7051C649E512888970C78F8"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "8642BDE5E96ACC3ACFF60A7BB06B55BED6D091C4ABA815ABC2DB9155D0F90F24"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/manifest.json",
+    "Hash": "1E829A0B6738C0112A5724EE73269463E40D3B72027976A392C2D1C1E30780EB"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/mid-stream/process.log",
+    "Hash": "DB323880BBB316DD0AD1AA1A524D6305CBCC76EC32E8600E9BB4490EA200E08F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/mid-stream/terminal-state.json",
+    "Hash": "9B336063A670F305607A0BB89B452126D4C1091F7FD54D3780691B30AB50EE45"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/read-timeout/process.log",
+    "Hash": "CFA6F8D6DEA5B111D755A52CE68220374B17FC17FE34BB2863E15BA0E1E6856A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/read-timeout/terminal-state.json",
+    "Hash": "61BB3EFFDBD3CD7EC8DEF19D87316B7EB00983300EE0FBF8AA9CBB626B3B5C1E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/stale-worker-return/process.log",
+    "Hash": "2DB29B2E6A6C194B18A06B5501B217DAE4557E2D0C4FAA07121CDCA0F2605B8B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/stale-worker-return/terminal-state.json",
+    "Hash": "BF57CB419B52F4B5408FCA0EBC7D8ED119221FE663D925D0C1EDFDF86AB25B5D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/two-workers/process.log",
+    "Hash": "EA35ACC731B9C49EE5A6D9C95703931B58999A47A74857BEE97F18ADA1DF7B13"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-20-03.803Z/two-workers/terminal-state.json",
+    "Hash": "BFF95F2327CB341540451BB23E556A724B1C8C52368D01D78A92F1EEDFB535F3"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/accepted-before-worker/process.log",
+    "Hash": "C2E2BD427E5951DF8E7CB80265778CE9D2639DDEC761A8C757D6B0E5C06F8F0C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/accepted-before-worker/terminal-state.json",
+    "Hash": "2E1CA4077A8B2BD23B244840942536D83235DC579AF9F794C662920FB1D2C877"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/after-model-checkpoint/process.log",
+    "Hash": "68C1DB6FAE528FCA2D39EDED8E9A6BC278D27BD53BAD6F0AB533B13380D3D411"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "AC381EC3FBA4007230BC8978E392FC5327BEC4CA9537497E78333EC2EF9BEA42"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/after-payment-checkpoint/process.log",
+    "Hash": "BCC394C1054C244C2AF78C870C72ABCC1AA2EA4F0203D97CA416351F092B375A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "33F42AF001FEF3B1BB1843C79469D9E1A70E3014A31013C31E788F92D123D3BB"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/after-payment-response/process.log",
+    "Hash": "8E3AAACFF9CD491985A0339C9EC8C48FC28839C69E8A74F0C16410640BD71D91"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/after-payment-response/terminal-state.json",
+    "Hash": "226A619F81FEDE4DEB09DDC4ACF70DAE20069358DE02BB8884E6D5182579ECF0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/approval-accepted-exit/process.log",
+    "Hash": "42D1D1B8266AA258AEB8B7ABC2EAB9FF4507FA5990B5744E11E47EFF1BD00AB3"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "418990EA51CC5C31831536367EE21472E2D394902B7D9025CF9321CD4A1D5357"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/before-model/process.log",
+    "Hash": "D6D9CFCD32C2332A8DA96D71285D66767A04C174161B5F2649450E94DC5C89DB"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/before-model/terminal-state.json",
+    "Hash": "501EF45F83C33D9C438CC8D6BB423BE031499A47BE4F6325ECB003954D5B1496"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/cancel-after-send/process.log",
+    "Hash": "C096520AF5E5059B06E64DB23FF86EBCA4BFF5916C452FA6A89F1203650BA110"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/cancel-after-send/terminal-state.json",
+    "Hash": "839FC4DAD76D4609E58DFFAA70875B7C27C01914B157611B888613FDAC43BD7A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/cancel-long-task/process.log",
+    "Hash": "F7B0463717CCA054BF602849FBBC908CE2D5325C1540D88866C5AB1BB5BC84C5"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/cancel-long-task/terminal-state.json",
+    "Hash": "BC585BF69E8D302DCBFBA26482BCFB55AD7967FDA3DD858673A67ED17B168052"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/channel-delayed/process.log",
+    "Hash": "54A6C704E7A274FB5058B3DC7AD36BD5E37E07D459968620614C8EB59AA91BEA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/channel-delayed/terminal-state.json",
+    "Hash": "768298171A424FF78330CB60B87A5772B42981906B2F93BF804FCE7233605C60"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/channel-rejected/process.log",
+    "Hash": "71A8A4817836066A359532F8179EA4A4ACC9E6B6B67802FA64B645C2A3954BE4"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/channel-rejected/terminal-state.json",
+    "Hash": "0C60E727F3FFE47FADE12DEE0F8C11AA0A928FA7B4B7499BF465AD3690A377A3"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/channel-response_lost/process.log",
+    "Hash": "EC600A9D6AD7E5BBF24EF2CB351A169DBC750893A6FD611F02A1F1B6B510C299"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/channel-response_lost/terminal-state.json",
+    "Hash": "E7F8F304CF3D82A15776F4757F2E5624BBC5B894034ABAA36E38A3DD63E66A1E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/channel-restart-new-run/process.log",
+    "Hash": "7921F7B2432DE011961694AF3EFBF15090D923049D0EC08AFE9DD062A0D47F2F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/channel-restart-new-run/terminal-state.json",
+    "Hash": "7EA5C21425A46D1621C3E15D04F64ADC30F73839435B6D415782C33688B842B7"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/channel-unknown/process.log",
+    "Hash": "0094E44F7CB8F1C30D63E7C630AA63E80E79E634C088B08A07CA033B11CA8257"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/channel-unknown/terminal-state.json",
+    "Hash": "CEE054CD22D78B754869CED7982E6DF0DB06CAF2550A6159A72B87AA135FD3FC"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/intent-before-send-exit/process.log",
+    "Hash": "F00F5CAA38AE2889315E12DF315880CC8BFBFA808AA4AE13B651F1FA6C27F221"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "17B2D063F7DCDFD70618D639511A01740D0681A818C2B4B44BB49368E7B3CD0C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/manifest.json",
+    "Hash": "4EADC5E109FEF26E1AE6336BF5228282E94AFE886DFB65E12FB92C2543684082"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/mid-stream/process.log",
+    "Hash": "035025A69DA242CA0D20FE03748B379B607D1E43DE28F81DE5ABB1FB48EB289F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/mid-stream/terminal-state.json",
+    "Hash": "D05281D0870A2E46B153DC2ABBDF0BE5BB9E49872D53DDE079DFFB0E28EC9B09"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/read-timeout/process.log",
+    "Hash": "A68C2EC2E9360F1E38661D806921FC89F99F2C8E85F16F5D3696E81D85CBBBBA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/read-timeout/terminal-state.json",
+    "Hash": "F9DB62F22C4373C7BC0218492B39699540C0F1A12EF7B302E2A22D4C9C3D2740"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/stale-worker-return/process.log",
+    "Hash": "1124AFB0C17F61A9D1A8F001B0315E519066C6525E9E325B13F254AEAE01B0EA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/stale-worker-return/terminal-state.json",
+    "Hash": "ADD5DF8906780DDF65D0F0CC415AFE97ADBB7C80BE0DA8CDEF113B077FFAC2DD"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/two-workers/process.log",
+    "Hash": "89B69BBFD986E1149C40113C14CCBB51BA1BF29EDA3B092D082B0CFA4DF752C6"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T02-26-03.444Z/two-workers/terminal-state.json",
+    "Hash": "A9F283B2DC3B5848A8810AA9A9818867AF8E61ADE5FB79331BB433F3F11C4237"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/accepted-before-worker/process.log",
+    "Hash": "640A8DF64AA67F086CD09718854732FA8BF34BA2A5F2F39D7492117FB73E278C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/accepted-before-worker/terminal-state.json",
+    "Hash": "FC0554C22096007139FF139606D6A863D1D74E7B15557DDF41988C092CD50AAC"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/after-model-checkpoint/process.log",
+    "Hash": "F2A6516F8E1114AFEC48226E7291C4224E07DA787D8F7D6FAED3488389A95F65"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "3ADA226436A9484D75F1BCD188F6F2BBDCF2FA87148420EE59B238616D5015BC"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/after-payment-checkpoint/process.log",
+    "Hash": "746670D9C1BAA148D8C9BB54F3FB1D62F187EC503EAC89B1B06D206422727C8A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "51BD302F32EED202E4A729D451F64C55B6502C412FE4D7C802F50DBBC74941AD"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/after-payment-response/process.log",
+    "Hash": "E937BE6E9B2F79E08B4D1F2CCFA879EC5EA2E3357B2F7042FF056722CA01B264"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/after-payment-response/terminal-state.json",
+    "Hash": "697C4F894C1E1DDAC2FC167DE7B347E0F34486DB254FC473B8E31ACE2D85326E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/approval-accepted-exit/process.log",
+    "Hash": "ECF722352999721855A2697E03AF745FA22051553ED376D87FEC57EABEFDEEAF"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "B1E532E7E7F355DD3801C110E7D9F3580FB02855FFA3A29D11AD217613898F2B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/before-model/process.log",
+    "Hash": "5890C1361587CB1050049273F9F5CDBF1D80C2C107EC6EA9D5CA71EBF1507454"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/before-model/terminal-state.json",
+    "Hash": "8E4AC14D921A9322DE99674598A1FA5FBF9869B396EB0FA957B5518321D025EB"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/cancel-after-send/process.log",
+    "Hash": "D5ED80DE8BBA1E74BEABFA7A9F29BA6D62386FD3DAEBD95256E529ECF663280A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/cancel-after-send/terminal-state.json",
+    "Hash": "96C44C87E76C6AC8AEA1BE8D691B1A3DE0112B35D2C59A5032749ADBEB4687A7"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/cancel-long-task/process.log",
+    "Hash": "10708F88E451FA94806F71F75ABB90C9BBAB893644A1B58A19601D2674A2BB90"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/cancel-long-task/terminal-state.json",
+    "Hash": "E92E8E46EDAC704AF221195085FDBA5EE6C51CCF3283440142DDAEE2F71DF382"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/channel-delayed/process.log",
+    "Hash": "BAE017757F312FFB5FA21F231C0F4CA931F87C35B0AECE5A170D81155B91EAEF"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/channel-delayed/terminal-state.json",
+    "Hash": "CA01B31DB0AA994DBB954795838916CDEA4ABA0F5F669561DBB31A8AD7DE6F0A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/channel-rejected/process.log",
+    "Hash": "259A94C7729161134308447DB0284424517CACE14E1084B29F0C11A213C396CF"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/channel-rejected/terminal-state.json",
+    "Hash": "81D2B4641652BB49E21F2267314F2AE59992B4AC3AB56EFB277FC0CCFE76B10E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/channel-response_lost/process.log",
+    "Hash": "B1437A193A8637E5426B122CF66C53D4CDD3CF58A4709540E5ECB212E7AAC3BD"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/channel-response_lost/terminal-state.json",
+    "Hash": "751752A5318D89C8F75A587CCF5929A1D5D991A7132E9C688485C300CA6F5C15"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/channel-restart-new-run/process.log",
+    "Hash": "8604B303CC0C6B4DE21CC6330CA2AD159F4BA7646455E68C32984ED833198C4F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/channel-restart-new-run/terminal-state.json",
+    "Hash": "F658B3647498B7C268272F12E21C575BB12316774C6EBE7B3E259FCE4A576F1B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/channel-unknown/process.log",
+    "Hash": "421D0774788CF770026CE1BFE59C445E7EA17FDB9A8501D110944A046AE0C9C2"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/channel-unknown/terminal-state.json",
+    "Hash": "B8908746921E2115854058A08C045EE4565C3645461161BEBF644FFD3C744D35"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/intent-before-send-exit/process.log",
+    "Hash": "1FF0F16CB3F54A3567B86EE49C91B35485F4AA104799F69B0C21CB4502AAB87C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "79E1970D0454B6EA20128088496699848B20266F148254C5A0126B1B67CFFDD9"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/manifest.json",
+    "Hash": "BFC7EF64A2ECF86BB433F12C2F63932E2438325F1C7AA8842F13380B0CC5D43F"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/mid-stream/process.log",
+    "Hash": "99B7CBF0B7611F43457F4BFE736CD46BD351848360F06F4EFD9AE8332BA0A942"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/mid-stream/terminal-state.json",
+    "Hash": "8A867C108BA698CD120C3DF78E9236199C2A60B18B01EA3436D77445F8DA502C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/read-timeout/process.log",
+    "Hash": "E8EE511EF4ED00DC23CCCBC2CD44EE738646BDDCCDC731F330319C68F2828F6C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/read-timeout/terminal-state.json",
+    "Hash": "D6721DBE05A5FC459C3FB7897936E95E619E5786BA00B119880C97444C31A6C0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/stale-worker-return/process.log",
+    "Hash": "5CFAB4DE8A28C7EBB1D31034622EAE3697D2F79D73A431FEC2BEFE227E7ABE03"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/stale-worker-return/terminal-state.json",
+    "Hash": "31EDFE1B2376E39AD01D3C789D1E61357A9494EAD77C21A192F74CFDDBF754B7"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/two-workers/process.log",
+    "Hash": "B9C2BBECA6C61984C1076DDD0BC5D8FD91CE4BF9855991E5655BC39184D4CBBA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-23-10.975Z/two-workers/terminal-state.json",
+    "Hash": "DC52BAEE5EF4EEF11F7C964372A0D07B80D2560B45ED0AF1EAF67E25ADA3B20A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/accepted-before-worker/process.log",
+    "Hash": "D9D6D8DD927EBCB515642B91537D576BA0BB4892359CFD4282A1E99A862CDC73"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/accepted-before-worker/terminal-state.json",
+    "Hash": "E5D7F652538A41E6816E56E570CA72BE20F747967CF00A8AE026DABD7C3EE1AB"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/after-model-checkpoint/process.log",
+    "Hash": "364EADD9B75133C97B39481431A5DDA490B77CD8EBA7E4B0C43C55380AB1A9EF"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "A70A6103C217E90D24170ED6EB3B347C854AC6BEBDF79E1A6541E2DA51C0654A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/after-payment-checkpoint/process.log",
+    "Hash": "34B0FA7E5284C15ADC8272DCDA46C63EB117A29CFC5532184916641325BEC042"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "8A1CC89B40514D08FB1FEFFBA2163137AC5773F6E0E2ED7045635C9CCF9B3FD4"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/after-payment-response/process.log",
+    "Hash": "925B6D7FEBE91EB7DF92982935E9945E9EFAB7EBABD7851B79F005768132A9FA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/after-payment-response/terminal-state.json",
+    "Hash": "0CEAE4B660678583AC7A6F6317C943CC2730487FE1FB104ED091A9F9CCF27166"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/approval-accepted-exit/process.log",
+    "Hash": "498A0947C697EB9DA316F905AF5263642100907D2ED29C2CAAEBDB8ECAAC8E22"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "CA9B770E3CAA3A25FDEAA78C18BED834DDDBE01064886CCAA464E05E8A78A127"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/before-model/process.log",
+    "Hash": "9BDF79323B4A4B152F00F66B4305CED33E545CDB11E7A617052253D27F8390DA"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/before-model/terminal-state.json",
+    "Hash": "1370856AC2FA97B6423B07B414A4BD8EE665E82EB3249B05B641FFF32E2BFF99"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/cancel-after-send/process.log",
+    "Hash": "C7337B470121F285856960ECB90C4ACC2AD43FDA5649A5D40D4A8B7E84715DB0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/cancel-after-send/terminal-state.json",
+    "Hash": "6362583EAC15D04F58F8E1923641C9252FF9F2A78B043B603B691540CEA7EF5B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/cancel-long-task/process.log",
+    "Hash": "9E9D783DED7B95FBD003B73D2C8986691718AA488E2FC53B73E6B854B462918B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/cancel-long-task/terminal-state.json",
+    "Hash": "F81589EA9E11676762E05E389E966CC792B5EC1E2ED793AF06276BCBC5886255"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/channel-delayed/process.log",
+    "Hash": "1F273FE24ECB45A80A64B0DC280DCE4CA0EF0C492F20945D465202FE9C1040AD"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/channel-delayed/terminal-state.json",
+    "Hash": "F2AC1484C155664F08787CABEC7C1AB869DD2D88D6A5A20ADF583B4D2AC6482E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/channel-rejected/process.log",
+    "Hash": "4EBF6ECB61261A8AAA8861DA99CE078CAF331B835935403801C9B5686F0B11CE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/channel-rejected/terminal-state.json",
+    "Hash": "9BDBA8D856080D26C3DBDF9FFDE44DB77BB0C163038B47B64DEE7C428F2953C4"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/channel-response_lost/process.log",
+    "Hash": "F401933A7486234D347010158E2B937FBBBC1463D08E5F4090D97EAD747C713E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/channel-response_lost/terminal-state.json",
+    "Hash": "DE2C10053CDCCDB33D0DB888F8DD1839D1BF688F7E9F481B79114E9C45135B5D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/channel-restart-new-run/process.log",
+    "Hash": "4441C70A426C710EA50762C1660DCA580BFD81618D35E2B2E347F28621862E12"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/channel-restart-new-run/terminal-state.json",
+    "Hash": "492BEDFD5A7523989998B3F2D273EBE4E6EE40784084F9917F8D164F23D4324E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/channel-unknown/process.log",
+    "Hash": "FC1EE72842F52E1F513C1D8F8C63A17920026FB70D0A1DD7983BB8BA0C033573"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/channel-unknown/terminal-state.json",
+    "Hash": "F9F4A947688F9DAE94D0E2AD9318ECE39BCE34877FE03A7ADB1A535C698313A9"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/intent-before-send-exit/process.log",
+    "Hash": "51F292206140629CD8402D13ECA64ACE1E4C4F8939C60DF2EC30AE417B5FD26C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "B645436EA98E7EF6ED7DDF1A326A6992CC861E38D3FAEFAB8C5DB061FE51D285"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/manifest.json",
+    "Hash": "F3729209EF50A0FE2FFE4EC3BDEAFD3AA745A600DC3DB028FD31AC4CE493D723"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/mid-stream/process.log",
+    "Hash": "A6CCDBB2AEADC65D7F40923CB250676C14FABF85416D3FD8F2814455460A254E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/mid-stream/terminal-state.json",
+    "Hash": "B51B7268E603FD95D867B672E40F2202DC4B3CAB39F1BF3B7BF52976042B5BEC"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/read-timeout/process.log",
+    "Hash": "88608299D9A43A7914841CF8F639EE3A3B0AA8F58E12283F54F5F14D80EDB13C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/read-timeout/terminal-state.json",
+    "Hash": "F504854D2AB6CD473E48AD337DD0E8F5EAF8318E731B6382262F27FA58DD7880"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/stale-worker-return/process.log",
+    "Hash": "F7EC68278D0F229A34DC48AE956588AB468338BD4B315DE7B1B017F79D6CC531"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/stale-worker-return/terminal-state.json",
+    "Hash": "309D60CC28269556C8230100133BF628F4B347DA595256BF97A5AFE31B0822D5"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/two-workers/process.log",
+    "Hash": "CD101563D6198778C1E0E7723A4A60029121462932438E78A71486C832DA2AA5"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-47-59.040Z/two-workers/terminal-state.json",
+    "Hash": "EDDA78026B0940FCFAC3333E53663AFF84E417590E9DC0C1EA82BE3507EDA4B0"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/accepted-before-worker/process.log",
+    "Hash": "AC452165F8F2763400DCD720BBFD500E137FD11375C21FC10D7801280FBB2C54"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/accepted-before-worker/terminal-state.json",
+    "Hash": "43A8F547714E76CC4EA9DFA6661882A3BFDB5BBC0D8B0D3EE2CC9EDA95A15A43"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/after-model-checkpoint/process.log",
+    "Hash": "E510AB46C6A724006927DD94F57CDED65E192571131362B533AADBB66AE168F3"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/after-model-checkpoint/terminal-state.json",
+    "Hash": "3B908A53CAEE689B27EB9702AB0786D982C94EBFFAD44C32FAAF181A79080D4A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/after-payment-checkpoint/process.log",
+    "Hash": "885D4FAA4EAA96E89CD6A8B00C98094826FE79CE19940EED9B4C19123B3C0DCC"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/after-payment-checkpoint/terminal-state.json",
+    "Hash": "336930B2BE71954B186527EF4A4EA4A8F704AEC1D93CD49F11BD38F9216EB58B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/after-payment-response/process.log",
+    "Hash": "72C0F2E6305457767CF8DA3AD3AF77878DBBC9F281A030A98C4495F658A39D5E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/after-payment-response/terminal-state.json",
+    "Hash": "F37E2280A93436A38EAA28F98921AC88F3752C8FCC3617B4D59FD3816EB1CDCE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/approval-accepted-exit/process.log",
+    "Hash": "824FFD692A3A33B445D7241E48FC797AF1CDCED1ECE5A9F6FA09849E1C80A506"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/approval-accepted-exit/terminal-state.json",
+    "Hash": "6644C7D43275777CF46CDA4172A3A4E1DD459DEA02C86D77C8B853D012B3B35B"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/before-model/process.log",
+    "Hash": "5BAA9DA64625FF376B9FB66D1D07A71303EE7B033017D53C25912E48B0E1F465"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/before-model/terminal-state.json",
+    "Hash": "8E5D5F4CA7B3867E4083ABDA2E1790E4B6A568F2268B08E640A29314735AA4F2"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/cancel-after-send/process.log",
+    "Hash": "9A948D17B1C05A8045A92DCE375076AFC5A607269544F54D13C93FA4A827F235"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/cancel-after-send/terminal-state.json",
+    "Hash": "5C66165493533FBCDA73D0A8C6772749D025211892046B168F7AA7976D91FED4"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/cancel-long-task/process.log",
+    "Hash": "9AD1F3DFFB3ACE4C0A0B02615F6ECAD6D4FC57146B5D5299F4AE198BEDF09D0E"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/cancel-long-task/terminal-state.json",
+    "Hash": "BB27326627C553057BEE5FA4D2744E678CFB2514BE651ECB8418E0134EF6519C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/channel-delayed/process.log",
+    "Hash": "777F73A8F1E766D2E9006C1D9D7AB06B7ED2889C8266CD299CDA34F6A6B70A92"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/channel-delayed/terminal-state.json",
+    "Hash": "C6A02E6E12B9E245236E9FD7BB98B1CD5D6FC9B9966060969F984CC78BA0FDE5"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/channel-rejected/process.log",
+    "Hash": "A9DC23A1C1B309041B6FFB014233D7811E385670AA6DBF99C50BC960F82D8E4C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/channel-rejected/terminal-state.json",
+    "Hash": "7572129D28655F0680BEF6B24816EFEF3805D8869EF42D8018023DBE5678711A"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/channel-response_lost/process.log",
+    "Hash": "45523608414A405FAAA2D4AAA75A3FAD7F55C9C1F7899F55EF032D15F33F81C9"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/channel-response_lost/terminal-state.json",
+    "Hash": "95AAED01F01F89D33F8FFC6766FBD19119C34E934977C3172A8325749D1CC674"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/channel-restart-new-run/process.log",
+    "Hash": "5118888BB3CC0EAFD0210965A69510807C6CD05FA78A9E59431BBC3C6CC3ACF8"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/channel-restart-new-run/terminal-state.json",
+    "Hash": "11AF68224FDF84FD56D0B9988042CE7230685E325C9E4348A0A747B979D39953"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/channel-unknown/process.log",
+    "Hash": "398ACB5464ADBFDF6D78591B74363ADAD530657151ED3EFA7E2A510205CE547D"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/channel-unknown/terminal-state.json",
+    "Hash": "FF2DD5F67A33DDB7CEC8EBEE6C53A59DE17172F4AC8F84AE67C7287BED629F19"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/intent-before-send-exit/process.log",
+    "Hash": "49941CF9A0A0EC46E8F5CBD776B5BD75A5F7023C08557F873B84BCDF038CB627"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/intent-before-send-exit/terminal-state.json",
+    "Hash": "5D1A4C6640DDF6EEABC5057674FC0FBB4F5212A264D1ED157C9DB9740B3897A9"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/manifest.json",
+    "Hash": "A74ADA05E1CBF540E1F3AF5A8F53B122BF758E6DA56573C96BBB8FB1FCC94746"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/mid-stream/process.log",
+    "Hash": "75B51E36CC5451845CDD61B964471B54B45427B1657D4DA984627C418922FF5C"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/mid-stream/terminal-state.json",
+    "Hash": "DF1B352203BCE2C632027D67504BDE637B040CDC6C471D1ACC44076514D2C3F3"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/read-timeout/process.log",
+    "Hash": "E0636DF3E3C30778709E04A8301A25BE6297967AB111A62C2BD0FDFF5954D653"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/read-timeout/terminal-state.json",
+    "Hash": "D620EF0E8BF7272419E14749F895F347BB66065EA7FB03FAE523115CC78A80EE"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/stale-worker-return/process.log",
+    "Hash": "66B968085F33FBC9743C571B32379D88FFE5A2FE767BF413E94616B9372930D2"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/stale-worker-return/terminal-state.json",
+    "Hash": "2724EF20DAF6DA0040838BC1DDB4F782D2395C53C4B6A9B3293EF5DAAD8AFF06"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/two-workers/process.log",
+    "Hash": "0CBADE72932D7E7528B753F5D53AF54423DB8A228093085E7DCB10D6D2C812D6"
+  },
+  {
+    "Path": "docs/experiments/p6-results/2026-09-26T03-51-07.100Z/two-workers/terminal-state.json",
+    "Hash": "E17C29730EA4DE8CAB02845D5F98CF46DCA3D3BD29F9AE721CB833370FFBF8E7"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T14-58-16.950Z/first-connection.sse",
+    "Hash": "694A22C99FDF44D87CC3F2916508902874A56FC44049C8F7A7D94982FBBAFFE6"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T14-58-16.950Z/process.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T14-58-16.950Z/reconnected.sse",
+    "Hash": "03D979A095D7A5D3858F3308CD433E70CA34DC881CBCAB20768EE74A760B53C3"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T14-58-16.950Z/terminal-state.json",
+    "Hash": "92D8A61358C2266C9CE0985CCE9CB6A9504CEE4F72D1859F96C910AC4F46B2C7"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T15-18-54.890Z/first-connection.sse",
+    "Hash": "D961891CD292E9F815641AD872432F0327778BC02E526C472050923A90157CC0"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T15-18-54.890Z/process.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T15-18-54.890Z/reconnected.sse",
+    "Hash": "497083AB5A5A834A3468CE84983D9374D98859A9D95F3152C9CA8B5281FFE38A"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T15-18-54.890Z/terminal-state.json",
+    "Hash": "A9D9AF5385828E6A27543FC11E859C013513EF7CFE2D5E35C272A59236376136"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T15-49-44.005Z/first-connection.sse",
+    "Hash": "F9DBCEECE01812B23E5D66FA0CD377212210DEC2245956D731F51A78A5B699B2"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T15-49-44.005Z/process.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T15-49-44.005Z/reconnected.sse",
+    "Hash": "856328C1C105E36FCB4EE1B2AFE3E3A7BF0C88F8252ED1DD94FECEB1FA3244D9"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T15-49-44.005Z/terminal-state.json",
+    "Hash": "CA4A208CA21895C6C309B6D649925920A65125F8A1E6D5969289549D223B9755"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T16-31-07.244Z/first-connection.sse",
+    "Hash": "3D5C1390E0AFD956AB837C38900E3DF78560274B49B146DD80F4E81538E06F2D"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T16-31-07.244Z/process.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T16-31-07.244Z/reconnected.sse",
+    "Hash": "5BEDE33F55366E019E6E194A8FBD11386772D01116301FD0AB0F3B436F4768FE"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-25T16-31-07.244Z/terminal-state.json",
+    "Hash": "B2C114F840F0ADB2A0B3B7EF7466168DE49AAF1705E0B37FB81E420E9F4BB8A7"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T02-21-22.347Z/first-connection.sse",
+    "Hash": "42C4F1F0465F31215DC0A6055F3F1BF61C56904ABA91000DFE14DCAA85298DAE"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T02-21-22.347Z/process.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T02-21-22.347Z/reconnected.sse",
+    "Hash": "7C066037A3735DCB474AB178AF0EE6BFA9AB81C4D6E081EE5A52A82132853E4C"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T02-21-22.347Z/terminal-state.json",
+    "Hash": "44144AEEBE5D6645E9779DFD1E0799EB1435F76B9C90E055C0FAEB532FADEFFA"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T02-27-10.945Z/first-connection.sse",
+    "Hash": "34EC1586E648F710FF50ADED9D1082C234DD965D2FABD659922768E182590C7D"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T02-27-10.945Z/process.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T02-27-10.945Z/reconnected.sse",
+    "Hash": "E6CB8B90511BDC986D9A6D50D27716C35050A610022A856CEE45CB803CA5A3A0"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T02-27-10.945Z/terminal-state.json",
+    "Hash": "6AEB650045AB800CF5B7AFF2E4AFB221F5EAB89E0C732640FC2387249DDB01B4"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-24-16.033Z/first-connection.sse",
+    "Hash": "9B34FA4C17213E3165653B9B083C8399E67AEF0484D3720CB61E526AF41F7BAD"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-24-16.033Z/process.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-24-16.033Z/reconnected.sse",
+    "Hash": "6E7F2DD10B2567FD93782857084378A2E4B9B7660151C6B7F3F486E664EA875D"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-24-16.033Z/terminal-state.json",
+    "Hash": "98A76B8D0ED110815A19BA02BB3FAB848022D2BA702F64F5FD6FC8749B9E824D"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-49-04.359Z/first-connection.sse",
+    "Hash": "3F97ED347C18C58529887FEDA1C9C7B4DEABBAD7C85B7E2765C1581E8827894E"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-49-04.359Z/process.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-49-04.359Z/reconnected.sse",
+    "Hash": "12085D24FFD6A5072164AA731B61005ABD14AB9489995A2B34E2C655FB9175EB"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-49-04.359Z/terminal-state.json",
+    "Hash": "E448EA7DBFB4A43A1C9B5D3ED9052E636B6402851F0FD1B4EEA077237B597766"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-52-12.227Z/first-connection.sse",
+    "Hash": "C8F1E8155F019D14ACE1C7504557A9E067BC542E99B675E5FB152E08FAD76C7B"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-52-12.227Z/process.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-52-12.227Z/reconnected.sse",
+    "Hash": "27CCE0DD979B71A89A5EDED30A6FB7C7F691178492FEF87F245887E2A1929007"
+  },
+  {
+    "Path": "docs/experiments/p6-sse-results/2026-09-26T03-52-12.227Z/terminal-state.json",
+    "Hash": "01C3BD12229F3024AD04E0C5E9B5040533830884F7A5A0301E64B9FC498E80AF"
+  },
+  {
+    "Path": "docs/experiments/p6-validation.log",
+    "Hash": "7BF973E9E7A8E04D3161079A4C413737ACE35B24A046069C0A628B76AD6E787C"
+  },
+  {
+    "Path": "docs/experiments/p7-cost-report.md",
+    "Hash": "F4EF6F5E57F9DCFDA726DFE11A7680714A9D9A44E634D3FD93FCBFD7B5733E67"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-45-30.982Z/disabled.json",
+    "Hash": "816B1F5C528AF20382EA6F8A262C482F298D495411A96F48247063D66B84FCA3"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-45-30.982Z/live-rejected.json",
+    "Hash": "D827CAA0867FD29CA9E73CBFB277B886F97390E433724E2E1624E15E7EFAA2B9"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-45-30.982Z/simulation.json",
+    "Hash": "6C0811653F282A603EC5E2806848EBD231C375539DC9E7B19F43EA67E479A844"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-49-05.295Z/disabled.json",
+    "Hash": "A70D7B72FA55028E181EB310ED2CBCB5DBB634F304B89475EB2BD38E0726F9A5"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-49-05.295Z/live-rejected.json",
+    "Hash": "D34DCB5C5A6765129CB08852CF0A181447229B01211CCA690B706C39F528CA2E"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-49-05.295Z/simulation.json",
+    "Hash": "16BC10253DCC35F03AFCF49D0E10FF4EED2CB0D1C10D1861D736C80175147DD7"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-50-16.210Z/disabled.json",
+    "Hash": "E82FB8C4F02328EFFD31C0051702C860771B5FDEB60B49A2DFB086C7D576D3C8"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-50-16.210Z/live-rejected.json",
+    "Hash": "6F7C60C05BB981A52AFD5C6A5542D24BD8D255CC2FC7D616A6859A8D4D8C4DE3"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-50-16.210Z/simulation.json",
+    "Hash": "73B1D9A78C1110B72C3AA5A0B3F5A2A0477CB404EA18633A3ADC0FB9BE04C940"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-52-13.124Z/disabled.json",
+    "Hash": "8FBB2FE673245808FD0A36B51FAA73E64BFBECCC6C400D186D692A4F81D89DE3"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-52-13.124Z/live-rejected.json",
+    "Hash": "84421395A852DF678FF0800BE4950EBB8B5B9EEAD49199FD25E99B826503FACC"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-52-13.124Z/simulation.json",
+    "Hash": "82F5C2B2E680442238B9FC4ED165650AF5F3EA67A9B2E0128714D073DF3A3A82"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/completion-check.json",
+    "Hash": "3C9C5BDDDCEDF7046043F425652DA40704403A88DF1D189C14848A854ADDC0D6"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/directed-final.log",
+    "Hash": "46BD1B25DA9DF3ED9833DBD6F9CEBCA0CAF788764474AA93199B1C648FDCAD82"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/directed-first.log",
+    "Hash": "1987F7B0393D717D790EED49D9DBE8B7A678180560194395D3536FF4E66826AA"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/directed-v2.log",
+    "Hash": "D5CA9D0A92EE368F135415D9C986767E222C0D833E2533EA6BC8B7F3140F1897"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/final-status.txt",
+    "Hash": "F216CC8C243ABEC801B11441DD79E91D19E796D71138B4DD4D77333285DC8633"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/first-typecheck.txt",
+    "Hash": "47E5B7E05918B81AF9DB9238D1714BCC9D93A3B18BD2426BCE47D716E270ACA1"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/full-lint-final.log",
+    "Hash": "CC5A0B39C7052D24C24888403C48018B4FCCCC9D799F81BE6C9C30C9E19C85FC"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/full-lint.log",
+    "Hash": "CC5A0B39C7052D24C24888403C48018B4FCCCC9D799F81BE6C9C30C9E19C85FC"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/full-tests-final.log",
+    "Hash": "BE237F6F8AB2CD69DADF9B98A7FBD7D15C3FCC638A36912184A6EFC80F2C33C9"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/full-tests-first.log",
+    "Hash": "3E0A2E6654B6B9D40E4297EB3C610804D3833873BF16D5086763FCC9672EE9E0"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/full-typecheck-final.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/full-typecheck.log",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/l1-database-path.txt",
+    "Hash": "F077129C1F66B03428EB3245B268F2C9E8CE0E01C9910FA7D7BDE5FAD6B30FE8"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/l1-first.log",
+    "Hash": "B5DDC69936F6C61D5D403D5B379BB8ED02EB29A4EAAD25AA0A739F92D0AAB6DD"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/l1-reports/evr_10c92f48.evidence.json",
+    "Hash": "D31D4E43B1074140ACAE356BB1EB468FA46982FCF6FF32160308811AA2E02BF6"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/l1-reports/evr_10c92f48.json",
+    "Hash": "B400EAE6C7B2F52ADB7AAE8317F275A0D7D7CA791561D40DE51BBA9C94C6F255"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/l1-reports/evr_10c92f48.md",
+    "Hash": "0D68EE2160B214C7D6313A166EB69B819A747AAD07E5790ABC469F0A2F250084"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure-evidence/start-status.txt",
+    "Hash": "32FB6BA72C19936B1F56BEF4F0ED3D7DD450F900310AFA563027308F8817F1C8"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-closure.md",
+    "Hash": "6C056F6C66E8F618D5525ABAE299B9B7C3AF97C6EAFD6A6B1163EC32B030903A"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_3a2e1279.evidence.json",
+    "Hash": "4BAA6B4A874F3322C4C6CA9FE80DFF09A9E21F149081F1866C00A581689311D6"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_3a2e1279.json",
+    "Hash": "87FCB9715E69180EE59450215E7FB35FF45EF1D27A7D7D54442982A3E1ABC748"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_3a2e1279.md",
+    "Hash": "0C358B197FF9F78F4056EAF86909AE13F1A30E9637488DFF45DF1D0B50D1DCEB"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_3bda50f3.evidence.json",
+    "Hash": "C5FF5521ECF3F5A610F694FD276EDD70C12FDF4CB7F148CBAA29F0D17437A10E"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_3bda50f3.json",
+    "Hash": "9D65FC525F95607079658C5D07BB0C227AC92FDE5222CF8013D49E371E15B571"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_3bda50f3.md",
+    "Hash": "CE90E5DEC588C1FFD043A9A501E3D4F67E44E487298C3F9767B7B540FA53C6C4"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_881f6071.evidence.json",
+    "Hash": "B077BFDD1797C766068B73DEF817A5724737B360F14A5608F8678DC154A2C878"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_881f6071.json",
+    "Hash": "4F4FB730F34D77247B1350E4220A1531843D41C5ACEF7385DAA34A22FAE7E8A7"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_881f6071.md",
+    "Hash": "783F9D63757146EA424AB0D2A39E0EF9E480E23B90C9EDAEA9237363BA5B2872"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_cba8e9df.evidence.json",
+    "Hash": "C2DAD07C120428628612F3FE0C4F8BE192C17492F5E9201CB188D07A5DE89D38"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_cba8e9df.json",
+    "Hash": "FD8ECA493831CF49FAFEE2D656FC3DAC2EB8E6FA114205048FF75BBD07B61AB2"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_cba8e9df.md",
+    "Hash": "89CF803D5F9A5CE086DC3556A03EC7681723A0361A8E163456DB19B7048221DC"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_e18ead6c.evidence.json",
+    "Hash": "15A1E395450C6F25157B04232274C2990D5E57BD01DF79265AA6C9369C4B7E9D"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_e18ead6c.json",
+    "Hash": "9FF1F8C3DC2256023990D357FFE977C4CF3AB9F0F4A0E717B5BAD3858F17D9CF"
+  },
+  {
+    "Path": "docs/experiments/p7-entry-results/reports/evr_e18ead6c.md",
+    "Hash": "F369C3B347302FA12305CE606034CC0CFEB0D3736082546038272460FB2A28C6"
+  },
+  {
+    "Path": "docs/experiments/p7-eval-budget.md",
+    "Hash": "E800484F463DFD04625DD0E4A524351D0D98D5EEC3EA88E454C094F9C219745C"
+  },
+  {
+    "Path": "docs/experiments/p7-model-gateway-v1.md",
+    "Hash": "272EC61A9A2C16262EF52FADFA4CA1FF9FFFA20FACE256309C37D9A75DE76105"
+  },
+  {
+    "Path": "docs/experiments/p8-offline-investigation-evidence/initial-worktree.txt",
+    "Hash": "F216CC8C243ABEC801B11441DD79E91D19E796D71138B4DD4D77333285DC8633"
+  },
+  {
+    "Path": "docs/experiments/rag-baseline-v1.md",
+    "Hash": "DBC4C8A472763F46C58AC0665C30496D460A7DA4512513FE68F385E1C5A62717"
+  },
+  {
+    "Path": "docs/experiments/rag-dataset-v1.md",
+    "Hash": "67399728975B84E003BF782BF0B7338D51A6DD9861BAB7FA42727AAAFA5C25D8"
+  },
+  {
+    "Path": "docs/handoffs/after-sale-mapping.md",
+    "Hash": "6E29ADECBB96B2C98205553464D244F81E72942503569010126A00192C8F85BC"
+  },
+  {
+    "Path": "docs/handoffs/execution-ownership.md",
+    "Hash": "3DC38B166470BDAC1D5ABDB0D3F3E5A956237515CBB54CC4FFEAF580310C8233"
+  },
+  {
+    "Path": "docs/handoffs/p6-conversation-refund.md",
+    "Hash": "6303D9A00489E690D8F190390724F57D8F5190218C95B4DACB515B240FE510A2"
+  },
+  {
+    "Path": "docs/handoffs/p6-integration.md",
+    "Hash": "E32FF5459A686FEDC98F0438D00F2180BFD75017C3F2E5DDCF42914E476DBB1E"
+  },
+  {
+    "Path": "docs/handoffs/p6-p7-entry-integration.md",
+    "Hash": "29BE5F22B2490169C9CDAFED34FF7132CFB477A5D770E8DA78354B32F4215EBA"
+  },
+  {
+    "Path": "docs/handoffs/p7-cost-report.md",
+    "Hash": "01A5A5AF89155E214CC4C08A87376EA5815181495F3C8D398808FE2328D7DB6E"
+  },
+  {
+    "Path": "docs/handoffs/p7-entry-closure.md",
+    "Hash": "1DD47D503EE574AEC58AEFED941D77DDB39DAAB76FF06B96E8FAF53B0A94C440"
+  },
+  {
+    "Path": "docs/handoffs/p7-eval-budget.md",
+    "Hash": "99D6212D31D06C32F4591E346BCBD419C287CF4662DAEAB28CD1EBA902772EEC"
+  },
+  {
+    "Path": "docs/handoffs/p7-integration.md",
+    "Hash": "68B996BE899AE4127E61C9E25CD1E139E0482A7B37EAD0D540C51F0BBB18D1FD"
+  },
+  {
+    "Path": "docs/runbooks/desk-demo.md",
+    "Hash": "8D9F53EC7CFD4CD69B13577DB22BE53B2E68CE243D2ADB523A9519A8818A774F"
+  },
+  {
+    "Path": "docs/runbooks/durable-conversation.md",
+    "Hash": "979BE9EE77D7A240A291E56D9647E0165F330870B9B869123A36759A4C626DBF"
+  },
+  {
+    "Path": "eval/rag/dataset-v1.1.json",
+    "Hash": "56EC39C99C583D6A74CC40C1F4BA145177B89BB92A741E296FFF2DF28E0B1BB1"
+  },
+  {
+    "Path": "eval/rag/dataset-v1.json",
+    "Hash": "82A1BB76548D2F2BEA672231E402337217BDE6B5DACAA8B61D154363DC37BE67"
+  },
+  {
+    "Path": "eval/rag/protocol-v1.json",
+    "Hash": "0335EA80E554646187E386D750672AAE6862927290953092F526B17B53D36AEC"
+  },
+  {
+    "Path": "eval/rag/results/2026-09-25T14-11-43-679Z/report.json",
+    "Hash": "5F4AEE9F3A49E054F32CBD515A79F0128BB42DA961A9F2AA84D62D5AF1781CC0"
+  },
+  {
+    "Path": "eval/rag/results/2026-09-25T14-11-43-679Z/snapshot.json",
+    "Hash": "161B31041899C66716D3DB340F9BB8BBBCD01686EC99AF817264F0CEA58F6DC9"
+  },
+  {
+    "Path": "packages/contracts/src/approval-progress.ts",
+    "Hash": "7F292FEA4DBD3E091FC10E34D7AB20036A122B5C81805C72A822123FAC44D6C3"
+  },
+  {
+    "Path": "packages/contracts/src/execution-ownership-contract.ts",
+    "Hash": "90731E7F6FA85E5EB0161BEABE28DD5E93CE2F42D05FE3E1D9F4753C64DCDCDB"
+  },
+  {
+    "Path": "packages/contracts/src/knowledge.ts",
+    "Hash": "C1A4038FD19942B6A89656D13F692CEF2117251DF1AAE70181115866FE4344BF"
+  },
+  {
+    "Path": "packages/contracts/src/p6-after-sale-mapping.ts",
+    "Hash": "86564E952F44A70430844835C769C787AA76DC0CAF723452B0D316C505CDDF4A"
+  },
+  {
+    "Path": "packages/contracts/src/p6-durable.ts",
+    "Hash": "7F522934E2EAD5908A2DA883EF2EA26F55AED2DF87590F5E10A00AC06F9B387A"
+  },
+  {
+    "Path": "packages/contracts/src/p7-model-gateway.ts",
+    "Hash": "8AACA4CBD6B84BB49C82C7519A78506A453FB848EEED84CF931613036BF9E81A"
+  },
+  {
+    "Path": "packages/domain/src/approval-outcome.ts",
+    "Hash": "6397A729D2F2D27F99E7B8A01706906A6D485B82A2C3195E123F041CDD9EF029"
+  },
+  {
+    "Path": "packages/domain/src/case-closure.ts",
+    "Hash": "1AA1D0B8E25249E305EF7A9EA5F7C2C6A8264CA367133A52E12AFB64A62B855E"
+  },
+  {
+    "Path": "packages/domain/src/execution-ownership-guard.ts",
+    "Hash": "6B9C234EE64AA8E8D87ECB4C717861DCB401633CEE2F46A53BADFEA2388D64BD"
+  },
+  {
+    "Path": "packages/domain/src/knowledge.ts",
+    "Hash": "A26CD9B92A7E907FBC85A3AFAFCB18C317B9E677767921D01605726087C2EE1F"
+  },
+  {
+    "Path": "packages/domain/test/knowledge.test.ts",
+    "Hash": "309C562A3DD649F1DC6B16B7C172A16BA146E37C035601828C96E848F5C9DB25"
+  },
+  {
+    "Path": "packages/eval/src/p7-cli.ts",
+    "Hash": "0ADD0A1D628CB871D574A9AC9DCF216B119DFB296E43CF2A602AAD1D677603D1"
+  },
+  {
+    "Path": "packages/eval/src/p7-cost-report.ts",
+    "Hash": "6E0BFE0FBC372E96D5D559F5F7A2ECF668C42473A13F01A11A04A05CFD731346"
+  },
+  {
+    "Path": "packages/eval/src/p7-eval-models.ts",
+    "Hash": "2C9AD120A67C3ED318B3F2DB9273EFFC1C6E9EF19FFB87C0F19B3ED2333EBF59"
+  },
+  {
+    "Path": "packages/eval/src/p7-offline-roles.ts",
+    "Hash": "953412D801277027E9F0C53631070408D7C4BB98E6EC46C3A3007281AE047B5B"
+  },
+  {
+    "Path": "packages/eval/src/p7-suite-entry.ts",
+    "Hash": "D095463F9BFD9D032E415009C24A48956AF30B66827F79FBE0CA80CE16474347"
+  },
+  {
+    "Path": "packages/eval/src/retrieval-metrics.ts",
+    "Hash": "76BE8E8045ECC6957C0B083C90629C7073AA12A4DE13850399C58B7C21DFF958"
+  },
+  {
+    "Path": "packages/eval/test/fixtures/p7-eval-fixtures.ts",
+    "Hash": "A1F29978627A6A648EAAEDC54F42AA00769314121D599814FA20E040535718AA"
+  },
+  {
+    "Path": "packages/eval/test/p7-cost-report.test.ts",
+    "Hash": "7BEFE72D2B87760E6FF113BD1638294E136ADFD95502A920F5C258AA9FA9E66B"
+  },
+  {
+    "Path": "packages/eval/test/p7-entry.test.ts",
+    "Hash": "4AB1960853D45C85D2DADA18AE5DC25F04423AE5877DDAAC09CFEE34534942B3"
+  },
+  {
+    "Path": "packages/eval/test/p7-eval-budget.test.ts",
+    "Hash": "D6057B2CEC044F3D53024FFB08464EE23F1DA5964B2172C46D118A7159209F75"
+  },
+  {
+    "Path": "packages/eval/test/retrieval-metrics.test.ts",
+    "Hash": "4BB7CD994D572FF4B0BA4871453830B45285054F196EF242544AF57E028FFD80"
+  },
+  {
+    "Path": "packages/persistence/src/approval-execution-repository.ts",
+    "Hash": "749D56E90B0D3778B3AFE1774D17296454AF788FA9FCB0A7F8BF03DD901DA77F"
+  },
+  {
+    "Path": "packages/persistence/src/approval-progress-repository.ts",
+    "Hash": "F69680F2DA84E2F415D0409CCE831DCA25B1922A1DB3A79E97DE690D7D5122BA"
+  },
+  {
+    "Path": "packages/persistence/src/case-closure-repository.ts",
+    "Hash": "727336DDC1B1F7165C3E7A320C9CCF29A4D0F99B7D54925475BF820DB7165B03"
+  },
+  {
+    "Path": "packages/persistence/src/conversation-journal.ts",
+    "Hash": "413B56960B14FB66DCD18BD6B5E3F3054DED4D8915DA0DD08D913E593F589D4B"
+  },
+  {
+    "Path": "packages/persistence/src/desk-repository.ts",
+    "Hash": "7D46B969C6E938971EDBF3A530AA8B628F7A138C13450310F784165697F20FFD"
+  },
+  {
+    "Path": "packages/persistence/src/execution-ownership-migration.ts",
+    "Hash": "1B82E71CFA6963DA94B4CD7FE5F4D99B7DA75222EDBF2D63C22EBABC961216E9"
+  },
+  {
+    "Path": "packages/persistence/src/execution-ownership-p6.ts",
+    "Hash": "0E8054EDE50B7B0D5F9E8EC192E8C7BE25849DEB8A5B71EB544AA5E2B9D887CD"
+  },
+  {
+    "Path": "packages/persistence/src/execution-ownership-repository.ts",
+    "Hash": "E97A9096652109BE3A39D0FE90B2BCA35B47CC04AB4D907B31D00DBAB2CEE922"
+  },
+  {
+    "Path": "packages/persistence/src/p6-after-sale-repository.ts",
+    "Hash": "7BA214B2402E13D2CA3AD8D931166D531F04B289A26A99CE4EB52105C8A2C213"
+  },
+  {
+    "Path": "packages/persistence/src/p6-business-adapter.ts",
+    "Hash": "526CCED79937D2BA217F289DDAA8CDCD45174EB74080FEFC8B55C43D42802521"
+  },
+  {
+    "Path": "packages/persistence/src/p6-conversation-refund.ts",
+    "Hash": "E90F0B5235AEFB8BE1C89A8DC589BF320707FB5B28499F0EFF8864E34D406AE0"
+  },
+  {
+    "Path": "packages/persistence/src/p6-migration.ts",
+    "Hash": "C5A0DD1A23CDC864E4D10678D4BD75F0D3D15C62277C6C4498095BFA0676FCE3"
+  },
+  {
+    "Path": "packages/persistence/src/p6-owned-after-sale.ts",
+    "Hash": "41E7B5D9CA0594443C8FC96C474817FE6AAE7C8D1B5A23BC46B3C87C9133C28A"
+  },
+  {
+    "Path": "packages/persistence/src/p6-payment-simulator.ts",
+    "Hash": "02A918CDB3828D3CA1B206ED0A6083F9FE16592B013DE789C291B9E2D245025E"
+  },
+  {
+    "Path": "packages/persistence/src/p6-task-repository.ts",
+    "Hash": "70C6FEB0F36569D7AEE915D5F6AA81DDED1A4B51C08B49FEFA1141DFE37C4BD9"
+  },
+  {
+    "Path": "packages/persistence/src/p7-ledger.ts",
+    "Hash": "14D87EA7DC85E102F0ADE1BE327FDE6C5A26D69AE21A60CC31035626F3C3693F"
+  },
+  {
+    "Path": "packages/persistence/src/p7-migration.ts",
+    "Hash": "518AA7B850D22C0CAB66A52A738AB2C4D9BBBAE121ACA67D7C47CEB799B1F725"
+  },
+  {
+    "Path": "packages/persistence/test/approval-concurrency.test.ts",
+    "Hash": "36573C2717380547E6A8E66E4B6A548B34038365EE88E71C9CE973457B359C6D"
+  },
+  {
+    "Path": "packages/persistence/test/execution-ownership-racer.ts",
+    "Hash": "4BFE975DAA3DB59800AEB3352B276AAB0E91E260FA96071A583C4F14793EB262"
+  },
+  {
+    "Path": "packages/persistence/test/execution-ownership-repository.test.ts",
+    "Hash": "85E9B27C92314C381F6F7E6CC52E385188AFB1CDB6D5A5E57672042A9549B14B"
+  },
+  {
+    "Path": "packages/persistence/test/execution-ownership-services.test.ts",
+    "Hash": "2DA7778D7BF7A409F00A68E821DB1B65DD7E073E5B38E93AA839AB9879FFEAE1"
+  },
+  {
+    "Path": "packages/persistence/test/p6-after-sale-mapping.test.ts",
+    "Hash": "B31AB9ACDA428D3ADF37689B2BC24C9A7DFDC92742E82115A808B56A7E39DD54"
+  },
+  {
+    "Path": "packages/persistence/test/p6-business.test.ts",
+    "Hash": "54996C013BC26E7E221C506006524EF663ABFCAE02430A12499ABCBDE25C0ED0"
+  },
+  {
+    "Path": "packages/runtime/p7-tsconfig.json",
+    "Hash": "100E64BA8FC8E79B27325115134B90BC8DD1050168AFCDF301050452803841B2"
+  },
+  {
+    "Path": "packages/runtime/src/conversation-demo.ts",
+    "Hash": "7D7FE5B62F6013317AFE70B6526FD3ADFAF695C8D5C175D1DE5C58CF4C73D4F0"
+  },
+  {
+    "Path": "packages/runtime/src/durable-business.ts",
+    "Hash": "640EBC57CD40F711F506A52DC49257CC140723DED39F7C7C0433F01A4F9FEB30"
+  },
+  {
+    "Path": "packages/runtime/src/durable-conversation.ts",
+    "Hash": "2664998A5B37B6263A98B66844E01B4D0A2E5632DF7A59A06F84DEC1588B3484"
+  },
+  {
+    "Path": "packages/runtime/src/p6-config-snapshot.ts",
+    "Hash": "46974DEFF0D67323655C5804B2A4A6D5A087BF8B18F9190305E338F773765827"
+  },
+  {
+    "Path": "packages/runtime/src/p6-p7-model.ts",
+    "Hash": "F24B999A97B510855E25D50D9331C1ABF007DD09FD28D7CABBF307B27A1E450C"
+  },
+  {
+    "Path": "packages/runtime/src/p6-worker.ts",
+    "Hash": "9B80C0A70E6DBD2684996672906E119F4A06AF6C4DD713D9130DF7E58ADBBFC3"
+  },
+  {
+    "Path": "packages/runtime/src/p7-gateway.ts",
+    "Hash": "7447E348C4A0AADAD4DEB11504514C73421E2D20F9B4EBD408D7FA7AD13263ED"
+  },
+  {
+    "Path": "packages/runtime/src/p7-protocol.ts",
+    "Hash": "B7BDAE295CDE1E95CF75D3AEAB4DA2A1550FD9ADC697CD3FBE57AA44FBF990BC"
+  },
+  {
+    "Path": "packages/runtime/src/p7-snapshot.ts",
+    "Hash": "C7CE3FBB48A10E58E60772CD0858D1D38B2B9A4328FEEB3C4A791F3F1A053C37"
+  },
+  {
+    "Path": "packages/runtime/test/durable-business.test.ts",
+    "Hash": "2E2E692C1A02FDA4950E5EDD8D0B128577C074DB1887E72D36F45F48063701F7"
+  },
+  {
+    "Path": "packages/runtime/test/fixtures/business-seed.ts",
+    "Hash": "3FD5E589FDF1B4AEAEF6F4EC42360A8FDFB038C4EE49C33897B91DDAB9791FF7"
+  },
+  {
+    "Path": "packages/runtime/test/fixtures/p6-p7-process.ts",
+    "Hash": "EAD6F3EBB85865B83F39334E8E90BCF74AF38F4FD7E08F9DCF1B6889BFB8BAB5"
+  },
+  {
+    "Path": "packages/runtime/test/fixtures/p6-process.ts",
+    "Hash": "79B651ED8E5D34B5D090F9E58E3465010841D73EECD44801DFA2D3BF797956E2"
+  },
+  {
+    "Path": "packages/runtime/test/p6-durable.test.ts",
+    "Hash": "663A31BB32C822F72CA914A650E22B46E4B32753091FE0CB6DA49BB9886C0E86"
+  },
+  {
+    "Path": "packages/runtime/test/p6-p7-integration.test.ts",
+    "Hash": "273013ECB75EC335A8F124AC47CF3F329BA3B4379A84F70B7CB36B9018DEA56D"
+  },
+  {
+    "Path": "packages/runtime/test/p6-process.test.ts",
+    "Hash": "5C971C8D4D2D06F1D6ED2DAAB4CBB4F85DF88EE6429D6D0F698E455F15DE9D34"
+  },
+  {
+    "Path": "packages/runtime/test/p6-snapshot.test.ts",
+    "Hash": "C5439F855CAED342E31DF493F50C22DFAFAB1860323CA1D36B81E62C29BD0608"
+  },
+  {
+    "Path": "packages/runtime/test/p7-budget-child.ts",
+    "Hash": "CB64F77E0394D4A09F218F5C1EA4957DF3880A822A7A371EEECE9393A3A138D0"
+  },
+  {
+    "Path": "packages/runtime/test/p7-consumers.test.ts",
+    "Hash": "45265A666C8728F751DC2E38939D8560AF6F612E000414E6407B0CD755434759"
+  },
+  {
+    "Path": "packages/runtime/test/p7-fixtures.ts",
+    "Hash": "B24EC89DBBE3B7C5DD2A434F4915B62E38A158A1FABA8EE490F9AEAB1334EC25"
+  },
+  {
+    "Path": "packages/runtime/test/p7-gateway.test.ts",
+    "Hash": "BACEA4A3FEA8B511FF82C253051773F470BEAD0AB4587BF721124C7EC2827F4C"
+  },
+  {
+    "Path": "packages/runtime/test/p7-persistence.test.ts",
+    "Hash": "757798C1722C582888EDA6A91814D41EE821FEEBDACDF81FCF0F080ADFCD2F34"
+  },
+  {
+    "Path": "packages/runtime/test/p7-protocol.test.ts",
+    "Hash": "65CE541DACC4DC8FF35B2B73132D93C45F4D2EE2FC8D4014709F82B277705D83"
+  },
+  {
+    "Path": "scripts/p6-evidence-report.ts",
+    "Hash": "6F700D5A7271FF6499644134039A2F3B1E13E46271EA26788C52D4DB9DCCEA52"
+  },
+  {
+    "Path": "scripts/rag-baseline.ts",
+    "Hash": "45DF330FF232E2BBC45D784BB631F88B3406C3DB8874C008B1479EEABCF1BE9F"
+  },
+  {
+    "Path": "scripts/rag-dataset-check.ts",
+    "Hash": "5850EBF7630CA96DA7BBE0130C26B12A71B45F56B4999C0EFD00624703CB86CD"
+  }
+]

@@ -1,0 +1,15 @@
+{"pid":101300,"event":"ready","detail":{"url":"http://127.0.0.1:49574"},"time":"2026-09-26T06:53:39.621Z"}
+{"pid":18228,"event":"accepted","detail":{"taskId":"44c23b93-ba54-4bbd-97e2-802d653852a8","runId":"run_0a8f321b-4f2b-4b10-9e33-a759839b75cf"},"time":"2026-09-26T06:53:40.510Z"}
+{"pid":147964,"event":"worker-ready","detail":null,"time":"2026-09-26T06:53:41.125Z"}
+{"pid":148536,"event":"worker-ready","detail":null,"time":"2026-09-26T06:53:41.131Z"}
+{"pid":147964,"event":"claimed","detail":{"taskId":"44c23b93-ba54-4bbd-97e2-802d653852a8","generation":1},"time":"2026-09-26T06:53:41.147Z"}
+{"pid":148536,"event":"worker-result","detail":{"claimed":false},"time":"2026-09-26T06:53:41.161Z"}
+{"pid":147964,"event":"before-model","detail":{"taskId":"44c23b93-ba54-4bbd-97e2-802d653852a8","generation":1},"time":"2026-09-26T06:53:41.362Z"}
+{"pid":147964,"event":"model-called","detail":{"snapshot":{"snapshotId":"scripted-frozen-v1","provider":"scripted","model":"scripted-v1","promptVersion":"p6-v1","value":{"scenario":"normal","paid":false}}},"time":"2026-09-26T06:53:41.363Z"}
+{"pid":147964,"event":"after-model-response","detail":{"taskId":"44c23b93-ba54-4bbd-97e2-802d653852a8","generation":1},"time":"2026-09-26T06:53:41.363Z"}
+{"pid":147964,"event":"after-model-checkpoint","detail":{"taskId":"44c23b93-ba54-4bbd-97e2-802d653852a8","generation":1},"time":"2026-09-26T06:53:41.364Z"}
+{"pid":147964,"event":"read-called","detail":null,"time":"2026-09-26T06:53:41.364Z"}
+{"pid":147964,"event":"after-payment-intent","detail":{"taskId":"44c23b93-ba54-4bbd-97e2-802d653852a8","generation":1},"time":"2026-09-26T06:53:41.379Z"}
+{"pid":147964,"event":"after-payment-response","detail":{"taskId":"44c23b93-ba54-4bbd-97e2-802d653852a8","generation":1},"time":"2026-09-26T06:53:41.399Z"}
+{"pid":147964,"event":"after-payment-checkpoint","detail":{"taskId":"44c23b93-ba54-4bbd-97e2-802d653852a8","generation":1},"time":"2026-09-26T06:53:41.400Z"}
+{"pid":147964,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-26T06:53:41.401Z"}

@@ -1,0 +1,5 @@
+命令 pnpm --config.verify-deps-before-run=false --filter @aftersales/api exec tsc --noEmit --incremental false
+首次退出码 1
+test/conversation-refund.test.ts(65,27) TS2339 Property getCalls does not exist on type MockPaymentGateway
+test/fixtures/refund-conversation-options.ts(9,11) TS2339 Property snapshotVersion does not exist on type P7Snapshot
+测试夹具误用接口 修正为原 version 字段与网关原统计接口 不修改业务断言

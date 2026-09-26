@@ -1,0 +1,11 @@
+{
+  "apiUrl": "http://127.0.0.1:59135",
+  "webUrl": "http://127.0.0.1:59130",
+  "paymentUrl": "http://127.0.0.1:51472",
+  "apiPid": 80104,
+  "webPid": 148256,
+  "helperPid": 82960,
+  "oldWebPid": 91008,
+  "webHelperPid": 113868,
+  "oldApiPid": 105796
+}

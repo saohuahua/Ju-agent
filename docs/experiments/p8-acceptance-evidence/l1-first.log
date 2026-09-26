@@ -1,0 +1,2 @@
+$ tsx packages/eval/src/cli.ts "--offline" "--db" "C:\\Users\\htlocal\\AppData\\Local\\Temp\\p8-audit-l1-9f7246de-97ac-4f60-b97f-7c43ae5927ac.db" "--output" "docs/experiments/p8-acceptance-evidence/l1-reports" "--experiment-id" "p8-acceptance-l1"
+{"reportId":"evr_22a631be","experimentId":"p8-acceptance-l1","mode":"simulation","total":124,"passed":124,"gatePassed":true,"costUnit":"micro_yuan","scopeCommitted":3390,"hasUncertainCost":false,"blocked":false,"output":"D:\\project\\agent-new\\aftersales\\docs\\experiments\\p8-acceptance-evidence\\l1-reports"}

@@ -1,0 +1,1524 @@
+{
+  "test": "P8 离线调查和运行记忆 > 串行与并行使用相同原文且得出兼容建议",
+  "reports": [
+    {
+      "schemaVersion": 1,
+      "mode": "deterministic-offline",
+      "input": {
+        "customerId": "C1001",
+        "orderNo": "SO-2026-0002",
+        "policyVersion": "2026.09-v3",
+        "knowledgeVersion": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+        "evidence": [
+          {
+            "kind": "order",
+            "version": "1",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "orderNo": "SO-2026-0002",
+              "customerId": "C1001",
+              "status": "shipped",
+              "totalAmountCents": 29900,
+              "currency": "CNY",
+              "paymentChannel": "wechat",
+              "items": [
+                {
+                  "itemId": "item-0002-1",
+                  "sku": "SKU-SP-001",
+                  "title": "便携蓝牙音箱",
+                  "category": "electronics",
+                  "quantity": 1,
+                  "unitPriceCents": 29900
+                }
+              ],
+              "paidAt": "2026-09-16T08:00:00.000Z",
+              "shippedAt": "2026-09-17T08:00:00.000Z",
+              "deliveredAt": null,
+              "createdAt": "2026-09-16T08:00:00.000Z",
+              "updatedAt": "2026-09-16T08:00:00.000Z",
+              "version": 1
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"order\",\"1\",\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\"]"
+          },
+          {
+            "kind": "shipment",
+            "version": "1",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "shipmentId": "SH-2026-0002",
+              "orderNo": "SO-2026-0002",
+              "carrier": "顺丰速运",
+              "trackingNo": "SF1357924680",
+              "status": "lost",
+              "events": [
+                {
+                  "time": "2026-09-17T09:00:00.000Z",
+                  "description": "包裹已从杭州转运中心发出"
+                },
+                {
+                  "time": "2026-09-19T08:00:00.000Z",
+                  "description": "包裹到达上海浦东分拨中心"
+                }
+              ],
+              "deliveredAt": null,
+              "updatedAt": "2026-09-20T12:00:00.000Z",
+              "version": 1
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"shipment\",\"1\",\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R1_unshipped_cancel",
+              "policyVersion": "2026.09-v3",
+              "title": "未发货订单仅退款",
+              "content": "订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R2_lost_package",
+              "policyVersion": "2026.09-v3",
+              "title": "物流丢件仅退款",
+              "content": "物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R3_quality_window",
+              "policyVersion": "2026.09-v3",
+              "title": "质量问题退换窗口",
+              "content": "商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R4_no_reason_7d",
+              "policyVersion": "2026.09-v3",
+              "title": "七天无理由退货",
+              "content": "自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R5_no_match",
+              "policyVersion": "2026.09-v3",
+              "title": "无匹配政策的处理",
+              "content": "没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R6_large_amount",
+              "policyVersion": "2026.09-v3",
+              "title": "大额退款人工审批",
+              "content": "退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "PP1_not_delivered",
+              "policyVersion": "2026.09-v3",
+              "title": "价保需签收后申请",
+              "content": "订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "PP2_window_expired",
+              "policyVersion": "2026.09-v3",
+              "title": "价保窗口时限",
+              "content": "价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "PP3_active_return",
+              "policyVersion": "2026.09-v3",
+              "title": "进行中售后与价保互斥",
+              "content": "订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "PP4_no_price_drop",
+              "policyVersion": "2026.09-v3",
+              "title": "价保需有降价事实",
+              "content": "订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "PP5_price_drop",
+              "policyVersion": "2026.09-v3",
+              "title": "价保差价退还规则",
+              "content": "自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D1_fresh_food_no_return",
+              "policyVersion": "2026.09-v3",
+              "title": "生鲜食品售后规则",
+              "content": "生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D2_customized_no_return",
+              "policyVersion": "2026.09-v3",
+              "title": "定制商品售后规则",
+              "content": "定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D3_virtual_activated",
+              "policyVersion": "2026.09-v3",
+              "title": "虚拟商品售后规则",
+              "content": "虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D4_cross_border_customs",
+              "policyVersion": "2026.09-v3",
+              "title": "跨境商品售后规则",
+              "content": "跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D5_large_item_install",
+              "policyVersion": "2026.09-v3",
+              "title": "大件商品售后规则",
+              "content": "大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D6_pre_order_deposit",
+              "policyVersion": "2026.09-v3",
+              "title": "预售商品定金规则",
+              "content": "预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D7_second_hand_quality",
+              "policyVersion": "2026.09-v3",
+              "title": "二手商品售后规则",
+              "content": "二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D8_gift_card_rules",
+              "policyVersion": "2026.09-v3",
+              "title": "礼品卡使用规则",
+              "content": "礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\"]"
+          }
+        ],
+        "businessReferences": [],
+        "experimentId": "p8-offline-v1",
+        "caseId": "case",
+        "repeat": 1,
+        "mode": "parallel",
+        "snapshot": {
+          "schemaVersion": 1,
+          "mode": "simulation",
+          "provider": "local-demo",
+          "model": "p8-deterministic-v1",
+          "protocol": "anthropic_messages",
+          "endpointRef": "offline",
+          "credentialRef": "none",
+          "promptVersion": "p8-analysis-v1",
+          "knowledgeSnapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+          "toolVersion": "p8-readonly-v1",
+          "budgetRef": "first-real-cny-100",
+          "capabilities": {
+            "tools": true,
+            "parallelTools": false,
+            "streamedArguments": true,
+            "structuredOutput": false,
+            "cancellation": true,
+            "usage": "required",
+            "contextTokens": 8000,
+            "maxOutputTokens": 1000
+          },
+          "price": {
+            "version": "p8-synthetic-fixed-v1",
+            "currency": "CNY",
+            "inputMicroPerMillion": 0,
+            "outputMicroPerMillion": 0,
+            "fixedMicroPerCall": 10,
+            "fxNumerator": 1,
+            "fxDenominator": 1,
+            "source": "P8 synthetic fixture",
+            "fxSource": "identity",
+            "verifiedAt": "2026-09-25"
+          },
+          "timeoutMs": 1000,
+          "maxAttempts": 1,
+          "maxConcurrency": 4,
+          "maxOutputTokens": 1000,
+          "version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539"
+        },
+        "userStatements": [
+          "我尚未收到商品 请核验丢件退款条件"
+        ],
+        "acceptedAt": 1790405578867
+      },
+      "parent": {
+        "taskId": "b75f9585-1534-4280-888e-bceb194d7326",
+        "commandId": "4c9855a5-8f0d-4d49-bcba-8191e4606e46",
+        "runId": "run_54954396-b17e-4b45-ae91-7026b5c1eeb3",
+        "customerId": "C1001",
+        "provider": "local-demo",
+        "tool": "p8-parent",
+        "approvalId": null,
+        "status": "completed",
+        "owner": "p8-8cde8995-9637-4fde-ab47-14b04564d9dd",
+        "generation": 1,
+        "leaseUntil": 0,
+        "attempt": 1,
+        "cancelRequested": 0,
+        "deadline": 1790405878868,
+        "error": null,
+        "input": {
+          "requestKey": "[\"p8-parent-v1\",\"p8-offline-v1\",\"case\",1,\"parallel\"]",
+          "customerId": "C1001",
+          "kind": "start",
+          "source": "sim",
+          "config": {
+            "snapshotId": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+            "provider": "local-demo",
+            "model": "p8-deterministic-v1",
+            "promptVersion": "p8-analysis-v1",
+            "value": {
+              "schemaVersion": 1,
+              "mode": "simulation",
+              "provider": "local-demo",
+              "model": "p8-deterministic-v1",
+              "protocol": "anthropic_messages",
+              "endpointRef": "offline",
+              "credentialRef": "none",
+              "promptVersion": "p8-analysis-v1",
+              "knowledgeSnapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+              "toolVersion": "p8-readonly-v1",
+              "budgetRef": "first-real-cny-100",
+              "capabilities": {
+                "tools": true,
+                "parallelTools": false,
+                "streamedArguments": true,
+                "structuredOutput": false,
+                "cancellation": true,
+                "usage": "required",
+                "contextTokens": 8000,
+                "maxOutputTokens": 1000
+              },
+              "price": {
+                "version": "p8-synthetic-fixed-v1",
+                "currency": "CNY",
+                "inputMicroPerMillion": 0,
+                "outputMicroPerMillion": 0,
+                "fixedMicroPerCall": 10,
+                "fxNumerator": 1,
+                "fxDenominator": 1,
+                "source": "P8 synthetic fixture",
+                "fxSource": "identity",
+                "verifiedAt": "2026-09-25"
+              },
+              "timeoutMs": 1000,
+              "maxAttempts": 1,
+              "maxConcurrency": 4,
+              "maxOutputTokens": 1000,
+              "version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539"
+            }
+          },
+          "plan": {
+            "tool": "p8-parent",
+            "input": "SO-2026-0002"
+          }
+        }
+      },
+      "tasks": [
+        {
+          "taskId": "b75f9585-1534-4280-888e-bceb194d7326",
+          "commandId": "4c9855a5-8f0d-4d49-bcba-8191e4606e46",
+          "runId": "run_54954396-b17e-4b45-ae91-7026b5c1eeb3",
+          "customerId": "C1001",
+          "provider": "local-demo",
+          "tool": "p8-parent",
+          "approvalId": null,
+          "status": "completed",
+          "owner": "p8-8cde8995-9637-4fde-ab47-14b04564d9dd",
+          "generation": 1,
+          "leaseUntil": 0,
+          "attempt": 1,
+          "cancelRequested": 0,
+          "deadline": 1790405878868,
+          "error": null,
+          "input": {
+            "requestKey": "[\"p8-parent-v1\",\"p8-offline-v1\",\"case\",1,\"parallel\"]",
+            "customerId": "C1001",
+            "kind": "start",
+            "source": "sim",
+            "config": {
+              "snapshotId": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+              "provider": "local-demo",
+              "model": "p8-deterministic-v1",
+              "promptVersion": "p8-analysis-v1",
+              "value": {
+                "schemaVersion": 1,
+                "mode": "simulation",
+                "provider": "local-demo",
+                "model": "p8-deterministic-v1",
+                "protocol": "anthropic_messages",
+                "endpointRef": "offline",
+                "credentialRef": "none",
+                "promptVersion": "p8-analysis-v1",
+                "knowledgeSnapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+                "toolVersion": "p8-readonly-v1",
+                "budgetRef": "first-real-cny-100",
+                "capabilities": {
+                  "tools": true,
+                  "parallelTools": false,
+                  "streamedArguments": true,
+                  "structuredOutput": false,
+                  "cancellation": true,
+                  "usage": "required",
+                  "contextTokens": 8000,
+                  "maxOutputTokens": 1000
+                },
+                "price": {
+                  "version": "p8-synthetic-fixed-v1",
+                  "currency": "CNY",
+                  "inputMicroPerMillion": 0,
+                  "outputMicroPerMillion": 0,
+                  "fixedMicroPerCall": 10,
+                  "fxNumerator": 1,
+                  "fxDenominator": 1,
+                  "source": "P8 synthetic fixture",
+                  "fxSource": "identity",
+                  "verifiedAt": "2026-09-25"
+                },
+                "timeoutMs": 1000,
+                "maxAttempts": 1,
+                "maxConcurrency": 4,
+                "maxOutputTokens": 1000,
+                "version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539"
+              }
+            },
+            "plan": {
+              "tool": "p8-parent",
+              "input": "SO-2026-0002"
+            }
+          }
+        },
+        {
+          "taskId": "8e60e28f-956d-4c0c-bc00-7adbb5e65530",
+          "commandId": "0bd3e9a6-8b17-4c0b-901a-9ab45d447a69",
+          "runId": "run_2658a924-a085-4253-9a71-181ebd0d2fbc",
+          "customerId": "C1001",
+          "provider": "local-demo",
+          "tool": "p8-facts",
+          "approvalId": null,
+          "status": "completed",
+          "owner": "p8-47746995-06b9-4f02-b68c-4ae64a31e81a",
+          "generation": 1,
+          "leaseUntil": 0,
+          "attempt": 1,
+          "cancelRequested": 0,
+          "deadline": 1790405878868,
+          "error": null,
+          "input": {
+            "requestKey": "[\"p8-child-v1\",\"b75f9585-1534-4280-888e-bceb194d7326\",\"facts\"]",
+            "customerId": "C1001",
+            "kind": "start",
+            "source": "sim",
+            "config": {
+              "snapshotId": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+              "provider": "local-demo",
+              "model": "p8-deterministic-v1",
+              "promptVersion": "p8-analysis-v1",
+              "value": {
+                "schemaVersion": 1,
+                "mode": "simulation",
+                "provider": "local-demo",
+                "model": "p8-deterministic-v1",
+                "protocol": "anthropic_messages",
+                "endpointRef": "offline",
+                "credentialRef": "none",
+                "promptVersion": "p8-analysis-v1",
+                "knowledgeSnapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+                "toolVersion": "p8-readonly-v1",
+                "budgetRef": "first-real-cny-100",
+                "capabilities": {
+                  "tools": true,
+                  "parallelTools": false,
+                  "streamedArguments": true,
+                  "structuredOutput": false,
+                  "cancellation": true,
+                  "usage": "required",
+                  "contextTokens": 8000,
+                  "maxOutputTokens": 1000
+                },
+                "price": {
+                  "version": "p8-synthetic-fixed-v1",
+                  "currency": "CNY",
+                  "inputMicroPerMillion": 0,
+                  "outputMicroPerMillion": 0,
+                  "fixedMicroPerCall": 10,
+                  "fxNumerator": 1,
+                  "fxDenominator": 1,
+                  "source": "P8 synthetic fixture",
+                  "fxSource": "identity",
+                  "verifiedAt": "2026-09-25"
+                },
+                "timeoutMs": 1000,
+                "maxAttempts": 1,
+                "maxConcurrency": 4,
+                "maxOutputTokens": 1000,
+                "version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539"
+              }
+            },
+            "plan": {
+              "tool": "p8-facts",
+              "input": "SO-2026-0002"
+            }
+          }
+        },
+        {
+          "taskId": "34e2faeb-9013-41e2-bc4d-fc4a57760a4f",
+          "commandId": "ef1c4c8f-a9f9-45ad-9d37-3e91a0fb1716",
+          "runId": "run_cf6769f8-4b17-4793-8424-8258e377e6cb",
+          "customerId": "C1001",
+          "provider": "local-demo",
+          "tool": "p8-policy",
+          "approvalId": null,
+          "status": "completed",
+          "owner": "p8-f7a107c0-84e1-4d6a-9ed9-0f6612d06938",
+          "generation": 1,
+          "leaseUntil": 0,
+          "attempt": 1,
+          "cancelRequested": 0,
+          "deadline": 1790405878868,
+          "error": null,
+          "input": {
+            "requestKey": "[\"p8-child-v1\",\"b75f9585-1534-4280-888e-bceb194d7326\",\"policy\"]",
+            "customerId": "C1001",
+            "kind": "start",
+            "source": "sim",
+            "config": {
+              "snapshotId": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+              "provider": "local-demo",
+              "model": "p8-deterministic-v1",
+              "promptVersion": "p8-analysis-v1",
+              "value": {
+                "schemaVersion": 1,
+                "mode": "simulation",
+                "provider": "local-demo",
+                "model": "p8-deterministic-v1",
+                "protocol": "anthropic_messages",
+                "endpointRef": "offline",
+                "credentialRef": "none",
+                "promptVersion": "p8-analysis-v1",
+                "knowledgeSnapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+                "toolVersion": "p8-readonly-v1",
+                "budgetRef": "first-real-cny-100",
+                "capabilities": {
+                  "tools": true,
+                  "parallelTools": false,
+                  "streamedArguments": true,
+                  "structuredOutput": false,
+                  "cancellation": true,
+                  "usage": "required",
+                  "contextTokens": 8000,
+                  "maxOutputTokens": 1000
+                },
+                "price": {
+                  "version": "p8-synthetic-fixed-v1",
+                  "currency": "CNY",
+                  "inputMicroPerMillion": 0,
+                  "outputMicroPerMillion": 0,
+                  "fixedMicroPerCall": 10,
+                  "fxNumerator": 1,
+                  "fxDenominator": 1,
+                  "source": "P8 synthetic fixture",
+                  "fxSource": "identity",
+                  "verifiedAt": "2026-09-25"
+                },
+                "timeoutMs": 1000,
+                "maxAttempts": 1,
+                "maxConcurrency": 4,
+                "maxOutputTokens": 1000,
+                "version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539"
+              }
+            },
+            "plan": {
+              "tool": "p8-policy",
+              "input": "SO-2026-0002"
+            }
+          }
+        }
+      ],
+      "steps": [
+        {
+          "task_id": "34e2faeb-9013-41e2-bc4d-fc4a57760a4f",
+          "step": "p8-evidence",
+          "value_json": "[{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R1_unshipped_cancel\",\"policyVersion\":\"2026.09-v3\",\"title\":\"未发货订单仅退款\",\"content\":\"订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R2_lost_package\",\"policyVersion\":\"2026.09-v3\",\"title\":\"物流丢件仅退款\",\"content\":\"物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R3_quality_window\",\"policyVersion\":\"2026.09-v3\",\"title\":\"质量问题退换窗口\",\"content\":\"商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R4_no_reason_7d\",\"policyVersion\":\"2026.09-v3\",\"title\":\"七天无理由退货\",\"content\":\"自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R5_no_match\",\"policyVersion\":\"2026.09-v3\",\"title\":\"无匹配政策的处理\",\"content\":\"没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R6_large_amount\",\"policyVersion\":\"2026.09-v3\",\"title\":\"大额退款人工审批\",\"content\":\"退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP1_not_delivered\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保需签收后申请\",\"content\":\"订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP2_window_expired\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保窗口时限\",\"content\":\"价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP3_active_return\",\"policyVersion\":\"2026.09-v3\",\"title\":\"进行中售后与价保互斥\",\"content\":\"订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP4_no_price_drop\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保需有降价事实\",\"content\":\"订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP5_price_drop\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保差价退还规则\",\"content\":\"自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D1_fresh_food_no_return\",\"policyVersion\":\"2026.09-v3\",\"title\":\"生鲜食品售后规则\",\"content\":\"生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D2_customized_no_return\",\"policyVersion\":\"2026.09-v3\",\"title\":\"定制商品售后规则\",\"content\":\"定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D3_virtual_activated\",\"policyVersion\":\"2026.09-v3\",\"title\":\"虚拟商品售后规则\",\"content\":\"虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D4_cross_border_customs\",\"policyVersion\":\"2026.09-v3\",\"title\":\"跨境商品售后规则\",\"content\":\"跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D5_large_item_install\",\"policyVersion\":\"2026.09-v3\",\"title\":\"大件商品售后规则\",\"content\":\"大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D6_pre_order_deposit\",\"policyVersion\":\"2026.09-v3\",\"title\":\"预售商品定金规则\",\"content\":\"预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D7_second_hand_quality\",\"policyVersion\":\"2026.09-v3\",\"title\":\"二手商品售后规则\",\"content\":\"二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D8_gift_card_rules\",\"policyVersion\":\"2026.09-v3\",\"title\":\"礼品卡使用规则\",\"content\":\"礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"}]"
+        },
+        {
+          "task_id": "34e2faeb-9013-41e2-bc4d-fc4a57760a4f",
+          "step": "p8-result",
+          "value_json": "{\"parentRunId\":\"run_54954396-b17e-4b45-ae91-7026b5c1eeb3\",\"taskId\":\"34e2faeb-9013-41e2-bc4d-fc4a57760a4f\",\"runId\":\"run_cf6769f8-4b17-4793-8424-8258e377e6cb\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"role\":\"policy\",\"configVersion\":\"9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539\",\"knowledgeVersion\":\"cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d\",\"startedAt\":1790405578882,\"status\":\"confirmed\",\"facts\":[{\"key\":\"policy.R1_unshipped_cancel\",\"value\":\"订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\"},{\"key\":\"policy.R2_lost_package\",\"value\":\"物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\"},{\"key\":\"policy.R3_quality_window\",\"value\":\"商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\"},{\"key\":\"policy.R4_no_reason_7d\",\"value\":\"自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\"},{\"key\":\"policy.R5_no_match\",\"value\":\"没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\"},{\"key\":\"policy.R6_large_amount\",\"value\":\"退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\"},{\"key\":\"policy.PP1_not_delivered\",\"value\":\"订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\"},{\"key\":\"policy.PP2_window_expired\",\"value\":\"价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\"},{\"key\":\"policy.PP3_active_return\",\"value\":\"订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\"},{\"key\":\"policy.PP4_no_price_drop\",\"value\":\"订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\"},{\"key\":\"policy.PP5_price_drop\",\"value\":\"自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\"},{\"key\":\"policy.D1_fresh_food_no_return\",\"value\":\"生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\"},{\"key\":\"policy.D2_customized_no_return\",\"value\":\"定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\"},{\"key\":\"policy.D3_virtual_activated\",\"value\":\"虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\"},{\"key\":\"policy.D4_cross_border_customs\",\"value\":\"跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\"},{\"key\":\"policy.D5_large_item_install\",\"value\":\"大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\"},{\"key\":\"policy.D6_pre_order_deposit\",\"value\":\"预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\"},{\"key\":\"policy.D7_second_hand_quality\",\"value\":\"二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\"},{\"key\":\"policy.D8_gift_card_rules\",\"value\":\"礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"}],\"citations\":[\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"],\"unresolved\":[],\"error\":null,\"finishedAt\":1790405578884}"
+        },
+        {
+          "task_id": "8e60e28f-956d-4c0c-bc00-7adbb5e65530",
+          "step": "p8-evidence",
+          "value_json": "[{\"kind\":\"order\",\"version\":\"1\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"orderNo\":\"SO-2026-0002\",\"customerId\":\"C1001\",\"status\":\"shipped\",\"totalAmountCents\":29900,\"currency\":\"CNY\",\"paymentChannel\":\"wechat\",\"items\":[{\"itemId\":\"item-0002-1\",\"sku\":\"SKU-SP-001\",\"title\":\"便携蓝牙音箱\",\"category\":\"electronics\",\"quantity\":1,\"unitPriceCents\":29900}],\"paidAt\":\"2026-09-16T08:00:00.000Z\",\"shippedAt\":\"2026-09-17T08:00:00.000Z\",\"deliveredAt\":null,\"createdAt\":\"2026-09-16T08:00:00.000Z\",\"updatedAt\":\"2026-09-16T08:00:00.000Z\",\"version\":1},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\"},{\"kind\":\"shipment\",\"version\":\"1\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"shipmentId\":\"SH-2026-0002\",\"orderNo\":\"SO-2026-0002\",\"carrier\":\"顺丰速运\",\"trackingNo\":\"SF1357924680\",\"status\":\"lost\",\"events\":[{\"time\":\"2026-09-17T09:00:00.000Z\",\"description\":\"包裹已从杭州转运中心发出\"},{\"time\":\"2026-09-19T08:00:00.000Z\",\"description\":\"包裹到达上海浦东分拨中心\"}],\"deliveredAt\":null,\"updatedAt\":\"2026-09-20T12:00:00.000Z\",\"version\":1},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\"}]"
+        },
+        {
+          "task_id": "8e60e28f-956d-4c0c-bc00-7adbb5e65530",
+          "step": "p8-result",
+          "value_json": "{\"parentRunId\":\"run_54954396-b17e-4b45-ae91-7026b5c1eeb3\",\"taskId\":\"8e60e28f-956d-4c0c-bc00-7adbb5e65530\",\"runId\":\"run_2658a924-a085-4253-9a71-181ebd0d2fbc\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"role\":\"facts\",\"configVersion\":\"9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539\",\"knowledgeVersion\":\"cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d\",\"startedAt\":1790405578881,\"status\":\"confirmed\",\"facts\":[{\"key\":\"order.status\",\"value\":\"shipped\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\"},{\"key\":\"shipment.status\",\"value\":\"lost\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\"}],\"citations\":[\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\"],\"unresolved\":[],\"error\":null,\"finishedAt\":1790405578884}"
+        },
+        {
+          "task_id": "b75f9585-1534-4280-888e-bceb194d7326",
+          "step": "p8-conclusion",
+          "value_json": "{\"status\":\"complete\",\"recommendation\":\"controlled_review\",\"reasons\":[\"物流确认丢件 支持全额仅退款\"],\"memory\":{\"parentRunId\":\"run_54954396-b17e-4b45-ae91-7026b5c1eeb3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"userStatements\":[\"我尚未收到商品 请核验丢件退款条件\"],\"evidenceRefs\":[\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"],\"confirmedFacts\":[{\"key\":\"order.status\",\"value\":\"shipped\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\"},{\"key\":\"shipment.status\",\"value\":\"lost\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\"},{\"key\":\"policy.R1_unshipped_cancel\",\"value\":\"订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\"},{\"key\":\"policy.R2_lost_package\",\"value\":\"物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\"},{\"key\":\"policy.R3_quality_window\",\"value\":\"商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\"},{\"key\":\"policy.R4_no_reason_7d\",\"value\":\"自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\"},{\"key\":\"policy.R5_no_match\",\"value\":\"没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\"},{\"key\":\"policy.R6_large_amount\",\"value\":\"退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\"},{\"key\":\"policy.PP1_not_delivered\",\"value\":\"订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\"},{\"key\":\"policy.PP2_window_expired\",\"value\":\"价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\"},{\"key\":\"policy.PP3_active_return\",\"value\":\"订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\"},{\"key\":\"policy.PP4_no_price_drop\",\"value\":\"订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\"},{\"key\":\"policy.PP5_price_drop\",\"value\":\"自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\"},{\"key\":\"policy.D1_fresh_food_no_return\",\"value\":\"生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\"},{\"key\":\"policy.D2_customized_no_return\",\"value\":\"定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\"},{\"key\":\"policy.D3_virtual_activated\",\"value\":\"虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\"},{\"key\":\"policy.D4_cross_border_customs\",\"value\":\"跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\"},{\"key\":\"policy.D5_large_item_install\",\"value\":\"大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\"},{\"key\":\"policy.D6_pre_order_deposit\",\"value\":\"预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\"},{\"key\":\"policy.D7_second_hand_quality\",\"value\":\"二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\"},{\"key\":\"policy.D8_gift_card_rules\",\"value\":\"礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"}],\"unresolved\":[],\"waitingReasons\":[],\"branches\":[{\"role\":\"facts\",\"taskId\":\"8e60e28f-956d-4c0c-bc00-7adbb5e65530\",\"status\":\"completed\"},{\"role\":\"policy\",\"taskId\":\"34e2faeb-9013-41e2-bc4d-fc4a57760a4f\",\"status\":\"completed\"}],\"businessReferences\":[],\"completedActions\":[],\"unknownActions\":[]},\"finishedAt\":1790405578888}"
+        }
+      ],
+      "events": [
+        {
+          "cursor": 1,
+          "task_id": "8e60e28f-956d-4c0c-bc00-7adbb5e65530",
+          "event_key": "p8-branch:b75f9585-1534-4280-888e-bceb194d7326",
+          "payload_json": "{}"
+        },
+        {
+          "cursor": 2,
+          "task_id": "34e2faeb-9013-41e2-bc4d-fc4a57760a4f",
+          "event_key": "p8-branch:b75f9585-1534-4280-888e-bceb194d7326",
+          "payload_json": "{}"
+        },
+        {
+          "cursor": 3,
+          "task_id": "8e60e28f-956d-4c0c-bc00-7adbb5e65530",
+          "event_key": "step:p8-evidence",
+          "payload_json": "[{\"kind\":\"order\",\"version\":\"1\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"orderNo\":\"SO-2026-0002\",\"customerId\":\"C1001\",\"status\":\"shipped\",\"totalAmountCents\":29900,\"currency\":\"CNY\",\"paymentChannel\":\"wechat\",\"items\":[{\"itemId\":\"item-0002-1\",\"sku\":\"SKU-SP-001\",\"title\":\"便携蓝牙音箱\",\"category\":\"electronics\",\"quantity\":1,\"unitPriceCents\":29900}],\"paidAt\":\"2026-09-16T08:00:00.000Z\",\"shippedAt\":\"2026-09-17T08:00:00.000Z\",\"deliveredAt\":null,\"createdAt\":\"2026-09-16T08:00:00.000Z\",\"updatedAt\":\"2026-09-16T08:00:00.000Z\",\"version\":1},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\"},{\"kind\":\"shipment\",\"version\":\"1\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"shipmentId\":\"SH-2026-0002\",\"orderNo\":\"SO-2026-0002\",\"carrier\":\"顺丰速运\",\"trackingNo\":\"SF1357924680\",\"status\":\"lost\",\"events\":[{\"time\":\"2026-09-17T09:00:00.000Z\",\"description\":\"包裹已从杭州转运中心发出\"},{\"time\":\"2026-09-19T08:00:00.000Z\",\"description\":\"包裹到达上海浦东分拨中心\"}],\"deliveredAt\":null,\"updatedAt\":\"2026-09-20T12:00:00.000Z\",\"version\":1},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\"}]"
+        },
+        {
+          "cursor": 4,
+          "task_id": "34e2faeb-9013-41e2-bc4d-fc4a57760a4f",
+          "event_key": "step:p8-evidence",
+          "payload_json": "[{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R1_unshipped_cancel\",\"policyVersion\":\"2026.09-v3\",\"title\":\"未发货订单仅退款\",\"content\":\"订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R2_lost_package\",\"policyVersion\":\"2026.09-v3\",\"title\":\"物流丢件仅退款\",\"content\":\"物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R3_quality_window\",\"policyVersion\":\"2026.09-v3\",\"title\":\"质量问题退换窗口\",\"content\":\"商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R4_no_reason_7d\",\"policyVersion\":\"2026.09-v3\",\"title\":\"七天无理由退货\",\"content\":\"自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R5_no_match\",\"policyVersion\":\"2026.09-v3\",\"title\":\"无匹配政策的处理\",\"content\":\"没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R6_large_amount\",\"policyVersion\":\"2026.09-v3\",\"title\":\"大额退款人工审批\",\"content\":\"退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP1_not_delivered\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保需签收后申请\",\"content\":\"订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP2_window_expired\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保窗口时限\",\"content\":\"价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP3_active_return\",\"policyVersion\":\"2026.09-v3\",\"title\":\"进行中售后与价保互斥\",\"content\":\"订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP4_no_price_drop\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保需有降价事实\",\"content\":\"订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP5_price_drop\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保差价退还规则\",\"content\":\"自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D1_fresh_food_no_return\",\"policyVersion\":\"2026.09-v3\",\"title\":\"生鲜食品售后规则\",\"content\":\"生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D2_customized_no_return\",\"policyVersion\":\"2026.09-v3\",\"title\":\"定制商品售后规则\",\"content\":\"定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D3_virtual_activated\",\"policyVersion\":\"2026.09-v3\",\"title\":\"虚拟商品售后规则\",\"content\":\"虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D4_cross_border_customs\",\"policyVersion\":\"2026.09-v3\",\"title\":\"跨境商品售后规则\",\"content\":\"跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D5_large_item_install\",\"policyVersion\":\"2026.09-v3\",\"title\":\"大件商品售后规则\",\"content\":\"大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D6_pre_order_deposit\",\"policyVersion\":\"2026.09-v3\",\"title\":\"预售商品定金规则\",\"content\":\"预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D7_second_hand_quality\",\"policyVersion\":\"2026.09-v3\",\"title\":\"二手商品售后规则\",\"content\":\"二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D8_gift_card_rules\",\"policyVersion\":\"2026.09-v3\",\"title\":\"礼品卡使用规则\",\"content\":\"礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"}]"
+        },
+        {
+          "cursor": 5,
+          "task_id": "8e60e28f-956d-4c0c-bc00-7adbb5e65530",
+          "event_key": "step:p8-result",
+          "payload_json": "{\"parentRunId\":\"run_54954396-b17e-4b45-ae91-7026b5c1eeb3\",\"taskId\":\"8e60e28f-956d-4c0c-bc00-7adbb5e65530\",\"runId\":\"run_2658a924-a085-4253-9a71-181ebd0d2fbc\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"role\":\"facts\",\"configVersion\":\"9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539\",\"knowledgeVersion\":\"cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d\",\"startedAt\":1790405578881,\"status\":\"confirmed\",\"facts\":[{\"key\":\"order.status\",\"value\":\"shipped\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\"},{\"key\":\"shipment.status\",\"value\":\"lost\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\"}],\"citations\":[\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\"],\"unresolved\":[],\"error\":null,\"finishedAt\":1790405578884}"
+        },
+        {
+          "cursor": 6,
+          "task_id": "8e60e28f-956d-4c0c-bc00-7adbb5e65530",
+          "event_key": "status:completed",
+          "payload_json": "{\"status\":\"completed\",\"error\":null}"
+        },
+        {
+          "cursor": 7,
+          "task_id": "34e2faeb-9013-41e2-bc4d-fc4a57760a4f",
+          "event_key": "step:p8-result",
+          "payload_json": "{\"parentRunId\":\"run_54954396-b17e-4b45-ae91-7026b5c1eeb3\",\"taskId\":\"34e2faeb-9013-41e2-bc4d-fc4a57760a4f\",\"runId\":\"run_cf6769f8-4b17-4793-8424-8258e377e6cb\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"role\":\"policy\",\"configVersion\":\"9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539\",\"knowledgeVersion\":\"cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d\",\"startedAt\":1790405578882,\"status\":\"confirmed\",\"facts\":[{\"key\":\"policy.R1_unshipped_cancel\",\"value\":\"订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\"},{\"key\":\"policy.R2_lost_package\",\"value\":\"物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\"},{\"key\":\"policy.R3_quality_window\",\"value\":\"商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\"},{\"key\":\"policy.R4_no_reason_7d\",\"value\":\"自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\"},{\"key\":\"policy.R5_no_match\",\"value\":\"没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\"},{\"key\":\"policy.R6_large_amount\",\"value\":\"退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\"},{\"key\":\"policy.PP1_not_delivered\",\"value\":\"订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\"},{\"key\":\"policy.PP2_window_expired\",\"value\":\"价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\"},{\"key\":\"policy.PP3_active_return\",\"value\":\"订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\"},{\"key\":\"policy.PP4_no_price_drop\",\"value\":\"订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\"},{\"key\":\"policy.PP5_price_drop\",\"value\":\"自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\"},{\"key\":\"policy.D1_fresh_food_no_return\",\"value\":\"生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\"},{\"key\":\"policy.D2_customized_no_return\",\"value\":\"定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\"},{\"key\":\"policy.D3_virtual_activated\",\"value\":\"虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\"},{\"key\":\"policy.D4_cross_border_customs\",\"value\":\"跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\"},{\"key\":\"policy.D5_large_item_install\",\"value\":\"大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\"},{\"key\":\"policy.D6_pre_order_deposit\",\"value\":\"预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\"},{\"key\":\"policy.D7_second_hand_quality\",\"value\":\"二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\"},{\"key\":\"policy.D8_gift_card_rules\",\"value\":\"礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"}],\"citations\":[\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"],\"unresolved\":[],\"error\":null,\"finishedAt\":1790405578884}"
+        },
+        {
+          "cursor": 8,
+          "task_id": "34e2faeb-9013-41e2-bc4d-fc4a57760a4f",
+          "event_key": "status:completed",
+          "payload_json": "{\"status\":\"completed\",\"error\":null}"
+        },
+        {
+          "cursor": 9,
+          "task_id": "b75f9585-1534-4280-888e-bceb194d7326",
+          "event_key": "p8-ready:b75f9585-1534-4280-888e-bceb194d7326",
+          "payload_json": "{}"
+        },
+        {
+          "cursor": 11,
+          "task_id": "b75f9585-1534-4280-888e-bceb194d7326",
+          "event_key": "step:p8-conclusion",
+          "payload_json": "{\"status\":\"complete\",\"recommendation\":\"controlled_review\",\"reasons\":[\"物流确认丢件 支持全额仅退款\"],\"memory\":{\"parentRunId\":\"run_54954396-b17e-4b45-ae91-7026b5c1eeb3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"userStatements\":[\"我尚未收到商品 请核验丢件退款条件\"],\"evidenceRefs\":[\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"],\"confirmedFacts\":[{\"key\":\"order.status\",\"value\":\"shipped\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\"},{\"key\":\"shipment.status\",\"value\":\"lost\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\"},{\"key\":\"policy.R1_unshipped_cancel\",\"value\":\"订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\"},{\"key\":\"policy.R2_lost_package\",\"value\":\"物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\"},{\"key\":\"policy.R3_quality_window\",\"value\":\"商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\"},{\"key\":\"policy.R4_no_reason_7d\",\"value\":\"自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\"},{\"key\":\"policy.R5_no_match\",\"value\":\"没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\"},{\"key\":\"policy.R6_large_amount\",\"value\":\"退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\"},{\"key\":\"policy.PP1_not_delivered\",\"value\":\"订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\"},{\"key\":\"policy.PP2_window_expired\",\"value\":\"价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\"},{\"key\":\"policy.PP3_active_return\",\"value\":\"订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\"},{\"key\":\"policy.PP4_no_price_drop\",\"value\":\"订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\"},{\"key\":\"policy.PP5_price_drop\",\"value\":\"自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\"},{\"key\":\"policy.D1_fresh_food_no_return\",\"value\":\"生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\"},{\"key\":\"policy.D2_customized_no_return\",\"value\":\"定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\"},{\"key\":\"policy.D3_virtual_activated\",\"value\":\"虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\"},{\"key\":\"policy.D4_cross_border_customs\",\"value\":\"跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\"},{\"key\":\"policy.D5_large_item_install\",\"value\":\"大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\"},{\"key\":\"policy.D6_pre_order_deposit\",\"value\":\"预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\"},{\"key\":\"policy.D7_second_hand_quality\",\"value\":\"二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\"},{\"key\":\"policy.D8_gift_card_rules\",\"value\":\"礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"}],\"unresolved\":[],\"waitingReasons\":[],\"branches\":[{\"role\":\"facts\",\"taskId\":\"8e60e28f-956d-4c0c-bc00-7adbb5e65530\",\"status\":\"completed\"},{\"role\":\"policy\",\"taskId\":\"34e2faeb-9013-41e2-bc4d-fc4a57760a4f\",\"status\":\"completed\"}],\"businessReferences\":[],\"completedActions\":[],\"unknownActions\":[]},\"finishedAt\":1790405578888}"
+        },
+        {
+          "cursor": 12,
+          "task_id": "b75f9585-1534-4280-888e-bceb194d7326",
+          "event_key": "status:completed",
+          "payload_json": "{\"status\":\"completed\",\"error\":null}"
+        }
+      ],
+      "branches": [
+        {
+          "parentRunId": "run_54954396-b17e-4b45-ae91-7026b5c1eeb3",
+          "taskId": "8e60e28f-956d-4c0c-bc00-7adbb5e65530",
+          "runId": "run_2658a924-a085-4253-9a71-181ebd0d2fbc",
+          "customerId": "C1001",
+          "orderNo": "SO-2026-0002",
+          "role": "facts",
+          "configVersion": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+          "knowledgeVersion": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+          "startedAt": 1790405578881,
+          "status": "confirmed",
+          "facts": [
+            {
+              "key": "order.status",
+              "value": "shipped",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"order\",\"1\",\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\"]"
+            },
+            {
+              "key": "shipment.status",
+              "value": "lost",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"shipment\",\"1\",\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\"]"
+            }
+          ],
+          "citations": [
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"order\",\"1\",\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"shipment\",\"1\",\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\"]"
+          ],
+          "unresolved": [],
+          "error": null,
+          "finishedAt": 1790405578884
+        },
+        {
+          "parentRunId": "run_54954396-b17e-4b45-ae91-7026b5c1eeb3",
+          "taskId": "34e2faeb-9013-41e2-bc4d-fc4a57760a4f",
+          "runId": "run_cf6769f8-4b17-4793-8424-8258e377e6cb",
+          "customerId": "C1001",
+          "orderNo": "SO-2026-0002",
+          "role": "policy",
+          "configVersion": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+          "knowledgeVersion": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+          "startedAt": 1790405578882,
+          "status": "confirmed",
+          "facts": [
+            {
+              "key": "policy.R1_unshipped_cancel",
+              "value": "订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\"]"
+            },
+            {
+              "key": "policy.R2_lost_package",
+              "value": "物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\"]"
+            },
+            {
+              "key": "policy.R3_quality_window",
+              "value": "商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\"]"
+            },
+            {
+              "key": "policy.R4_no_reason_7d",
+              "value": "自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\"]"
+            },
+            {
+              "key": "policy.R5_no_match",
+              "value": "没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\"]"
+            },
+            {
+              "key": "policy.R6_large_amount",
+              "value": "退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\"]"
+            },
+            {
+              "key": "policy.PP1_not_delivered",
+              "value": "订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\"]"
+            },
+            {
+              "key": "policy.PP2_window_expired",
+              "value": "价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\"]"
+            },
+            {
+              "key": "policy.PP3_active_return",
+              "value": "订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\"]"
+            },
+            {
+              "key": "policy.PP4_no_price_drop",
+              "value": "订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\"]"
+            },
+            {
+              "key": "policy.PP5_price_drop",
+              "value": "自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\"]"
+            },
+            {
+              "key": "policy.D1_fresh_food_no_return",
+              "value": "生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\"]"
+            },
+            {
+              "key": "policy.D2_customized_no_return",
+              "value": "定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\"]"
+            },
+            {
+              "key": "policy.D3_virtual_activated",
+              "value": "虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\"]"
+            },
+            {
+              "key": "policy.D4_cross_border_customs",
+              "value": "跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\"]"
+            },
+            {
+              "key": "policy.D5_large_item_install",
+              "value": "大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\"]"
+            },
+            {
+              "key": "policy.D6_pre_order_deposit",
+              "value": "预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\"]"
+            },
+            {
+              "key": "policy.D7_second_hand_quality",
+              "value": "二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\"]"
+            },
+            {
+              "key": "policy.D8_gift_card_rules",
+              "value": "礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\"]"
+            }
+          ],
+          "citations": [
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\"]"
+          ],
+          "unresolved": [],
+          "error": null,
+          "finishedAt": 1790405578884
+        }
+      ],
+      "conclusion": {
+        "status": "complete",
+        "recommendation": "controlled_review",
+        "reasons": [
+          "物流确认丢件 支持全额仅退款"
+        ],
+        "memory": {
+          "parentRunId": "run_54954396-b17e-4b45-ae91-7026b5c1eeb3",
+          "customerId": "C1001",
+          "orderNo": "SO-2026-0002",
+          "userStatements": [
+            "我尚未收到商品 请核验丢件退款条件"
+          ],
+          "evidenceRefs": [
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"order\",\"1\",\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"shipment\",\"1\",\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\"]",
+            "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\"]"
+          ],
+          "confirmedFacts": [
+            {
+              "key": "order.status",
+              "value": "shipped",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"order\",\"1\",\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\"]"
+            },
+            {
+              "key": "shipment.status",
+              "value": "lost",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"shipment\",\"1\",\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\"]"
+            },
+            {
+              "key": "policy.R1_unshipped_cancel",
+              "value": "订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\"]"
+            },
+            {
+              "key": "policy.R2_lost_package",
+              "value": "物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\"]"
+            },
+            {
+              "key": "policy.R3_quality_window",
+              "value": "商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\"]"
+            },
+            {
+              "key": "policy.R4_no_reason_7d",
+              "value": "自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\"]"
+            },
+            {
+              "key": "policy.R5_no_match",
+              "value": "没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\"]"
+            },
+            {
+              "key": "policy.R6_large_amount",
+              "value": "退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\"]"
+            },
+            {
+              "key": "policy.PP1_not_delivered",
+              "value": "订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\"]"
+            },
+            {
+              "key": "policy.PP2_window_expired",
+              "value": "价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\"]"
+            },
+            {
+              "key": "policy.PP3_active_return",
+              "value": "订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\"]"
+            },
+            {
+              "key": "policy.PP4_no_price_drop",
+              "value": "订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\"]"
+            },
+            {
+              "key": "policy.PP5_price_drop",
+              "value": "自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\"]"
+            },
+            {
+              "key": "policy.D1_fresh_food_no_return",
+              "value": "生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\"]"
+            },
+            {
+              "key": "policy.D2_customized_no_return",
+              "value": "定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\"]"
+            },
+            {
+              "key": "policy.D3_virtual_activated",
+              "value": "虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\"]"
+            },
+            {
+              "key": "policy.D4_cross_border_customs",
+              "value": "跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\"]"
+            },
+            {
+              "key": "policy.D5_large_item_install",
+              "value": "大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\"]"
+            },
+            {
+              "key": "policy.D6_pre_order_deposit",
+              "value": "预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\"]"
+            },
+            {
+              "key": "policy.D7_second_hand_quality",
+              "value": "二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\"]"
+            },
+            {
+              "key": "policy.D8_gift_card_rules",
+              "value": "礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款",
+              "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\"]"
+            }
+          ],
+          "unresolved": [],
+          "waitingReasons": [],
+          "branches": [
+            {
+              "role": "facts",
+              "taskId": "8e60e28f-956d-4c0c-bc00-7adbb5e65530",
+              "status": "completed"
+            },
+            {
+              "role": "policy",
+              "taskId": "34e2faeb-9013-41e2-bc4d-fc4a57760a4f",
+              "status": "completed"
+            }
+          ],
+          "businessReferences": [],
+          "completedActions": [],
+          "unknownActions": []
+        },
+        "finishedAt": 1790405578888
+      },
+      "memory": {
+        "parentRunId": "run_54954396-b17e-4b45-ae91-7026b5c1eeb3",
+        "customerId": "C1001",
+        "orderNo": "SO-2026-0002",
+        "userStatements": [
+          "我尚未收到商品 请核验丢件退款条件"
+        ],
+        "evidenceRefs": [
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"order\",\"1\",\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"shipment\",\"1\",\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\"]"
+        ],
+        "confirmedFacts": [
+          {
+            "key": "order.status",
+            "value": "shipped",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"order\",\"1\",\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\"]"
+          },
+          {
+            "key": "shipment.status",
+            "value": "lost",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"shipment\",\"1\",\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\"]"
+          },
+          {
+            "key": "policy.R1_unshipped_cancel",
+            "value": "订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\"]"
+          },
+          {
+            "key": "policy.R2_lost_package",
+            "value": "物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\"]"
+          },
+          {
+            "key": "policy.R3_quality_window",
+            "value": "商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\"]"
+          },
+          {
+            "key": "policy.R4_no_reason_7d",
+            "value": "自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\"]"
+          },
+          {
+            "key": "policy.R5_no_match",
+            "value": "没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\"]"
+          },
+          {
+            "key": "policy.R6_large_amount",
+            "value": "退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\"]"
+          },
+          {
+            "key": "policy.PP1_not_delivered",
+            "value": "订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\"]"
+          },
+          {
+            "key": "policy.PP2_window_expired",
+            "value": "价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\"]"
+          },
+          {
+            "key": "policy.PP3_active_return",
+            "value": "订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\"]"
+          },
+          {
+            "key": "policy.PP4_no_price_drop",
+            "value": "订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\"]"
+          },
+          {
+            "key": "policy.PP5_price_drop",
+            "value": "自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\"]"
+          },
+          {
+            "key": "policy.D1_fresh_food_no_return",
+            "value": "生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\"]"
+          },
+          {
+            "key": "policy.D2_customized_no_return",
+            "value": "定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\"]"
+          },
+          {
+            "key": "policy.D3_virtual_activated",
+            "value": "虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\"]"
+          },
+          {
+            "key": "policy.D4_cross_border_customs",
+            "value": "跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\"]"
+          },
+          {
+            "key": "policy.D5_large_item_install",
+            "value": "大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\"]"
+          },
+          {
+            "key": "policy.D6_pre_order_deposit",
+            "value": "预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\"]"
+          },
+          {
+            "key": "policy.D7_second_hand_quality",
+            "value": "二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\"]"
+          },
+          {
+            "key": "policy.D8_gift_card_rules",
+            "value": "礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款",
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\"]"
+          }
+        ],
+        "unresolved": [],
+        "waitingReasons": [],
+        "branches": [
+          {
+            "role": "facts",
+            "taskId": "8e60e28f-956d-4c0c-bc00-7adbb5e65530",
+            "status": "completed"
+          },
+          {
+            "role": "policy",
+            "taskId": "34e2faeb-9013-41e2-bc4d-fc4a57760a4f",
+            "status": "completed"
+          }
+        ],
+        "businessReferences": [],
+        "completedActions": [],
+        "unknownActions": []
+      },
+      "calls": [
+        {
+          "call_id": "2e752db7-4b37-4061-b29f-e28ddd94256f",
+          "scope": "simulation:first-real-cny-100",
+          "operation_id": "[\"p8-call-v1\",\"8e60e28f-956d-4c0c-bc00-7adbb5e65530\",\"analysis\"]",
+          "run_id": "run_2658a924-a085-4253-9a71-181ebd0d2fbc",
+          "purpose": "sub_agent",
+          "attempt": 1,
+          "snapshot_version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+          "price_version": "p8-synthetic-fixed-v1",
+          "price_json": "{\"version\":\"p8-synthetic-fixed-v1\",\"currency\":\"CNY\",\"inputMicroPerMillion\":0,\"outputMicroPerMillion\":0,\"fixedMicroPerCall\":10,\"fxNumerator\":1,\"fxDenominator\":1,\"source\":\"P8 synthetic fixture\",\"fxSource\":\"identity\",\"verifiedAt\":\"2026-09-25\"}",
+          "currency": "CNY",
+          "unit": "micro_yuan",
+          "reserved": 10,
+          "actual": 10,
+          "status": "settled",
+          "outcome": "completed",
+          "usage_json": "{\"inputTokens\":10,\"outputTokens\":5}",
+          "created_at": "2026-09-26T06:52:58.883Z",
+          "settled_at": "2026-09-26T06:52:58.884Z"
+        },
+        {
+          "call_id": "9d84fe5f-e7c8-48a6-a1ef-79bd7846f057",
+          "scope": "simulation:first-real-cny-100",
+          "operation_id": "[\"p8-call-v1\",\"34e2faeb-9013-41e2-bc4d-fc4a57760a4f\",\"analysis\"]",
+          "run_id": "run_cf6769f8-4b17-4793-8424-8258e377e6cb",
+          "purpose": "sub_agent",
+          "attempt": 1,
+          "snapshot_version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+          "price_version": "p8-synthetic-fixed-v1",
+          "price_json": "{\"version\":\"p8-synthetic-fixed-v1\",\"currency\":\"CNY\",\"inputMicroPerMillion\":0,\"outputMicroPerMillion\":0,\"fixedMicroPerCall\":10,\"fxNumerator\":1,\"fxDenominator\":1,\"source\":\"P8 synthetic fixture\",\"fxSource\":\"identity\",\"verifiedAt\":\"2026-09-25\"}",
+          "currency": "CNY",
+          "unit": "micro_yuan",
+          "reserved": 10,
+          "actual": 10,
+          "status": "settled",
+          "outcome": "completed",
+          "usage_json": "{\"inputTokens\":10,\"outputTokens\":5}",
+          "created_at": "2026-09-26T06:52:58.883Z",
+          "settled_at": "2026-09-26T06:52:58.884Z"
+        }
+      ],
+      "scopeTotals": {
+        "committed": 20,
+        "active": 0
+      },
+      "metrics": {
+        "taskCompleted": true,
+        "investigationComplete": true,
+        "factsAndCitationsValid": true,
+        "unresolved": [],
+        "calls": 2,
+        "logicalCalls": 2,
+        "purposes": {
+          "main_agent": 0,
+          "sub_agent": 2
+        },
+        "settledMicroYuan": 20,
+        "unknownReservedMicroYuan": 0,
+        "heldReservedMicroYuan": 0,
+        "endToEndMs": 21,
+        "investigationCriticalPathMs": 3,
+        "failedBranches": 0,
+        "cancelledTasks": 0,
+        "realProviderCost": "not_measured"
+      }
+    }
+  ],
+  "protocol": [
+    {
+      "role": "facts",
+      "direction": "request",
+      "body": {
+        "model": "p8-deterministic-v1",
+        "stream": true,
+        "max_tokens": 1000,
+        "system": "P8 只读调查 facts 仅输出 facts citations unresolved 的 JSON 事实必须逐项引用原文 不得输出业务动作",
+        "tools": [],
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"role\":\"facts\",\"evidence\":[{\"kind\":\"order\",\"version\":\"1\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"orderNo\":\"SO-2026-0002\",\"customerId\":\"C1001\",\"status\":\"shipped\",\"totalAmountCents\":29900,\"currency\":\"CNY\",\"paymentChannel\":\"wechat\",\"items\":[{\"itemId\":\"item-0002-1\",\"sku\":\"SKU-SP-001\",\"title\":\"便携蓝牙音箱\",\"category\":\"electronics\",\"quantity\":1,\"unitPriceCents\":29900}],\"paidAt\":\"2026-09-16T08:00:00.000Z\",\"shippedAt\":\"2026-09-17T08:00:00.000Z\",\"deliveredAt\":null,\"createdAt\":\"2026-09-16T08:00:00.000Z\",\"updatedAt\":\"2026-09-16T08:00:00.000Z\",\"version\":1},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\"},{\"kind\":\"shipment\",\"version\":\"1\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"shipmentId\":\"SH-2026-0002\",\"orderNo\":\"SO-2026-0002\",\"carrier\":\"顺丰速运\",\"trackingNo\":\"SF1357924680\",\"status\":\"lost\",\"events\":[{\"time\":\"2026-09-17T09:00:00.000Z\",\"description\":\"包裹已从杭州转运中心发出\"},{\"time\":\"2026-09-19T08:00:00.000Z\",\"description\":\"包裹到达上海浦东分拨中心\"}],\"deliveredAt\":null,\"updatedAt\":\"2026-09-20T12:00:00.000Z\",\"version\":1},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\"}],\"userStatements\":[\"我尚未收到商品 请核验丢件退款条件\"]}"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "role": "policy",
+      "direction": "request",
+      "body": {
+        "model": "p8-deterministic-v1",
+        "stream": true,
+        "max_tokens": 1000,
+        "system": "P8 只读调查 policy 仅输出 facts citations unresolved 的 JSON 事实必须逐项引用原文 不得输出业务动作",
+        "tools": [],
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"role\":\"policy\",\"evidence\":[{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R1_unshipped_cancel\",\"policyVersion\":\"2026.09-v3\",\"title\":\"未发货订单仅退款\",\"content\":\"订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R2_lost_package\",\"policyVersion\":\"2026.09-v3\",\"title\":\"物流丢件仅退款\",\"content\":\"物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R3_quality_window\",\"policyVersion\":\"2026.09-v3\",\"title\":\"质量问题退换窗口\",\"content\":\"商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R4_no_reason_7d\",\"policyVersion\":\"2026.09-v3\",\"title\":\"七天无理由退货\",\"content\":\"自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R5_no_match\",\"policyVersion\":\"2026.09-v3\",\"title\":\"无匹配政策的处理\",\"content\":\"没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"R6_large_amount\",\"policyVersion\":\"2026.09-v3\",\"title\":\"大额退款人工审批\",\"content\":\"退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP1_not_delivered\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保需签收后申请\",\"content\":\"订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP2_window_expired\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保窗口时限\",\"content\":\"价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP3_active_return\",\"policyVersion\":\"2026.09-v3\",\"title\":\"进行中售后与价保互斥\",\"content\":\"订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP4_no_price_drop\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保需有降价事实\",\"content\":\"订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"PP5_price_drop\",\"policyVersion\":\"2026.09-v3\",\"title\":\"价保差价退还规则\",\"content\":\"自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次\",\"source\":\"rules\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D1_fresh_food_no_return\",\"policyVersion\":\"2026.09-v3\",\"title\":\"生鲜食品售后规则\",\"content\":\"生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D2_customized_no_return\",\"policyVersion\":\"2026.09-v3\",\"title\":\"定制商品售后规则\",\"content\":\"定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D3_virtual_activated\",\"policyVersion\":\"2026.09-v3\",\"title\":\"虚拟商品售后规则\",\"content\":\"虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D4_cross_border_customs\",\"policyVersion\":\"2026.09-v3\",\"title\":\"跨境商品售后规则\",\"content\":\"跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D5_large_item_install\",\"policyVersion\":\"2026.09-v3\",\"title\":\"大件商品售后规则\",\"content\":\"大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D6_pre_order_deposit\",\"policyVersion\":\"2026.09-v3\",\"title\":\"预售商品定金规则\",\"content\":\"预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D7_second_hand_quality\",\"policyVersion\":\"2026.09-v3\",\"title\":\"二手商品售后规则\",\"content\":\"二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\"},{\"kind\":\"policy\",\"version\":\"2026.09-v3\",\"customerId\":\"C1001\",\"orderNo\":\"SO-2026-0002\",\"data\":{\"articleId\":\"D8_gift_card_rules\",\"policyVersion\":\"2026.09-v3\",\"title\":\"礼品卡使用规则\",\"content\":\"礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款\",\"source\":\"platform\",\"createdAt\":\"2026-09-01T00:00:00.000Z\"},\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"}],\"userStatements\":[\"我尚未收到商品 请核验丢件退款条件\"]}"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "role": "facts",
+      "direction": "response",
+      "frame": {
+        "type": "message_start",
+        "message": {
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 0
+          }
+        }
+      }
+    },
+    {
+      "role": "policy",
+      "direction": "response",
+      "frame": {
+        "type": "message_start",
+        "message": {
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 0
+          }
+        }
+      }
+    },
+    {
+      "role": "facts",
+      "direction": "response",
+      "frame": {
+        "type": "content_block_start",
+        "index": 0,
+        "content_block": {
+          "type": "text",
+          "text": ""
+        }
+      }
+    },
+    {
+      "role": "policy",
+      "direction": "response",
+      "frame": {
+        "type": "content_block_start",
+        "index": 0,
+        "content_block": {
+          "type": "text",
+          "text": ""
+        }
+      }
+    },
+    {
+      "role": "facts",
+      "direction": "response",
+      "frame": {
+        "type": "content_block_delta",
+        "index": 0,
+        "delta": {
+          "type": "text_delta",
+          "text": "{\"facts\":[{\"key\":\"order.status\",\"value\":\"shipped\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\"},{\"key\":\"shipment.status\",\"value\":\"lost\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\"}],\"citations\":[\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"order\\\",\\\"1\\\",\\\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"shipment\\\",\\\"1\\\",\\\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\\\"]\"],\"unresolved\":[]}"
+        }
+      }
+    },
+    {
+      "role": "policy",
+      "direction": "response",
+      "frame": {
+        "type": "content_block_delta",
+        "index": 0,
+        "delta": {
+          "type": "text_delta",
+          "text": "{\"facts\":[{\"key\":\"policy.R1_unshipped_cancel\",\"value\":\"订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\"},{\"key\":\"policy.R2_lost_package\",\"value\":\"物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\"},{\"key\":\"policy.R3_quality_window\",\"value\":\"商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\"},{\"key\":\"policy.R4_no_reason_7d\",\"value\":\"自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\"},{\"key\":\"policy.R5_no_match\",\"value\":\"没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\"},{\"key\":\"policy.R6_large_amount\",\"value\":\"退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\"},{\"key\":\"policy.PP1_not_delivered\",\"value\":\"订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\"},{\"key\":\"policy.PP2_window_expired\",\"value\":\"价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\"},{\"key\":\"policy.PP3_active_return\",\"value\":\"订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\"},{\"key\":\"policy.PP4_no_price_drop\",\"value\":\"订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\"},{\"key\":\"policy.PP5_price_drop\",\"value\":\"自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\"},{\"key\":\"policy.D1_fresh_food_no_return\",\"value\":\"生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\"},{\"key\":\"policy.D2_customized_no_return\",\"value\":\"定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\"},{\"key\":\"policy.D3_virtual_activated\",\"value\":\"虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\"},{\"key\":\"policy.D4_cross_border_customs\",\"value\":\"跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\"},{\"key\":\"policy.D5_large_item_install\",\"value\":\"大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\"},{\"key\":\"policy.D6_pre_order_deposit\",\"value\":\"预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\"},{\"key\":\"policy.D7_second_hand_quality\",\"value\":\"二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\"},{\"key\":\"policy.D8_gift_card_rules\",\"value\":\"礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款\",\"ref\":\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"}],\"citations\":[\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\\\"]\",\"[\\\"p8-evidence-v1\\\",\\\"C1001\\\",\\\"SO-2026-0002\\\",\\\"policy\\\",\\\"2026.09-v3\\\",\\\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\\\"]\"],\"unresolved\":[]}"
+        }
+      }
+    },
+    {
+      "role": "facts",
+      "direction": "response",
+      "frame": {
+        "type": "content_block_stop",
+        "index": 0
+      }
+    },
+    {
+      "role": "policy",
+      "direction": "response",
+      "frame": {
+        "type": "content_block_stop",
+        "index": 0
+      }
+    },
+    {
+      "role": "facts",
+      "direction": "response",
+      "frame": {
+        "type": "message_delta",
+        "delta": {
+          "stop_reason": "end_turn"
+        },
+        "usage": {
+          "output_tokens": 5
+        }
+      }
+    },
+    {
+      "role": "policy",
+      "direction": "response",
+      "frame": {
+        "type": "message_delta",
+        "delta": {
+          "stop_reason": "end_turn"
+        },
+        "usage": {
+          "output_tokens": 5
+        }
+      }
+    },
+    {
+      "role": "facts",
+      "direction": "response",
+      "frame": {
+        "type": "message_stop"
+      }
+    },
+    {
+      "role": "policy",
+      "direction": "response",
+      "frame": {
+        "type": "message_stop"
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/apps/web
+
+ ✓ test/customer-view.test.ts (3 tests) 5ms
+ ✓ test/event-stream.test.ts (2 tests) 5ms
+ ✓ test/return-shipment.test.ts (4 tests) 9ms
+ ✓ test/identity-request.test.ts (2 tests) 68ms
+
+ Test Files  4 passed (4)
+      Tests  11 passed (11)
+   Start at  12:57:44
+   Duration  1.03s (transform 313ms, setup 0ms, collect 563ms, tests 88ms, environment 1ms, prepare 901ms)
+

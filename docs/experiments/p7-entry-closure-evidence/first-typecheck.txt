@@ -1,0 +1,4 @@
+命令 pnpm --config.verify-deps-before-run=false --filter @aftersales/api exec tsc --noEmit --incremental false
+退出码 1
+test/p7-entry-closure.test.ts(41,12) TS18046 result.articles is of type unknown
+修正测试读取方式 通过原 ToolIO.search_policy.output 解析真实工具结果 保持非空政策结果断言

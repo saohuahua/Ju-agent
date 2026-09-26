@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "mode": "simulation",
+  "unitTests": 586,
+  "l1Cases": 124,
+  "checks": {
+    "fullTests": 0,
+    "typecheck": 0,
+    "eslint": 0,
+    "diffCheck": 0
+  },
+  "processDirectory": "docs\\experiments\\p6-conversation-refund-evidence\\process-2026-09-26T03-24-16.876Z",
+  "processes": [
+    {
+      "fault": "after-approval-accept",
+      "runId": "run_77f50182-8e50-4e1b-84fa-585aeea80cd8",
+      "originTaskId": "3386d80b-bc5e-442c-af80-b10a6f05c4f6",
+      "toolCallId": "refund-5-submit_refund_only0",
+      "returnNo": "RT-2026-0002",
+      "projected": 1,
+      "refund": {
+        "status": "succeeded",
+        "amount_cents": 699900,
+        "currency": "CNY",
+        "attempts": 1
+      },
+      "channel": [
+        {
+          "business_key": "refund:RT-2026-0002",
+          "submissions": 1,
+          "charges": 1
+        }
+      ],
+      "queries": 0,
+      "model": {
+        "calls": 3,
+        "microYuan": 30
+      },
+      "completedEvents": 1,
+      "hashes": {
+        "application.db": "c27c35cf7cd10f5385dbc458e45afbfe1a7cceb32406bdbc8dfa765928179c47",
+        "channel.db": "87005bc9ec48bd85b22b2619b672bad4bed7af06c4051654ac6dc0a48cef0477",
+        "evidence.json": "cd43813523abcefde8d19879c92546251d5aef9bb6a46491982445da2d7022ed"
+      }
+    },
+    {
+      "fault": "after-business-accept",
+      "runId": "run_503bf72c-fa36-46bb-9df1-6d45462f8f99",
+      "originTaskId": "bb85f1dd-d2a2-43c6-bdfd-903d621ab8fb",
+      "toolCallId": "refund-5-submit_refund_only0",
+      "returnNo": "RT-2026-0002",
+      "projected": 1,
+      "refund": {
+        "status": "succeeded",
+        "amount_cents": 29900,
+        "currency": "CNY",
+        "attempts": 1
+      },
+      "channel": [
+        {
+          "business_key": "refund:RT-2026-0002",
+          "submissions": 1,
+          "charges": 1
+        }
+      ],
+      "queries": 0,
+      "model": {
+        "calls": 3,
+        "microYuan": 30
+      },
+      "completedEvents": 1,
+      "hashes": {
+        "application.db": "f444f12f3a31ad1142b15e5407ed26788fa4382e075aa97593b8639c1740dae3",
+        "channel.db": "addc496a52a951adc3ee0e249ca8e321fba940861110add6b698d6073884ac0e",
+        "evidence.json": "fadc2a3ed163df7da37873a8253a1e11b9bd68b63eaf32f995eae0a1e019eb8e"
+      }
+    },
+    {
+      "fault": "after-payment-response",
+      "runId": "run_ebd4f3cb-742b-4f8b-93d9-178958e11c31",
+      "originTaskId": "40b34d0e-ae3c-47cc-9a4f-63675e1f7919",
+      "toolCallId": "refund-5-submit_refund_only0",
+      "returnNo": "RT-2026-0002",
+      "projected": 1,
+      "refund": {
+        "status": "succeeded",
+        "amount_cents": 29900,
+        "currency": "CNY",
+        "attempts": 1
+      },
+      "channel": [
+        {
+          "business_key": "refund:RT-2026-0002",
+          "submissions": 1,
+          "charges": 1
+        }
+      ],
+      "queries": 1,
+      "model": {
+        "calls": 3,
+        "microYuan": 30
+      },
+      "completedEvents": 1,
+      "hashes": {
+        "application.db": "443febe517289b48a5298802630dce391ddeb2410a46aedf6fff3d97275b0ed5",
+        "channel.db": "66ce35962c40719d072c21cd5a1b41753abc07a55cdfdf10ea87c0fc6ec40964",
+        "evidence.json": "efa6f21b33582613590b21ab100f8025261473355f9a8c06d3cddfa68be204b8"
+      }
+    },
+    {
+      "fault": "before-business-accept",
+      "runId": "run_70f4b8a9-c956-49f0-b0e7-034187055346",
+      "originTaskId": "537e8400-7a03-419c-9340-2a0b9d68311e",
+      "toolCallId": "refund-5-submit_refund_only0",
+      "returnNo": "RT-2026-0002",
+      "projected": 1,
+      "refund": {
+        "status": "succeeded",
+        "amount_cents": 29900,
+        "currency": "CNY",
+        "attempts": 1
+      },
+      "channel": [
+        {
+          "business_key": "refund:RT-2026-0002",
+          "submissions": 1,
+          "charges": 1
+        }
+      ],
+      "queries": 0,
+      "model": {
+        "calls": 3,
+        "microYuan": 30
+      },
+      "completedEvents": 1,
+      "hashes": {
+        "application.db": "2a9177f33ac8276361ef0b6f38fd475ef60ec1c5caf76999dba9c49e81c414ea",
+        "channel.db": "13ef2822a00ac6880dcaf09f0dba6f041b8a5ecc343c4152ca7564fa1681d2a6",
+        "evidence.json": "a1fa9768679cba7045580214971718a7d8863351ad0dc21d4f633e233bc7ee9a"
+      }
+    },
+    {
+      "fault": "before-business-projection",
+      "runId": "run_fd8ef1c3-ba1b-4a32-b5af-ce4bfeabc060",
+      "originTaskId": "18b6ab3e-1267-4c8e-a9f8-4d2eca7fafa6",
+      "toolCallId": "refund-5-submit_refund_only0",
+      "returnNo": "RT-2026-0002",
+      "projected": 1,
+      "refund": {
+        "status": "succeeded",
+        "amount_cents": 29900,
+        "currency": "CNY",
+        "attempts": 1
+      },
+      "channel": [
+        {
+          "business_key": "refund:RT-2026-0002",
+          "submissions": 1,
+          "charges": 1
+        }
+      ],
+      "queries": 0,
+      "model": {
+        "calls": 3,
+        "microYuan": 30
+      },
+      "completedEvents": 1,
+      "hashes": {
+        "application.db": "21db3743491bf61f2ac4b97ff8d2b2ef611fb6e965b03186be25741b3b86f999",
+        "channel.db": "e4fe2ffd00d5e3a19cf19eb7a2d1cbfc7609f2eee23d615d6b82bda580dcfa21",
+        "evidence.json": "962ce227a2e77e112e767b83efd0bc2e0a8bb0ff16977e2fddb2d9e8b808e613"
+      }
+    },
+    {
+      "fault": "return-wait",
+      "runId": "run_4b757afc-968d-4173-94c8-28fafa938a45",
+      "originTaskId": "4f09466d-b33e-4735-be9e-5cba7563731a",
+      "toolCallId": "refund-5-submit_return0",
+      "returnNo": "RT-2026-0002",
+      "projected": 1,
+      "refund": {
+        "status": "succeeded",
+        "amount_cents": 699900,
+        "currency": "CNY",
+        "attempts": 1
+      },
+      "channel": [
+        {
+          "business_key": "refund:RT-2026-0002",
+          "submissions": 1,
+          "charges": 1
+        }
+      ],
+      "queries": 0,
+      "model": {
+        "calls": 3,
+        "microYuan": 30
+      },
+      "completedEvents": 1,
+      "hashes": {
+        "application.db": "61be45fb8bf6eab98fa03e3c66fe68f6dbfc39713fb80c25d85a3fe930103305",
+        "channel.db": "3c6afc7ecea21d6b163836861269137a88030f2c4d507d7970bc85f3ae48b88e",
+        "evidence.json": "4fc097413be3be118325692c81bf2346e6e2177d500cd3f1bf9dbfc41f60de43"
+      }
+    }
+  ],
+  "l1": {
+    "reportId": "evr_70cb8d29",
+    "costs": {
+      "attempts": 339,
+      "logicalCalls": 339,
+      "settled": {
+        "actual": 3390,
+        "count": 339
+      },
+      "unknown": {
+        "reserved": 0,
+        "count": 0
+      },
+      "held": {
+        "reserved": 0,
+        "count": 0
+      },
+      "committed": 3390,
+      "hasUncertainCost": false,
+      "active": 0,
+      "observation": "recorded_calls"
+    }
+  },
+  "sourceHashes": {
+    "packages/contracts/src/agent.ts": "35b1837655c07bb8e3d9263543b0f7222ee0b174da131abf6ead807fe2133c11",
+    "packages/domain/src/services/after-sale-service.ts": "27be83d6d37013ca3a633c2b46c975d14a9159a5b66ccf6cb08dbab5ad832b34",
+    "packages/domain/src/services/approval-service.ts": "1726e7c4413df72261d69b251fa4c4e077df151a8421f5911d05007fabe2fb6b",
+    "packages/persistence/src/business-repositories.ts": "9599157f5cf6367ff252453b72a8fbddb3c83730479a6d867f5758943617854b",
+    "packages/persistence/src/p6-migration.ts": "c5a0dd1a23cdc864e4d10678d4bd75f0d3d15c62277c6c4498095bfa0676fce3",
+    "packages/persistence/src/db.ts": "87999e6e8ad99acf63581decb3e6dec6ef6d012d808f7cb285bc0cebaa5e800c",
+    "packages/persistence/src/p6-conversation-refund.ts": "e90f0b5235aefb8be1c89a8dc589bf320707fb5b28499f0eff8864e34d406ae0",
+    "packages/persistence/src/conversation-journal.ts": "413b56960b14fb66dcd18bd6b5e3f3054ded4d8915da0dd08d913e593f589d4b",
+    "packages/persistence/src/execution-ownership-p6.ts": "0e8054ede50b7b0d5f9e8ec192e8c7be25849deb8a5b71eb544aa5e2b9d887cd",
+    "packages/runtime/src/durable-conversation.ts": "2664998a5b37b6263a98b66844e01b4d0a2e5632df7a59a06f84dec1588b3484",
+    "packages/runtime/src/durable-business.ts": "640ebc57cd40f711f506a52dc49257cc140723ded39f7c7c0433f01a4f9feb30",
+    "packages/runtime/src/compose.ts": "05019b32e4270530be4828669b4834f97f543e006007112e964750a15beb603b",
+    "packages/runtime/src/conversation-demo.ts": "7d7fe5b62f6013317afe70b6526fd3adfaf695c8d5c175d1de5c58cf4c73d4f0",
+    "packages/agent/src/context.ts": "e16b0a695acd025c675352721f2aa693cb3d58a1c0d65cca8feb39e25c559af3",
+    "apps/api/src/app.ts": "03a04ccd66d907ae1d2b7fa8f83466fd58bd62f7c96f3b7c8322fc3ffa0c2144",
+    "apps/api/src/main.ts": "92864c211ef150d49409c7d51284553e3cd11010cce7b84cd1fba671ffa44f9c",
+    "apps/api/test/conversation-refund.test.ts": "5645ab4b7ad7da2f6e6a4ca28189602407776e6104348ed5ae97dcff7a80ed8e",
+    "apps/api/test/conversation-refund-process.test.ts": "d5426b73dda61e6444fcfc1ac597394854c40b34541473bfa7bf56e8721c7234",
+    "apps/api/test/fixtures/refund-conversation-options.ts": "f2465de8f648aa050aa9d295157ad6218cda2521a557b24fae4d07d14523f640",
+    "apps/api/test/fixtures/conversation-refund-process.ts": "1da5107ecc4a18120bd09e75b8fc17ac679aa331518bf68b89978949f0ead460"
+  }
+}

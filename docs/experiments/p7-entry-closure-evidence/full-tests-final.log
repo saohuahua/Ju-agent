@@ -1,0 +1,182 @@
+Scope: 10 of 11 workspace projects
+apps/web test$ vitest run --passWithNoTests
+packages/contracts test$ vitest run
+packages/contracts test:  RUN  v3.2.7 D:/project/agent-new/aftersales/packages/contracts
+apps/web test:  RUN  v3.2.7 D:/project/agent-new/aftersales/apps/web
+apps/web test:  ✓ test/customer-view.test.ts (3 tests) 5ms
+apps/web test:  ✓ test/timeline.test.ts (6 tests) 8ms
+apps/web test:  ✓ test/event-stream.test.ts (2 tests) 5ms
+apps/web test:  ✓ test/runReducer.test.ts (11 tests) 9ms
+apps/web test:  ✓ test/identity-request.test.ts (2 tests) 70ms
+apps/web test:  ✓ test/approvals-presentation.test.ts (4 tests) 6ms
+apps/web test:  Test Files  6 passed (6)
+apps/web test:       Tests  28 passed (28)
+apps/web test:    Start at  11:50:47
+apps/web test:    Duration  1.39s (transform 526ms, setup 0ms, collect 1.20s, tests 104ms, environment 1ms, prepare 1.90s)
+packages/contracts test:  ✓ test/contracts.test.ts (15 tests) 16ms
+packages/contracts test:  Test Files  1 passed (1)
+packages/contracts test:       Tests  15 passed (15)
+packages/contracts test:    Start at  11:50:47
+packages/contracts test:    Duration  1.65s (transform 245ms, setup 0ms, collect 527ms, tests 16ms, environment 0ms, prepare 434ms)
+apps/web test: Done
+packages/contracts test: Done
+packages/domain test$ vitest run
+packages/domain test:  RUN  v3.2.7 D:/project/agent-new/aftersales/packages/domain
+packages/domain test:  ✓ test/analytics-service.test.ts (3 tests) 4ms
+packages/domain test:  ✓ test/knowledge.test.ts (3 tests) 19ms
+packages/domain test:  ✓ test/policy.test.ts (17 tests) 9ms
+packages/domain test:  ✓ test/state-machine.test.ts (7 tests) 5ms
+packages/domain test:  ✓ test/rating-service.test.ts (6 tests) 10ms
+packages/domain test:  ✓ test/price-protection-service.test.ts (23 tests) 22ms
+packages/domain test:  ✓ test/after-sale-service.test.ts (11 tests) 16ms
+packages/domain test:  ✓ test/compensation-service.test.ts (17 tests) 16ms
+packages/domain test:  ✓ test/policy-search-service.test.ts (5 tests) 8ms
+packages/domain test:  Test Files  9 passed (9)
+packages/domain test:       Tests  92 passed (92)
+packages/domain test:    Start at  11:50:50
+packages/domain test:    Duration  1.76s (transform 1.41s, setup 0ms, collect 5.03s, tests 110ms, environment 2ms, prepare 2.78s)
+packages/domain test: Done
+packages/persistence test$ vitest run
+packages/tools test$ vitest run
+packages/tools test:  RUN  v3.2.7 D:/project/agent-new/aftersales/packages/tools
+packages/persistence test:  RUN  v3.2.7 D:/project/agent-new/aftersales/packages/persistence
+packages/persistence test:  ✓ test/p6-business.test.ts (9 tests) 72ms
+packages/tools test:  ✓ test/executor.test.ts (18 tests) 237ms
+packages/tools test:  Test Files  1 passed (1)
+packages/tools test:       Tests  18 passed (18)
+packages/tools test:    Start at  11:50:53
+packages/tools test:    Duration  2.41s (transform 373ms, setup 0ms, collect 986ms, tests 237ms, environment 0ms, prepare 391ms)
+packages/persistence test:  ✓ test/execution-ownership-services.test.ts (25 tests) 173ms
+packages/persistence test:  ✓ test/p6-after-sale-mapping.test.ts (42 tests) 241ms
+packages/persistence test:  ✓ test/approval-concurrency.test.ts (7 tests) 244ms
+packages/persistence test:  ✓ test/persistence.test.ts (15 tests) 169ms
+packages/tools test: Done
+packages/persistence test:  ✓ test/execution-ownership-repository.test.ts (5 tests) 1058ms
+packages/persistence test:    ✓ 两个进程的独立数据库连接竞争执行权只有一个获胜  606ms
+packages/persistence test:    ✓ 取得许可后进程退出 重开连接仍不允许接管或重发  439ms
+packages/persistence test:  Test Files  6 passed (6)
+packages/persistence test:       Tests  103 passed (103)
+packages/persistence test:    Start at  11:50:53
+packages/persistence test:    Duration  3.17s (transform 1.06s, setup 0ms, collect 6.26s, tests 1.96s, environment 1ms, prepare 2.22s)
+packages/persistence test: Done
+packages/workflow test$ vitest run
+packages/workflow test:  RUN  v3.2.7 D:/project/agent-new/aftersales/packages/workflow
+packages/workflow test:  ✓ test/engine.test.ts (10 tests) 25ms
+packages/workflow test:  Test Files  1 passed (1)
+packages/workflow test:       Tests  10 passed (10)
+packages/workflow test:    Start at  11:50:57
+packages/workflow test:    Duration  1.62s (transform 361ms, setup 0ms, collect 823ms, tests 25ms, environment 0ms, prepare 199ms)
+packages/workflow test: Done
+packages/agent test$ vitest run
+packages/agent test:  RUN  v3.2.7 D:/project/agent-new/aftersales/packages/agent
+packages/agent test:  ✓ test/context.test.ts (4 tests) 6ms
+packages/agent test:  ✓ test/policy-scorer.test.ts (5 tests) 15ms
+packages/agent test:  ✓ test/agent.test.ts (13 tests) 3277ms
+packages/agent test:    ✓ 模型故障与重试 > 模型持续故障 运行迁移 failed 不悬停 running  2429ms
+packages/agent test:    ✓ 模型故障与重试 > 瞬态故障未产出内容前重试成功  806ms
+packages/agent test:  Test Files  3 passed (3)
+packages/agent test:       Tests  22 passed (22)
+packages/agent test:    Start at  11:50:59
+packages/agent test:    Duration  5.20s (transform 606ms, setup 0ms, collect 3.01s, tests 3.30s, environment 1ms, prepare 695ms)
+packages/agent test: Done
+packages/runtime test$ vitest run --passWithNoTests
+packages/runtime test:  RUN  v3.2.7 D:/project/agent-new/aftersales/packages/runtime
+packages/runtime test:  ✓ test/p7-protocol.test.ts (32 tests) 15ms
+packages/runtime test:  ✓ test/p6-snapshot.test.ts (1 test) 42ms
+packages/runtime test:  ✓ test/p6-durable.test.ts (12 tests) 99ms
+packages/runtime test:  ✓ test/p7-gateway.test.ts (38 tests) 233ms
+packages/runtime test:  ✓ test/p7-persistence.test.ts (1 test) 468ms
+packages/runtime test:    ✓ 两个独立进程竞争累计预算且重启保留预占和不可变快照  467ms
+packages/runtime test:  ✓ test/p7-consumers.test.ts (4 tests) 57ms
+packages/runtime test:  ✓ test/durable-business.test.ts (11 tests) 238ms
+packages/runtime test:  ✓ test/p6-p7-integration.test.ts (4 tests) 8465ms
+packages/runtime test:    ✓ P6 与 P7 跨进程集成 > during-model 后恢复保留费用并跳过已确认调用  1864ms
+packages/runtime test:    ✓ P6 与 P7 跨进程集成 > after-model-response 后恢复保留费用并跳过已确认调用  1867ms
+packages/runtime test:    ✓ P6 与 P7 跨进程集成 > after-model-checkpoint 后恢复保留费用并跳过已确认调用  1791ms
+packages/runtime test:    ✓ P6 与 P7 跨进程集成 > 连续强退耗尽任务上限后不再调用模型  2941ms
+packages/runtime test: stdout | test/p6-process.test.ts
+packages/runtime test: P6 进程证据 D:\project\agent-new\aftersales\docs\experiments\p6-results\2026-09-26T03-51-07.100Z
+packages/runtime test:  ✓ test/p6-process.test.ts (18 tests) 59247ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > accepted-before-worker 退出后续跑  2927ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > before-model 退出后续跑  3858ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > mid-stream 退出后续跑  3813ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > after-model-checkpoint 退出后续跑  3724ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > after-payment-response 退出后续跑  3681ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > after-payment-checkpoint 退出后续跑  3549ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 审批受理进程退出后由持久意图入队并消费原授权  2730ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 独立渠道 response_lost 保留正确业务语义  2674ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 独立渠道 rejected 保留正确业务语义  2519ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 独立渠道 unknown 保留正确业务语义  3582ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 独立渠道 delayed 保留正确业务语义  2906ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 发送意图后退出且渠道无记录时保持未知 不猜测未发生  3581ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 两个同时启动的 Worker 只有一个认领并产生副作用  2841ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 旧进程代次返回时无法覆盖新进程终态  3492ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 只读超时跨进程重试有界且不重复已确认模型步骤  3648ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 资金成功后取消只停止后续工作 不隐瞒已确认资金事实  2575ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 取消运行中的长只读任务会传播信号并停止资金发送  2598ms
+packages/runtime test:    ✓ P6 真实子进程与独立持久渠道 > 独立渠道自身重启后保留原交易 跨新运行编号也不重复资金动作  4543ms
+packages/runtime test:  Test Files  9 passed (9)
+packages/runtime test:       Tests  121 passed (121)
+packages/runtime test:    Start at  11:51:05
+packages/runtime test:    Duration  60.56s (transform 1.56s, setup 0ms, collect 6.00s, tests 68.86s, environment 2ms, prepare 2.61s)
+packages/runtime test: Done
+packages/eval test$ vitest run
+packages/eval test:  RUN  v3.2.7 D:/project/agent-new/aftersales/packages/eval
+packages/eval test:  ✓ test/retrieval-metrics.test.ts (2 tests) 4ms
+packages/eval test:  ✓ test/p7-cost-report.test.ts (15 tests) 122ms
+packages/eval test:  ✓ test/p7-eval-budget.test.ts (20 tests) 153ms
+packages/eval test:  ✓ test/validators.test.ts (15 tests) 8ms
+packages/eval test:  ✓ test/p7-entry.test.ts (8 tests) 153ms
+packages/eval test:  Test Files  5 passed (5)
+packages/eval test:       Tests  60 passed (60)
+packages/eval test:    Start at  11:52:07
+packages/eval test:    Duration  2.67s (transform 1.25s, setup 0ms, collect 4.80s, tests 440ms, environment 1ms, prepare 1.07s)
+packages/eval test: Done
+apps/api test$ vitest run
+apps/api test:  RUN  v3.2.7 D:/project/agent-new/aftersales/apps/api
+apps/api test:  ✓ test/p6-durable-api.test.ts (1 test) 40ms
+apps/api test:  ✓ test/sse.test.ts (4 tests) 67ms
+apps/api test: stdout | test/p6-sse-reconnect.test.ts > P6 SSE 真实断网重连不漏不重且不泄漏原始结果
+apps/api test: P6 SSE 证据 D:\project\agent-new\aftersales\docs\experiments\p6-sse-results\2026-09-26T03-52-12.227Z
+apps/api test:  ✓ test/p6-sse-reconnect.test.ts (1 test) 906ms
+apps/api test:    ✓ P6 SSE 真实断网重连不漏不重且不泄漏原始结果  905ms
+apps/api test:  ✓ test/p7-entry-closure.test.ts (4 tests) 45ms
+apps/api test:  ✓ test/customer-events.test.ts (3 tests) 61ms
+apps/api test:  ✓ test/knowledge.test.ts (2 tests) 67ms
+apps/api test:  ✓ test/eval-budget-entry.test.ts (2 tests) 97ms
+apps/api test:  ✓ test/durable-integration.test.ts (5 tests) 98ms
+apps/api test:  ✓ test/approval-progress.test.ts (10 tests) 128ms
+apps/api test:  ✓ test/durable-conversation.test.ts (5 tests) 145ms
+apps/api test:  ✓ test/desk.test.ts (14 tests) 196ms
+apps/api test:  ✓ test/case-closure.test.ts (18 tests) 229ms
+apps/api test:  ✓ test/api.test.ts (15 tests) 488ms
+apps/api test:  ✓ test/p7-entry-closure-process.test.ts (4 tests) 3626ms
+apps/api test:    ✓ 实际 main 即使存在虚构供应商配置也关闭新建和旧运行恢复的真实模型调用  1183ms
+apps/api test:    ✓ 实际 main 的 live 模式在数据库初始化前拒绝且不读取环境文件  1205ms
+apps/api test:    ✓ 实际 main 的 simulation 继续通过 P7 持久会话完成查询  1101ms
+apps/api test:  ✓ test/conversation-refund.test.ts (22 tests) 2569ms
+apps/api test:    ✓ HTTP 客户补问到自动批准仅退款 持久资金执行 原结果和客户事件仅一次  319ms
+apps/api test:    ✓ 发送后取消仍保留已确认退款和原调用结果  592ms
+apps/api test:  ✓ test/conversation-refund-process.test.ts (6 tests) 14133ms
+apps/api test:    ✓ 客户正式 HTTP 发起 before-business-accept 强退与恢复 原调用最多投影一次且只有一笔退款  2972ms
+apps/api test:    ✓ 客户正式 HTTP 发起 after-business-accept 强退与恢复 原调用最多投影一次且只有一笔退款  2043ms
+apps/api test:    ✓ 客户正式 HTTP 发起 after-approval-accept 强退与恢复 原调用最多投影一次且只有一笔退款  2160ms
+apps/api test:    ✓ 客户正式 HTTP 发起 after-payment-response 强退与恢复 原调用最多投影一次且只有一笔退款  2736ms
+apps/api test:    ✓ 客户正式 HTTP 发起 before-business-projection 强退与恢复 原调用最多投影一次且只有一笔退款  2020ms
+apps/api test:    ✓ 客户正式 HTTP 发起 return-wait 强退与恢复 原调用最多投影一次且只有一笔退款  2199ms
+apps/api test:  ✓ test/conversation-process.test.ts (5 tests) 15029ms
+apps/api test:    ✓ 正式普通会话跨进程恢复 > accepted 边界退出后不重复已确认消息和工具结果  2813ms
+apps/api test:    ✓ 正式普通会话跨进程恢复 > after-model-response 边界退出后不重复已确认消息和工具结果  3171ms
+apps/api test:    ✓ 正式普通会话跨进程恢复 > after-turn-checkpoint 边界退出后不重复已确认消息和工具结果  3360ms
+apps/api test:    ✓ 正式普通会话跨进程恢复 > after-read-checkpoint 边界退出后不重复已确认消息和工具结果  3161ms
+apps/api test:    ✓ 正式普通会话跨进程恢复 > 补问暂停后 API 重启 客户回复绑定原问题并可幂等重放  2521ms
+apps/api test:  ✓ test/business-process.test.ts (4 tests) 15062ms
+apps/api test:    ✓ 正式审批 HTTP 与 accepted 边界跨进程恢复  3156ms
+apps/api test:    ✓ 正式审批 HTTP 与 after-payment-response 边界跨进程恢复  3569ms
+apps/api test:    ✓ 正式审批 HTTP 与 after-payment-checkpoint 边界跨进程恢复  3858ms
+apps/api test:    ✓ 正式审批 HTTP 与 receipt 边界跨进程恢复  4477ms
+apps/api test:  Test Files  18 passed (18)
+apps/api test:       Tests  125 passed (125)
+apps/api test:    Start at  11:52:10
+apps/api test:    Duration  17.31s (transform 2.67s, setup 0ms, collect 33.45s, tests 52.99s, environment 4ms, prepare 6.88s)
+apps/api test: Done

@@ -1,0 +1,14 @@
+{"pid":148872,"event":"ready","detail":{"url":"http://127.0.0.1:63178"},"time":"2026-09-25T14:52:30.356Z"}
+{"pid":141272,"event":"accepted","detail":{"taskId":"7aa905a5-7554-47cf-9b29-2c216da07761","runId":"run_48721b62-c70f-4a3b-8077-33604968ef19"},"time":"2026-09-25T14:52:31.262Z"}
+{"pid":146408,"event":"claimed","detail":{"taskId":"7aa905a5-7554-47cf-9b29-2c216da07761","generation":1},"time":"2026-09-25T14:52:31.896Z"}
+{"pid":146408,"event":"before-model","detail":{"taskId":"7aa905a5-7554-47cf-9b29-2c216da07761","generation":1},"time":"2026-09-25T14:52:31.899Z"}
+{"pid":146408,"event":"model-called","detail":{"snapshot":{"snapshotId":"scripted-frozen-v1","provider":"scripted","model":"scripted-v1","promptVersion":"p6-v1","value":{"scenario":"normal","paid":false}}},"time":"2026-09-25T14:52:31.899Z"}
+{"pid":146408,"event":"after-model-checkpoint","detail":{"taskId":"7aa905a5-7554-47cf-9b29-2c216da07761","generation":1},"time":"2026-09-25T14:52:31.900Z"}
+{"pid":146408,"event":"read-called","detail":null,"time":"2026-09-25T14:52:31.901Z"}
+{"pid":146408,"event":"after-payment-intent","detail":{"taskId":"7aa905a5-7554-47cf-9b29-2c216da07761","generation":1},"time":"2026-09-25T14:52:31.913Z"}
+{"pid":146408,"event":"after-payment-response","detail":{"taskId":"7aa905a5-7554-47cf-9b29-2c216da07761","generation":1},"time":"2026-09-25T14:52:31.934Z"}
+{"pid":147832,"event":"claimed","detail":{"taskId":"7aa905a5-7554-47cf-9b29-2c216da07761","generation":2},"time":"2026-09-25T14:52:32.980Z"}
+{"pid":147832,"event":"after-payment-intent","detail":{"taskId":"7aa905a5-7554-47cf-9b29-2c216da07761","generation":2},"time":"2026-09-25T14:52:32.992Z"}
+{"pid":147832,"event":"after-payment-response","detail":{"taskId":"7aa905a5-7554-47cf-9b29-2c216da07761","generation":2},"time":"2026-09-25T14:52:33.010Z"}
+{"pid":147832,"event":"after-payment-checkpoint","detail":{"taskId":"7aa905a5-7554-47cf-9b29-2c216da07761","generation":2},"time":"2026-09-25T14:52:33.011Z"}
+{"pid":147832,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-25T14:52:33.012Z"}

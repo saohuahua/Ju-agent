@@ -1,0 +1,20 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/runtime
+
+ ✓ test/p8-fixes.test.ts (7 tests) 342ms
+ ✓ test/p8-investigation.test.ts (23 tests) 6060ms
+   ✓ P8 离线调查和运行记忆 > 串行与并行使用相同原文且得出兼容建议  410ms
+   ✓ P8 离线调查和运行记忆 > 分支 timeout 不伪装为完整调查  433ms
+   ✓ P8 离线调查和运行记忆 > 父任务取消传递给在途分支且迟到结果不写回  431ms
+   ✓ P8 离线调查和运行记忆 > 确定性调用的在途峰值串行为一并行为二  686ms
+ ✓ test/p8-process.test.ts (4 tests) 6785ms
+   ✓ P8 跨进程持久恢复 > 模型已记账但分支未确认时保守停止且不换号重发  1323ms
+   ✓ P8 跨进程持久恢复 > accepted 后真实退出再恢复  1822ms
+   ✓ P8 跨进程持久恢复 > one-confirmed 后真实退出再恢复  1912ms
+   ✓ P8 跨进程持久恢复 > both-confirmed 后真实退出再恢复  1726ms
+
+ Test Files  3 passed (3)
+      Tests  34 passed (34)
+   Start at  14:51:33
+   Duration  8.77s (transform 858ms, setup 0ms, collect 3.57s, tests 13.19s, environment 1ms, prepare 965ms)
+

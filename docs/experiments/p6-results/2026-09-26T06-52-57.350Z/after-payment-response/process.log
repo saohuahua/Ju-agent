@@ -1,0 +1,15 @@
+{"pid":148876,"event":"ready","detail":{"url":"http://127.0.0.1:59117"},"time":"2026-09-26T06:53:13.462Z"}
+{"pid":64300,"event":"accepted","detail":{"taskId":"808958e8-80fb-4adc-8f85-2a35c40022a3","runId":"run_07cd7b6f-c078-4f2d-8faa-370fdcbe92d4"},"time":"2026-09-26T06:53:14.364Z"}
+{"pid":572,"event":"claimed","detail":{"taskId":"808958e8-80fb-4adc-8f85-2a35c40022a3","generation":1},"time":"2026-09-26T06:53:14.954Z"}
+{"pid":572,"event":"before-model","detail":{"taskId":"808958e8-80fb-4adc-8f85-2a35c40022a3","generation":1},"time":"2026-09-26T06:53:14.956Z"}
+{"pid":572,"event":"model-called","detail":{"snapshot":{"snapshotId":"scripted-frozen-v1","provider":"scripted","model":"scripted-v1","promptVersion":"p6-v1","value":{"scenario":"normal","paid":false}}},"time":"2026-09-26T06:53:14.956Z"}
+{"pid":572,"event":"after-model-response","detail":{"taskId":"808958e8-80fb-4adc-8f85-2a35c40022a3","generation":1},"time":"2026-09-26T06:53:14.957Z"}
+{"pid":572,"event":"after-model-checkpoint","detail":{"taskId":"808958e8-80fb-4adc-8f85-2a35c40022a3","generation":1},"time":"2026-09-26T06:53:14.957Z"}
+{"pid":572,"event":"read-called","detail":null,"time":"2026-09-26T06:53:14.958Z"}
+{"pid":572,"event":"after-payment-intent","detail":{"taskId":"808958e8-80fb-4adc-8f85-2a35c40022a3","generation":1},"time":"2026-09-26T06:53:14.967Z"}
+{"pid":572,"event":"after-payment-response","detail":{"taskId":"808958e8-80fb-4adc-8f85-2a35c40022a3","generation":1},"time":"2026-09-26T06:53:14.990Z"}
+{"pid":150832,"event":"claimed","detail":{"taskId":"808958e8-80fb-4adc-8f85-2a35c40022a3","generation":2},"time":"2026-09-26T06:53:15.928Z"}
+{"pid":150832,"event":"after-payment-intent","detail":{"taskId":"808958e8-80fb-4adc-8f85-2a35c40022a3","generation":2},"time":"2026-09-26T06:53:15.940Z"}
+{"pid":150832,"event":"after-payment-response","detail":{"taskId":"808958e8-80fb-4adc-8f85-2a35c40022a3","generation":2},"time":"2026-09-26T06:53:15.956Z"}
+{"pid":150832,"event":"after-payment-checkpoint","detail":{"taskId":"808958e8-80fb-4adc-8f85-2a35c40022a3","generation":2},"time":"2026-09-26T06:53:15.957Z"}
+{"pid":150832,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-26T06:53:15.958Z"}

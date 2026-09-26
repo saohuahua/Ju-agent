@@ -1,0 +1,101 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/runtime
+
+ ❯ test/p8-investigation.test.ts (17 tests | 7 failed) 499ms
+   × P8 离线调查和运行记忆 > 双分支使用共享账本并确认可追溯证据且无业务写入 72ms
+     → expected [ Array(1) ] to have a length of +0 but got 1
+   ✓ P8 离线调查和运行记忆 > 串行与并行使用相同原文且得出兼容建议 31ms
+   × P8 离线调查和运行记忆 > 分支 failure 不伪装为完整调查 14ms
+     → expected [ Array(1) ] to have a length of +0 but got 1
+   × P8 离线调查和运行记忆 > 分支 timeout 不伪装为完整调查 55ms
+     → expected [ Array(1) ] to have a length of +0 but got 1
+   × P8 离线调查和运行记忆 > 分支 missing-usage 不伪装为完整调查 14ms
+     → expected [ Array(1) ] to have a length of +0 but got 1
+   × P8 离线调查和运行记忆 > 分支 conflict 不伪装为完整调查 13ms
+     → expected [ Array(1) ] to have a length of +0 but got 1
+   × P8 离线调查和运行记忆 > 分支 foreign-ref 不伪装为完整调查 14ms
+     → expected [ Array(1) ] to have a length of +0 but got 1
+   × P8 离线调查和运行记忆 > 分支 money-tool 不伪装为完整调查 14ms
+     → expected [ Array(1) ] to have a length of +0 but got 1
+   ✓ P8 离线调查和运行记忆 > 缺少物流关键证据保留补问 14ms
+   ✓ P8 离线调查和运行记忆 > 领域原文出现签收与丢件冲突时升级人工 13ms
+   ✓ P8 离线调查和运行记忆 > 父任务取消传递给在途分支且迟到结果不写回 178ms
+   ✓ P8 离线调查和运行记忆 > 重复受理派发完成通知只汇总一次 15ms
+   ✓ P8 离线调查和运行记忆 > 跨客户订单和原文引用被拒绝 7ms
+   ✓ P8 离线调查和运行记忆 > 共享预算不足在传输前拒绝 不为分支建预算 11ms
+   ✓ P8 离线调查和运行记忆 > 失去租约的旧 Worker 无法确认结果 5ms
+   ✓ P8 离线调查和运行记忆 > 保留原业务未知状态与客户原话 不提升权限 14ms
+   ✓ P8 离线调查和运行记忆 > 已确认分支恢复不重复调用且冻结配置不被当前对象替换 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/p8-investigation.test.ts > P8 离线调查和运行记忆 > 双分支使用共享账本并确认可追溯证据且无业务写入
+AssertionError: expected [ Array(1) ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/p8-investigation.test.ts:35:57
+     33|     expect(x.runtime.ledger.totals().committed).toBe(20)
+     34|     expect(x.db.prepare('SELECT purpose FROM p7_calls').all()).toEqual…
+     35|     expect(x.db.prepare('SELECT * FROM refunds').all()).toHaveLength(0)
+       |                                                         ^
+     36|     expect(x.db.prepare('SELECT * FROM p6_effects').all()).toHaveLengt…
+     37|     for (const result of x.branches()) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  test/p8-investigation.test.ts > P8 离线调查和运行记忆 > 分支 failure 不伪装为完整调查
+AssertionError: expected [ Array(1) ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/p8-investigation.test.ts:63:57
+     61|     expect(x.result().memory.confirmedFacts.length).toBeGreaterThan(0)
+     62|     expect(x.result().memory.unresolved.length).toBeGreaterThan(0)
+     63|     expect(x.db.prepare('SELECT * FROM refunds').all()).toHaveLength(0)
+       |                                                         ^
+     64|     if (['timeout', 'missing-usage'].includes(fault)) {
+     65|       expect(x.runtime.ledger.rows().some((row) => row.status === 'unk…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  test/p8-investigation.test.ts > P8 离线调查和运行记忆 > 分支 timeout 不伪装为完整调查
+ FAIL  test/p8-investigation.test.ts > P8 离线调查和运行记忆 > 分支 missing-usage 不伪装为完整调查
+ FAIL  test/p8-investigation.test.ts > P8 离线调查和运行记忆 > 分支 conflict 不伪装为完整调查
+ FAIL  test/p8-investigation.test.ts > P8 离线调查和运行记忆 > 分支 foreign-ref 不伪装为完整调查
+ FAIL  test/p8-investigation.test.ts > P8 离线调查和运行记忆 > 分支 money-tool 不伪装为完整调查
+AssertionError: expected [ Array(1) ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/p8-investigation.test.ts:63:57
+     61|     expect(x.result().memory.confirmedFacts.length).toBeGreaterThan(0)
+     62|     expect(x.result().memory.unresolved.length).toBeGreaterThan(0)
+     63|     expect(x.db.prepare('SELECT * FROM refunds').all()).toHaveLength(0)
+       |                                                         ^
+     64|     if (['timeout', 'missing-usage'].includes(fault)) {
+     65|       expect(x.runtime.ledger.rows().some((row) => row.status === 'unk…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 10 passed (17)
+   Start at  13:00:06
+   Duration  2.37s (transform 458ms, setup 0ms, collect 1.14s, tests 499ms, environment 0ms, prepare 177ms)
+
+undefined
+D:\project\agent-new\aftersales\packages\runtime:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run test/p8-investigation.test.ts

@@ -1,0 +1,22 @@
+{
+  "requests": [
+    {
+      "url": "http://127.0.0.1:59135/api/runs/run_4fe482b2-8b6d-4ee6-94db-4615964e2fee/messages",
+      "key": "76e6af6e-5a11-4cf7-a8d6-d726d228fceb",
+      "body": "{\"message\":\"已寄回商品 请核对寄回信息\",\"returnShipment\":{\"returnNo\":\"RT-2026-0004\",\"trackingNo\":\"LOCAL-SWITCH-006\"}}"
+    }
+  ],
+  "checks": [
+    "同步双提交只发一次请求",
+    "真实 API 受理期间切换新会话和身份 迟到响应不串数据",
+    "返回原会话读取已登记事实"
+  ],
+  "errors": [],
+  "runId": "run_4fe482b2-8b6d-4ee6-94db-4615964e2fee",
+  "commands": {
+    "n": 1
+  },
+  "registered": {
+    "n": 1
+  }
+}

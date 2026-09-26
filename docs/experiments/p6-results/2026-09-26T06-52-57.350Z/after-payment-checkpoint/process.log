@@ -1,0 +1,13 @@
+{"pid":144448,"event":"ready","detail":{"url":"http://127.0.0.1:58791"},"time":"2026-09-26T06:53:17.105Z"}
+{"pid":106176,"event":"accepted","detail":{"taskId":"59f16bde-f2eb-4da9-a4dc-6cfe00912ee1","runId":"run_62b13272-0755-41d6-aa0a-bb06eb062197"},"time":"2026-09-26T06:53:18.023Z"}
+{"pid":108256,"event":"claimed","detail":{"taskId":"59f16bde-f2eb-4da9-a4dc-6cfe00912ee1","generation":1},"time":"2026-09-26T06:53:18.615Z"}
+{"pid":108256,"event":"before-model","detail":{"taskId":"59f16bde-f2eb-4da9-a4dc-6cfe00912ee1","generation":1},"time":"2026-09-26T06:53:18.618Z"}
+{"pid":108256,"event":"model-called","detail":{"snapshot":{"snapshotId":"scripted-frozen-v1","provider":"scripted","model":"scripted-v1","promptVersion":"p6-v1","value":{"scenario":"normal","paid":false}}},"time":"2026-09-26T06:53:18.618Z"}
+{"pid":108256,"event":"after-model-response","detail":{"taskId":"59f16bde-f2eb-4da9-a4dc-6cfe00912ee1","generation":1},"time":"2026-09-26T06:53:18.618Z"}
+{"pid":108256,"event":"after-model-checkpoint","detail":{"taskId":"59f16bde-f2eb-4da9-a4dc-6cfe00912ee1","generation":1},"time":"2026-09-26T06:53:18.619Z"}
+{"pid":108256,"event":"read-called","detail":null,"time":"2026-09-26T06:53:18.619Z"}
+{"pid":108256,"event":"after-payment-intent","detail":{"taskId":"59f16bde-f2eb-4da9-a4dc-6cfe00912ee1","generation":1},"time":"2026-09-26T06:53:18.629Z"}
+{"pid":108256,"event":"after-payment-response","detail":{"taskId":"59f16bde-f2eb-4da9-a4dc-6cfe00912ee1","generation":1},"time":"2026-09-26T06:53:18.649Z"}
+{"pid":108256,"event":"after-payment-checkpoint","detail":{"taskId":"59f16bde-f2eb-4da9-a4dc-6cfe00912ee1","generation":1},"time":"2026-09-26T06:53:18.650Z"}
+{"pid":147960,"event":"claimed","detail":{"taskId":"59f16bde-f2eb-4da9-a4dc-6cfe00912ee1","generation":2},"time":"2026-09-26T06:53:19.643Z"}
+{"pid":147960,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-26T06:53:19.655Z"}

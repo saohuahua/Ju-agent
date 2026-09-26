@@ -1,0 +1,313 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/apps/api
+
+ ❯ test/p6-sse-reconnect.test.ts (1 test | 1 failed) 12ms
+   × P6 SSE 真实断网重连不漏不重且不泄漏原始结果 11ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-sse-results\2026-09-26T04-57-45.251Z'
+ ✓ test/customer-events.test.ts (3 tests) 46ms
+ ❯ test/customer-progress.test.ts (8 tests | 1 failed) 625ms
+   ✓ 空进度和本人权限 客户 DTO 严格白名单且只读 143ms
+   ✓ 主管审批到寄回收货退款 对照公开事实及幂等和渠道计数 108ms
+   ✓ 仅退款没有寄回权限 已确认成功才显示成功 68ms
+   ✓ 审批 rejected 时不能寄回 62ms
+   ✓ 审批 expired 时不能寄回 54ms
+   ✓ 资金未知优先于人工状态 不把接管或模型文字当成功 66ms
+   × 人工接管后拒绝展示寄回入口 记录旧接口只保存留言的行为 68ms
+     → expected { …(8) } to match object { progress: 'human', …(1) }
+(6 matching properties omitted from actual)
+   ✓ 售后关联篡改返回可恢复错误 不泄漏诊断 54ms
+ ❯ test/conversation-refund.test.ts (22 tests | 22 failed) 1925ms
+   × HTTP 客户补问到自动批准仅退款 持久资金执行 原结果和客户事件仅一次 194ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 主管审批 approved 前资金零调用 结果来自业务事实 71ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 主管审批 rejected 前资金零调用 结果来自业务事实 61ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 主管审批 expired 前资金零调用 结果来自业务事实 60ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 退货退款 主管审批 false 收货前零调用 原授权绑定与重复收货 74ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 退货退款 主管审批 true 收货前零调用 原授权绑定与重复收货 82ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 客户越权 原流程篡改均拒绝且不能通过旧同步路径付款 58ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 未知资金不释放发送许可 人工接管不能抹去未知状态 76ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 未迁移动作 compensation 明确阻断 不回退旧资金服务 57ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 未迁移动作 price_protection 明确阻断 不回退旧资金服务 49ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 未迁移动作 submit_exchange 明确阻断 不回退旧资金服务 50ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 自动批准受理失败完整回滚售后 退款 执行权与动作关联 53ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 旧会话 Worker 失去租约不能创建业务 新代次从原动作恢复 61ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 网关三次尝试耗尽不会叠加 Worker 模型重试 未知费用保留 44ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 越权订单即使模型仍提出退款也无法建单 50ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 自动批准退货的 sending 执行权不能在收货时重获 56ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 自动批准退货的 unknown 执行权不能在收货时重获 55ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 自动批准退货的 unassigned 执行权不能在收货时重获 55ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 发送后取消仍保留已确认退款和原调用结果 564ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 旧只读快照不会因装配业务 Worker 获得退款工具 47ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 模型跨轮复用工具调用标识在业务受理前拒绝 45ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+   × 正式模拟装配的退款演示协议通过客户入口完成自动批准退款 62ms
+     → EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 24 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/conversation-refund.test.ts > HTTP 客户补问到自动批准仅退款 持久资金执行 原结果和客户事件仅一次
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:196:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 主管审批 approved 前资金零调用 结果来自业务事实
+ FAIL  test/conversation-refund.test.ts > 主管审批 rejected 前资金零调用 结果来自业务事实
+ FAIL  test/conversation-refund.test.ts > 主管审批 expired 前资金零调用 结果来自业务事实
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:218:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 退货退款 主管审批 false 收货前零调用 原授权绑定与重复收货
+ FAIL  test/conversation-refund.test.ts > 退货退款 主管审批 true 收货前零调用 原授权绑定与重复收货
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:282:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 客户越权 原流程篡改均拒绝且不能通过旧同步路径付款
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:321:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 未知资金不释放发送许可 人工接管不能抹去未知状态
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:348:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 未迁移动作 compensation 明确阻断 不回退旧资金服务
+ FAIL  test/conversation-refund.test.ts > 未迁移动作 price_protection 明确阻断 不回退旧资金服务
+ FAIL  test/conversation-refund.test.ts > 未迁移动作 submit_exchange 明确阻断 不回退旧资金服务
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:363:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 自动批准受理失败完整回滚售后 退款 执行权与动作关联
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:385:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 旧会话 Worker 失去租约不能创建业务 新代次从原动作恢复
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:404:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 网关三次尝试耗尽不会叠加 Worker 模型重试 未知费用保留
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:436:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 越权订单即使模型仍提出退款也无法建单
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:445:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 自动批准退货的 sending 执行权不能在收货时重获
+ FAIL  test/conversation-refund.test.ts > 自动批准退货的 unknown 执行权不能在收货时重获
+ FAIL  test/conversation-refund.test.ts > 自动批准退货的 unassigned 执行权不能在收货时重获
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:476:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 发送后取消仍保留已确认退款和原调用结果
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:499:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 旧只读快照不会因装配业务 Worker 获得退款工具
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:512:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 模型跨轮复用工具调用标识在业务受理前拒绝
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:538:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/24]⎯
+
+ FAIL  test/conversation-refund.test.ts > 正式模拟装配的退款演示协议通过客户入口完成自动批准退款
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-conversation-refund-evidence\2026-09-26T04-57-47.607Z'
+ ❯ Object.save test/conversation-refund.test.ts:114:5
+    112|     )
+    113|   const save = (name: string) => {
+    114|     mkdirSync(evidence, { recursive: true })
+       |     ^
+    115|     writeFileSync(
+    116|       join(evidence, `${name}.json`),
+ ❯ test/conversation-refund.test.ts:549:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/24]⎯
+
+ FAIL  test/customer-progress.test.ts > 人工接管后拒绝展示寄回入口 记录旧接口只保存留言的行为
+AssertionError: expected { …(8) } to match object { progress: 'human', …(1) }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "canRegisterShipment": false,
+-   "progress": "human",
++   "canRegisterShipment": true,
++   "progress": "awaiting_shipment",
+  }
+
+ ❯ test/customer-progress.test.ts:128:30
+    126|   expect(await f.progress()).toMatchObject({ canRegisterShipment: true…
+    127|   await f.post(`/api/runs/${f.runId}/handover`, {}, 'handover', 'opera…
+    128|   expect(await f.progress()).toMatchObject({ progress: 'human', canReg…
+       |                              ^
+    129|   expect((await f.post(`/api/runs/${f.runId}/messages`, f.shipment(), …
+    130|   expect(await f.progress()).toMatchObject({ progress: 'human', shipme…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/24]⎯
+
+ FAIL  test/p6-sse-reconnect.test.ts > P6 SSE 真实断网重连不漏不重且不泄漏原始结果
+Error: EPERM: operation not permitted, mkdir 'D:\project\agent-new\aftersales\docs\experiments\p6-sse-results\2026-09-26T04-57-45.251Z'
+ ❯ test/p6-sse-reconnect.test.ts:16:3
+     14|     new Date().toISOString().replaceAll(':', '-'),
+     15|   )
+     16|   mkdirSync(folder, { recursive: true })
+       |   ^
+     17|   const dbPath = join(folder, 'application.db')
+     18|   const child = spawn(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/24]⎯
+
+
+ Test Files  3 failed | 1 passed (4)
+      Tests  24 failed | 10 passed (34)
+   Start at  12:57:44
+   Duration  5.44s (transform 1.32s, setup 0ms, collect 8.57s, tests 2.61s, environment 1ms, prepare 861ms)
+
+undefined
+D:\project\agent-new\aftersales\apps\api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run test/customer-progress.test.ts test/customer-events.test.ts test/conversation-refund.test.ts test/p6-sse-reconnect.test.ts

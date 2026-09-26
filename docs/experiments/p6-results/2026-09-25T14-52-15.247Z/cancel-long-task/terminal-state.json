@@ -1,0 +1,82 @@
+{
+  "passed": true,
+  "p6_tasks": [
+    {
+      "task_id": "d85681c4-d51a-4b2f-8c92-eeefbe7575d8",
+      "command_id": "3f0cae00-7714-4477-9d54-6e6c750083d7",
+      "run_id": "run_09d2f7f3-d9eb-4230-977a-342af9e8752d",
+      "customer_id": "C1001",
+      "provider": "scripted",
+      "tool": "compensation",
+      "approval_id": null,
+      "status": "cancelled",
+      "available_at": 1790347989394,
+      "owner": "worker-150644",
+      "generation": 1,
+      "lease_until": 0,
+      "attempt": 1,
+      "cancel_requested": 1,
+      "deadline": 1790348289394,
+      "error": "用户请求取消"
+    }
+  ],
+  "p6_commands": [
+    {
+      "command_id": "3f0cae00-7714-4477-9d54-6e6c750083d7",
+      "customer_id": "C1001",
+      "request_key": "request-1",
+      "fingerprint": "d69f972b748475471a5a5711edd20df49918f4b0c16a9d44df5dbdc05e42dbd9",
+      "run_id": "run_09d2f7f3-d9eb-4230-977a-342af9e8752d",
+      "input_json": "{\"requestKey\":\"request-1\",\"customerId\":\"C1001\",\"kind\":\"start\",\"config\":{\"snapshotId\":\"scripted-frozen-v1\",\"provider\":\"scripted\",\"model\":\"scripted-v1\",\"promptVersion\":\"p6-v1\",\"value\":{\"scenario\":\"normal\",\"paid\":false}},\"source\":\"sim\",\"plan\":{\"input\":\"验证持久恢复\",\"tool\":\"compensation\",\"payment\":{\"businessKey\":\"compensation:CP-P6\",\"resourceId\":\"compensation:CP-P6\",\"amountCents\":1000,\"currency\":\"CNY\"}}}"
+    }
+  ],
+  "p6_steps": [
+    {
+      "task_id": "d85681c4-d51a-4b2f-8c92-eeefbe7575d8",
+      "step": "model",
+      "value_json": "{\"text\":\"脚本模型完整结果\",\"snapshotId\":\"scripted-frozen-v1\"}"
+    }
+  ],
+  "p6_effects": [],
+  "p6_events": [
+    {
+      "cursor": 1,
+      "task_id": "d85681c4-d51a-4b2f-8c92-eeefbe7575d8",
+      "event_key": "step:model",
+      "payload_json": "{\"text\":\"脚本模型完整结果\",\"snapshotId\":\"scripted-frozen-v1\"}"
+    },
+    {
+      "cursor": 2,
+      "task_id": "d85681c4-d51a-4b2f-8c92-eeefbe7575d8",
+      "event_key": "call-error:1",
+      "payload_json": "{\"category\":\"call_failure\",\"reason\":\"用户请求取消\"}"
+    },
+    {
+      "cursor": 3,
+      "task_id": "d85681c4-d51a-4b2f-8c92-eeefbe7575d8",
+      "event_key": "status:cancelled",
+      "payload_json": "{\"status\":\"cancelled\",\"error\":\"用户请求取消\"}"
+    }
+  ],
+  "compensations": [
+    {
+      "compensation_no": "CP-P6",
+      "order_no": "O-P6",
+      "customer_id": "C1001",
+      "reason": "logistics_delay",
+      "status": "auto_approved",
+      "amount_cents": 1000,
+      "currency": "CNY",
+      "channel": "local-sim",
+      "requires_approval": 0,
+      "policy_version": "test",
+      "created_at": "2026-09-25T14:53:09.383Z",
+      "updated_at": "2026-09-25T14:53:09.383Z",
+      "version": 1
+    }
+  ],
+  "approval_execution_intents": [],
+  "idempotency_records": [],
+  "channel": [],
+  "channelQueries": []
+}

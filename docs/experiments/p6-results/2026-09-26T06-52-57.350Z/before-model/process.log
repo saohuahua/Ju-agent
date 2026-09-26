@@ -1,0 +1,14 @@
+{"pid":72468,"event":"ready","detail":{"url":"http://127.0.0.1:50424"},"time":"2026-09-26T06:53:01.952Z"}
+{"pid":146600,"event":"accepted","detail":{"taskId":"90e280c0-cb14-4a62-bf43-affd25164917","runId":"run_f3718f8c-a2f3-4e82-9c81-fed85458c902"},"time":"2026-09-26T06:53:03.123Z"}
+{"pid":123332,"event":"claimed","detail":{"taskId":"90e280c0-cb14-4a62-bf43-affd25164917","generation":1},"time":"2026-09-26T06:53:03.746Z"}
+{"pid":123332,"event":"before-model","detail":{"taskId":"90e280c0-cb14-4a62-bf43-affd25164917","generation":1},"time":"2026-09-26T06:53:03.751Z"}
+{"pid":148344,"event":"claimed","detail":{"taskId":"90e280c0-cb14-4a62-bf43-affd25164917","generation":2},"time":"2026-09-26T06:53:04.834Z"}
+{"pid":148344,"event":"before-model","detail":{"taskId":"90e280c0-cb14-4a62-bf43-affd25164917","generation":2},"time":"2026-09-26T06:53:04.836Z"}
+{"pid":148344,"event":"model-called","detail":{"snapshot":{"snapshotId":"scripted-frozen-v1","provider":"scripted","model":"scripted-v1","promptVersion":"p6-v1","value":{"scenario":"normal","paid":false}}},"time":"2026-09-26T06:53:04.837Z"}
+{"pid":148344,"event":"after-model-response","detail":{"taskId":"90e280c0-cb14-4a62-bf43-affd25164917","generation":2},"time":"2026-09-26T06:53:04.837Z"}
+{"pid":148344,"event":"after-model-checkpoint","detail":{"taskId":"90e280c0-cb14-4a62-bf43-affd25164917","generation":2},"time":"2026-09-26T06:53:04.838Z"}
+{"pid":148344,"event":"read-called","detail":null,"time":"2026-09-26T06:53:04.838Z"}
+{"pid":148344,"event":"after-payment-intent","detail":{"taskId":"90e280c0-cb14-4a62-bf43-affd25164917","generation":2},"time":"2026-09-26T06:53:04.848Z"}
+{"pid":148344,"event":"after-payment-response","detail":{"taskId":"90e280c0-cb14-4a62-bf43-affd25164917","generation":2},"time":"2026-09-26T06:53:04.871Z"}
+{"pid":148344,"event":"after-payment-checkpoint","detail":{"taskId":"90e280c0-cb14-4a62-bf43-affd25164917","generation":2},"time":"2026-09-26T06:53:04.872Z"}
+{"pid":148344,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-26T06:53:04.873Z"}

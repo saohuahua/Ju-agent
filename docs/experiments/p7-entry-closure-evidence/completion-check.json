@@ -1,0 +1,149 @@
+{
+  "checkedAt": "2026-09-26T04:19:38.516Z",
+  "scope": "P7剩余正式生产入口关闭",
+  "status": "complete",
+  "verification": "只读复核已有最终验收证据 本次未重新运行测试",
+  "regressionStartedAt": "2026-09-26T03:50:46.237Z",
+  "sources": [
+    {
+      "file": "apps/api/src/model-entry.ts",
+      "modifiedAt": "2026-09-26T03:41:15.245Z",
+      "modifiedAfterRegressionStarted": false,
+      "sha256": "82ab6cb966e605fc4a8ca4d78573dfd36afb1ffdc1b297507c3aedcfcbef2753"
+    },
+    {
+      "file": "apps/api/src/main.ts",
+      "modifiedAt": "2026-09-26T03:44:55.385Z",
+      "modifiedAfterRegressionStarted": false,
+      "sha256": "18356f609f254dcc4430181a08d231fbe655ffcb0165a03e502cccf4b6dd27ab"
+    },
+    {
+      "file": "apps/api/src/app.ts",
+      "modifiedAt": "2026-09-26T03:41:26.050Z",
+      "modifiedAfterRegressionStarted": false,
+      "sha256": "3c080eda4c1433ef80c538f3727d36c6dd4c090e94682c0bab0e68e4c47fe257"
+    },
+    {
+      "file": "packages/runtime/src/compose.ts",
+      "modifiedAt": "2026-09-26T03:41:22.138Z",
+      "modifiedAfterRegressionStarted": false,
+      "sha256": "c2b33971f3851edc70fdb8f3ff8d7226cb516c545c64e6876d09d9252e473d9a"
+    },
+    {
+      "file": "apps/api/test/p7-entry-closure.test.ts",
+      "modifiedAt": "2026-09-26T03:46:28.370Z",
+      "modifiedAfterRegressionStarted": false,
+      "sha256": "2f9e292e195ab8f6b6f5c19a24d2ded4f9bc078e8c935fc70b3548ef5ec52374"
+    },
+    {
+      "file": "apps/api/test/p7-entry-closure-process.test.ts",
+      "modifiedAt": "2026-09-26T03:50:13.051Z",
+      "modifiedAfterRegressionStarted": false,
+      "sha256": "117dbc1cff1e828a8397ad2e1c7854b2f0d2ed3a2a418fec2e86a4273787551f"
+    },
+    {
+      "file": "apps/api/test/fixtures/p7-entry-guard.mjs",
+      "modifiedAt": "2026-09-26T03:48:51.128Z",
+      "modifiedAfterRegressionStarted": false,
+      "sha256": "ff2cefdd30c3ae7d78542674ae28b15591b44c5561df1db067a7bcfe64039726"
+    }
+  ],
+  "totalTests": 594,
+  "l1": {
+    "total": 124,
+    "passed": 124
+  },
+  "entryEvidence": [
+    {
+      "file": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-52-13.124Z/disabled.json",
+      "mode": "disabled",
+      "probe": "",
+      "result": {
+        "health": {
+          "status": "ok",
+          "modelAvailable": false,
+          "conversationMode": "legacy",
+          "promptVersion": "v2.5"
+        },
+        "runs": [
+          {
+            "run_id": "legacy-run",
+            "status": "failed"
+          },
+          {
+            "run_id": "legacy-recovery",
+            "status": "failed"
+          }
+        ],
+        "events": [
+          {
+            "type": "run.resumed",
+            "payload_json": "{\"resumePoint\":\"user_message\"}"
+          },
+          {
+            "type": "message.user",
+            "payload_json": "{\"text\":\"继续查询\"}"
+          },
+          {
+            "type": "tools.catalog_changed",
+            "payload_json": "{\"visible\":[\"lookup_customer\",\"get_order\",\"get_shipment\",\"get_policy\",\"search_policy\",\"escalate\",\"ask_user\",\"conclude\"],\"gated\":[\"submit_return\",\"submit_refund_only\",\"submit_exchange\",\"cancel_return\",\"compensation\",\"price_protection\"],\"reason\":\"initial\"}"
+          },
+          {
+            "type": "run.failed",
+            "payload_json": "{\"errorCode\":\"INTERNAL_ERROR\",\"message\":\"LIVE_DISABLED\"}"
+          },
+          {
+            "type": "tools.catalog_changed",
+            "payload_json": "{\"visible\":[\"lookup_customer\",\"get_order\",\"get_shipment\",\"get_policy\",\"search_policy\",\"escalate\",\"ask_user\",\"conclude\"],\"gated\":[\"submit_return\",\"submit_refund_only\",\"submit_exchange\",\"cancel_return\",\"compensation\",\"price_protection\"],\"reason\":\"initial\"}"
+          },
+          {
+            "type": "run.failed",
+            "payload_json": "{\"errorCode\":\"INTERNAL_ERROR\",\"message\":\"LIVE_DISABLED\"}"
+          }
+        ],
+        "modelCalls": 0
+      }
+    },
+    {
+      "file": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-52-13.124Z/live-rejected.json",
+      "mode": "live-rejected",
+      "probe": "",
+      "result": {
+        "databaseCreated": false,
+        "modelCalls": 0
+      }
+    },
+    {
+      "file": "docs/experiments/p7-entry-closure-evidence/2026-09-26T03-52-13.124Z/simulation.json",
+      "mode": "simulation",
+      "probe": "",
+      "result": {
+        "accepted": {
+          "runId": "run_24089987-15b3-48d3-a299-ab25c240eff2",
+          "commandId": "a4be0119-2f8a-41db-aec3-869225a9f585",
+          "taskId": "e6ae7be7-f873-49a4-868b-69df07a313db",
+          "accepted": true
+        },
+        "calls": [
+          {
+            "purpose": "main_agent",
+            "status": "settled",
+            "actual": 0
+          },
+          {
+            "purpose": "main_agent",
+            "status": "settled",
+            "actual": 0
+          }
+        ],
+        "externalModelCalls": 0
+      }
+    }
+  ],
+  "remainingOutsideScope": [
+    "真实模型传输与质量验证",
+    "客户寄回网页控件",
+    "自动费用对账与跨进程评测续跑"
+  ],
+  "p5Unlocked": false
+}

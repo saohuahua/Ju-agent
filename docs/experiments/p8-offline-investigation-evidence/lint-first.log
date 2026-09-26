@@ -1,0 +1,7 @@
+
+D:\project\agent-new\aftersales\packages\eval\src\p8-offline-fixture.ts
+  4:1  error  All imports in the declaration are only used as types. Use `import type`  @typescript-eslint/consistent-type-imports
+
+✖ 1 problem (1 error, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

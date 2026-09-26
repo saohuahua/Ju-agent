@@ -1,0 +1,14 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/apps/api
+
+ ✓ test/p7-entry-closure.test.ts (4 tests) 35ms
+ ✓ test/p7-entry-closure-process.test.ts (3 tests) 2847ms
+   ✓ 实际 main 即使存在虚构供应商配置也关闭新建和旧运行恢复的真实模型调用  1027ms
+   ✓ 实际 main 的 live 模式在数据库初始化前拒绝且不读取环境文件  785ms
+   ✓ 实际 main 的 simulation 继续通过 P7 持久会话完成查询  1034ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  11:45:29
+   Duration  4.53s (transform 701ms, setup 0ms, collect 2.30s, tests 2.88s, environment 0ms, prepare 382ms)
+

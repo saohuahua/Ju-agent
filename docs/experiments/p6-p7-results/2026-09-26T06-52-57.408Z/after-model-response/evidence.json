@@ -1,0 +1,132 @@
+{
+  "fault": "after-model-response",
+  "first": {
+    "status": 73,
+    "stdout": "供应商模拟尝试\n",
+    "stderr": ""
+  },
+  "next": {
+    "status": 0,
+    "stdout": "供应商模拟尝试\n",
+    "stderr": ""
+  },
+  "task": {
+    "taskId": "97f49e49-f949-4d6e-8280-c73cc3e8b1ba",
+    "commandId": "6bdc3c95-ac81-4fb1-93bc-f8b9023aefb6",
+    "runId": "run_80510133-ff8d-48fd-81f1-7e1d76c02a7d",
+    "customerId": "C1001",
+    "provider": "fixture",
+    "tool": "read_only",
+    "approvalId": null,
+    "status": "completed",
+    "owner": "joint-48412",
+    "generation": 2,
+    "leaseUntil": 0,
+    "attempt": 2,
+    "cancelRequested": 0,
+    "deadline": 1790405879906,
+    "error": null,
+    "input": {
+      "customerId": "C1001",
+      "requestKey": "joint",
+      "kind": "start",
+      "source": "sim",
+      "config": {
+        "snapshotId": "a6d6c235deb1bde87e73b12e65fe2e800c41ec354a4f9e811501d40a866cbdc2",
+        "provider": "fixture",
+        "model": "fixture-v1",
+        "promptVersion": "prompt-v1",
+        "value": {
+          "schemaVersion": 1,
+          "mode": "simulation",
+          "provider": "fixture",
+          "model": "fixture-v1",
+          "protocol": "anthropic_messages",
+          "endpointRef": "offline",
+          "credentialRef": "none",
+          "promptVersion": "prompt-v1",
+          "knowledgeSnapshotId": "knowledge-v1",
+          "toolVersion": "tools-v1",
+          "budgetRef": "first-real-cny-100",
+          "capabilities": {
+            "tools": true,
+            "parallelTools": true,
+            "streamedArguments": true,
+            "structuredOutput": false,
+            "cancellation": true,
+            "usage": "optional",
+            "contextTokens": 1000,
+            "maxOutputTokens": 100
+          },
+          "price": {
+            "version": "synthetic-v1",
+            "currency": "CNY",
+            "inputMicroPerMillion": 1000000,
+            "outputMicroPerMillion": 2000000,
+            "fixedMicroPerCall": 0,
+            "fxNumerator": 1,
+            "fxDenominator": 1,
+            "source": "synthetic fixture",
+            "fxSource": "identity",
+            "verifiedAt": "2026-09-25"
+          },
+          "timeoutMs": 200,
+          "maxAttempts": 1,
+          "maxConcurrency": 4,
+          "maxOutputTokens": 100,
+          "version": "a6d6c235deb1bde87e73b12e65fe2e800c41ec354a4f9e811501d40a866cbdc2"
+        }
+      },
+      "plan": {
+        "input": "联合恢复验证",
+        "tool": "read_only"
+      }
+    }
+  },
+  "calls": [
+    {
+      "call_id": "1b000a02-e90b-45ea-8321-6e989c151133",
+      "scope": "simulation:first-real-cny-100",
+      "operation_id": "[\"6bdc3c95-ac81-4fb1-93bc-f8b9023aefb6:model\",\"claim\",1]",
+      "run_id": "run_80510133-ff8d-48fd-81f1-7e1d76c02a7d",
+      "purpose": "main_agent",
+      "attempt": 1,
+      "snapshot_version": "a6d6c235deb1bde87e73b12e65fe2e800c41ec354a4f9e811501d40a866cbdc2",
+      "price_version": "synthetic-v1",
+      "price_json": "{\"version\":\"synthetic-v1\",\"currency\":\"CNY\",\"inputMicroPerMillion\":1000000,\"outputMicroPerMillion\":2000000,\"fixedMicroPerCall\":0,\"fxNumerator\":1,\"fxDenominator\":1,\"source\":\"synthetic fixture\",\"fxSource\":\"identity\",\"verifiedAt\":\"2026-09-25\"}",
+      "currency": "CNY",
+      "unit": "micro_yuan",
+      "reserved": 1200,
+      "actual": 20,
+      "status": "settled",
+      "outcome": "completed",
+      "usage_json": "{\"inputTokens\":10,\"outputTokens\":5}",
+      "created_at": "2026-09-26T06:53:00.224Z",
+      "settled_at": "2026-09-26T06:53:00.227Z"
+    },
+    {
+      "call_id": "d54f367b-5eb1-4fdf-b9a9-bbdbfd758927",
+      "scope": "simulation:first-real-cny-100",
+      "operation_id": "[\"6bdc3c95-ac81-4fb1-93bc-f8b9023aefb6:model\",\"claim\",2]",
+      "run_id": "run_80510133-ff8d-48fd-81f1-7e1d76c02a7d",
+      "purpose": "main_agent",
+      "attempt": 1,
+      "snapshot_version": "a6d6c235deb1bde87e73b12e65fe2e800c41ec354a4f9e811501d40a866cbdc2",
+      "price_version": "synthetic-v1",
+      "price_json": "{\"version\":\"synthetic-v1\",\"currency\":\"CNY\",\"inputMicroPerMillion\":1000000,\"outputMicroPerMillion\":2000000,\"fixedMicroPerCall\":0,\"fxNumerator\":1,\"fxDenominator\":1,\"source\":\"synthetic fixture\",\"fxSource\":\"identity\",\"verifiedAt\":\"2026-09-25\"}",
+      "currency": "CNY",
+      "unit": "micro_yuan",
+      "reserved": 1200,
+      "actual": 20,
+      "status": "settled",
+      "outcome": "completed",
+      "usage_json": "{\"inputTokens\":10,\"outputTokens\":5}",
+      "created_at": "2026-09-26T06:53:01.281Z",
+      "settled_at": "2026-09-26T06:53:01.283Z"
+    }
+  ],
+  "totals": {
+    "committed": 40,
+    "active": 0
+  }
+}

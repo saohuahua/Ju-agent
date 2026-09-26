@@ -1,0 +1,110 @@
+{
+  "passed": true,
+  "p6_tasks": [
+    {
+      "task_id": "34aa18fb-2ffe-43e4-81b2-6dad57d6798c",
+      "command_id": "2da17c3e-d782-4771-b6e8-5ae1fa98a703",
+      "run_id": "run_60361500-5185-48fa-82f6-f8588286ea76",
+      "customer_id": "C1001",
+      "provider": "scripted",
+      "tool": "compensation",
+      "approval_id": null,
+      "status": "needs_confirmation",
+      "available_at": 1790405611165,
+      "owner": "worker-140320",
+      "generation": 2,
+      "lease_until": 0,
+      "attempt": 2,
+      "cancel_requested": 0,
+      "deadline": 1790405910348,
+      "error": "资金结果未知 只允许查询或人工核验"
+    }
+  ],
+  "p6_commands": [
+    {
+      "command_id": "2da17c3e-d782-4771-b6e8-5ae1fa98a703",
+      "customer_id": "C1001",
+      "request_key": "request-1",
+      "fingerprint": "d69f972b748475471a5a5711edd20df49918f4b0c16a9d44df5dbdc05e42dbd9",
+      "run_id": "run_60361500-5185-48fa-82f6-f8588286ea76",
+      "input_json": "{\"requestKey\":\"request-1\",\"customerId\":\"C1001\",\"kind\":\"start\",\"config\":{\"snapshotId\":\"scripted-frozen-v1\",\"provider\":\"scripted\",\"model\":\"scripted-v1\",\"promptVersion\":\"p6-v1\",\"value\":{\"scenario\":\"normal\",\"paid\":false}},\"source\":\"sim\",\"plan\":{\"input\":\"验证持久恢复\",\"tool\":\"compensation\",\"payment\":{\"businessKey\":\"compensation:CP-P6\",\"resourceId\":\"compensation:CP-P6\",\"amountCents\":1000,\"currency\":\"CNY\"}}}"
+    }
+  ],
+  "p6_steps": [
+    {
+      "task_id": "34aa18fb-2ffe-43e4-81b2-6dad57d6798c",
+      "step": "model",
+      "value_json": "{\"text\":\"脚本模型完整结果\",\"snapshotId\":\"scripted-frozen-v1\"}"
+    },
+    {
+      "task_id": "34aa18fb-2ffe-43e4-81b2-6dad57d6798c",
+      "step": "read",
+      "value_json": "{\"orderNo\":\"O-P6\",\"source\":\"local-script\"}"
+    }
+  ],
+  "p6_effects": [
+    {
+      "business_key": "compensation:CP-P6",
+      "fingerprint": "5ef81b9177e699df9305ffee7f41d2cc21104ef7448a1e5acc0e8b69d358514a",
+      "payment_json": "{\"businessKey\":\"compensation:CP-P6\",\"resourceId\":\"compensation:CP-P6\",\"amountCents\":1000,\"currency\":\"CNY\"}",
+      "status": "unknown",
+      "result_json": "{\"status\":\"unknown\",\"reason\":\"模拟渠道无法确认终态\"}",
+      "task_id": "34aa18fb-2ffe-43e4-81b2-6dad57d6798c"
+    }
+  ],
+  "p6_events": [
+    {
+      "cursor": 1,
+      "task_id": "34aa18fb-2ffe-43e4-81b2-6dad57d6798c",
+      "event_key": "step:model",
+      "payload_json": "{\"text\":\"脚本模型完整结果\",\"snapshotId\":\"scripted-frozen-v1\"}"
+    },
+    {
+      "cursor": 2,
+      "task_id": "34aa18fb-2ffe-43e4-81b2-6dad57d6798c",
+      "event_key": "step:read",
+      "payload_json": "{\"orderNo\":\"O-P6\",\"source\":\"local-script\"}"
+    },
+    {
+      "cursor": 3,
+      "task_id": "34aa18fb-2ffe-43e4-81b2-6dad57d6798c",
+      "event_key": "status:needs_confirmation",
+      "payload_json": "{\"status\":\"needs_confirmation\",\"error\":\"资金结果未知 只允许查询或人工核验\"}"
+    }
+  ],
+  "compensations": [
+    {
+      "compensation_no": "CP-P6",
+      "order_no": "O-P6",
+      "customer_id": "C1001",
+      "reason": "logistics_delay",
+      "status": "executing",
+      "amount_cents": 1000,
+      "currency": "CNY",
+      "channel": "local-sim",
+      "requires_approval": 0,
+      "policy_version": "test",
+      "created_at": "2026-09-26T06:53:30.337Z",
+      "updated_at": "2026-09-26T06:53:30.967Z",
+      "version": 2
+    }
+  ],
+  "approval_execution_intents": [],
+  "idempotency_records": [],
+  "channel": [
+    {
+      "business_key": "compensation:CP-P6",
+      "payment_json": "[\"compensation:CP-P6\",1000,\"CNY\"]",
+      "status": "unknown",
+      "transaction_id": "27a2114f-2399-4419-9a1b-87237ffcee17",
+      "submissions": 1,
+      "charges": 0
+    }
+  ],
+  "channelQueries": [
+    {
+      "id": 1,
+      "business_key": "compensation:CP-P6"
+    }
+  ]
+}

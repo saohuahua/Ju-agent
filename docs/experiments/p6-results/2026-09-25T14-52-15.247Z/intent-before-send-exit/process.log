@@ -1,0 +1,13 @@
+{"pid":97468,"event":"ready","detail":{"url":"http://127.0.0.1:63308"},"time":"2026-09-25T14:52:52.141Z"}
+{"pid":151476,"event":"accepted","detail":{"taskId":"1ee1e36c-0d33-4afc-8083-0405212aa315","runId":"run_bfedd776-ace7-4a85-8b34-f1b2bc94a3b2"},"time":"2026-09-25T14:52:53.028Z"}
+{"pid":42764,"event":"claimed","detail":{"taskId":"1ee1e36c-0d33-4afc-8083-0405212aa315","generation":1},"time":"2026-09-25T14:52:53.607Z"}
+{"pid":42764,"event":"before-model","detail":{"taskId":"1ee1e36c-0d33-4afc-8083-0405212aa315","generation":1},"time":"2026-09-25T14:52:53.610Z"}
+{"pid":42764,"event":"model-called","detail":{"snapshot":{"snapshotId":"scripted-frozen-v1","provider":"scripted","model":"scripted-v1","promptVersion":"p6-v1","value":{"scenario":"normal","paid":false}}},"time":"2026-09-25T14:52:53.610Z"}
+{"pid":42764,"event":"after-model-checkpoint","detail":{"taskId":"1ee1e36c-0d33-4afc-8083-0405212aa315","generation":1},"time":"2026-09-25T14:52:53.611Z"}
+{"pid":42764,"event":"read-called","detail":null,"time":"2026-09-25T14:52:53.611Z"}
+{"pid":42764,"event":"after-payment-intent","detail":{"taskId":"1ee1e36c-0d33-4afc-8083-0405212aa315","generation":1},"time":"2026-09-25T14:52:53.621Z"}
+{"pid":117360,"event":"claimed","detail":{"taskId":"1ee1e36c-0d33-4afc-8083-0405212aa315","generation":2},"time":"2026-09-25T14:52:54.590Z"}
+{"pid":117360,"event":"after-payment-intent","detail":{"taskId":"1ee1e36c-0d33-4afc-8083-0405212aa315","generation":2},"time":"2026-09-25T14:52:54.603Z"}
+{"pid":117360,"event":"after-payment-response","detail":{"taskId":"1ee1e36c-0d33-4afc-8083-0405212aa315","generation":2},"time":"2026-09-25T14:52:54.621Z"}
+{"pid":117360,"event":"after-payment-checkpoint","detail":{"taskId":"1ee1e36c-0d33-4afc-8083-0405212aa315","generation":2},"time":"2026-09-25T14:52:54.622Z"}
+{"pid":117360,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-25T14:52:54.623Z"}

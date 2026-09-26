@@ -1,0 +1,13 @@
+: connected
+
+id: 2
+event: task.progress
+data: {"taskId":"2e1dcbcb-afc2-4f0f-94cb-4815f8af2c29","step":"read"}
+
+id: 3
+event: task.progress
+data: {"taskId":"2e1dcbcb-afc2-4f0f-94cb-4815f8af2c29","status":"completed"}
+
+event: stream.complete
+data: {"cursor":3,"status":"completed"}
+

@@ -1,0 +1,14 @@
+{"pid":146776,"event":"ready","detail":{"url":"http://127.0.0.1:64904"},"time":"2026-09-26T06:53:35.978Z"}
+{"pid":149608,"event":"accepted","detail":{"taskId":"c7161bbf-5ae3-4ca5-aac0-87645e1d0371","runId":"run_aa1b5577-7b84-49ac-af4f-9a925646a0f9"},"time":"2026-09-26T06:53:36.892Z"}
+{"pid":56100,"event":"claimed","detail":{"taskId":"c7161bbf-5ae3-4ca5-aac0-87645e1d0371","generation":1},"time":"2026-09-26T06:53:37.473Z"}
+{"pid":56100,"event":"before-model","detail":{"taskId":"c7161bbf-5ae3-4ca5-aac0-87645e1d0371","generation":1},"time":"2026-09-26T06:53:37.476Z"}
+{"pid":56100,"event":"model-called","detail":{"snapshot":{"snapshotId":"scripted-frozen-v1","provider":"scripted","model":"scripted-v1","promptVersion":"p6-v1","value":{"scenario":"normal","paid":false}}},"time":"2026-09-26T06:53:37.476Z"}
+{"pid":56100,"event":"after-model-response","detail":{"taskId":"c7161bbf-5ae3-4ca5-aac0-87645e1d0371","generation":1},"time":"2026-09-26T06:53:37.476Z"}
+{"pid":56100,"event":"after-model-checkpoint","detail":{"taskId":"c7161bbf-5ae3-4ca5-aac0-87645e1d0371","generation":1},"time":"2026-09-26T06:53:37.477Z"}
+{"pid":56100,"event":"read-called","detail":null,"time":"2026-09-26T06:53:37.477Z"}
+{"pid":56100,"event":"after-payment-intent","detail":{"taskId":"c7161bbf-5ae3-4ca5-aac0-87645e1d0371","generation":1},"time":"2026-09-26T06:53:37.487Z"}
+{"pid":147272,"event":"claimed","detail":{"taskId":"c7161bbf-5ae3-4ca5-aac0-87645e1d0371","generation":2},"time":"2026-09-26T06:53:38.455Z"}
+{"pid":147272,"event":"after-payment-intent","detail":{"taskId":"c7161bbf-5ae3-4ca5-aac0-87645e1d0371","generation":2},"time":"2026-09-26T06:53:38.467Z"}
+{"pid":147272,"event":"after-payment-response","detail":{"taskId":"c7161bbf-5ae3-4ca5-aac0-87645e1d0371","generation":2},"time":"2026-09-26T06:53:38.484Z"}
+{"pid":147272,"event":"after-payment-checkpoint","detail":{"taskId":"c7161bbf-5ae3-4ca5-aac0-87645e1d0371","generation":2},"time":"2026-09-26T06:53:38.484Z"}
+{"pid":147272,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-26T06:53:38.485Z"}
