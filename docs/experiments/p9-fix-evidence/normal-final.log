@@ -1,0 +1,2 @@
+$ tsx packages/eval/src/cli.ts "--offline" "--repeat" "2" "--db" "C:\\Users\\htlocal\\AppData\\Local\\Temp\\p9-fix-eb2f9484-327f-4865-9763-38af73c62077.db" "--output" "docs/experiments/p9-fix-evidence/normal-final" "--experiment-id" "p9-fix-final-normal"
+{"reportId":"evr_18c196b2","experimentId":"p9-fix-final-normal","mode":"simulation","total":248,"passed":248,"gatePassed":true,"costUnit":"micro_yuan","scopeCommitted":18190,"hasUncertainCost":true,"blocked":false,"output":"D:\\project\\agent-new\\aftersales\\docs\\experiments\\p9-fix-evidence\\normal-final"}

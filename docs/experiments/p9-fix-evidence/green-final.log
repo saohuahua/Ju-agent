@@ -1,0 +1,40 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/eval
+
+ ✓ test/p9-judge.test.ts (9 tests) 25ms
+ ✓ test/p7-eval-budget.test.ts (20 tests) 150ms
+ ✓ test/p9-fixes.test.ts (8 tests) 2325ms
+   ✓ 拒绝损坏的失败索引 reference-pass  371ms
+   ✓ 拒绝损坏的失败索引 reference-class  361ms
+   ✓ 拒绝损坏的失败索引 missing  380ms
+   ✓ 拒绝损坏的失败索引 empty  346ms
+   ✓ 拒绝损坏的失败索引 duplicate  411ms
+   ✓ 拒绝损坏的失败索引 extra  352ms
+ ✓ test/p7-entry.test.ts (8 tests) 3744ms
+   ✓ 正式 L1 工厂按重复轮次归因并保存业务关联 清库保留费用及附件  458ms
+   ✓ 正式 L2 入口经过真实模拟器与主循环 同身份重放不新增传输  703ms
+   ✓ 模型失败只由网关重试 套件不增加重复轮次绕过预算  332ms
+   ✓ 先前实验费用阻断后续入口 保留零行拒绝证据  724ms
+   ✓ 调用前取消不创建账本记录且仍计入端到端分母  333ms
+   ✓ rec_crash_during_verification 正式预算回放保留领域断言并符合工具结果配对  397ms
+   ✓ lg_pending_approval_queued 正式预算回放保留领域断言并符合工具结果配对  397ms
+   ✓ sec_cross_customer_order 正式预算回放保留领域断言并符合工具结果配对  401ms
+ ✓ test/p9-quality.test.ts (16 tests) 6630ms
+   ✓ 两轮原始证据可解析 次轮失败不被首轮掩盖 费用保留未知  963ms
+   ✓ 旧报告格式读取兼容 缺少元数据不得凭旧分母比较  405ms
+   ✓ 版本或样本变化拒绝比较 不输出提升差值  444ms
+   ✓ 缺失重复篡改及错配证据均拒绝  588ms
+   ✓ 模型故障 PROTOCOL 留在端到端分母并明确分类  330ms
+   ✓ 模型故障 TIMEOUT 留在端到端分母并明确分类  380ms
+   ✓ 模型故障 UPSTREAM 留在端到端分母并明确分类  346ms
+   ✓ 模型故障 BUDGET_EXCEEDED 留在端到端分母并明确分类  326ms
+   ✓ 服务装配失败和缺失证据保留分母  307ms
+   ✓ 真实预算预检查阻断无账本行且原占用不清零  671ms
+   ✓ Judge 失败不覆盖确定性业务成功 原始 Judge 输出可追溯  378ms
+   ✓ 配置模型变量必须声明 其余运行配置不能夹带变化  807ms
+   ✓ 共享账本已有 held 导出与比较均保留且不修改账本  393ms
+
+ Test Files  5 passed (5)
+      Tests  61 passed (61)
+   Start at  16:48:09
+   Duration  9.00s (transform 1.20s, setup 0ms, collect 6.46s, tests 12.88s, environment 1ms, prepare 955ms)

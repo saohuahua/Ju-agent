@@ -1,0 +1,40 @@
+{
+  "gatewayTimeout": {
+    "atReturn": {
+      "totals": {
+        "committed": 10,
+        "active": 1
+      },
+      "eventCount": 0
+    },
+    "afterReturn": {
+      "totals": {
+        "committed": 10,
+        "active": 0
+      },
+      "eventCount": 2
+    }
+  },
+  "timeout": {
+    "verdict": [
+      {
+        "rubric": "judge 超时",
+        "reason": "未获得完整判定"
+      }
+    ],
+    "finishedAtReturn": false,
+    "finishedAfterReturn": true
+  },
+  "metric": {
+    "businessRate": 1,
+    "interval": {
+      "lower": 0,
+      "upper": 0.7934567085261071
+    }
+  },
+  "index": {
+    "verifyAccepted": true,
+    "failedCases": 124,
+    "exportedFailureIndex": 0
+  }
+}

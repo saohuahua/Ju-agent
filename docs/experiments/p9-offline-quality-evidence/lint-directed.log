@@ -1,0 +1,5 @@
+
+D:\project\agent-new\aftersales\packages\eval\src\types.ts
+  24:14  error  `import()` type annotations are forbidden  @typescript-eslint/consistent-type-imports
+
+✖ 1 problem (1 error, 0 warnings)

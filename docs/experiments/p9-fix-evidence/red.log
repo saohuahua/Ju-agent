@@ -1,0 +1,91 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/eval
+
+ ❯ test/p9-fixes.test.ts (8 tests | 8 failed) 2054ms
+   × Judge 超时返回前释放活动调用并冻结原网关观察 保留未知费用且不影响其他角色 85ms
+     → expected false to be true // Object.is equality
+   × 业务成功率区间和点估计共用分子 不受单独 Judge 失败影响 3ms
+     → expected { Object (lower, upper) } to deeply equal { Object (lower, upper) }
+   × 拒绝损坏的失败索引 reference-pass 352ms
+     → expected [Function] to throw an error
+   × 拒绝损坏的失败索引 reference-class 328ms
+     → expected [Function] to throw an error
+   × 拒绝损坏的失败索引 missing 335ms
+     → expected [Function] to throw an error
+   × 拒绝损坏的失败索引 empty 318ms
+     → expected [Function] to throw an error
+   × 拒绝损坏的失败索引 duplicate 309ms
+     → expected [Function] to throw an error
+   × 拒绝损坏的失败索引 extra 323ms
+     → expected [Function] to throw an error
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/p9-fixes.test.ts > Judge 超时返回前释放活动调用并冻结原网关观察 保留未知费用且不影响其他角色
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/p9-fixes.test.ts:45:38
+     43|       { rubric: 'judge 超时', reason: '未获得完整判定' },
+     44|     ])
+     45|     expect(transportSignal?.aborted).toBe(true)
+       |                                      ^
+     46|     expect(ledger.totals().active).toBe(0)
+     47|     expect(ledger.rows()).toHaveLength(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  test/p9-fixes.test.ts > 业务成功率区间和点估计共用分子 不受单独 Judge 失败影响
+AssertionError: expected { Object (lower, upper) } to deeply equal { Object (lower, upper) }
+
+- Expected
++ Received
+
+  {
+-   "lower": 0.20654329147389294,
+-   "upper": 1,
++   "lower": 0,
++   "upper": 0.7934567085261071,
+  }
+
+ ❯ test/p9-fixes.test.ts:71:57
+     69|   expect(report.metrics.task_success_rate).toBe(1)
+     70|   expect(report.passed).toBe(0)
+     71|   expect(report.confidenceIntervals?.task_success_rate).toEqual(wilson…
+       |                                                         ^
+     72| })
+     73|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  test/p9-fixes.test.ts > 拒绝损坏的失败索引 reference-pass
+ FAIL  test/p9-fixes.test.ts > 拒绝损坏的失败索引 reference-class
+ FAIL  test/p9-fixes.test.ts > 拒绝损坏的失败索引 missing
+ FAIL  test/p9-fixes.test.ts > 拒绝损坏的失败索引 empty
+ FAIL  test/p9-fixes.test.ts > 拒绝损坏的失败索引 duplicate
+ FAIL  test/p9-fixes.test.ts > 拒绝损坏的失败索引 extra
+AssertionError: expected [Function] to throw an error
+ ❯ test/p9-fixes.test.ts:92:50
+     90|     if (mutation === 'extra') writeFileSync(path, JSON.stringify([...f…
+     91|     writeFileSync(join(directory, 'quality.json'), JSON.stringify(bund…
+     92|     expect(() => verifyQualityBundle(directory)).toThrow()
+       |                                                  ^
+     93|   },
+     94| )
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed (8)
+   Start at  16:41:49
+   Duration  4.86s (transform 713ms, setup 0ms, collect 2.05s, tests 2.05s, environment 0ms, prepare 181ms)
+
+undefined
+D:\project\agent-new\aftersales\packages\eval:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run test/p9-fixes.test.ts

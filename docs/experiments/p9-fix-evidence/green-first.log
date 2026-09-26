@@ -1,0 +1,58 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/eval
+
+ ✓ test/p9-judge.test.ts (9 tests) 10ms
+ ❯ test/p9-fixes.test.ts (8 tests | 1 failed) 2090ms
+   × Judge 超时返回前释放活动调用并冻结原网关观察 保留未知费用且不影响其他角色 83ms
+     → expected 1 to be +0 // Object.is equality
+   ✓ 业务成功率区间和点估计共用分子 不受单独 Judge 失败影响 1ms
+   ✓ 拒绝损坏的失败索引 reference-pass  328ms
+   ✓ 拒绝损坏的失败索引 reference-class  322ms
+   ✓ 拒绝损坏的失败索引 missing  340ms
+   ✓ 拒绝损坏的失败索引 empty  339ms
+   ✓ 拒绝损坏的失败索引 duplicate  345ms
+   ✓ 拒绝损坏的失败索引 extra  332ms
+ ✓ test/p9-quality.test.ts (16 tests) 6159ms
+   ✓ 两轮原始证据可解析 次轮失败不被首轮掩盖 费用保留未知  848ms
+   ✓ 旧报告格式读取兼容 缺少元数据不得凭旧分母比较  364ms
+   ✓ 版本或样本变化拒绝比较 不输出提升差值  410ms
+   ✓ 缺失重复篡改及错配证据均拒绝  575ms
+   ✓ 模型故障 PROTOCOL 留在端到端分母并明确分类  313ms
+   ✓ 模型故障 TIMEOUT 留在端到端分母并明确分类  312ms
+   ✓ 模型故障 UPSTREAM 留在端到端分母并明确分类  316ms
+   ✓ 模型故障 BUDGET_EXCEEDED 留在端到端分母并明确分类  310ms
+   ✓ 真实预算预检查阻断无账本行且原占用不清零  647ms
+   ✓ Judge 失败不覆盖确定性业务成功 原始 Judge 输出可追溯  346ms
+   ✓ 配置模型变量必须声明 其余运行配置不能夹带变化  769ms
+   ✓ 共享账本已有 held 导出与比较均保留且不修改账本  375ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/p9-fixes.test.ts > Judge 超时返回前释放活动调用并冻结原网关观察 保留未知费用且不影响其他角色
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/p9-fixes.test.ts:62:36
+     60|     ).toEqual([{ rubric: 'judge 超时', reason: '未获得完整判定' }])
+     61|     expect(transportSignal?.aborted).toBe(true)
+     62|     expect(ledger.totals().active).toBe(0)
+       |                                    ^
+     63|     expect(ledger.rows()).toHaveLength(1)
+     64|     expect(ledger.rows()[0]).toMatchObject({ status: 'unknown', actual…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 32 passed (33)
+   Start at  16:43:35
+   Duration  8.80s (transform 846ms, setup 0ms, collect 3.95s, tests 8.26s, environment 1ms, prepare 576ms)
+
+undefined
+D:\project\agent-new\aftersales\packages\eval:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run test/p9-fixes.test.ts test/p9-judge.test.ts test/p9-quality.test.ts

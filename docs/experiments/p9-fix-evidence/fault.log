@@ -1,0 +1,3 @@
+$ tsx packages/eval/src/cli.ts "--offline" "--repeat" "2" "--fault" "protocol-repeat-2" "--db" "C:\\Users\\htlocal\\AppData\\Local\\Temp\\p9-fix-eb2f9484-327f-4865-9763-38af73c62077.db" "--output" "docs/experiments/p9-fix-evidence/fault" "--experiment-id" "p9-fix-fault"
+{"reportId":"evr_58eade33","experimentId":"p9-fix-fault","mode":"simulation","total":248,"passed":124,"gatePassed":false,"costUnit":"micro_yuan","scopeCommitted":11410,"hasUncertainCost":true,"blocked":false,"output":"D:\\project\\agent-new\\aftersales\\docs\\experiments\\p9-fix-evidence\\fault"}
+[ELIFECYCLE] Command failed with exit code 1.
