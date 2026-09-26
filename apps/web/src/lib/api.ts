@@ -6,17 +6,21 @@
 
 import type {
   AgentEvent,
+  CustomerRefundProgress,
   AnalyticsOverview,
   ApprovalRequest,
+  ApprovalExecutionView,
   EvalReportSummary,
   RunRatingView,
   RunSummary,
   SimTaskView,
 } from './types'
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8787'
+// 默认绑定本项目离线服务的 IPv4 地址 避免 localhost 命中另一个 IPv6 服务
+export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'http://127.0.0.1:8787'
 
 const TOKEN_STORAGE_KEY = 'aftersales-token'
+let identityRevision = 0
 
 /** 演示令牌切换 本地存储 讲解环境专用 */
 export const DEMO_TOKENS = [
@@ -27,12 +31,14 @@ export const DEMO_TOKENS = [
 ]
 
 export function currentToken(): string {
-  if (typeof window === 'undefined') return DEMO_TOKENS[0]!.value
-  return window.localStorage.getItem(TOKEN_STORAGE_KEY) ?? DEMO_TOKENS[0]!.value
+  if (typeof window === 'undefined') return 'operator-token'
+  return window.localStorage.getItem(TOKEN_STORAGE_KEY) ?? 'operator-token'
 }
 
 export function setToken(token: string): void {
+  identityRevision += 1
   window.localStorage.setItem(TOKEN_STORAGE_KEY, token)
+  window.dispatchEvent(new Event('aftersales:identity'))
 }
 
 /** 当前演示身份角色 坐席工作台等内部页面的客户端门槛 */
@@ -54,27 +60,42 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+export async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = currentToken()
+  const revision = identityRevision
   const response = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: {
-      Authorization: `Bearer ${currentToken()}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
       ...init?.headers,
     },
   })
+
+  // 身份切换后的迟到响应不能进入新界面 即使之后切回同一身份也丢弃
+  const assertCurrentIdentity = () => {
+    if (revision !== identityRevision || token !== currentToken() || init?.signal?.aborted) {
+      throw new DOMException('请求所属身份或页面已变化', 'AbortError')
+    }
+  }
+
+  assertCurrentIdentity()
   if (!response.ok) {
     const body = (await response.json().catch(() => ({}))) as { error?: string; message?: string }
+    assertCurrentIdentity()
     throw new ApiError(
       response.status,
       body.error ?? 'UNKNOWN',
       body.message ?? `请求失败 ${response.status}`,
     )
   }
-  return (await response.json()) as T
+  const body = (await response.json()) as T
+  assertCurrentIdentity()
+  return body
 }
 
 export interface HealthInfo {
+  conversationMode?: 'durable_readonly_simulation' | 'durable_refund_simulation' | 'legacy'
   status: string
   modelAvailable: boolean
   promptVersion: string
@@ -83,17 +104,32 @@ export interface HealthInfo {
 export const api = {
   health: () => request<HealthInfo>('/api/health'),
 
-  createRun: (message: string, customerId?: string) =>
+  createRun: (message: string, customerId?: string, requestKey = crypto.randomUUID()) =>
     request<{ runId: string }>('/api/runs', {
       method: 'POST',
+      headers: { 'Idempotency-Key': requestKey },
       body: JSON.stringify(customerId ? { message, customerId } : { message }),
     }),
 
-  continueRun: (runId: string, message: string) =>
+  continueRun: (
+    runId: string,
+    message: string,
+    requestKey = crypto.randomUUID(),
+    returnShipment?: { returnNo: string; trackingNo: string },
+    signal?: AbortSignal,
+  ) =>
     request<{ runId: string }>(`/api/runs/${runId}/messages`, {
       method: 'POST',
-      body: JSON.stringify({ message }),
+      headers: { 'Idempotency-Key': requestKey },
+      body: JSON.stringify({ message, ...(returnShipment ? { returnShipment } : {}) }),
+      signal,
     }),
+
+  customerProgress: (runId: string, signal?: AbortSignal) =>
+    request<{ progress: CustomerRefundProgress | null }>(
+      `/api/runs/${encodeURIComponent(runId)}/customer-progress`,
+      { signal, cache: 'no-store' },
+    ),
 
   getRun: (runId: string) => request<{ run: RunSummary }>(`/api/runs/${runId}`),
 
@@ -103,7 +139,13 @@ export const api = {
   listEvents: (runId: string, from = 1) =>
     request<{ events: AgentEvent[] }>(`/api/runs/${runId}/events/json?from=${from}`),
 
-  listApprovals: () => request<{ approvals: ApprovalRequest[] }>('/api/approvals'),
+  listApprovals: (signal?: AbortSignal) =>
+    request<{ approvals: ApprovalRequest[] }>('/api/approvals', { signal }),
+
+  listApprovalExecutions: (signal?: AbortSignal) =>
+    request<{ executions: ApprovalExecutionView[]; limit: number }>('/api/approvals/executions', {
+      signal,
+    }),
 
   decideApproval: (runId: string, approvalId: string, decision: 'approved' | 'rejected') =>
     request<{ runId: string; approvalId: string; decision: 'approved' | 'rejected' }>(
