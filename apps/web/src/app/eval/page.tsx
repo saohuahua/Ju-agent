@@ -541,6 +541,7 @@ function FailureRow({
             <CaretRight size={10} weight="bold" />
           </span>
           {result.caseId}
+          {result.repeat !== undefined ? ` · 第 ${result.repeat} 次评测` : ''}
         </td>
         <td className="px-3 py-2 text-xs text-stone-600">{result.priority}</td>
         <td className="px-3 py-2 tabular-nums text-stone-700">{result.turns ?? '-'}</td>
@@ -985,8 +986,8 @@ export default function EvalPage() {
             )}
 
             <p className="mt-4 text-xs text-stone-400">
-              所有数字来自对应报告的实际运行结果 L1 为离线脚本回放 L2 为抽样用户模拟评测
-              Wilson 95% 置信区间仅 L2 计算 真实模型入口当前禁用
+              所有数字来自对应报告的实际运行结果 L1 为离线脚本回放 L2 为抽样用户模拟评测 Wilson 95%
+              置信区间仅 L2 计算 真实模型入口当前禁用
             </p>
 
             {detailCases.length > 0 && (
@@ -1058,18 +1059,20 @@ export default function EvalPage() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-hairline">
-                          {failedCases.map((result) => (
-                            <FailureRow
-                              key={result.caseId}
-                              result={result}
-                              expanded={expandedCaseId === result.caseId}
-                              onToggle={() =>
-                                setExpandedCaseId(
-                                  expandedCaseId === result.caseId ? null : result.caseId,
-                                )
-                              }
-                            />
-                          ))}
+                          {failedCases.map((result) => {
+                            // 用例与重复轮次共同确定展开状态
+                            const resultKey = JSON.stringify([result.caseId, result.repeat ?? null])
+                            return (
+                              <FailureRow
+                                key={resultKey}
+                                result={result}
+                                expanded={expandedCaseId === resultKey}
+                                onToggle={() =>
+                                  setExpandedCaseId(expandedCaseId === resultKey ? null : resultKey)
+                                }
+                              />
+                            )
+                          })}
                         </tbody>
                       </table>
                     </div>

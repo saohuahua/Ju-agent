@@ -146,6 +146,8 @@ export interface EvalFailureView {
 }
 
 export interface EvalCaseResultView {
+  /** 旧报告未保存重复轮次 */
+  repeat?: number
   caseId: string
   priority: string
   passed: boolean
