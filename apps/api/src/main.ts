@@ -4,53 +4,30 @@
  * 环境变量
  *   DB_PATH           SQLite 文件路径 缺省 data/app.db
  *   API_PORT          监听端口 缺省 8787
- *   ANTHROPIC_API_KEY 可选 配置后启用真实模型对话
- *   ANTHROPIC_BASE_URL 可选 自定义模型服务地址 用于代理或中转站
+ *   P6_BUSINESS_MODE  simulation 显式启用持久离线会话
  *   OPERATOR_TOKEN    操作员令牌
  *   SUPERVISOR_TOKEN  主管令牌
  *
- * 未配置模型密钥时服务照常启动 审批 运营 评测看板均可用
+ * 真实模型入口保持关闭 不读取模型凭据或环境文件
  */
 
 import { serve } from '@hono/node-server'
-import { AnthropicModel } from '@aftersales/agent'
-import { ScriptedModel } from '@aftersales/agent'
-import type { ChatModel } from '@aftersales/agent'
 import { openDatabase, loadFixture, loadPolicyArticles } from '@aftersales/persistence'
 import { composeSystem } from '@aftersales/runtime'
 import { SystemClock } from '@aftersales/domain'
 import { createApp } from './app.js'
-import { existsSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-
-// 加载仓库根目录的 .env 到 process.env 文件不存在时静默跳过
-// 显式覆盖同名环境变量 保证 .env 配置始终生效
-// 宿主（如 Claude 应用）会注入 ANTHROPIC_BASE_URL 指向本地代理 需以 .env 为准
-function loadEnvFile(file: string): void {
-  if (!existsSync(file)) return
-  for (const line of readFileSync(file, 'utf-8').split(/\r?\n/)) {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) continue
-    const eq = trimmed.indexOf('=')
-    if (eq <= 0) continue
-    const key = trimmed.slice(0, eq).trim()
-    const value = trimmed.slice(eq + 1).trim()
-    if (key) process.env[key] = value
-  }
-}
+import { resolveApiModelEntry } from './model-entry.js'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
-loadEnvFile(resolve(repoRoot, '.env'))
-
-function resolveModel(): { model: ChatModel; available: boolean; label: string } {
-  if (process.env.ANTHROPIC_API_KEY) {
-    const model = new AnthropicModel()
-    return { model, available: true, label: model.info.model }
-  }
-  // 无密钥时用空脚本模型占位 创建运行的入口由 modelAvailable 闸门拦下
-  return { model: new ScriptedModel([]), available: false, label: '未配置 使用脚本化占位' }
-}
+// 模式拒绝先于数据库初始化 不因真实模式请求迁移或播种任何业务库
+const {
+  model,
+  available,
+  label,
+  durableConversation: durableOptions,
+} = resolveApiModelEntry(process.env.P6_BUSINESS_MODE)
 
 // DB_PATH 相对路径锚定仓库根 与评测 CLI 落库位置一致 避免 cwd 差异写出两个库
 const dbPath = resolve(repoRoot, process.env.DB_PATH ?? 'data/app.db')
@@ -64,27 +41,46 @@ if (hasOrders.count === 0) {
 }
 
 // 政策语料为空时补种 老演示库升级到政策检索功能后仍可用
-const hasArticles = db
-  .prepare('SELECT COUNT(*) AS count FROM policy_articles')
-  .get() as { count: number }
+const hasArticles = db.prepare('SELECT COUNT(*) AS count FROM policy_articles').get() as {
+  count: number
+}
 if (hasArticles.count === 0) {
   loadPolicyArticles(db)
   console.log('已补种政策条款语料')
 }
 
-const { model, available, label } = resolveModel()
 const system = composeSystem({
   db,
   clock: new SystemClock(),
   model,
   withFixture: false,
+  durableConversation: durableOptions,
+  durableBusiness: durableOptions
+    ? {
+        snapshot: durableOptions.snapshot,
+        paymentUrl: process.env.P6_PAYMENT_SIMULATOR_URL ?? 'http://127.0.0.1:8792',
+      }
+    : undefined,
 })
+system.conversations?.start()
+system.durableBusiness?.start()
 
 const app = createApp({ system, modelAvailable: available })
 const port = Number(process.env.API_PORT ?? 8787)
 
-serve({ fetch: app.fetch, port }, (info) => {
-  console.log(`售后 API 已启动 http://localhost:${info.port}`)
+const server = serve({ fetch: app.fetch, port }, (info) => {
+  console.log(`售后 API 已启动 http://127.0.0.1:${info.port}`)
   console.log(`模型 ${label}`)
   console.log('健康检查 GET /api/health')
 })
+
+// 关闭监听后等待当前有界任务退出 不清理持久命令和资金意图
+for (const signal of ['SIGINT', 'SIGTERM'] as const)
+  process.once(signal, () => {
+    server.close(() => {
+      void Promise.all([system.conversations?.stop(), system.durableBusiness?.stop()]).then(() => {
+        db.close()
+        process.exit(0)
+      })
+    })
+  })
