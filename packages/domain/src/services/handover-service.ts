@@ -11,11 +11,16 @@ import type { Actor } from '../entities.js'
 import { DomainError } from '../repositories.js'
 import type { RunService } from './run-service.js'
 import type { AuditService } from './audit-service.js'
+import type { CaseClosureRepository, CaseClosureReview } from '../case-closure.js'
+import type { Clock } from '../clock.js'
+import { redactText } from '../redact.js'
 
 export class HumanHandoverService {
   constructor(
     private readonly runs: RunService,
     private readonly audit: AuditService,
+    private readonly closure: CaseClosureRepository,
+    private readonly clock: Clock,
   ) {}
 
   /** 坐席接管 escalated 会话 迁往 handling_human 人工处理中 */
@@ -30,7 +35,7 @@ export class HumanHandoverService {
         }),
       )
     }
-    await this.runs.transition(runId, 'handling_human')
+    await this.runs.transition(runId, 'handling_human', undefined, 'escalated')
     const takenBy = actor.customerId ?? actor.role
     await this.runs.emit(runId, 'run.handover', { takenBy })
     await this.audit.record(actor, 'run_handover_taken', 'run', runId, { takenBy }, runId)
@@ -59,14 +64,37 @@ export class HumanHandoverService {
     await this.runs.emit(runId, 'message.user', { text })
   }
 
-  /** 坐席标记解决 附解决摘要 迁回 completed 终态 */
+  /** 团队预览阻塞项 客户不能读取内部业务核验详情 */
+  async reviewClosure(actor: Actor, runId: string): Promise<CaseClosureReview> {
+    this.assertOperator(actor, '核验结案条件')
+    return this.closure.review(runId)
+  }
+
+  /** 结案由仓储原子核验并写入 不在预览结果上直接修改状态 */
   async resolve(actor: Actor, runId: string, summary: string): Promise<void> {
     this.assertOperator(actor, '标记解决')
-    await this.assertHandling(runId)
-    await this.runs.transition(runId, 'completed')
-    const resolvedBy = actor.customerId ?? actor.role
-    await this.runs.emit(runId, 'run.resolved', { summary, resolvedBy })
-    await this.audit.record(actor, 'run_resolved', 'run', runId, { summary, resolvedBy }, runId)
+    if (!summary.trim())
+      throw new DomainError(createToolError('VALIDATION_ERROR', '请填写结案摘要'))
+    const result = await this.closure.resolve({
+      runId,
+      summary: redactText(summary.trim()),
+      actor,
+      now: this.clock.now().toISOString(),
+    })
+    if (!result.resolved) {
+      const reason = result.review.blockers.length
+        ? result.review.blockers
+            .slice(0, 3)
+            .map((item) => `${item.resourceId} ${item.reason}`)
+            .join('；')
+        : '案件不在人工处理中 请刷新状态'
+      throw new DomainError(
+        createToolError('CONFLICT', `不能结案 ${reason}`, {
+          resourceType: 'run',
+          resourceId: runId,
+        }),
+      )
+    }
   }
 
   private assertOperator(actor: Actor, action: string): void {

@@ -61,12 +61,30 @@ export interface RefundRepository {
   update(record: Refund): Promise<void>
 }
 
+export interface ApprovalDecisionWrite {
+  approvalId: string
+  decision: 'approved' | 'rejected'
+  decidedBy: string
+  now: string
+  /** 指定运行时同时校验归属与等待状态并持久化执行意图 */
+  runId?: string
+  /** HTTP 受理时绑定已核验断点 防止核验后恢复方案被替换 */
+  checkpointId?: number
+}
+
 export interface ApprovalRepository {
   create(record: ApprovalRequest): Promise<void>
   findById(approvalId: string): Promise<ApprovalRequest | null>
   findByResource(resourceType: string, resourceId: string): Promise<ApprovalRequest | null>
   listPending(): Promise<ApprovalRequest[]>
-  update(record: ApprovalRequest): Promise<void>
+  decidePending(input: ApprovalDecisionWrite): Promise<ApprovalRequest | null>
+  consumeToken(
+    approvalId: string,
+    token: string,
+    resourceType: string,
+    resourceId: string,
+    now: string,
+  ): Promise<boolean>
 }
 
 export interface CompensationRepository {
@@ -135,6 +153,8 @@ export interface AgentRunRepository {
   create(record: AgentRunRecord): Promise<void>
   findById(runId: string): Promise<AgentRunRecord | null>
   update(record: AgentRunRecord): Promise<void>
+  transition(record: AgentRunRecord, expectedStatus: AgentRunRecord['status']): Promise<boolean>
+  setIntent(runId: string, intent: string, updatedAt: string): Promise<void>
   list(options?: {
     status?: string
     customerId?: string

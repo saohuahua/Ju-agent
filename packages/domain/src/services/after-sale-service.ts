@@ -21,6 +21,8 @@ import type {
 import type { ApprovalService } from './approval-service.js'
 import type { AuditService } from './audit-service.js'
 import type { Clock } from '../clock.js'
+import type { LegacyExecutionOwnership } from '../../../contracts/src/execution-ownership-contract.js'
+import { LegacyExecutionGuard } from '../execution-ownership-guard.js'
 import { toIso } from '../clock.js'
 import { assertRefundTransition, assertReturnTransition } from '../state-machines.js'
 import { decidePolicy, POLICY_VERSION } from '../policy.js'
@@ -86,6 +88,8 @@ export class AfterSaleService {
     private readonly approvals: ApprovalService,
     private readonly audit: AuditService,
     private readonly clock: Clock,
+    // 未注入仅兼容旧模式 不具备持久执行权防线
+    private readonly executionOwnership?: LegacyExecutionOwnership,
   ) {}
 
   /**
@@ -160,6 +164,50 @@ export class AfterSaleService {
     await this.assertOrderAccess(actor, order)
 
     const existing = await this.returnRepo.listByOrderNo(input.orderNo)
+    const shipment = await this.shipmentRepo.findByOrderNo(input.orderNo)
+    const { record, refund, result } = this.prepareReturnRequest(
+      actor,
+      input,
+      order,
+      shipment,
+      existing,
+    )
+    await this.returnRepo.create(record)
+    if (refund) {
+      await this.refundRepo.create(refund)
+      this.executionOwnership?.registerNew(refund.idempotencyKey)
+    }
+    await this.audit.record(
+      actor,
+      'return_created',
+      'return_request',
+      record.returnNo,
+      {
+        orderNo: input.orderNo,
+        type: input.type,
+        reason: input.reason,
+        policyOutcome: result.policyOutcome,
+        policyRule: record.policyDecision.ruleId,
+        refundNo: result.refundNo,
+      },
+      runId,
+    )
+    return result
+  }
+
+  /** 同步生成领域方案供持久事务复用 不写业务单据或调用资金渠道 */
+  prepareReturnRequest(
+    actor: Actor,
+    input: CreateReturnInput,
+    order: Order,
+    shipment: Shipment | null,
+    existing: ReturnRequest[],
+  ): { record: ReturnRequest; refund: Refund | null; result: CreateReturnResult } {
+    if (
+      order.orderNo !== input.orderNo ||
+      (actor.role === 'customer' && order.customerId !== actor.customerId)
+    )
+      throw new DomainError(createToolError('AUTHORIZATION_DENIED', '无权访问该订单'))
     const active = existing.find((r) => ACTIVE_RETURN_STATUSES.includes(r.status))
     if (active) {
       throw new DomainError(
@@ -179,7 +227,6 @@ export class AfterSaleService {
       )
     }
 
-    const shipment = await this.shipmentRepo.findByOrderNo(input.orderNo)
     const decision = decidePolicy({
       type: input.type,
       reason: input.reason,
@@ -228,12 +275,12 @@ export class AfterSaleService {
       assertReturnTransition(record.status, 'awaiting_buyer_shipment')
       record.status = 'awaiting_buyer_shipment'
     }
-    await this.returnRepo.create(record)
 
     // 退款单预留 换货不产生退款 政策拒绝不预留
     let refundNo: string | null = null
+    let refund: Refund | null = null
     if (input.type !== 'exchange' && decision.outcome !== 'deny') {
-      const refund: Refund = {
+      refund = {
         refundNo: this.noGenerator.nextNo('RF'),
         returnNo,
         orderNo: input.orderNo,
@@ -248,34 +295,21 @@ export class AfterSaleService {
         updatedAt: now,
         version: 1,
       }
-      await this.refundRepo.create(refund)
       refundNo = refund.refundNo
     }
 
-    await this.audit.record(
-      actor,
-      'return_created',
-      'return_request',
-      returnNo,
-      {
-        orderNo: input.orderNo,
-        type: input.type,
-        reason: input.reason,
-        policyOutcome: decision.outcome,
-        policyRule: decision.ruleId,
-        refundNo,
-      },
-      runId,
-    )
-
     return {
-      returnNo,
-      status: record.status,
-      policyOutcome: decision.outcome,
-      policyExplanation: decision.explanation,
-      refundNo,
-      refundAmountCents: decision.refundAmountCents,
-      requiresApproval: decision.outcome === 'needs_approval',
+      record,
+      refund,
+      result: {
+        returnNo,
+        status: record.status,
+        policyOutcome: decision.outcome,
+        policyExplanation: decision.explanation,
+        refundNo,
+        refundAmountCents: decision.refundAmountCents,
+        requiresApproval: decision.outcome === 'needs_approval',
+      },
     }
   }
 
@@ -395,13 +429,20 @@ export class AfterSaleService {
 
     const key = refundIdempotencyKey(input.returnNo)
     const recorded = await this.idempotencyRepo.find(key)
-    if (recorded) {
+    if (recorded || refund.status === 'succeeded') {
       // 第一道防线拦截 幂等键命中 重复请求短路返回首次结果 未触碰网关
-      await this.audit.record(actor, 'guard_idempotency_replay', 'refund', refund.refundNo, {
-        layer: 'idempotency',
-        key,
-        action: 'execute_refund',
-      }, runId)
+      await this.audit.record(
+        actor,
+        'guard_idempotency_replay',
+        'refund',
+        refund.refundNo,
+        {
+          layer: 'idempotency',
+          key,
+          action: 'execute_refund',
+        },
+        runId,
+      )
       return {
         refundNo: refund.refundNo,
         status: 'succeeded',
@@ -443,19 +484,23 @@ export class AfterSaleService {
       }
     }
 
-    assertRefundTransition(refund.status, 'executing')
-    refund.status = 'executing'
-    refund.attempts += 1
-    refund.updatedAt = toIso(this.clock.now())
-    await this.saveRefund(refund)
+    // 发送许可与接管原子互斥 所有失败重试必须重新经过此闸门
+    const execution = new LegacyExecutionGuard(this.executionOwnership, key)
 
     try {
+      assertRefundTransition(refund.status, 'executing')
+      refund.status = 'executing'
+      refund.attempts += 1
+      refund.updatedAt = toIso(this.clock.now())
+      await this.saveRefund(refund)
+
       const gatewayResult = await this.gateway.withRefund(key, {
         refundNo: refund.refundNo,
         amountCents: refund.amountCents,
         currency: refund.currency,
         channel: refund.channel,
       })
+      execution.succeeded(gatewayResult)
       assertRefundTransition(refund.status, 'succeeded')
       refund.status = 'succeeded'
       refund.updatedAt = toIso(this.clock.now())
@@ -491,11 +536,18 @@ export class AfterSaleService {
 
       // 第三道防线兜底 业务幂等记录丢失但网关按幂等键去重了 未产生重复扣款
       if (gatewayResult.deduped) {
-        await this.audit.record(actor, 'guard_gateway_dedup', 'refund', refund.refundNo, {
-          layer: 'gateway',
-          key,
-          action: 'execute_refund',
-        }, runId)
+        await this.audit.record(
+          actor,
+          'guard_gateway_dedup',
+          'refund',
+          refund.refundNo,
+          {
+            layer: 'gateway',
+            key,
+            action: 'execute_refund',
+          },
+          runId,
+        )
       }
       return {
         refundNo: refund.refundNo,
@@ -506,7 +558,9 @@ export class AfterSaleService {
         gatewayDeduped: gatewayResult.deduped,
       }
     } catch (error) {
-      // 网关失败进入 failed 允许再次执行 重试走同一幂等键
+      // 成功后的本地失败不改写成功事实 未知许可持续阻止重发与接管
+      if (!execution.failed()) throw error
+      // 业务失败不等于渠道未支付 注入守卫后未知许可仍阻止重试
       refund.status = 'failed'
       refund.lastError = error instanceof Error ? error.message : String(error)
       refund.updatedAt = toIso(this.clock.now())

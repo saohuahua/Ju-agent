@@ -62,9 +62,13 @@ export class RunService {
   async transition(
     runId: string,
     to: AgentRunRecord['status'],
-    patch?: Partial<AgentRunRecord>,
+    patch?: Partial<Pick<AgentRunRecord, 'error'>>,
+    expectedStatus?: AgentRunRecord['status'],
   ): Promise<AgentRunRecord> {
     const record = await this.get(runId)
+    if (expectedStatus && record.status !== expectedStatus) {
+      throw new DomainError(createToolError('CONFLICT', '运行状态已变化 请刷新后重试'))
+    }
     assertRunTransition(record.status, to)
     const updated: AgentRunRecord = {
       ...record,
@@ -72,14 +76,16 @@ export class RunService {
       status: to,
       updatedAt: toIso(this.clock.now()),
     }
-    await this.runRepo.update(updated)
+    if (!(await this.runRepo.transition(updated, record.status))) {
+      throw new DomainError(createToolError('CONFLICT', '运行状态已被其他请求更新'))
+    }
     return updated
   }
 
   /** 记录识别出的业务意图 不涉及状态迁移 */
   async setIntent(runId: string, intent: string): Promise<void> {
-    const record = await this.get(runId)
-    await this.runRepo.update({ ...record, intent, updatedAt: toIso(this.clock.now()) })
+    await this.get(runId)
+    await this.runRepo.setIntent(runId, intent, toIso(this.clock.now()))
   }
 
   /** 事件追加 返回分配的序号 */
