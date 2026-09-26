@@ -667,7 +667,6 @@ function SimProgressCard({ task }: { task: SimTaskView }) {
 
 export default function EvalPage() {
   const [reports, setReports] = useState<EvalReportSummary[]>([])
-  const [health, setHealth] = useState<{ modelAvailable: boolean } | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [runningL1, setRunningL1] = useState(false)
@@ -688,9 +687,8 @@ export default function EvalPage() {
 
   const load = useCallback(async () => {
     try {
-      const [reportBody, healthBody] = await Promise.all([api.listEvalReports(), api.health()])
+      const reportBody = await api.listEvalReports()
       setReports(reportBody.reports)
-      setHealth(healthBody)
       setError(null)
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '加载失败')
@@ -830,7 +828,8 @@ export default function EvalPage() {
 
   const estimatedCases = CASE_COUNTS[sample]
   const estimatedTokens = estimatedCases * repeat * TOKEN_PER_CASE
-  const l2Unavailable = health !== null && !health.modelAvailable
+  // 当前表单仍是旧供应商模型入口 不以客户离线会话可用性开放
+  const l2Unavailable = true
 
   return (
     <AppShell>
@@ -903,8 +902,8 @@ export default function EvalPage() {
 
           {l2Unavailable && (
             <div className="mt-3 rounded-control border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-              未配置 ANTHROPIC_API_KEY，L2 用户模拟评测不可用，L1
-              脚本回归不受影响。诚实原则：不输出模拟成绩。
+              此 L2 网页入口已禁用 配置密钥不会开启真实模型 L1 离线脚本回归仍可使用
+              后端支持显式离线协议验收 离线结果不代表真实模型质量
             </div>
           )}
 
@@ -986,8 +985,8 @@ export default function EvalPage() {
             )}
 
             <p className="mt-4 text-xs text-stone-400">
-              诚实声明：所有数字来自实际运行结果。L1 为 111 条脚本回放，L2 为抽样用户模拟评测；
-              Wilson 95% 置信区间仅 L2 计算，未配置密钥时不输出模拟成绩。
+              所有数字来自对应报告的实际运行结果 L1 为离线脚本回放 L2 为抽样用户模拟评测
+              Wilson 95% 置信区间仅 L2 计算 真实模型入口当前禁用
             </p>
 
             {detailCases.length > 0 && (
