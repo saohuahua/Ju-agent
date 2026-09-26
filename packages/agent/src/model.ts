@@ -68,7 +68,10 @@ export type ModelStreamEvent =
 
 export interface ChatModel {
   readonly info: ModelInfo
-  stream(request: ModelRequest): AsyncIterable<ModelStreamEvent>
+  /** 声明取消后流会完成收尾 供调用方安全等待 */
+  readonly supportsCancellation?: true
+  /** 支持取消的适配器应在信号终止后完成流的收尾 */
+  stream(request: ModelRequest, signal?: AbortSignal): AsyncIterable<ModelStreamEvent>
 }
 
 /** 脚本耗尽 评测脚本与实际调用次数不匹配时抛出 */

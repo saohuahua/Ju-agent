@@ -12,6 +12,7 @@ import type { JudgeFailure } from './types.js'
 
 export interface JudgeDeps {
   model: ChatModel
+  timeoutMs?: number
 }
 
 export interface TranscriptTurn {
@@ -31,6 +32,8 @@ export async function judgeTranscript(
   transcript: TranscriptTurn[],
 ): Promise<JudgeFailure[]> {
   if (rubric.length === 0) return []
+  if (rubric.some((item) => !item.trim()) || new Set(rubric).size !== rubric.length)
+    return [{ rubric: 'judge 判据非法', reason: '判据必须非空且唯一' }]
 
   const transcriptText = transcript
     .map((turn) => `${turn.role === 'user' ? '顾客' : '客服'} ${turn.text}`)
@@ -52,23 +55,57 @@ ${transcriptText}
 判据
 ${rubric.map((item, index) => `${index + 1}. ${item}`).join('\n')}`
 
-  let raw = ''
-  for await (const event of deps.model.stream({
-    system,
-    messages: [{ role: 'user', content: [{ type: 'text', text: user }] }],
-    tools: [],
-  })) {
-    if (event.type === 'text_delta') {
-      raw += event.text
-    } else if (event.type === 'turn_completed') {
-      break
+  const controller = new AbortController()
+  const consume = async () => {
+    let raw = ''
+    let completed = false
+    for await (const event of deps.model.stream(
+      {
+        system,
+        messages: [{ role: 'user', content: [{ type: 'text', text: user }] }],
+        tools: [],
+      },
+      controller.signal,
+    )) {
+      controller.signal.throwIfAborted()
+      if (event.type === 'text_delta') {
+        raw += event.text
+      } else if (event.type === 'turn_completed') {
+        completed = event.stopReason === 'end_turn'
+        break
+      }
     }
+    return { raw, completed }
   }
-
-  const parsed = parseVerdicts(raw)
+  // 超时取消原网关调用并等待观察器与账本收尾后返回
+  let timedOut = false
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const expired = new Promise<null>((resolve) => {
+    timer = setTimeout(() => {
+      timedOut = true
+      controller.abort(new Error('Judge timeout'))
+      resolve(null)
+    }, deps.timeoutMs ?? 10000)
+  })
+  const consuming = consume().catch((error) => {
+    if (!timedOut) throw error
+    return null
+  })
+  const output = await Promise.race([consuming, expired]).finally(() => clearTimeout(timer))
+  // 旧非取消适配器保持限时返回 原网关必须等待记账与观察器结束
+  if (timedOut && deps.model.supportsCancellation) await consuming
+  if (timedOut || !output) return [{ rubric: 'judge 超时', reason: '未获得完整判定' }]
+  const { raw, completed } = output
+  const parsed = completed ? parseVerdicts(raw) : null
   if (!parsed) {
     return [{ rubric: 'judge 输出无法解析', reason: raw.slice(0, 200) || '空输出' }]
   }
+  if (
+    parsed.length !== rubric.length ||
+    new Set(parsed.map((item) => item.rubric)).size !== rubric.length ||
+    parsed.some((item) => !rubric.includes(item.rubric))
+  )
+    return [{ rubric: 'judge 判据不完整', reason: '判据必须与输入逐项唯一匹配' }]
 
   const failures: JudgeFailure[] = []
   for (const item of parsed) {
@@ -85,47 +122,29 @@ interface VerdictItem {
   reason?: string
 }
 
-/** 宽松解析 JSON 兼容代码围栏与前后缀文本 */
+// 严格解析禁止过滤非法条目造成空集合通过
 function parseVerdicts(raw: string): VerdictItem[] | null {
-  const trimmed = raw.trim()
-  const candidates: string[] = [trimmed]
-  const fence = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/)
-  if (fence?.[1]) candidates.unshift(fence[1].trim())
-  const first = trimmed.indexOf('[')
-  const last = trimmed.lastIndexOf(']')
-  if (first >= 0 && last > first) candidates.push(trimmed.slice(first, last + 1))
-  for (const candidate of candidates) {
-    try {
-      const obj = JSON.parse(candidate) as unknown
-      if (Array.isArray(obj)) {
-        return obj.filter(
-          (item): item is VerdictItem =>
-            typeof item === 'object' &&
-            item !== null &&
-            typeof (item as VerdictItem).rubric === 'string' &&
-            typeof (item as VerdictItem).passed === 'boolean',
+  try {
+    const value: unknown = JSON.parse(raw)
+    if (
+      !Array.isArray(value) ||
+      !value.every((item: unknown) => {
+        if (typeof item !== 'object' || item === null) return false
+        const verdict = item as Record<string, unknown>
+        return (
+          typeof verdict.rubric === 'string' &&
+          typeof verdict.passed === 'boolean' &&
+          (verdict.reason === undefined || typeof verdict.reason === 'string') &&
+          (verdict.passed ||
+            (typeof verdict.reason === 'string' && verdict.reason.trim().length > 0))
         )
-      }
-    } catch {
-      // 尝试下一个候选
-    }
-  }
-  // 兜底 正则逐项提取 兼容 reason 内含未转义双引号的非法 JSON
-  // passed 判定保留 reason 截断到首个内嵌引号 保守方向不受影响
-  const fallback: VerdictItem[] = []
-  const pattern =
-    /{\s*"rubric"\s*:\s*"((?:[^"\\]|\\.)*)"\s*,\s*"passed"\s*:\s*(true|false)\s*,\s*"reason"\s*:\s*"([\s\S]*?)"(?=\s*[,}])/g
-  for (const candidate of candidates) {
-    for (const match of candidate.matchAll(pattern)) {
-      if (match[1] === undefined || match[2] === undefined) continue
-      fallback.push({
-        rubric: match[1].replace(/\\"/g, '"'),
-        passed: match[2] === 'true',
-        reason: (match[3] ?? '').replace(/\\"/g, '"'),
       })
-    }
+    )
+      return null
+    return value as VerdictItem[]
+  } catch {
+    return null
   }
-  return fallback.length > 0 ? fallback : null
 }
 
 export function toSimJudgeFailures(failures: JudgeFailure[]): SimJudgeFailure[] {

@@ -61,12 +61,15 @@ export function createP7EvalModels(input: P7EvalModelsInput): P7EvalModels {
     runIds[role] = runId
     let callRound = 0
     models[role] = {
+      supportsCancellation: true,
       info: { provider: gateway.snapshot.provider, model: gateway.snapshot.model },
-      stream(request) {
+      stream(request, callSignal) {
         if (callRound === Number.MAX_SAFE_INTEGER) throw new P7Error('CONFIG')
         // 内存序号只用于本实例的新调用 不提供跨进程恢复或外层重试
         const operationId = JSON.stringify([runId, ++callRound])
-        return gateway.chatModel(runId, role, transport, signal, operationId).stream(request)
+        const combined =
+          signal && callSignal ? AbortSignal.any([signal, callSignal]) : (signal ?? callSignal)
+        return gateway.chatModel(runId, role, transport, combined, operationId).stream(request)
       },
     }
   }

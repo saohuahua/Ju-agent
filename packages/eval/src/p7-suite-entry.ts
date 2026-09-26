@@ -49,9 +49,10 @@ export function suiteModels(
   const errors: string[] = []
   const track = (model: ChatModel): ChatModel => ({
     info: model.info,
-    async *stream(request) {
+    supportsCancellation: model.supportsCancellation,
+    async *stream(request, signal) {
       try {
-        yield* model.stream(request)
+        yield* model.stream(request, signal)
       } catch (error) {
         errors.push(error instanceof P7Error ? error.code : 'MODEL_CALL_FAILED')
         throw error
