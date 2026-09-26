@@ -1,0 +1,461 @@
+{
+  "datasetVersion": "rag-relevance-v1.1",
+  "provenance": "constructed_from_demo_policy_fixture_not_user_samples",
+  "policyVersion": "2026.09-v3",
+  "corpusSource": "packages/persistence/src/fixtures.ts#BASELINE_FIXTURE.policyArticles",
+  "corpusSha256": "0cc13af5b780717f7bf323682fd3f1cf5d45bfc749eb13ef391d9130bbac3a3e",
+  "cases": [
+    {
+      "id": "T01_keyboard_quality_badcase",
+      "split": "tuning",
+      "family": "keyboard_quality",
+      "type": "confusable_clause",
+      "answerability": "supported",
+      "question": "我买的机械键盘有质量问题，签收第 10 天能申请退货吗？",
+      "relevantArticleIds": ["R3_quality_window"],
+      "evidence": [
+        {
+          "articleId": "R3_quality_window",
+          "quote": "商品存在质量问题 自签收起 15 天内可申请退货或换货"
+        }
+      ],
+      "confusableArticleIds": [
+        "D1_fresh_food_no_return",
+        "D2_customized_no_return",
+        "D5_large_item_install"
+      ],
+      "rationale": "机械键盘质量问题属于一般质量窗口问题 生鲜 定制和大件条款没有适用类目依据 这是已观察误召回场景的构造题",
+      "reviewNote": "需人工确认题目中的质量问题已被认定且第 10 天按签收起算"
+    },
+    {
+      "id": "T02_unshipped_cancel",
+      "split": "tuning",
+      "family": "unshipped_cancel",
+      "type": "paraphrase",
+      "answerability": "supported",
+      "question": "货还没发走，我现在取消订单能退回全部已付款吗？",
+      "relevantArticleIds": ["R1_unshipped_cancel"],
+      "evidence": [
+        {
+          "articleId": "R1_unshipped_cancel",
+          "quote": "订单未发货时 可申请全额仅退款"
+        }
+      ],
+      "confusableArticleIds": [],
+      "rationale": "货还没发走是未发货的口语表达 该条款直接支持全额仅退款"
+    },
+    {
+      "id": "T03_shipped_cancel_boundary",
+      "split": "tuning",
+      "family": "unshipped_cancel",
+      "type": "direct_clause",
+      "answerability": "supported",
+      "question": "订单已经发货，还能按未发货订单仅退款规则办理吗？",
+      "relevantArticleIds": ["R1_unshipped_cancel"],
+      "evidence": [
+        {
+          "articleId": "R1_unshipped_cancel",
+          "quote": "已发货订单不适用本条款"
+        }
+      ],
+      "confusableArticleIds": [],
+      "rationale": "只能判定未发货规则不适用 不能由此推断所有已发货订单都不能退款"
+    },
+    {
+      "id": "T04_fresh_no_reason",
+      "split": "tuning",
+      "family": "fresh_no_reason",
+      "type": "multi_clause",
+      "answerability": "supported",
+      "question": "生鲜水果签收两天后，没质量问题，只是不想要了，可以七天无理由退吗？",
+      "relevantArticleIds": ["R4_no_reason_7d", "D1_fresh_food_no_return"],
+      "evidence": [
+        {
+          "articleId": "R4_no_reason_7d",
+          "quote": "生鲜食品 定制商品 虚拟商品等特殊类目不适用"
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "quote": "生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换"
+        }
+      ],
+      "confusableArticleIds": ["R3_quality_window"],
+      "rationale": "一般无理由条款列出生鲜例外 生鲜专条给出个人原因退换边界 题目排除了质量问题"
+    },
+    {
+      "id": "T05_price_before_delivery",
+      "split": "tuning",
+      "family": "price_before_delivery",
+      "type": "direct_clause",
+      "answerability": "supported",
+      "question": "包裹还没签收，现在可以申请价保吗？",
+      "relevantArticleIds": ["PP1_not_delivered"],
+      "evidence": [
+        {
+          "articleId": "PP1_not_delivered",
+          "quote": "订单尚未签收时不满足价保申请条件 请在签收后申请"
+        }
+      ],
+      "confusableArticleIds": ["PP2_window_expired"],
+      "rationale": "尚未签收属于价保前置条件 与签收后超时不同"
+    },
+    {
+      "id": "T06_price_drop_formula",
+      "split": "tuning",
+      "family": "price_drop_formula",
+      "type": "direct_clause",
+      "answerability": "supported",
+      "question": "签收后六天内买的两件同款降价了，价保差额按什么算？",
+      "relevantArticleIds": ["PP5_price_drop"],
+      "evidence": [
+        {
+          "articleId": "PP5_price_drop",
+          "quote": "按单价差乘数量全额退还差价"
+        }
+      ],
+      "confusableArticleIds": ["PP4_no_price_drop"],
+      "rationale": "问题只问计算规则 原文给出单价差乘数量 不提供价格所以不能算具体金额"
+    },
+    {
+      "id": "T07_no_price_drop",
+      "split": "tuning",
+      "family": "no_price_drop",
+      "type": "confusable_clause",
+      "answerability": "supported",
+      "question": "商品现在售价和我成交价一样，虽然还在七天内，能退价差吗？",
+      "relevantArticleIds": ["PP4_no_price_drop"],
+      "evidence": [
+        {
+          "articleId": "PP4_no_price_drop",
+          "quote": "订单商品当前售价未低于成交价时不满足价保条件 无法退还差价"
+        }
+      ],
+      "confusableArticleIds": ["PP5_price_drop"],
+      "rationale": "没有降价事实时不能只凭时间窗口命中价保差价规则"
+    },
+    {
+      "id": "T08_custom_quality",
+      "split": "tuning",
+      "family": "custom_quality",
+      "type": "multi_clause",
+      "answerability": "supported",
+      "question": "定制商品签收后第 8 天发现质量问题，还能申请退换吗？",
+      "relevantArticleIds": ["D2_customized_no_return", "R3_quality_window"],
+      "evidence": [
+        {
+          "articleId": "D2_customized_no_return",
+          "quote": "存在质量问题按质量问题窗口处理"
+        },
+        {
+          "articleId": "R3_quality_window",
+          "quote": "商品存在质量问题 自签收起 15 天内可申请退货或换货"
+        }
+      ],
+      "confusableArticleIds": ["R4_no_reason_7d"],
+      "rationale": "定制品不支持无理由退货不等于质量问题不受理 专条转向通用质量窗口"
+    },
+    {
+      "id": "T09_warranty_service_fee_gap",
+      "split": "tuning",
+      "family": "warranty_service_fee",
+      "type": "no_answer",
+      "answerability": "unsupported",
+      "question": "保修期内上门维修要收多少服务费？",
+      "relevantArticleIds": [],
+      "evidence": [],
+      "confusableArticleIds": ["D5_large_item_install"],
+      "rationale": "语料没有保修上门维修收费标准 大件安装条款不能回答服务费金额"
+    },
+    {
+      "id": "T10_vague_no_reason",
+      "split": "tuning",
+      "family": "vague_no_reason",
+      "type": "ambiguous_request",
+      "answerability": "needs_clarification",
+      "question": "刚买的东西不合适，能退吗？",
+      "relevantArticleIds": ["R4_no_reason_7d"],
+      "evidence": [
+        {
+          "articleId": "R4_no_reason_7d",
+          "quote": "自签收起 7 天内 商品完好未使用可申请无理由退货"
+        }
+      ],
+      "confusableArticleIds": ["D1_fresh_food_no_return", "D2_customized_no_return"],
+      "rationale": "无理由条款是条件性参考 但未给签收时间 商品类目和使用情况 不能直接判定资格",
+      "reviewNote": "需人工确认不合适是否等价于个人原因及相关集合是否应加入类目例外条款"
+    },
+    {
+      "id": "T11_presale_deposit",
+      "split": "tuning",
+      "family": "presale_deposit",
+      "type": "direct_clause",
+      "answerability": "supported",
+      "question": "预售商品尾款还没付，定金能退回来吗？",
+      "relevantArticleIds": ["D6_pre_order_deposit"],
+      "evidence": [
+        {
+          "articleId": "D6_pre_order_deposit",
+          "quote": "尾款未支付时定金不退还 平台规则另有约定的除外"
+        }
+      ],
+      "confusableArticleIds": ["R1_unshipped_cancel"],
+      "rationale": "预售定金有专条且保留平台另有约定例外 不能套用一般未发货退款"
+    },
+    {
+      "id": "T12_active_return_price_protection",
+      "split": "tuning",
+      "family": "active_return_price_protection",
+      "type": "confusable_clause",
+      "answerability": "supported",
+      "question": "同一订单的退货流程还在处理中，我可以先办价保吗？",
+      "relevantArticleIds": ["PP3_active_return"],
+      "evidence": [
+        {
+          "articleId": "PP3_active_return",
+          "quote": "订单存在进行中的售后流程时 需先完成该售后 再申请价保"
+        }
+      ],
+      "confusableArticleIds": ["PP5_price_drop"],
+      "rationale": "进行中的售后是价保前置障碍 即使降价条款可能命中也不能先办"
+    },
+    {
+      "id": "H01_confirmed_lost_package",
+      "split": "holdout",
+      "family": "confirmed_lost_package",
+      "type": "paraphrase",
+      "answerability": "supported",
+      "question": "承运方正式确认包裹遗失，买家能拿回全部货款吗？",
+      "relevantArticleIds": ["R2_lost_package"],
+      "evidence": [
+        {
+          "articleId": "R2_lost_package",
+          "quote": "物流公司官方确认丢件后 可申请全额仅退款"
+        }
+      ],
+      "confusableArticleIds": ["R1_unshipped_cancel"],
+      "rationale": "承运方正式确认遗失对应物流官方确认丢件 不是未发货取消"
+    },
+    {
+      "id": "H02_activated_virtual_good",
+      "split": "holdout",
+      "family": "activated_virtual_good",
+      "type": "direct_clause",
+      "answerability": "supported",
+      "question": "充值卡已经激活，还支持退款吗？",
+      "relevantArticleIds": ["D3_virtual_activated"],
+      "evidence": [
+        {
+          "articleId": "D3_virtual_activated",
+          "quote": "虚拟商品如充值卡 会员等在激活或到账后不支持退款"
+        }
+      ],
+      "confusableArticleIds": ["R4_no_reason_7d"],
+      "rationale": "充值卡激活状态由虚拟商品专条覆盖 一般无理由退货不适用"
+    },
+    {
+      "id": "H03_installed_large_item",
+      "split": "holdout",
+      "family": "installed_large_item",
+      "type": "multi_clause",
+      "answerability": "supported",
+      "question": "新买的家具已安装且没有质量问题，签收三天内能无理由退货吗？",
+      "relevantArticleIds": ["R4_no_reason_7d", "D5_large_item_install"],
+      "evidence": [
+        {
+          "articleId": "R4_no_reason_7d",
+          "quote": "自签收起 7 天内 商品完好未使用可申请无理由退货"
+        },
+        {
+          "articleId": "D5_large_item_install",
+          "quote": "大件商品如家具 家电安装后不支持无理由退货"
+        }
+      ],
+      "confusableArticleIds": ["R3_quality_window"],
+      "rationale": "一般七天规则提供背景 大件安装专条排除无理由退货 题目明确没有质量问题"
+    },
+    {
+      "id": "H04_second_hand_quality",
+      "split": "holdout",
+      "family": "second_hand_quality",
+      "type": "confusable_clause",
+      "answerability": "supported",
+      "question": "二手商品签收第 6 天，平台验机报告确认有质量问题，还能退吗？",
+      "relevantArticleIds": ["D7_second_hand_quality"],
+      "evidence": [
+        {
+          "articleId": "D7_second_hand_quality",
+          "quote": "质量问题自签收起 7 天内可退 以平台验机报告为准"
+        }
+      ],
+      "confusableArticleIds": ["R3_quality_window", "R4_no_reason_7d"],
+      "rationale": "二手专条给出七天质量窗口及验机报告条件 通用十五天质量窗口不能直接覆盖专条",
+      "reviewNote": "需人工确认二手专条与通用十五天窗口的优先关系"
+    },
+    {
+      "id": "H05_cross_border_customs",
+      "split": "holdout",
+      "family": "cross_border_customs",
+      "type": "confusable_clause",
+      "answerability": "supported",
+      "question": "跨境商品已经清关，还能按七天无理由退货吗？",
+      "relevantArticleIds": ["D4_cross_border_customs", "R4_no_reason_7d"],
+      "evidence": [
+        {
+          "articleId": "D4_cross_border_customs",
+          "quote": "跨境商品清关后不支持无理由退货"
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "quote": "自签收起 7 天内 商品完好未使用可申请无理由退货"
+        }
+      ],
+      "confusableArticleIds": ["D1_fresh_food_no_return"],
+      "rationale": "跨境清关专条限定一般无理由规则的适用范围 题目只问能否按该规则退货"
+    },
+    {
+      "id": "H06_gift_card_cashout",
+      "split": "holdout",
+      "family": "gift_card_cashout",
+      "type": "direct_clause",
+      "answerability": "supported",
+      "question": "礼品卡余额可以提现吗？",
+      "relevantArticleIds": ["D8_gift_card_rules"],
+      "evidence": [
+        {
+          "articleId": "D8_gift_card_rules",
+          "quote": "不支持折现"
+        }
+      ],
+      "confusableArticleIds": ["D3_virtual_activated"],
+      "rationale": "提现余额属于折现诉求 礼品卡专条直接给出边界"
+    },
+    {
+      "id": "H07_expired_price_protection",
+      "split": "holdout",
+      "family": "expired_price_protection",
+      "type": "direct_clause",
+      "answerability": "supported",
+      "question": "签收第 9 天商品降价，还在价保申请期吗？",
+      "relevantArticleIds": ["PP2_window_expired"],
+      "evidence": [
+        {
+          "articleId": "PP2_window_expired",
+          "quote": "价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保"
+        }
+      ],
+      "confusableArticleIds": ["PP5_price_drop"],
+      "rationale": "价保时间已超窗 降价事实不能覆盖窗口限制"
+    },
+    {
+      "id": "H08_large_refund_approval",
+      "split": "holdout",
+      "family": "large_refund_approval",
+      "type": "direct_clause",
+      "answerability": "supported",
+      "question": "退款金额正好 5000 元时，需要人工审批吗？",
+      "relevantArticleIds": ["R6_large_amount"],
+      "evidence": [
+        {
+          "articleId": "R6_large_amount",
+          "quote": "退款或补偿金额达到 5000 元时 需转人工审批"
+        }
+      ],
+      "confusableArticleIds": ["R1_unshipped_cancel"],
+      "rationale": "达到包含阈值本身 条款支持需要人工审批 但没有指定审批角色"
+    },
+    {
+      "id": "H09_expired_coupon_gap",
+      "split": "holdout",
+      "family": "expired_coupon_reissue",
+      "type": "no_answer",
+      "answerability": "unsupported",
+      "question": "优惠券过期后可以申请补发吗？",
+      "relevantArticleIds": [],
+      "evidence": [],
+      "confusableArticleIds": ["D8_gift_card_rules"],
+      "rationale": "现有语料没有优惠券过期补发条款 礼品卡有效期并非优惠券政策"
+    },
+    {
+      "id": "H10_vague_price_protection",
+      "split": "holdout",
+      "family": "vague_price_protection",
+      "type": "ambiguous_request",
+      "answerability": "needs_clarification",
+      "question": "我这单能价保吗？",
+      "relevantArticleIds": [
+        "PP1_not_delivered",
+        "PP2_window_expired",
+        "PP3_active_return",
+        "PP4_no_price_drop",
+        "PP5_price_drop"
+      ],
+      "evidence": [
+        {
+          "articleId": "PP1_not_delivered",
+          "quote": "订单尚未签收时不满足价保申请条件"
+        },
+        {
+          "articleId": "PP2_window_expired",
+          "quote": "价保自签收起 7 天内有效"
+        },
+        {
+          "articleId": "PP3_active_return",
+          "quote": "订单存在进行中的售后流程时 需先完成该售后 再申请价保"
+        },
+        {
+          "articleId": "PP4_no_price_drop",
+          "quote": "订单商品当前售价未低于成交价时不满足价保条件"
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "quote": "同一订单仅可价保一次"
+        }
+      ],
+      "confusableArticleIds": [],
+      "rationale": "签收状态 时间 售后状态 降价事实与历史价保次数均未知 需检索资格限制并补问 不能直接判定",
+      "reviewNote": "集成验收时确认 PP5 的同一订单仅可价保一次直接限定资格 已作为相关证据 保留集尚未运行"
+    },
+    {
+      "id": "H11_unactivated_virtual_large_refund",
+      "split": "holdout",
+      "family": "unactivated_virtual_large_refund",
+      "type": "multi_clause",
+      "answerability": "supported",
+      "question": "价值 5200 元的会员服务还没激活也没到账，申请退款会直接执行吗？",
+      "relevantArticleIds": ["D3_virtual_activated", "R6_large_amount"],
+      "evidence": [
+        {
+          "articleId": "D3_virtual_activated",
+          "quote": "未激活未到账支持全额退款"
+        },
+        {
+          "articleId": "R6_large_amount",
+          "quote": "退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行"
+        }
+      ],
+      "confusableArticleIds": ["R1_unshipped_cancel"],
+      "rationale": "虚拟商品状态支持申请全额退款 但金额达到审批阈值 不应直接执行"
+    },
+    {
+      "id": "H12_lost_package_large_refund",
+      "split": "holdout",
+      "family": "confirmed_lost_package",
+      "type": "multi_clause",
+      "answerability": "supported",
+      "question": "物流官方确认包裹丢失，应退 6000 元时会直接自动退款吗？",
+      "relevantArticleIds": ["R2_lost_package", "R6_large_amount"],
+      "evidence": [
+        {
+          "articleId": "R2_lost_package",
+          "quote": "物流公司官方确认丢件后 可申请全额仅退款"
+        },
+        {
+          "articleId": "R6_large_amount",
+          "quote": "退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行"
+        }
+      ],
+      "confusableArticleIds": ["R1_unshipped_cancel"],
+      "rationale": "丢件可申请全额退款 但金额达到审批阈值 不能将可申请误读为直接自动执行"
+    }
+  ]
+}

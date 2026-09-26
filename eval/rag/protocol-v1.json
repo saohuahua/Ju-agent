@@ -1,0 +1,18 @@
+{
+  "version": "rag-protocol-v1",
+  "datasetVersion": "rag-relevance-v1.1",
+  "strategies": ["character-keyword-baseline", "bm25-bigram-v1"],
+  "chunkVersion": "paragraph-window-v1",
+  "maxChunkChars": 320,
+  "bm25": { "k1": 1.2, "b": 0.75 },
+  "cutoffs": [3, 5],
+  "excludedCaseIds": ["T10_vague_no_reason", "H04_second_hand_quality"],
+  "decisions": {
+    "T01_keyboard_quality_badcase": "按构造题已给定的质量问题与签收第十天评估检索相关性 不代表真实质量认定",
+    "T10_vague_no_reason": "相关集合与例外条款口径待人工复核 仅诊断不进入主指标",
+    "H04_second_hand_quality": "专条与通用条款优先关系待人工复核 仅诊断不进入主指标",
+    "H10_vague_price_protection": "沿用集成验收 v1.1 的五项资格限制相关集合"
+  },
+  "freezeRule": "先固定通用分块与词项规则 再运行 tuning 和 holdout 不依据 holdout 结果修改参数或标签",
+  "scope": "演示语料检索模块评测 不测生成答案或真实平台政策资格"
+}
