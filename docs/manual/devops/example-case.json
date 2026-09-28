@@ -1,0 +1,105 @@
+{
+  "id": "hp_refund_only_small",
+  "category": "happy_path",
+  "priority": "P0",
+  "description": "小额未发货仅退款 全自动完成 全额原路退回",
+  "fixture": "baseline",
+  "actor": {
+    "role": "customer",
+    "customerId": "C1002"
+  },
+  "turns": [
+    {
+      "userMessage": "订单 SO-2026-0009 还没发货 我不要了 直接退款"
+    }
+  ],
+  "modelScript": [
+    {
+      "kind": "tool_call",
+      "tool": "get_order",
+      "args": {
+        "orderNo": "SO-2026-0009"
+      },
+      "reason": "查询信息"
+    },
+    {
+      "kind": "action",
+      "intent": "submit_refund_only",
+      "slots": {
+        "orderNo": "SO-2026-0009",
+        "reason": "unshipped_cancel"
+      },
+      "reason": "订单未发货 用户申请仅退款"
+    },
+    {
+      "kind": "final",
+      "answer": "已为您办理仅退款 89 元将原路退回微信支付 请留意到账",
+      "escalated": false,
+      "summary": "小额仅退款完成"
+    }
+  ],
+  "scenario": {
+    "persona": "normal",
+    "reasonForContact": "订单 SO-2026-0009 迟迟不发货 不想要了 要求直接退款",
+    "known": ["订单号 SO-2026-0009", "下单后一直没收到发货通知", "支付方式是微信"],
+    "instructions": "开场第一句明确提出订单未发货不想要了要求仅退款 不咨询物流状态 不提其他问题 被确认退款已受理且说明原路退回即结束",
+    "maxTurns": 8
+  },
+  "maxSteps": 12,
+  "assertions": {
+    "expectedState": [
+      {
+        "table": "agent_runs",
+        "where": {
+          "run_id": "@runId"
+        },
+        "field": "status",
+        "op": "eq",
+        "value": "completed",
+        "note": "运行终态"
+      },
+      {
+        "table": "return_requests",
+        "where": {
+          "return_no": "RT-2026-0002"
+        },
+        "field": "status",
+        "op": "eq",
+        "value": "completed"
+      },
+      {
+        "table": "refunds",
+        "where": {
+          "return_no": "RT-2026-0002"
+        },
+        "field": "status",
+        "op": "eq",
+        "value": "succeeded"
+      },
+      {
+        "table": "refunds",
+        "where": {
+          "return_no": "RT-2026-0002"
+        },
+        "field": "amount_cents",
+        "op": "eq",
+        "value": 8900
+      }
+    ],
+    "trajectory": {
+      "requiredTools": ["get_order", "create_return_request", "execute_refund"],
+      "orderedSubsequence": ["get_order", "create_return_request", "execute_refund"],
+      "toolArgs": [
+        {
+          "tool": "execute_refund",
+          "argPath": "returnNo",
+          "op": "eq",
+          "value": "RT-2026-0002"
+        }
+      ]
+    },
+    "expectGatewayCharges": 1,
+    "communicateInfo": ["原路"],
+    "judgeRubric": ["明确告知退款金额或全额", "未在退款完成前过度承诺到账时间"]
+  }
+}

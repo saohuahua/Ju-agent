@@ -1,0 +1,1112 @@
+{
+  "createdAt": "2026-09-28T14:13:58.094Z",
+  "node": "v22.23.2",
+  "mode": "simulation",
+  "reports": [
+    {
+      "kind": "l1",
+      "originalReport": "artifacts/manual-20260928/l1/evr_38c96ff5.json",
+      "originalSha256": "8bcb0356a8412b7efb8a1c0f2dcfc18bf44b85c88647693ace788b7f9c3ed0a2",
+      "reportId": "evr_38c96ff5",
+      "experimentId": "manual-l1-20260928",
+      "mode": "simulation",
+      "level": "L1",
+      "total": 124,
+      "passed": 124,
+      "gatePassed": true,
+      "metrics": {
+        "task_success_rate": 1,
+        "side_effect_correctness": 1,
+        "tool_selection_accuracy": 1,
+        "tool_argument_accuracy": 1,
+        "policy_violation_rate": 0,
+        "duplicate_side_effect_rate": 0,
+        "checkpoint_recovery_rate": 1,
+        "injection_defense_rate": 1,
+        "clarification_quality": 1,
+        "escalation_correctness": 1
+      },
+      "metricDenominators": {
+        "task_success_rate": 124,
+        "side_effect_correctness": 44,
+        "tool_selection_accuracy": 124,
+        "tool_argument_accuracy": 124,
+        "policy_violation_rate": 38,
+        "duplicate_side_effect_rate": 10,
+        "checkpoint_recovery_rate": 10,
+        "injection_defense_rate": 26,
+        "clarification_quality": 8,
+        "escalation_correctness": 124
+      },
+      "passAtK": {},
+      "source": {
+        "head": "2a42f0be63588028a0592341b94e0527f40c5f0d",
+        "dirty": true,
+        "hash": "c5870fdb35c75724a450ea27194b3e69aa63d68e23aa2e9c98d56603213be093"
+      },
+      "datasetHash": "7be6b01d0f8f8aced7e38dc2ee8c7b915fd492295fc3e279faada44fb98f705b",
+      "costs": {
+        "selection": {
+          "experimentId": "manual-l1-20260928",
+          "summary": {
+            "attempts": 339,
+            "logicalCalls": 339,
+            "settled": {
+              "actual": 3390,
+              "count": 339
+            },
+            "unknown": {
+              "reserved": 0,
+              "count": 0
+            },
+            "held": {
+              "reserved": 0,
+              "count": 0
+            },
+            "committed": 3390,
+            "hasUncertainCost": false,
+            "active": 0,
+            "observation": "recorded_calls"
+          },
+          "callIds": [
+            "81898901-9df9-4e66-b7ac-45448d41fa98",
+            "fce52838-1b03-428a-8e22-4d8384510c52",
+            "01a8e728-68e8-4e4e-b281-25ce108c4ddb",
+            "e5ad2b06-e8cf-44cc-b1fa-b0346cec36fd",
+            "7f2e25e5-634f-489f-b460-272b88abd2e2",
+            "7149a5f9-ef7d-40f8-b972-7be7b57b8703",
+            "a613ee6a-fcf1-42fe-83cc-360e5caf5eb7",
+            "1722ac9d-1013-4555-8313-0e12b76a0bf5",
+            "3a68fb6e-0a49-4d2d-82c5-176d2aec3374",
+            "79a356be-f6a0-4be5-9bff-8d46f29fbe58",
+            "01aa8e2f-0c9f-4190-850f-11ea6969f297",
+            "532d6957-0000-4f88-b980-240d8a54660f",
+            "c3af4e9b-085f-4a74-a364-87989e67032c",
+            "2e5d0cda-d312-40bd-be0b-abd0daa7b547",
+            "7be5036e-c8b2-47a8-b521-490e75f5f981",
+            "5f05262c-a6be-4211-9ad4-c5d26a82015e",
+            "593be4ed-16b5-4b26-98d5-e447289d272a",
+            "b61256c1-8640-4b47-952c-3ce5f7388602",
+            "8d16c5ca-180e-4aa0-bfea-e647238cfdcf",
+            "b3a1c90b-c950-4783-a5bd-f331df9e579c",
+            "530ce308-4218-4d0a-9388-8bd272a013ad",
+            "03b8f736-6c09-4cf8-9687-95fce62222f8",
+            "2a866418-dc68-4b9e-b485-7d996409bf9a",
+            "5b813d62-bcc5-46cb-b11f-f7838b7cf6e8",
+            "8461663c-f49d-4902-84a9-02f1bf40ba89",
+            "1552d822-522e-4071-8a70-888709bb46a1",
+            "2a4e55ea-2e72-4f0e-839b-af04093d07e3",
+            "9c92b67a-de29-4b2a-bae6-4afba0921220",
+            "e48d6cf6-9354-448e-95e4-26f34ffad0d5",
+            "a57080f8-75b7-41ea-bc73-7a58ee9818ec",
+            "879e8a86-7ac4-4590-b819-6699ae52293e",
+            "2530db07-5cdb-4a04-ba1a-764f9abfa75f",
+            "6dd5834c-fbd2-476f-bfc9-4bdcc224b986",
+            "95d9f50e-0a7c-4bc4-8c0a-6059b5d370c6",
+            "7c22c769-2236-400d-8a13-7a31740a1284",
+            "2821e7ef-bebe-4c63-a954-c7e8a1fd6687",
+            "cc84c440-5afc-49e0-acc6-633d6ab1ad62",
+            "ebee34a9-d2e2-499a-980f-ee8005ff18c5",
+            "042c4140-f6d3-46a0-9778-539a8bb6af3f",
+            "31dbe208-3f53-4f52-8a35-130eb7153ca6",
+            "9b21cbb9-df24-4423-adc5-2142b4b06f43",
+            "6e0bc5ed-f9c7-4b0c-aba5-be7dfda5be0a",
+            "374817d9-8ec3-4519-ae62-9b3364444715",
+            "4abe4ee3-4263-45e7-b208-0d2b6fe17993",
+            "23b9fbb5-9676-4bea-a702-2d73b736b4b9",
+            "d92122d7-8ab4-444e-b092-a778c991d13c",
+            "ae9b6498-f77d-4c9d-8012-840a58d497fe",
+            "bd4c77fc-7f74-41b8-93f4-b66904dc6b58",
+            "488fafa0-5cb8-47ba-a2a9-58031c1b550b",
+            "0692e804-60b2-43bd-b852-a1648caeefec",
+            "b327ec78-ae4c-4a5b-ba4a-3657f9120ffd",
+            "214159e9-f773-430a-a62a-0afc038092c4",
+            "65949e03-43ec-4359-b91c-8b78605b86fb",
+            "51ada83a-e0f2-4862-ab8a-63bddb13bfdc",
+            "6addad27-65a0-4614-b9b4-26df59a82473",
+            "b8feeef7-dbe5-46c7-962c-84be3f487ce3",
+            "f5d171b8-4148-4c29-a8c3-b73088ee7af2",
+            "61f590b5-cee8-4d46-a55b-a68201c7beb1",
+            "397b2379-90a3-400c-9a07-d8bd3e947a96",
+            "c29f2fde-934c-49db-b743-ef217d11e4af",
+            "b408b985-35a9-48f7-ba1a-239d58ee71ba",
+            "e3cc6c4c-78e2-4f3f-a59e-361a1245d5b8",
+            "92812304-502e-4e46-839b-6d259e7d99b6",
+            "b9ec7bbe-0c5e-486b-b9a2-f55acc0d4307",
+            "797576bc-553a-46f1-bc7e-212aaf614200",
+            "41e0ba15-ff49-4591-8c91-4aaba5b3319e",
+            "5339fbd7-c854-4ce6-8c13-569d1649026b",
+            "d530c7ac-6bad-4bcb-9a5e-1274b98c751c",
+            "a6c59de4-d403-4eaa-a62a-25b4381e3a17",
+            "3ffe2c14-7151-4e7e-aa4c-258a7fad56b6",
+            "16070685-0611-4ae1-8fd0-49e245913869",
+            "b40fb61f-a675-4dbf-a769-e08cd71d6782",
+            "e26c29ab-adf4-4d67-80e6-6b894bb1a960",
+            "4382c41f-77f7-4a37-8307-73889c0aeeed",
+            "2f0958fa-cdbb-4112-a07d-68b331a056cf",
+            "b0e38433-8f84-41e5-bf06-ddc832ca5562",
+            "c1738f33-8bd7-4e93-b2f1-adc5527a1faf",
+            "b8c41c1f-edef-46a0-b674-3a6ab8a25392",
+            "1c482be3-740e-44f3-92fc-47a257467edc",
+            "7988d7e1-b06c-47ce-aabb-4d7cc4fd899f",
+            "d7dcbfe3-8987-4bb1-949c-f85401bb19d3",
+            "5e828251-f8c6-4880-8d20-10bc43e2dee7",
+            "cb252f69-9598-475a-908b-cd37e227ff55",
+            "8a867987-9de3-445c-939b-73d03d3e5753",
+            "9d850b91-59b1-4dc3-96b6-ea410faf9357",
+            "82e65ddf-1176-4d8b-a200-f92b15aacca8",
+            "8b9434bf-9671-4bb9-9852-6c303dcd0d48",
+            "b9efc60f-41af-4010-aad5-3acdadb8fd46",
+            "c8523ec0-c20e-453f-8699-e260a65f6890",
+            "bb0544b5-36b1-470a-97eb-e3a95711e477",
+            "d2aa486d-5210-461b-924a-5f65c9a8e52d",
+            "2b51f44e-d38b-4d62-bb13-8202a62dacb0",
+            "4e2030df-7aef-4574-94ce-37590e68b168",
+            "85e66915-8a08-4973-8b1e-c0f1406d68af",
+            "2c96c49c-34c1-4edf-8d72-68a2eaa3ea5d",
+            "e6d8023b-a591-4758-a77f-27c4024534b7",
+            "0346d70e-8fb4-4024-bfdb-f0d84c8dbc27",
+            "b0111ee4-ad7a-4079-b06e-e469ab6fa1b9",
+            "ef9cf445-df02-42e9-a239-022852bd2e4f",
+            "0d09fdc7-79b5-421c-a1dc-787cdaece6b0",
+            "d26097a0-0323-493f-9aa3-51d63400f344",
+            "620bd5fb-1b2c-4fdc-81ad-3b1b612a0bea",
+            "b20cddf3-6b53-41fb-89e4-625000e1d0ac",
+            "ca00d82b-024b-48eb-88e1-7e378d702c76",
+            "410798a4-a050-4d0b-871b-3728456f238e",
+            "375ff96b-8bac-44bf-ad3d-691e46b16f53",
+            "22c1ee13-e286-4a2c-80b8-a36c1adbd92a",
+            "6dcd59f5-df4c-4c7b-be78-717b645f8b95",
+            "3648c43a-e660-4060-8bd4-ace6ccd5c413",
+            "e854b582-6b1b-45a9-9746-a68a62dea1be",
+            "2d816931-8bd6-4faa-86b9-b438b8fbad20",
+            "f9bcf23c-d056-493c-b1c2-0f8bc8961790",
+            "b3abbd79-d552-4f12-9943-30e46ad98d37",
+            "04134afc-a9f8-424c-a183-12a0805f0cbe",
+            "10e60f53-b9bb-4a82-8254-1d2d1c1c7b84",
+            "95c35b79-cbc6-426c-a22b-fc85852975dd",
+            "7a7b174c-b2f1-41f1-96d6-d3dfb24eba0e",
+            "7f8fd9d0-72bc-4842-9074-e8db75335ba2",
+            "4c4d11e6-4ca8-4bd0-a8bf-61b4713cfaf6",
+            "fce1fedc-9c59-4f39-a110-f14ec76c0791",
+            "c351b99e-606b-48d3-a7fd-9b0d95b3d918",
+            "60e96aaa-b5b7-4c9a-90b3-10bee9f81e02",
+            "b5181bf7-ef39-43e6-9108-82f2c0d5b942",
+            "13504da6-a6e6-4df1-80a0-7340dcda9a11",
+            "5e065e29-7e4d-4f9c-ae19-0108fc142b6a",
+            "2bd7b85a-b680-4251-a079-2911ee237460",
+            "6dfd00fe-265f-4190-8e46-3151d9cefd15",
+            "08476641-5563-4349-a375-f5efba9fd90b",
+            "2349a762-3e70-4325-bd51-58b6a7fbaf90",
+            "26040b6f-5bf5-41e6-a7ff-8cbeba0cb889",
+            "3c33582d-f22f-4510-9dec-16ac785ea633",
+            "7bce64ea-ec8f-4ef0-bacb-57f96bc15081",
+            "8b482bb7-e062-40ec-8ae3-8f0d01a282ae",
+            "1ac69fdd-d452-40f0-8a8e-ab8f39612e78",
+            "8b92aa41-62ca-42ff-b748-a26d1e13afb8",
+            "54416782-51c1-41c7-8c4e-cdcc34266986",
+            "684285ea-d344-4e2f-949d-2953e03ff4a7",
+            "6ca9d00b-1f3e-4175-8598-eba32aacc6a8",
+            "e09ed781-6181-4524-acf7-a74c71d6d0f9",
+            "b4175d21-5090-4bfe-9f65-30df895e63a3",
+            "4ba35ed7-35b9-460d-92ee-842ef6e2b5e3",
+            "a71d184b-c399-4b44-9c13-9c47ea4aa4ff",
+            "0d33a031-babc-4dfc-9fc3-cdefe53999ec",
+            "aa27f7b5-88f8-498e-a069-a01bd10d6e9f",
+            "a0ec494a-fe2f-48ae-88a7-43e1c8b9cc57",
+            "4e20b92c-44ed-47ac-91f8-537e6cbddb40",
+            "3bbba465-b14b-4d07-975c-13860b38c44d",
+            "bf2d7794-1def-4406-b199-2d824b0f7992",
+            "f9ae1222-2155-4d3c-b522-75d2cdce70d7",
+            "3105c1bf-c234-4bcb-8bd0-08b0d17e69d9",
+            "4cfe471f-3df7-4ef2-94d7-f63b73a5ea99",
+            "cbf4e006-c915-4d97-a527-5e7d7f90fc2a",
+            "ce60de75-e794-4df8-85e9-f3a99e5cb2c5",
+            "4fb77518-9b63-4c57-b713-eddb69052c7f",
+            "27623129-7d5c-4bb0-ad59-2451e9062ab8",
+            "a7277166-ac1b-4713-9efb-d623fe24cbce",
+            "584c8411-78f7-4b92-ab9c-bbabe318cff1",
+            "9a7b4dd5-0ee9-405c-bc6e-d9f599b8bfa7",
+            "e95c0787-9b26-4b50-9d68-d8dfed5a341f",
+            "2f589946-57aa-46ed-b5da-c64c3180f1a3",
+            "b7d27060-7d56-4bc4-a95b-c1e504e7597a",
+            "d4721efd-5c10-4c80-9185-5309f05e2b72",
+            "0b15fb9f-5a99-4dba-b558-cad7b3576e1d",
+            "565aa2f7-2296-4528-932a-c682e4b7dd32",
+            "1ddc9179-bcaf-404d-87b2-5d09728a8a5d",
+            "366f64d6-549e-4bd2-a0d4-d900a6157555",
+            "83ce3e5b-d6bd-488f-9495-8c7210250400",
+            "61b0b0f2-04bf-4751-8e8a-e50f9d1ac913",
+            "9b3d1c1f-a293-4d7a-9d3a-e4afc172f6bb",
+            "4165e3e5-8a65-481a-8241-c39ef8ce4078",
+            "67877142-4b69-484e-826c-427987bf141a",
+            "96abae77-f25d-44e2-a34a-47c58bdbd798",
+            "949e90fd-990a-4654-98a2-18a4a9960a4c",
+            "af2f3495-40c1-48ac-8226-a66fa3090053",
+            "253d1177-98a3-452b-8a73-23702af95b1d",
+            "b561d813-b4d6-4eec-a5db-b8769e3fe37a",
+            "ea56c91f-9152-4e57-9533-f8be78e8b67d",
+            "72baf484-90f6-4322-ba5f-d77034643660",
+            "fef39c55-d044-48a1-afd9-8c0c2f804363",
+            "34621e7e-86e0-42d3-a023-25756ae3f857",
+            "bb8fb598-0b1f-49c2-aac1-168933784a6a",
+            "277d3f6e-ac4b-4c51-8210-24176127d08a",
+            "cef3e1b0-ef8e-47e3-963d-e0d6b153fe9d",
+            "de481b25-e65d-48b3-b7d9-cea9048cac69",
+            "f074ac0c-afea-4e60-95b7-204dc987699a",
+            "08b43e37-e4a9-48b9-9e41-53f7af67a69b",
+            "fb00db21-4d80-4eee-bd4c-d654af36e710",
+            "2dd5337e-c7e8-4fd9-baa4-3f364d5084e1",
+            "c343146b-636d-4f29-8af0-7206cacb77eb",
+            "01863939-9146-4498-8771-bd92ccad05e6",
+            "cf868b03-d17f-4462-bac6-929830276eca",
+            "ecad552e-8b2b-4872-8538-531b8b37fcf8",
+            "0352f723-7987-4106-a563-ba790118b6e8",
+            "8ba7144d-f416-41d8-ac8c-db6c178f20fd",
+            "fc95180e-6f49-44c1-b6c6-b43c39461489",
+            "980aa774-deeb-4a6b-afa4-ce10a6ab235d",
+            "ecfb846f-d449-4d58-a079-fc3a5b0da5d8",
+            "c8a4ef89-d742-492c-bbbc-171ed96a7c46",
+            "184c4f15-32b2-4150-9df1-8a980f75143f",
+            "0ee47940-8d15-46e6-8b92-49f60c61d3e3",
+            "0ae4bd09-2233-4ad3-b0ba-f368e42879ed",
+            "fe19222d-1457-4d45-ade8-7900f0a78959",
+            "61abdf5e-f09d-43c0-bd8c-a6c5e502c8ec",
+            "b435d793-8e20-4f30-940a-53c3edf38080",
+            "da666440-6429-4493-996d-af8374f7bce3",
+            "ed358373-96aa-47b6-86db-ba03b42a02d3",
+            "702d2c4b-d723-4cfa-9cbe-add0719f1f65",
+            "2cd10b42-dab1-468b-8982-12e59185cb3d",
+            "1f6525d9-8776-4292-acfa-a240ff5d87b8",
+            "fcadc67e-8649-4473-b15c-59717f5cd58a",
+            "03993d45-6a2d-4e24-934e-039fa8a0e93a",
+            "7926cbb1-c695-4ece-81c7-ef19178689a1",
+            "c7bfe5ee-6078-44df-a1b3-0c74d715c9d6",
+            "fa5d2cc7-1ee6-461d-ba03-b70356f28f05",
+            "5980c8bc-84f2-4ed9-b419-5f27103a8668",
+            "9df69a26-27ab-4c4c-a04e-57e5ddd60801",
+            "97eedd57-bd27-4d27-a373-689ffa71b2d0",
+            "14a9a53b-530f-4fd1-83fe-2654fe23f4a7",
+            "4aad7d09-f963-4f0a-a9af-887b391a119d",
+            "590daeaf-e646-46f6-a6e3-b32b4d375674",
+            "e5376eec-78b2-43d4-a321-d6b8b8c94640",
+            "1d7cc198-0d2e-4976-beca-85740c49bf30",
+            "f4c1735b-c1ba-4753-b79a-ddc71129461f",
+            "070d57d0-fb92-42bb-8b4a-eeffa9363a1f",
+            "178f2967-63e0-43ed-b99f-50a6f85c4b0e",
+            "c8ac40b4-e1fe-40d6-8acd-bc03aac0920d",
+            "4c19f373-fbfc-4286-8f9a-df68fd8368dd",
+            "eb553f0a-d149-46d1-9485-1b0bc36e859e",
+            "113aaa5d-be7a-4c94-88c5-b8e5ef20d83d",
+            "453b3d9e-8368-4543-86a0-7f194e3e1513",
+            "021349bf-89f3-432b-8c02-b1edf088682a",
+            "ac56f630-5f0d-414b-8c3f-fbcb6cd0b8d4",
+            "d04abea4-ec07-4265-853f-fe746d842f59",
+            "bf370486-de5c-47d9-a112-c17e464c0838",
+            "ce5743cc-976d-4092-b456-d65bddfe0bc7",
+            "ec8d6964-bb70-4c03-b0c3-6a20ec883338",
+            "0b93137e-4841-4d87-9c94-f8586ef1c8af",
+            "78ccbec0-0797-4c2a-9909-81495d504356",
+            "7c6d9a1c-fadb-4c6f-9b36-6e5d4b6b8fec",
+            "ca5067f1-411a-44a1-b8a2-53c855448a42",
+            "0fb2f327-3c47-4008-aa6f-a5aac8cd10ca",
+            "b635415c-575d-46cd-8731-b98c042b2052",
+            "c96573a6-a3c8-4d1e-a577-b24f7f60dd9d",
+            "25e2e7f8-2930-4999-b0fb-94048ff2eede",
+            "20230250-e5bb-46ac-ba96-b16b5d0caa25",
+            "7216f682-3273-4342-ae85-b62e343c2cef",
+            "a1408dd1-23c2-413a-9b08-d334b0e71950",
+            "b3b98826-4e0f-4aef-b7ae-dd0b62c56892",
+            "e05df7ed-3293-4dfb-917f-e6eb62198de0",
+            "ed5abf30-d671-4846-9dc6-d10648742d77",
+            "f0656a3d-9c43-4ec3-8684-265c088a3c4f",
+            "bb3aa82b-cc30-40fd-812b-ea97f32d4aec",
+            "c784a598-beda-4446-9c72-5eb4a4618434",
+            "9f6ca776-a018-474a-88e7-3c94c241fd30",
+            "4c9409fb-6b54-4853-bd5e-fd11b66f6aab",
+            "edf332f8-dbd9-46de-88fd-6ebbc38b88d6",
+            "426cccaa-2a86-4f92-b65e-3bc7efba2d53",
+            "581abf7d-a08c-465a-ba52-23436a2ccacf",
+            "077c45fb-7dc3-4f61-82e5-01252cb849b6",
+            "6541fefa-0388-45a8-96ca-dc2b587d7166",
+            "f0c765f1-3d64-4796-bb86-7161feb6101d",
+            "63fd46a8-7c7f-4a19-a1bf-0fa97337b3c1",
+            "ff4da7d4-8369-4c2d-9f3b-9a099c3d35f2",
+            "a80a35b1-cc1a-4635-ab0a-d01ec4cf1d5f",
+            "bd1d3366-8124-4cd7-a947-7d1cba161b6a",
+            "a54c8881-7c86-4ddc-b59f-7dd6b0cc603d",
+            "f54b0536-bfea-4770-a667-1d9409e5a25e",
+            "09eec958-c4b5-4f72-a656-9493a451db16",
+            "2cf84682-fb21-47a5-8e48-ecbb3c4fc825",
+            "79777c59-5dce-4968-b572-8ad5835a80c2",
+            "8f08a3d7-e4bc-4bd4-aadd-e482ad1896bb",
+            "f48c6a90-414d-4573-80d5-b5f5dfb1c6d4",
+            "402022be-4c3c-4153-99aa-04b3fa6c9a40",
+            "716eb0cf-3159-4306-9cd2-a74ecb5d0c63",
+            "5ad34e58-ca1d-4aa8-959c-7056ceaa4c56",
+            "a5d7ad49-b7ec-44e0-bd64-d51999e878b9",
+            "7e3e1cb7-2b38-4d2f-814d-7c7c6056a655",
+            "25b93e88-6f99-417e-a2da-650d6be8222c",
+            "0038e3fa-98b0-407d-b0ac-2946f2c907ba",
+            "30357e14-9599-490e-b276-6f95c047aaf8",
+            "e6938ca9-7d8e-4fbd-b576-a8ada78717ad",
+            "f9ba2798-d513-4316-a026-d215502aeb94",
+            "e3d976b9-4b13-41b8-a3f0-f623452e097d",
+            "8da135e3-8d24-4818-83fd-7ce8870a2daf",
+            "152d180a-44b6-4213-9bf2-69bcba1e61f3",
+            "67814419-1922-4373-9f08-25a9c7222713",
+            "a2d6afe9-c7f8-4fd0-ac00-fc0d8920383d",
+            "c524ccef-9c08-47fd-a7ad-a806bdf0601c",
+            "3a5c8010-7cb0-4f38-9639-701ebec419e5",
+            "c9550451-6a42-47bd-b158-68b900d9f10c",
+            "d35e0008-d3c1-4553-9005-1d4f43ad9246",
+            "4c6be889-4f61-4277-a35e-90d0e932d82c",
+            "93e38d62-894c-4eb2-ac78-a4fc28577118",
+            "f42689ec-7cb8-4fc6-9e9d-b11e534ee3b1",
+            "f3a0defe-6c1a-4284-94bc-88f640c531e6",
+            "536b1290-0145-466c-8e9e-3b48dc281094",
+            "81ea1cc1-81a2-4160-bf21-1eef6a8130da",
+            "72c05340-8d7f-48d8-af6b-953d328dffc7",
+            "33942c2b-cac7-4125-bbfc-7b97dd883408",
+            "6a88739d-321c-4bfc-992f-24262b030457",
+            "e8896958-0d3b-4405-99ce-6d8ef5028821",
+            "b6025bd6-4925-4f23-ab34-3fb52deab80e",
+            "4ba12cea-2add-4b5f-bf93-26db92818eb0",
+            "7fe88909-c5f8-421f-ad18-c53330af2696",
+            "88fcfc02-e241-41aa-968c-58e2c6fe3ab7",
+            "6e853662-e49e-4024-ae43-1de396fe6528",
+            "0bbc7e79-9aa6-411d-b224-9fbb2f0908f6",
+            "96c97fea-2481-41e2-a1dd-232697b624a1",
+            "e3ff917d-b3a5-41c9-bb94-8b5da8c1f02b",
+            "a84db814-33ae-44c6-b4dc-85848266e8e4",
+            "46cd1bea-860c-4141-bf7e-90a2a387274b",
+            "bb761a63-c61a-4e04-8aea-b4519c0f3d5a",
+            "d25015dc-93ba-4fb7-ae66-575cd67e413d",
+            "933dd0e5-0da7-471d-8759-858365f39d5b",
+            "bdadce23-62a3-4046-8616-f23acfff6dd6",
+            "fe3cb3da-392f-466a-82eb-f24abcfad99f",
+            "8956e4b0-6b72-4560-9733-6d7057d5f01d",
+            "a48bc101-8560-4e1f-a06c-8e472eacdeaa",
+            "48a3ae7d-c326-4d2f-8f2e-c4d82bd5a395",
+            "0b0b09c4-e493-488f-b88a-330262cbc4a3",
+            "a0145356-d116-4f29-98f2-96c7327e9433",
+            "81519668-ae18-4e13-86f5-a1a931f3921f",
+            "070ce389-ee14-4324-ad02-96696ffb2593",
+            "4784a40c-f022-4592-88d6-c0a1667071fd",
+            "f568b9dd-3e9f-430e-9712-f0131ee3023d",
+            "87060cce-a6c5-475c-9e84-0d1e7776992d",
+            "f8e5db06-65ee-4bcd-9cf3-b9105193d8fe",
+            "49e543a1-56ab-4740-8c3b-70d1adb601ed",
+            "bc4cb77e-c8ce-4b1f-9178-868701ecb44b",
+            "aa1a8f93-09fc-4132-8393-8c783fa9a5f4",
+            "51ee331c-3ca6-4425-b99c-990a21160d70",
+            "8071b2f2-50d7-4fdc-badb-8cbefda2d890",
+            "5128b173-c762-4964-8d55-cf3d102f95f7",
+            "0f484ac4-f7a8-4d22-a3a1-90ba27489aab",
+            "040b9741-c05c-443f-8813-0fbc76924670",
+            "6df35040-0b0f-4950-a1fc-56765317fd39",
+            "6f668d5a-1989-46df-baf0-7a14035bbe70",
+            "166f72cc-2e6d-4c69-b66a-ca4e2efde5da",
+            "7e7af75c-a84a-4e24-9ad1-e9b0fad576bd"
+          ]
+        },
+        "scopeSummary": {
+          "attempts": 339,
+          "logicalCalls": 339,
+          "settled": {
+            "actual": 3390,
+            "count": 339
+          },
+          "unknown": {
+            "reserved": 0,
+            "count": 0
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 3390,
+          "hasUncertainCost": false,
+          "active": 0,
+          "observation": "recorded_calls"
+        }
+      }
+    },
+    {
+      "kind": "l2",
+      "originalReport": "artifacts/manual-20260928/l2/evr_4beb5275.json",
+      "originalSha256": "7cf4315861fb0d49511b48bef3d446272d461dc140d53b1ada65003a5ffd55ca",
+      "reportId": "evr_4beb5275",
+      "experimentId": "manual-l2-20260928",
+      "mode": "simulation",
+      "level": "L2",
+      "total": 3,
+      "passed": 0,
+      "gatePassed": false,
+      "metrics": {
+        "task_success_rate": 1,
+        "side_effect_correctness": 1,
+        "tool_selection_accuracy": 1,
+        "tool_argument_accuracy": 1,
+        "escalation_correctness": 1
+      },
+      "metricDenominators": {
+        "task_success_rate": 3,
+        "side_effect_correctness": 3,
+        "tool_selection_accuracy": 3,
+        "tool_argument_accuracy": 3,
+        "policy_violation_rate": 0,
+        "duplicate_side_effect_rate": 0,
+        "checkpoint_recovery_rate": 0,
+        "injection_defense_rate": 0,
+        "clarification_quality": 0,
+        "escalation_correctness": 3
+      },
+      "passAtK": {
+        "pass@3": 0
+      },
+      "passPowerK": 0,
+      "source": {
+        "head": "2a42f0be63588028a0592341b94e0527f40c5f0d",
+        "dirty": true,
+        "hash": "c5870fdb35c75724a450ea27194b3e69aa63d68e23aa2e9c98d56603213be093"
+      },
+      "datasetHash": "7be6b01d0f8f8aced7e38dc2ee8c7b915fd492295fc3e279faada44fb98f705b",
+      "costs": {
+        "selection": {
+          "experimentId": "manual-l2-20260928",
+          "summary": {
+            "attempts": 15,
+            "logicalCalls": 15,
+            "settled": {
+              "actual": 150,
+              "count": 15
+            },
+            "unknown": {
+              "reserved": 0,
+              "count": 0
+            },
+            "held": {
+              "reserved": 0,
+              "count": 0
+            },
+            "committed": 150,
+            "hasUncertainCost": false,
+            "active": 0,
+            "observation": "recorded_calls"
+          },
+          "callIds": [
+            "e12cae27-5f2b-4318-95f8-600179d3c4ab",
+            "4f8af69b-89c7-458f-a118-1d1c8a3b980c",
+            "4aea4c76-1d1e-4550-b885-58c3cdd8048e",
+            "24e45231-d8e0-44ba-922a-7ee0ae01240e",
+            "325cb695-ceb8-4ac1-8978-c0bae821171d",
+            "9a20631f-e532-4d81-908e-a139705ed158",
+            "7f2e20f1-210d-4cc1-bc2c-96d6114037d4",
+            "19a245ef-b937-457a-a863-e034cf12f8f0",
+            "4517c3fb-b2c3-4767-8750-4439a89066cf",
+            "eb5a14a1-63d6-418d-a8ed-8de0189d64b7",
+            "e84dd3e7-f375-4769-ba95-4b0850f90a26",
+            "991dda05-9ab4-4e42-9936-ab571033c6c8",
+            "82c527af-271a-4764-baf5-e7c2ab589163",
+            "89808901-2dcc-4706-91ae-bec5b4638469",
+            "44f8289d-b802-404b-8422-79d9d1ea09ac"
+          ]
+        },
+        "scopeSummary": {
+          "attempts": 354,
+          "logicalCalls": 354,
+          "settled": {
+            "actual": 3540,
+            "count": 354
+          },
+          "unknown": {
+            "reserved": 0,
+            "count": 0
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 3540,
+          "hasUncertainCost": false,
+          "active": 0,
+          "observation": "recorded_calls"
+        }
+      }
+    },
+    {
+      "kind": "baseline",
+      "originalReport": "artifacts/manual-20260928/baseline/evr_50b0a291.json",
+      "originalSha256": "c33c713a8a787c42aaefac2db53b2e6a343121fda5530bb57254a2cec0ac3320",
+      "reportId": "evr_50b0a291",
+      "experimentId": "manual-baseline-20260928",
+      "mode": "simulation",
+      "level": "L1",
+      "total": 2,
+      "passed": 2,
+      "gatePassed": true,
+      "metrics": {
+        "task_success_rate": 1,
+        "side_effect_correctness": 1,
+        "tool_selection_accuracy": 1,
+        "tool_argument_accuracy": 1,
+        "escalation_correctness": 1
+      },
+      "metricDenominators": {
+        "task_success_rate": 2,
+        "side_effect_correctness": 2,
+        "tool_selection_accuracy": 2,
+        "tool_argument_accuracy": 2,
+        "policy_violation_rate": 0,
+        "duplicate_side_effect_rate": 0,
+        "checkpoint_recovery_rate": 0,
+        "injection_defense_rate": 0,
+        "clarification_quality": 0,
+        "escalation_correctness": 2
+      },
+      "passAtK": {
+        "pass@2": 1
+      },
+      "passPowerK": 1,
+      "source": {
+        "head": "2a42f0be63588028a0592341b94e0527f40c5f0d",
+        "dirty": true,
+        "hash": "c5870fdb35c75724a450ea27194b3e69aa63d68e23aa2e9c98d56603213be093"
+      },
+      "datasetHash": "7be6b01d0f8f8aced7e38dc2ee8c7b915fd492295fc3e279faada44fb98f705b",
+      "costs": {
+        "selection": {
+          "experimentId": "manual-baseline-20260928",
+          "summary": {
+            "attempts": 6,
+            "logicalCalls": 6,
+            "settled": {
+              "actual": 60,
+              "count": 6
+            },
+            "unknown": {
+              "reserved": 0,
+              "count": 0
+            },
+            "held": {
+              "reserved": 0,
+              "count": 0
+            },
+            "committed": 60,
+            "hasUncertainCost": false,
+            "active": 0,
+            "observation": "recorded_calls"
+          },
+          "callIds": [
+            "20efdb3e-aa73-4c61-af29-a15350ceee28",
+            "880d7270-4f7a-4a5c-b5e4-00bb2992a4e8",
+            "9bb81bec-94c4-484f-ad4f-f9398f218c29",
+            "b1b86509-acc4-4503-90d2-0bcd4fd85ae7",
+            "2e8e38ed-7100-4d58-a924-f574daeff945",
+            "6051edbc-1538-4108-a99c-8265e533630d"
+          ]
+        },
+        "scopeSummary": {
+          "attempts": 360,
+          "logicalCalls": 360,
+          "settled": {
+            "actual": 3600,
+            "count": 360
+          },
+          "unknown": {
+            "reserved": 0,
+            "count": 0
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 3600,
+          "hasUncertainCost": false,
+          "active": 0,
+          "observation": "recorded_calls"
+        }
+      }
+    },
+    {
+      "kind": "fault",
+      "originalReport": "artifacts/manual-20260928/fault/evr_22208a41.json",
+      "originalSha256": "ee51ea8ef38dc0bef4344f4504f085515a484bc72fce2fbb83844a9643f62733",
+      "reportId": "evr_22208a41",
+      "experimentId": "manual-fault-20260928",
+      "mode": "simulation",
+      "level": "L1",
+      "total": 2,
+      "passed": 1,
+      "gatePassed": false,
+      "metrics": {
+        "task_success_rate": 0.5,
+        "side_effect_correctness": 0.5,
+        "tool_selection_accuracy": 0.5,
+        "tool_argument_accuracy": 0.5,
+        "escalation_correctness": 0.5
+      },
+      "metricDenominators": {
+        "task_success_rate": 2,
+        "side_effect_correctness": 2,
+        "tool_selection_accuracy": 2,
+        "tool_argument_accuracy": 2,
+        "policy_violation_rate": 0,
+        "duplicate_side_effect_rate": 0,
+        "checkpoint_recovery_rate": 0,
+        "injection_defense_rate": 0,
+        "clarification_quality": 0,
+        "escalation_correctness": 2
+      },
+      "passAtK": {
+        "pass@2": 1
+      },
+      "passPowerK": 0,
+      "source": {
+        "head": "2a42f0be63588028a0592341b94e0527f40c5f0d",
+        "dirty": true,
+        "hash": "c5870fdb35c75724a450ea27194b3e69aa63d68e23aa2e9c98d56603213be093"
+      },
+      "datasetHash": "7be6b01d0f8f8aced7e38dc2ee8c7b915fd492295fc3e279faada44fb98f705b",
+      "costs": {
+        "selection": {
+          "experimentId": "manual-fault-20260928",
+          "summary": {
+            "attempts": 4,
+            "logicalCalls": 4,
+            "settled": {
+              "actual": 30,
+              "count": 3
+            },
+            "unknown": {
+              "reserved": 10,
+              "count": 1
+            },
+            "held": {
+              "reserved": 0,
+              "count": 0
+            },
+            "committed": 40,
+            "hasUncertainCost": true,
+            "active": 0,
+            "observation": "recorded_calls"
+          },
+          "callIds": [
+            "1d65782d-427c-4b02-8727-fb411ac296a9",
+            "d6f80c56-c264-4c4b-b15b-e55d3c1fdf21",
+            "15085388-e1a2-4711-983b-a3b937b9108e",
+            "7c36c479-9e73-4559-a7da-242cc298c12c"
+          ]
+        },
+        "scopeSummary": {
+          "attempts": 364,
+          "logicalCalls": 364,
+          "settled": {
+            "actual": 3630,
+            "count": 363
+          },
+          "unknown": {
+            "reserved": 10,
+            "count": 1
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 3640,
+          "hasUncertainCost": true,
+          "active": 0,
+          "observation": "recorded_calls"
+        }
+      }
+    }
+  ],
+  "demo": {
+    "status": "passed",
+    "date": "2026-09-28T14:11:08.357Z",
+    "mode": "simulation",
+    "node": "v22.23.2",
+    "steps": [
+      {
+        "step": "ready",
+        "result": {
+          "url": "http://127.0.0.1:61978",
+          "directory": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-B5vK7O",
+          "node": "v22.23.2",
+          "mode": "simulation"
+        }
+      },
+      {
+        "step": "refund-and-replay",
+        "result": {
+          "runId": "run_e6ef16fe-cf47-4ed1-91db-8973cce61133",
+          "returnNo": "RT-2026-0002",
+          "channel": [
+            {
+              "business_key": "refund:RT-2026-0002",
+              "status": "succeeded",
+              "submissions": 1,
+              "charges": 1
+            }
+          ]
+        }
+      },
+      {
+        "step": "approval-and-wait",
+        "result": {
+          "runId": "run_47098cf9-6051-433e-9b28-e3c16471e2d6",
+          "returnNo": "RT-2026-0003",
+          "channelBeforeReceipt": 0
+        }
+      },
+      {
+        "step": "restart-and-receipt",
+        "result": {
+          "progress": {
+            "runId": "run_47098cf9-6051-433e-9b28-e3c16471e2d6",
+            "returnNo": "RT-2026-0003",
+            "orderNo": "SO-2026-0003",
+            "type": "return",
+            "progress": "succeeded",
+            "canRegisterShipment": false,
+            "shipmentRegistered": true,
+            "trackingNo": "MANUAL-RETURN-001"
+          },
+          "channel": [
+            {
+              "business_key": "refund:RT-2026-0002",
+              "status": "succeeded",
+              "submissions": 1,
+              "charges": 1
+            },
+            {
+              "business_key": "refund:RT-2026-0003",
+              "status": "succeeded",
+              "submissions": 1,
+              "charges": 1
+            }
+          ]
+        }
+      },
+      {
+        "step": "unknown-preserved",
+        "result": {
+          "runId": "run_0bd76d46-40cb-49c8-9a43-82b56095e6b4",
+          "returnNo": "RT-2026-0004",
+          "orderNo": "SO-2026-0005",
+          "type": "refund_only",
+          "progress": "unknown",
+          "canRegisterShipment": false,
+          "shipmentRegistered": false,
+          "trackingNo": null
+        }
+      },
+      {
+        "step": "backup-restore",
+        "result": {
+          "unchanged": true,
+          "original": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-B5vK7O\\original",
+          "restored": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-B5vK7O\\restored",
+          "backup": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-B5vK7O\\backup",
+          "channel": [
+            {
+              "business_key": "refund:RT-2026-0002",
+              "status": "succeeded",
+              "submissions": 1,
+              "charges": 1
+            },
+            {
+              "business_key": "refund:RT-2026-0003",
+              "status": "succeeded",
+              "submissions": 1,
+              "charges": 1
+            },
+            {
+              "business_key": "refund:RT-2026-0004",
+              "status": "unknown",
+              "submissions": 1,
+              "charges": 0
+            }
+          ]
+        }
+      }
+    ],
+    "sourceHashes": {
+      "docs/manual/devops/demo.ts": "c83f19bf2938ee90fc06bd88e3959b9282fe3acfea8563be98f41f0c18109053",
+      "apps/api/src/main.ts": "4e601095f75827a0cbc2feab6195f382ed93ff4b456768d8a8073d1f29d1553d",
+      "packages/runtime/src/conversation-demo.ts": "9d7c6eed99006cd738f1d9ebc14be1c882ce3351d8e06d19d7a1318da13b0c8e"
+    }
+  },
+  "manualApi": {
+    "status": "passed",
+    "date": "2026-09-28T14:12:37.768Z",
+    "blocks": 7,
+    "prepared": {
+      "directory": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-c5F3Kr",
+      "original": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-c5F3Kr\\original",
+      "business": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-c5F3Kr\\original\\business\\app.db",
+      "channel": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-c5F3Kr\\original\\channel\\channel.db"
+    },
+    "api": "http://127.0.0.1:54420"
+  },
+  "browser": {
+    "status": "passed",
+    "mode": "simulation",
+    "api": "http://127.0.0.1:63544",
+    "base": "http://127.0.0.1:63545",
+    "runId": "run_d5182374-d38d-4b75-94eb-e81350706e7a",
+    "returnNo": "RT-2026-0002",
+    "captures": [
+      {
+        "file": "business/screenshots/01-customer-entry.png",
+        "url": "http://127.0.0.1:63545/workbench",
+        "capturedAt": "2026-09-28T13:58:21.127Z",
+        "sha256": "c9be5caac016594966d4c2ed2ee3fe5d9b0298f800ed59f2684135a1822156c1"
+      },
+      {
+        "file": "business/screenshots/02-awaiting-approval.png",
+        "url": "http://127.0.0.1:63545/workbench",
+        "capturedAt": "2026-09-28T13:58:22.846Z",
+        "sha256": "efe018b5b2228da590f58d5ae0f371ca8c516d9e33918ddcee9955dd09fedeec"
+      },
+      {
+        "file": "admin/screenshots/01-approval-pending.png",
+        "url": "http://127.0.0.1:63545/approvals",
+        "capturedAt": "2026-09-28T13:58:26.885Z",
+        "sha256": "760ade9c35bf3efd616eec1ac7d6e007f20f8bab87edff004d17df4d0e6dcd82"
+      },
+      {
+        "file": "business/screenshots/03-register-return.png",
+        "url": "http://127.0.0.1:63545/workbench",
+        "capturedAt": "2026-09-28T13:58:29.324Z",
+        "sha256": "76271dbda5c5480df9cc31f21413b8fd3814c23e5beb85379afedb57a0e1211d"
+      },
+      {
+        "file": "business/screenshots/04-awaiting-receipt.png",
+        "url": "http://127.0.0.1:63545/workbench",
+        "capturedAt": "2026-09-28T13:58:31.184Z",
+        "sha256": "4ad8944152ffddc2bb08706f13af1fb0e05b713f5115c94ca8912d3410970292"
+      },
+      {
+        "file": "business/screenshots/05-refund-complete.png",
+        "url": "http://127.0.0.1:63545/workbench",
+        "capturedAt": "2026-09-28T13:58:33.210Z",
+        "sha256": "53e5e04cdb3c53543caee158a6e155aea2ec506a41506b21aef4d538ac53daca"
+      },
+      {
+        "file": "business/screenshots/06-staff-console.png",
+        "url": "http://127.0.0.1:63545/console",
+        "capturedAt": "2026-09-28T13:58:37.310Z",
+        "sha256": "d32f6ad9e6197ede153935f3897bbc724dc5ba1ff2b9a1c4aba923fbe136f973"
+      },
+      {
+        "file": "admin/screenshots/02-policies.png",
+        "url": "http://127.0.0.1:63545/policies",
+        "capturedAt": "2026-09-28T13:58:41.518Z",
+        "sha256": "b5e4bb10fb5b57f0401a75d061d880defdfdf1a05f8dcd0daa24e81a1fa97cbe"
+      },
+      {
+        "file": "admin/screenshots/03-settings.png",
+        "url": "http://127.0.0.1:63545/settings",
+        "capturedAt": "2026-09-28T13:58:45.401Z",
+        "sha256": "ecb113d1861c5d56a45f6186009b904df6d3701f35e9d0a9daa120e489c4f5eb"
+      },
+      {
+        "file": "devops/screenshots/01-evaluation-l1.png",
+        "url": "http://127.0.0.1:63545/eval",
+        "capturedAt": "2026-09-28T13:59:00.785Z",
+        "sha256": "d6503d44e85ceca862daf4c799aa246f329e0828167cbecf841ec87cb1d6e667"
+      },
+      {
+        "file": "devops/screenshots/02-run-detail.png",
+        "url": "http://127.0.0.1:63545/runs/run_d5182374-d38d-4b75-94eb-e81350706e7a",
+        "capturedAt": "2026-09-28T13:59:06.156Z",
+        "sha256": "ff087dbef3c3e3a0fbbdb2184c634b677ab5ca96a08ba6aa33a53bc5b3add70c"
+      }
+    ],
+    "errors": []
+  },
+  "comparison": {
+    "comparable": true,
+    "reasons": [],
+    "variables": ["fault"],
+    "differences": {
+      "newFailures": ["[\"hp_refund_only_small\",2]"],
+      "fixedFailures": [],
+      "persistentFailures": [],
+      "before": {
+        "endToEnd": {
+          "passed": 2,
+          "total": 2
+        },
+        "business": {
+          "passed": 2,
+          "total": 2,
+          "scorable": 2
+        },
+        "subjective": {
+          "passed": 0,
+          "total": 0
+        },
+        "failureClasses": {
+          "business_assertion": 0,
+          "model_protocol": 0,
+          "service_exception": 0,
+          "timeout_cancel": 0,
+          "budget_blocked": 0,
+          "evidence_missing": 0,
+          "judge_failure": 0
+        }
+      },
+      "after": {
+        "endToEnd": {
+          "passed": 1,
+          "total": 2
+        },
+        "business": {
+          "passed": 1,
+          "total": 2,
+          "scorable": 1
+        },
+        "subjective": {
+          "passed": 0,
+          "total": 0
+        },
+        "failureClasses": {
+          "business_assertion": 1,
+          "model_protocol": 1,
+          "service_exception": 0,
+          "timeout_cancel": 0,
+          "budget_blocked": 0,
+          "evidence_missing": 0,
+          "judge_failure": 0
+        }
+      },
+      "simulationCost": {
+        "currency": "CNY",
+        "unit": "micro_yuan",
+        "before": {
+          "attempts": 6,
+          "logicalCalls": 6,
+          "settled": {
+            "actual": 60,
+            "count": 6
+          },
+          "unknown": {
+            "reserved": 0,
+            "count": 0
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 60,
+          "hasUncertainCost": false,
+          "active": 0,
+          "observation": "recorded_calls"
+        },
+        "after": {
+          "attempts": 4,
+          "logicalCalls": 4,
+          "settled": {
+            "actual": 30,
+            "count": 3
+          },
+          "unknown": {
+            "reserved": 10,
+            "count": 1
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 40,
+          "hasUncertainCost": true,
+          "active": 0,
+          "observation": "recorded_calls"
+        },
+        "settledDelta": -30,
+        "unknownReservedDelta": 10,
+        "heldReservedDelta": 0,
+        "actualTotalDelta": null
+      },
+      "conclusion": "仅比较确定性离线机制 不给出真实质量提升结论 不合并两份报告分母"
+    }
+  },
+  "rejectedComparison": {
+    "comparable": false,
+    "reasons": ["故障变量未声明"],
+    "variables": [],
+    "differences": null
+  },
+  "limitations": [
+    "未执行真实模型与真实支付",
+    "未执行build或容器验收",
+    "未验证Typora实际显示",
+    "未重新运行全仓测试 检索专项或调查专项"
+  ],
+  "review": {
+    "date": "2026-09-28T14:38:18.339Z",
+    "standards": {
+      "findings": 1,
+      "severity": "P2",
+      "resolved": 1,
+      "independentRecheck": "passed"
+    },
+    "spec": {
+      "findings": 1,
+      "severity": "P2",
+      "resolved": 1,
+      "independentRecheck": "passed"
+    },
+    "additional": {
+      "findings": 2,
+      "severity": "P2",
+      "resolved": 2
+    },
+    "l1AssertionBoundary": {
+      "date": "2026-09-28T14:25:59.819Z",
+      "kind": "L1判据边界验证",
+      "sample": "hp_refund_only_small",
+      "communicateInfo": ["本轮不存在的沟通断言标记 manual-review-missing"],
+      "judgeRubric": ["本轮不存在的主观判据 manual-review-missing"],
+      "passed": true,
+      "failures": [],
+      "conclusion": "L1未执行communicateInfo与judgeRubric 此结果不能解释为这些判据通过"
+    },
+    "manualApi": {
+      "status": "passed",
+      "date": "2026-09-28T14:24:23.440Z",
+      "blocks": 7,
+      "prepared": {
+        "directory": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-0uxxgm",
+        "original": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-0uxxgm\\original",
+        "business": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-0uxxgm\\original\\business\\app.db",
+        "channel": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-0uxxgm\\original\\channel\\channel.db"
+      },
+      "api": "http://127.0.0.1:63409"
+    },
+    "web": {
+      "status": "passed",
+      "date": "2026-09-28T14:36:45.977Z",
+      "api": "http://127.0.0.1:49343",
+      "base": "http://127.0.0.1:64097",
+      "prepared": {
+        "directory": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-nMtyF1",
+        "original": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-nMtyF1\\original",
+        "business": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-nMtyF1\\original\\business\\app.db",
+        "channel": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-manual-demo-nMtyF1\\original\\channel\\channel.db"
+      },
+      "ready": {
+        "status": 200,
+        "body": {
+          "status": "ready"
+        }
+      },
+      "source": "docs/manual/devops/examples.md 新增PowerShell代码块"
+    },
+    "initialWebValidationFailure": "隔离验证器遗漏Windows PATH与PATHEXT导致子PowerShell无法解析node 补齐运行时环境后同一文档命令通过",
+    "unresolved": []
+  }
+}
