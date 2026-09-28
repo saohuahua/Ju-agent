@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Field, FieldGroup, FieldLabel, FieldDescription } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { api } from '@/lib/api'
+import { createRequestKey } from '@/lib/request-key'
 import type { CustomerRefundProgress } from '@/lib/types'
 import {
   REFUND_PROGRESS_TEXT,
@@ -144,7 +145,7 @@ function ShipmentForm({
     try {
       // 发出前冻结原键和请求体 刷新与失败重试复用同一次提交
       const submission = pending ?? {
-        key: crypto.randomUUID(),
+        key: createRequestKey(),
         returnNo: progress.returnNo,
         trackingNo: tracking.trim(),
         message: '已寄回商品 请核对寄回信息',

@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { api, ApiError } from '@/lib/api'
+import { createRequestKey } from '@/lib/request-key'
 import { useIdentity } from '@/lib/identity'
 import { useRunEvents } from '@/lib/sse'
 import type { RunRatingView, RunStatus } from '@/lib/types'
@@ -168,17 +169,18 @@ function CustomerSession({ token }: { token: string }) {
     if (!message || !canSend) return
 
     const revision = selectionRevision.current
-    if (
-      !submission.current ||
-      submission.current.message !== message ||
-      submission.current.runId !== runId
-    ) {
-      submission.current = { message, runId, key: crypto.randomUUID() }
-    }
-    const requestKey = submission.current.key
     setSending(true)
     setActionError('')
     try {
+      // 请求准备失败也进入页面错误处理 保留草稿供重试
+      if (
+        !submission.current ||
+        submission.current.message !== message ||
+        submission.current.runId !== runId
+      ) {
+        submission.current = { message, runId, key: createRequestKey() }
+      }
+      const requestKey = submission.current.key
       if (!runId) {
         const created = await api.createRun(message, undefined, requestKey)
         if (revision !== selectionRevision.current) return

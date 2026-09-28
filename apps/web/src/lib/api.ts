@@ -4,6 +4,7 @@
  * 统一注入身份令牌与错误处理 组件不直接拼 fetch
  */
 
+import { createRequestKey } from './request-key'
 import type {
   AgentEvent,
   CustomerRefundProgress,
@@ -104,7 +105,7 @@ export interface HealthInfo {
 export const api = {
   health: () => request<HealthInfo>('/api/health'),
 
-  createRun: (message: string, customerId?: string, requestKey = crypto.randomUUID()) =>
+  createRun: (message: string, customerId?: string, requestKey = createRequestKey()) =>
     request<{ runId: string }>('/api/runs', {
       method: 'POST',
       headers: { 'Idempotency-Key': requestKey },
@@ -114,7 +115,7 @@ export const api = {
   continueRun: (
     runId: string,
     message: string,
-    requestKey = crypto.randomUUID(),
+    requestKey = createRequestKey(),
     returnShipment?: { returnNo: string; trackingNo: string },
     signal?: AbortSignal,
   ) =>
