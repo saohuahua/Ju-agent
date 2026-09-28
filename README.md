@@ -5,7 +5,15 @@
 
 不是客服聊天机器人 副作用治理与评测闭环才是这个项目的主体
 
-## 核心能力
+## 学习与当前实现入口
+
+完整材料从[导学：有据售后](docs/learning/导学-有据售后.md)开始，包含 22 章正文与源码阅读路线；[面经](docs/interview/面经-有据售后.md)提供 24 道主问与递进追问，配套[练习](docs/learning/渐进重建练习.md)、[自测](docs/learning/集中自测.md)和[证据索引](docs/learning/核心结论与证据索引.md)。精确复现命令见[本地离线演示](docs/runbooks/p11-local-offline-demo.md)，无需重复构建。
+
+当前默认持久入口使用完整模型轮次确认、冻结版本工具集合和字符政策检索；旧版逐 token 事件、动态查单门控及上下文压缩不能直接视为此入口已启用能力。两类退款通过业务授权、发送意图和原交易查询恢复，未知资金不自动重发。P8 双分支调查为独立模块，未接默认客户入口。真实模型、真实支付及 Docker 运行验收的限制见[当前证据索引](docs/learning/核心结论与证据索引.md)。
+
+## 历史能力与实验背景
+
+以下保留早期路径的能力描述与实验线索，不作为当前默认入口的功能清单。部分旧措辞包含强结论，引用前应核对具体源码、实验条件和上述现行说明；尤其不能把历史真实模型百分比作为当前质量，或将模拟资金防重写成全局绝对保证。
 
 - **原生 Agent 循环** 模型经原生 tool calling 决策（tool_use 块 + 工具参数流式增量） ask_user 协议工具承接多轮澄清 旧 JSON 协议已废除
 - **混合架构** 模型负责理解与决策 副作用路径固化为确定性工作流 资金动作永不直接经过模型
@@ -27,14 +35,16 @@
 
 ## 快速开始
 
-环境要求 Node 20+ pnpm 10+
+默认部署入口为根目录 `compose.yaml`，显式离线 simulation，无需模型密钥。需要可用的本机 Docker Engine 和 Compose v2。当前机器容器运行验收受阻，配置交付不等于容器实测通过。完整命令与边界见 [离线部署手册](docs/runbooks/offline-deployment.md)。
 
 ```bash
-pnpm install
-pnpm db:reset        # 重置数据库并载入演示数据
-pnpm dev             # 启动 API http://localhost:8787
-pnpm dev:web         # 启动工作台 http://localhost:8790 (另开终端)
+docker compose --env-file infra/docker/offline.env -p youju-p10 -f compose.yaml build
+docker compose --env-file infra/docker/offline.env -p youju-p10 -f compose.yaml up -d --wait
 ```
+
+浏览器访问 `http://127.0.0.1:18790/workbench`。默认不会占用原 8787/8790 服务，业务和渠道分别持久化。普通重启不运行 db:reset 或删除卷。镜像首次构建需要依赖下载或已有缓存，离线指运行期间不调用真实模型和资金，并非首次构建无需网络。
+
+本地开发保留 `pnpm dev` / `pnpm dev:web` 以及历史演示脚本，它们不替代默认容器部署验收。部署工具链固定 Node 22.23.2 与 pnpm 11.23.0，按锁文件安装。`infra/docker/docker-compose.yml` 仅保留历史 PostgreSQL/Redis 设施，当前运行时没有迁移到 PostgreSQL。
 
 演示令牌
 
@@ -45,7 +55,7 @@ pnpm dev:web         # 启动工作台 http://localhost:8790 (另开终端)
 | 售后专员  | operator-token   |
 | 主管 审批 | supervisor-token |
 
-未配置 ANTHROPIC_API_KEY 时对话能力返回 503 审批 运行记录 评测看板不受影响
+这些令牌仅用于本机离线演示，不是生产认证方案。正式 API 仅显式 simulation 启用持久退款会话；live 一律拒绝，填写真实密钥不会打开入口。
 
 ## 常用命令
 
@@ -53,9 +63,9 @@ pnpm dev:web         # 启动工作台 http://localhost:8790 (另开终端)
 pnpm test            # 全部单元与契约测试
 pnpm typecheck       # 类型检查
 pnpm lint            # 静态检查
-pnpm eval            # L1 脚本化回归 单轮 111 条 零成本
+pnpm eval            # L1 脚本化回归 单轮 124 条 模拟成本
 pnpm eval -- --repeat 3     # L1 三轮 输出 Pass^3
-pnpm eval:sim        # L2 用户模拟评测 P0 全量 需要密钥
+pnpm eval:sim        # L2 显式离线模拟入口 真实模式仍禁用
 pnpm eval:sim -- --repeat 3       # L2 三轮 Pass^3
 pnpm eval:sim -- --case <id>      # 单用例调试
 pnpm demo            # 终端离线演示 五个核心场景
@@ -66,14 +76,9 @@ pnpm build           # 构建前端生产包
 
 ## 接入真实模型
 
-```bash
-cp .env.example .env
-# 填入 ANTHROPIC_API_KEY 可选调整 ANTHROPIC_MODEL
-# 用代理或中转站时同时设置 ANTHROPIC_BASE_URL 指向自定义地址
-```
+当前已识别的正式真实模型入口保持关闭，不读取模型凭据或环境文件。真实传输、价格核验、Judge 校准与质量验证需要另立任务；P5 仍锁定。本轮 P10 不开启真实模型、P8 默认客户调查或公网发布。
 
-配置后工作台对话走原生 tool calling 真流式
-L2 评测用 Haiku 扮演客户与被测模型多轮对话 模拟器与被测模型强制分离
+以下旧 L2 成绩属于历史实验记录，不代表当前部署的真实模型质量。当前阶段事实以 [IMPLEMENTATION](IMPLEMENTATION.md) 和 [P10 交接](docs/handoffs/p10-offline-deployment.md) 为准。
 
 ## 评测结果
 
@@ -91,7 +96,7 @@ L2 评测用 Haiku 扮演客户与被测模型多轮对话 模拟器与被测模
 L2 基线为 v2 提示词 105 条用例集全量单轮 迭代终值为 v2.3 提示词 111 条用例集全量单轮
 剔除代理 503 环境异常后模型行为口径 35.9% → 57.4% 提升约 21 个百分点
 三轮 p0 迭代曲线 54.1% → 73.0% → 67.6% 安全段回归在 v4 由安全分流修复 v2.4 实测回升至 36% 环境剔除口径 39.1% 未达 40% 简单档 v2.5 完整 L2 验证因中转站 token 配额耗尽未完成 如实标注 详见 LIMITATIONS
-两者必须分开表述 详见 [数字诚实声明](docs/interview/STAR.md)
+两者必须分开表述 详见 [简历事实与数字边界](docs/interview/简历事实摘要.md)
 
 ## 目录结构
 
@@ -115,12 +120,13 @@ infra/           PostgreSQL DDL Docker Compose 生产路径
 
 ## 文档索引
 
+- [P11 写作约定与章节规划](docs/learning/写作约定与章节规划.md) 已确认标准；22 章及配套材料从[导学](docs/learning/导学-有据售后.md)进入，检查范围见[编写与复核记录](docs/learning/编写与复核记录.md)
 - [架构设计](docs/architecture.md) 分层图 生命周期 退款安全链 事件协议
 - [业务背景](docs/business-context.md) 为什么做售后 Agent 人机分工边界
 - [术语表](docs/CONTEXT.md) 补偿与物流推送业务概念 词汇一致
 - [评测方法论](docs/evaluation.md) 用例契约 指标定义 Pass^k Badcase 回流
 - [架构决策记录](docs/adr/DECISIONS.md) 十一条关键决策与备选方案
-- [面试叙事](docs/interview/STAR.md) STAR 结构与高频追问 附 [ADR-004 追问稿](docs/interview/adr004-defense.md) 为什么不用 Mastra 与 MCP
+- [面试材料入口](docs/interview/README.md) 项目面经、40 题映射与简历事实；框架和 MCP 取舍见现行面经 Q21–Q22
 - [组件开发规范](apps/web/CONVENTIONS.md) 前端组件约定
 - [局限性](LIMITATIONS.md) 诚实边界
 

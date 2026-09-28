@@ -36,6 +36,7 @@ export default tseslint.config(
       '**/dist/**',
       '**/.next/**',
       '**/coverage/**',
+      'artifacts/**',
       // 会话级临时工作树 不属于仓库源码
       '.claude/worktrees/**',
       'apps/web/next-env.d.ts',

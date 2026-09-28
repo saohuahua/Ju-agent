@@ -12,7 +12,9 @@
  */
 
 import { serve } from '@hono/node-server'
-import { openDatabase, loadFixture, loadPolicyArticles } from '@aftersales/persistence'
+import { openDatabase, initializeDemo, startP6PaymentSimulator } from '@aftersales/persistence'
+import type { Server } from 'node:http'
+import type { Socket } from 'node:net'
 import { composeSystem } from '@aftersales/runtime'
 import { SystemClock } from '@aftersales/domain'
 import { createApp } from './app.js'
@@ -33,20 +35,19 @@ const {
 const dbPath = resolve(repoRoot, process.env.DB_PATH ?? 'data/app.db')
 const db = openDatabase(dbPath)
 
-// 首次启动自动载入演示夹具 已有数据的库不重复覆盖
-const hasOrders = db.prepare('SELECT COUNT(*) AS count FROM orders').get() as { count: number }
-if (hasOrders.count === 0) {
-  loadFixture(db, [])
-  console.log('已载入演示数据 客户令牌 cust-token-1001 cust-token-1002 cust-token-1003')
-}
+console.log(`演示初始化 ${initializeDemo(db)}`)
 
-// 政策语料为空时补种 老演示库升级到政策检索功能后仍可用
-const hasArticles = db.prepare('SELECT COUNT(*) AS count FROM policy_articles').get() as {
-  count: number
-}
-if (hasArticles.count === 0) {
-  loadPolicyArticles(db)
-  console.log('已补种政策条款语料')
+// 组合部署复用原回环模拟器 渠道始终使用独立数据库
+let channelDb: ReturnType<typeof openDatabase> | undefined
+let channelServer: Server | undefined
+let paymentUrl = process.env.P6_PAYMENT_SIMULATOR_URL ?? 'http://127.0.0.1:8792'
+if (process.env.P6_EMBEDDED_SIMULATOR === '1') {
+  if (!durableOptions) throw new Error('组合渠道要求显式 simulation 模式')
+  const channelPath = resolve(repoRoot, process.env.P6_CHANNEL_DB_PATH ?? 'data/channel.db')
+  if (channelPath === dbPath) throw new Error('渠道库与业务库必须独立')
+  channelDb = openDatabase(channelPath)
+  channelServer = await startP6PaymentSimulator(channelDb, 0)
+  paymentUrl = `http://127.0.0.1:${(channelServer.address() as { port: number }).port}`
 }
 
 const system = composeSystem({
@@ -58,29 +59,70 @@ const system = composeSystem({
   durableBusiness: durableOptions
     ? {
         snapshot: durableOptions.snapshot,
-        paymentUrl: process.env.P6_PAYMENT_SIMULATOR_URL ?? 'http://127.0.0.1:8792',
+        paymentUrl,
       }
     : undefined,
 })
 system.conversations?.start()
 system.durableBusiness?.start()
 
-const app = createApp({ system, modelAvailable: available })
+const shutdown = new AbortController()
+const app = createApp({
+  system,
+  modelAvailable: available,
+  shutdownSignal: shutdown.signal,
+  readiness: async () => {
+    if (!durableOptions) return false
+    const response = await fetch(`${paymentUrl}/health`, {
+      signal: AbortSignal.timeout(1500),
+      redirect: 'error',
+    })
+    return (
+      response.ok &&
+      ['customers', 'orders', 'policies', 'policy_articles'].every((table) =>
+        Boolean(db.prepare(`SELECT 1 FROM ${table} LIMIT 1`).get()),
+      )
+    )
+  },
+})
 const port = Number(process.env.API_PORT ?? 8787)
 
-const server = serve({ fetch: app.fetch, port }, (info) => {
-  console.log(`售后 API 已启动 http://127.0.0.1:${info.port}`)
-  console.log(`模型 ${label}`)
-  console.log('健康检查 GET /api/health')
+const server = serve(
+  { fetch: app.fetch, port, hostname: process.env.API_HOST ?? '127.0.0.1' },
+  (info) => {
+    console.log(`售后 API 已启动 http://127.0.0.1:${info.port}`)
+    console.log(`模型 ${label}`)
+    console.log('健康检查 GET /api/health')
+  },
+)
+const sockets = new Set<Socket>()
+server.on('connection', (socket: Socket) => {
+  sockets.add(socket)
+  socket.once('close', () => sockets.delete(socket))
 })
 
-// 关闭监听后等待当前有界任务退出 不清理持久命令和资金意图
+// 先断接入与长连接 再等待工作线程 最后关闭渠道及数据库
 for (const signal of ['SIGINT', 'SIGTERM'] as const)
   process.once(signal, () => {
-    server.close(() => {
-      void Promise.all([system.conversations?.stop(), system.durableBusiness?.stop()]).then(() => {
+    if (shutdown.signal.aborted) return
+    shutdown.abort()
+    const deadline = setTimeout(() => {
+      console.error('退出超时 保留持久事实等待原恢复机制')
+      process.exit(1)
+    }, 15000)
+    const closed = new Promise<void>((done) => server.close(() => done()))
+    for (const socket of sockets) socket.destroy()
+    void Promise.all([closed, system.conversations?.stop(), system.durableBusiness?.stop()])
+      .then(async () => {
+        if (channelServer) await new Promise<void>((done) => channelServer!.close(() => done()))
+        channelDb?.close()
         db.close()
+        clearTimeout(deadline)
+        console.log('监听 SSE Worker 与数据库已关闭')
         process.exit(0)
       })
-    })
+      .catch((error: unknown) => {
+        console.error('关闭失败 保留持久事实', error)
+        process.exit(1)
+      })
   })

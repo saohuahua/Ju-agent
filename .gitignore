@@ -1,9 +1,11 @@
 # 依赖与产物
+/.p10-source.json
 node_modules/
 dist/
 .next/
 coverage/
 *.tsbuildinfo
+artifacts/
 
 # 本地数据与报告
 data/

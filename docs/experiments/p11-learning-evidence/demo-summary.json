@@ -1,0 +1,116 @@
+{
+  "status": "passed",
+  "date": "2026-09-27T15:36:25.114Z",
+  "mode": "simulation",
+  "node": "v22.23.2",
+  "steps": [
+    {
+      "step": "ready",
+      "result": {
+        "url": "http://127.0.0.1:63328",
+        "directory": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-p11-demo-sW4Nre",
+        "node": "v22.23.2",
+        "mode": "simulation"
+      }
+    },
+    {
+      "step": "refund-and-replay",
+      "result": {
+        "runId": "run_b564b4f0-c095-41ce-8aba-6f58268f3e2f",
+        "returnNo": "RT-2026-0002",
+        "channel": [
+          {
+            "business_key": "refund:RT-2026-0002",
+            "status": "succeeded",
+            "submissions": 1,
+            "charges": 1
+          }
+        ]
+      }
+    },
+    {
+      "step": "approval-and-wait",
+      "result": {
+        "runId": "run_92b76d81-5fb3-42eb-b459-58794553d296",
+        "returnNo": "RT-2026-0003",
+        "channelBeforeReceipt": 0
+      }
+    },
+    {
+      "step": "restart-and-receipt",
+      "result": {
+        "progress": {
+          "runId": "run_92b76d81-5fb3-42eb-b459-58794553d296",
+          "returnNo": "RT-2026-0003",
+          "orderNo": "SO-2026-0003",
+          "type": "return",
+          "progress": "succeeded",
+          "canRegisterShipment": false,
+          "shipmentRegistered": true,
+          "trackingNo": "P11-LOCAL-RETURN"
+        },
+        "channel": [
+          {
+            "business_key": "refund:RT-2026-0002",
+            "status": "succeeded",
+            "submissions": 1,
+            "charges": 1
+          },
+          {
+            "business_key": "refund:RT-2026-0003",
+            "status": "succeeded",
+            "submissions": 1,
+            "charges": 1
+          }
+        ]
+      }
+    },
+    {
+      "step": "unknown-preserved",
+      "result": {
+        "runId": "run_e1942145-b1ba-4268-b8fa-18131b280072",
+        "returnNo": "RT-2026-0004",
+        "orderNo": "SO-2026-0005",
+        "type": "refund_only",
+        "progress": "unknown",
+        "canRegisterShipment": false,
+        "shipmentRegistered": false,
+        "trackingNo": null
+      }
+    },
+    {
+      "step": "backup-restore",
+      "result": {
+        "unchanged": true,
+        "original": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-p11-demo-sW4Nre\\original",
+        "restored": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-p11-demo-sW4Nre\\restored",
+        "backup": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\youju-p11-demo-sW4Nre\\backup",
+        "channel": [
+          {
+            "business_key": "refund:RT-2026-0002",
+            "status": "succeeded",
+            "submissions": 1,
+            "charges": 1
+          },
+          {
+            "business_key": "refund:RT-2026-0003",
+            "status": "succeeded",
+            "submissions": 1,
+            "charges": 1
+          },
+          {
+            "business_key": "refund:RT-2026-0004",
+            "status": "unknown",
+            "submissions": 1,
+            "charges": 0
+          }
+        ]
+      }
+    }
+  ],
+  "sourceHashes": {
+    "docs/runbooks/p11-demo.ts": "ca4f8b6d6aa89aa9619c8d3ae28b6310177762810f2ab5c655c67d7df6b54b48",
+    "apps/api/src/main.ts": "371695403924921ba9de987a852d59a4180a62a6bc0078b2bd6cd0abd5ae40fa",
+    "packages/runtime/src/conversation-demo.ts": "7d7fe5b62f6013317afe70b6526fd3adfaf695c8d5c175d1de5c58cf4c73d4f0"
+  }
+}

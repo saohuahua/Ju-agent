@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1120" viewBox="0 0 1120 1120" role="img" aria-labelledby="title desc"><title id="title">租约与围栏：新 Worker 接管后，旧结果如何被拒绝</title><desc id="desc">按时间从上往下阅读　示例代次用于设计推导，不是性能测量</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L7 4L0 8" fill="#52758a"/></marker><style>text{font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#253b49}.title{font-size:25px;font-weight:700}.subtitle{font-size:16px;fill:#607581}.head{font-size:19px;font-weight:700}.body{font-size:16px}.label{font-size:14px;fill:#405e70}.group{font-size:16px;font-weight:700;fill:#4c6b7d}</style></defs><rect width="1120" height="1120" fill="#f8fafb" rx="16"/>
+<text x="560" y="43" text-anchor="middle" class="title"><tspan x="560" dy="0">租约与围栏：新 Worker 接管后，旧结果如何被拒绝</tspan></text>
+<text x="560" y="74" text-anchor="middle" class="subtitle"><tspan x="560" dy="0">按时间从上往下阅读　示例代次用于设计推导，不是性能测量</tspan></text>
+<rect x="45" y="115" width="285" height="880" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="187.5" y="142" text-anchor="middle" class="group"><tspan x="187.5" dy="0">Worker A</tspan></text>
+<rect x="415" y="115" width="290" height="880" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="560" y="142" text-anchor="middle" class="group"><tspan x="560" dy="0">业务 SQLite</tspan></text>
+<rect x="790" y="115" width="285" height="880" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="932.5" y="142" text-anchor="middle" class="group"><tspan x="932.5" dy="0">Worker B</tspan></text>
+<path d="M300 232H560V320" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="386.5" y="204" width="115" height="23" rx="4" fill="#f8fafb"/>
+<text x="444" y="220" text-anchor="middle" class="label"><tspan x="444" dy="0">claim 原子认领</tspan></text>
+<path d="M187 275V467" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="149" y="394" width="140" height="23" rx="4" fill="#f8fafb"/>
+<text x="219" y="410" text-anchor="middle" class="label"><tspan x="219" dy="0">外部调用不持有事务</tspan></text>
+<path d="M560 410V602" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="575" y="436" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="610" y="452" text-anchor="middle" class="label"><tspan x="610" dy="0">租约到期</tspan></text>
+<path d="M820 510H705" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="726" y="479" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="761" y="495" text-anchor="middle" class="label"><tspan x="761" dy="0">重新认领</tspan></text>
+<path d="M705 510H745V690H675" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 735V770H933V792" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="722" y="751" width="84" height="23" rx="4" fill="#f8fafb"/>
+<text x="764" y="767" text-anchor="middle" class="label"><tspan x="764" dy="0">新代次有效</tspan></text>
+<path d="M187 557V792" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M300 834H379V1046" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="316" y="897" width="84" height="23" rx="4" fill="#f8fafb"/>
+<text x="358" y="913" text-anchor="middle" class="label"><tspan x="358" dy="0">旧资格回写</tspan></text>
+<path d="M933 877V930H675V735" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="802" y="912" width="98" height="23" rx="4" fill="#f8fafb"/>
+<text x="851" y="928" text-anchor="middle" class="label"><tspan x="851" dy="0">当前资格确认</tspan></text>
+<rect x="75" y="190" width="225" height="85" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="187.5" y="226" text-anchor="middle" class="head"><tspan x="187.5" dy="0">首次认领</tspan></text>
+<text x="187.5" y="256" text-anchor="middle" class="body"><tspan x="187.5" dy="0">持有 generation = 1</tspan></text>
+<rect x="445" y="320" width="230" height="90" rx="10" fill="#e5f0e9" stroke="#b8cbd7"/>
+<text x="560" y="358.5" text-anchor="middle" class="head"><tspan x="560" dy="0">running</tspan></text>
+<text x="560" y="388.5" text-anchor="middle" class="body"><tspan x="560" dy="0">owner=A，租约有效</tspan></text>
+<rect x="75" y="467" width="225" height="90" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="187.5" y="505.5" text-anchor="middle" class="head"><tspan x="187.5" dy="0">等待外部响应</tspan></text>
+<text x="187.5" y="535.5" text-anchor="middle" class="body"><tspan x="187.5" dy="0">进程停顿或无法续租</tspan></text>
+<rect x="820" y="467" width="225" height="90" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="932.5" y="505.5" text-anchor="middle" class="head"><tspan x="932.5" dy="0">认领过期任务</tspan></text>
+<text x="932.5" y="535.5" text-anchor="middle" class="body"><tspan x="932.5" dy="0">保存新 owner 与代次</tspan></text>
+<rect x="445" y="645" width="230" height="90" rx="10" fill="#e5f0e9" stroke="#b8cbd7"/>
+<text x="560" y="683.5" text-anchor="middle" class="head"><tspan x="560" dy="0">新执行资格</tspan></text>
+<text x="560" y="713.5" text-anchor="middle" class="body"><tspan x="560" dy="0">owner=B，generation=2</tspan></text>
+<rect x="75" y="792" width="225" height="85" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="187.5" y="828" text-anchor="middle" class="head"><tspan x="187.5" dy="0">旧响应迟到</tspan></text>
+<text x="187.5" y="858" text-anchor="middle" class="body"><tspan x="187.5" dy="0">仍携带 generation=1</tspan></text>
+<rect x="820" y="792" width="225" height="85" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="932.5" y="828" text-anchor="middle" class="head"><tspan x="932.5" dy="0">继续未确认步骤</tspan></text>
+<text x="932.5" y="858" text-anchor="middle" class="body"><tspan x="932.5" dy="0">已有检查点直接复用</tspan></text>
+<rect x="380" y="1014" width="360" height="66" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="560" y="1040.5" text-anchor="middle" class="head"><tspan x="560" dy="0">围栏拒绝旧写入</tspan></text>
+<text x="560" y="1070.5" text-anchor="middle" class="body"><tspan x="560" dy="0">检查 owner、代次、期限与状态</tspan></text>
+<text x="560" y="1097" text-anchor="middle" class="label"><tspan x="560" dy="0">取消信号不能撤销外部动作　资金意图存在时只查询原交易　任务接管不重新授予资金发送许可</tspan></text>
+</svg>

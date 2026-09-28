@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1250" viewBox="0 0 1120 1250" role="img" aria-labelledby="title desc"><title id="title">审批交接：决定、授权受理与资金发送分别确认</title><desc id="desc">两类退款共享发送协议　寄回和收货不能被一个 approved 状态替代</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L7 4L0 8" fill="#52758a"/></marker><style>text{font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#253b49}.title{font-size:25px;font-weight:700}.subtitle{font-size:16px;fill:#607581}.head{font-size:19px;font-weight:700}.body{font-size:16px}.label{font-size:14px;fill:#405e70}.group{font-size:16px;font-weight:700;fill:#4c6b7d}</style></defs><rect width="1120" height="1250" fill="#f8fafb" rx="16"/>
+<text x="560" y="43" text-anchor="middle" class="title"><tspan x="560" dy="0">审批交接：决定、授权受理与资金发送分别确认</tspan></text>
+<text x="560" y="74" text-anchor="middle" class="subtitle"><tspan x="560" dy="0">两类退款共享发送协议　寄回和收货不能被一个 approved 状态替代</tspan></text>
+<rect x="330" y="410" width="460" height="155" rx="14" fill="#e5f0e9" stroke="#cfdae1"/>
+<text x="560" y="437" text-anchor="middle" class="group"><tspan x="560" dy="0">主管决定事务</tspan></text>
+<rect x="330" y="647" width="460" height="155" rx="14" fill="#e5f0e9" stroke="#cfdae1"/>
+<text x="560" y="674" text-anchor="middle" class="group"><tspan x="560" dy="0">授权受理事务</tspan></text>
+<path d="M560 215V246H220V278" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 246H900V278" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M900 368V394H405V450H560V458" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="694" y="378" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="729" y="394" text-anchor="middle" class="label"><tspan x="729" dy="0">主管决定</tspan></text>
+<path d="M765 498H825" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="774" y="465" width="42" height="23" rx="4" fill="#f8fafb"/>
+<text x="795" y="481" text-anchor="middle" class="label"><tspan x="795" dy="0">拒绝</tspan></text>
+<path d="M560 538V610H405V686H560V695" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="598" y="592" width="154" height="23" rx="4" fill="#f8fafb"/>
+<text x="675" y="608" text-anchor="middle" class="label"><tspan x="675" dy="0">已批准意图由后台扫描</tspan></text>
+<path d="M220 368V735H355" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="145" y="574" width="98" height="23" rx="4" fill="#f8fafb"/>
+<text x="194" y="590" text-anchor="middle" class="label"><tspan x="194" dy="0">自动授权受理</tspan></text>
+<path d="M560 775V832H245V875" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 832H875V875" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M245 965V1017H560V1070" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="335" y="1000" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="370" y="1016" text-anchor="middle" class="label"><tspan x="370" dy="0">原业务键</tspan></text>
+<path d="M875 965V1017H560" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="711.75" y="1026" width="178.5" height="23" rx="4" fill="#f8fafb"/>
+<text x="801" y="1042" text-anchor="middle" class="label"><tspan x="801" dy="0">原授权核验后转绑 holder</tspan></text>
+<rect x="385" y="125" width="350" height="90" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="163.5" text-anchor="middle" class="head"><tspan x="560" dy="0">领域准备原方案</tspan></text>
+<text x="560" y="193.5" text-anchor="middle" class="body"><tspan x="560" dy="0">订单 · 政策 · 金额 · 原工具关联</tspan></text>
+<rect x="65" y="278" width="310" height="90" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="220" y="316.5" text-anchor="middle" class="head"><tspan x="220" dy="0">自动批准</tspan></text>
+<text x="220" y="346.5" text-anchor="middle" class="body"><tspan x="220" dy="0">仍需持久任务与执行权</tspan></text>
+<rect x="745" y="278" width="310" height="90" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="900" y="316.5" text-anchor="middle" class="head"><tspan x="900" dy="0">需主管审批</tspan></text>
+<text x="900" y="346.5" text-anchor="middle" class="body"><tspan x="900" dy="0">绑定原资源、金额与最新断点</tspan></text>
+<rect x="355" y="458" width="410" height="80" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="491.5" text-anchor="middle" class="head"><tspan x="560" dy="0">决定 + 执行意图</tspan></text>
+<text x="560" y="521.5" text-anchor="middle" class="body"><tspan x="560" dy="0">条件更新 pending，意图持久保存</tspan></text>
+<rect x="355" y="695" width="410" height="95" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="724.5" text-anchor="middle" class="head"><tspan x="560" dy="0">核验授权 + 命令任务</tspan></text>
+<text x="560" y="754.5" text-anchor="middle" class="body"><tspan x="560" dy="0">人工路径消费一次凭据</tspan><tspan x="560" dy="23">与执行权接管共同提交</tspan></text>
+<rect x="75" y="875" width="340" height="90" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="245" y="913.5" text-anchor="middle" class="head"><tspan x="245" dy="0">仅退款</tspan></text>
+<text x="245" y="943.5" text-anchor="middle" class="body"><tspan x="245" dy="0">已授权计划可以准备发送</tspan></text>
+<rect x="705" y="875" width="340" height="90" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="875" y="913.5" text-anchor="middle" class="head"><tspan x="875" dy="0">退货后退款</tspan></text>
+<text x="875" y="943.5" text-anchor="middle" class="body"><tspan x="875" dy="0">等待寄回，再确认收货</tspan></text>
+<rect x="390" y="1070" width="340" height="95" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="1099.5" text-anchor="middle" class="head"><tspan x="560" dy="0">资金 Worker</tspan></text>
+<text x="560" y="1129.5" text-anchor="middle" class="body"><tspan x="560" dy="0">重查业务并取得许可</tspan><tspan x="560" dy="23">保存资金意图后调用渠道</tspan></text>
+<rect x="825" y="467" width="240" height="95" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="945" y="508" text-anchor="middle" class="head"><tspan x="945" dy="0">拒绝或过期</tspan></text>
+<text x="945" y="538" text-anchor="middle" class="body"><tspan x="945" dy="0">不进入资金发送</tspan></text>
+<text x="560" y="1227" text-anchor="middle" class="label"><tspan x="560" dy="0">收货只允许转绑 ready 且无 token 的原许可　sending / unknown 不解锁　批准响应不是退款完成</tspan></text>
+</svg>

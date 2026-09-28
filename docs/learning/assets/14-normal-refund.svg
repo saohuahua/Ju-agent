@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="850" viewBox="0 0 960 850" role="img" aria-labelledby="title desc">
+  <title id="title">正常退款路径与两个独立提交边界</title>
+  <desc id="desc">Worker 在业务库提交发送意图后请求渠道 渠道独立提交成功 再由 Worker 回写业务库 最后投影客户结果</desc>
+  <defs>
+    <marker id="blue" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="#33698f"/></marker>
+    <marker id="gray" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="#74818a"/></marker>
+    <style>
+      text{font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#263843;font-size:17px}
+      .title{font-size:24px;font-weight:700}.muted{fill:#62717b;font-size:15px}.head{font-weight:700}
+      .life{stroke:#ccd5da;stroke-width:1.5;stroke-dasharray:5 6}
+      .call{stroke:#33698f;stroke-width:2;fill:none;marker-end:url(#blue)}
+      .reply{stroke:#74818a;stroke-width:1.7;stroke-dasharray:6 5;fill:none;marker-end:url(#gray)}
+      .note{font-size:15px;fill:#285e4b}
+    </style>
+  </defs>
+  <rect width="960" height="850" rx="16" fill="#f7f9fa"/>
+  <text x="32" y="44" class="title">一笔已获授权的退款，如何被确认</text>
+  <text x="32" y="73" class="muted">业务库与渠道库各自提交　网络调用位于本地事务之外</text>
+  <rect x="36" y="102" width="166" height="60" rx="9" fill="#e8eef4"/>
+  <rect x="270" y="102" width="166" height="60" rx="9" fill="#e8eef4"/>
+  <rect x="504" y="102" width="166" height="60" rx="9" fill="#e4efe9"/>
+  <rect x="738" y="102" width="186" height="60" rx="9" fill="#eef0f2"/>
+  <text x="119" y="138" text-anchor="middle" class="head">资金 Worker</text>
+  <text x="353" y="128" text-anchor="middle" class="head">业务 SQLite</text>
+  <text x="353" y="151" text-anchor="middle" class="muted">任务与业务记录</text>
+  <text x="587" y="128" text-anchor="middle" class="head">本机模拟渠道</text>
+  <text x="587" y="151" text-anchor="middle" class="muted">独立渠道 SQLite</text>
+  <text x="831" y="128" text-anchor="middle" class="head">结果投影</text>
+  <text x="831" y="151" text-anchor="middle" class="muted">原动作与客户事件</text>
+  <path d="M119 170 V773 M353 170 V773 M587 170 V773 M831 170 V773" class="life"/>
+  <text x="140" y="199">① 校验并准备发送</text>
+  <path d="M119 212 H353" class="call"/>
+  <rect x="248" y="228" width="230" height="88" rx="8" fill="#e4efe9" stroke="#bad3c6"/>
+  <text x="263" y="253" class="note">同一事务内校验租约与业务</text>
+  <text x="263" y="276" class="note">取得许可并写入资金意图</text>
+  <text x="263" y="299" class="note">退款记录置为 executing</text>
+  <path d="M353 334 H119" class="reply"/>
+  <text x="148" y="357" class="muted">提交成功，允许首次发送</text>
+  <text x="166" y="390">② execute：原业务键、资源、金额、币种</text>
+  <path d="M119 404 H587" class="call"/>
+  <rect x="488" y="420" width="211" height="70" rx="8" fill="#e4efe9" stroke="#bad3c6"/>
+  <text x="503" y="447" class="note">渠道独立提交成功记录</text>
+  <text x="503" y="473" class="note">同键校验参数并去重</text>
+  <path d="M587 510 H119" class="reply"/>
+  <text x="227" y="534" class="muted">③ 返回 succeeded 与交易标识</text>
+  <text x="143" y="572">④ settle：确认结果</text>
+  <path d="M119 585 H353" class="call"/>
+  <rect x="248" y="601" width="250" height="89" rx="8" fill="#e4efe9" stroke="#bad3c6"/>
+  <text x="263" y="626" class="note">同一事务回写业务和幂等结果</text>
+  <text x="263" y="650" class="note">确认执行权终态与资金效果</text>
+  <text x="263" y="674" class="note">写入资金检查点</text>
+  <text x="424" y="718">⑤ 后续扫描读取已确认结果并投影</text>
+  <path d="M831 734 H353" class="call"/>
+  <path d="M353 759 H831" class="reply"/>
+  <rect x="32" y="790" width="896" height="38" rx="7" fill="#fff3dc"/>
+  <text x="49" y="815" fill="#75551b" font-size="16">关键窗口：渠道已提交，本地回写尚未提交　此时进程退出，恢复应查询原交易</text>
+</svg>

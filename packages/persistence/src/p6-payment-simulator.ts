@@ -20,6 +20,13 @@ export function startP6PaymentSimulator(db: SqliteDatabase, port = 0): Promise<S
   const server = createServer(async (req, res) => {
     try {
       const url = new URL(req.url ?? '/', 'http://127.0.0.1')
+      // 健康探针只读数据库 不创建查询记录或资金动作
+      if (req.method === 'GET' && url.pathname === '/health') {
+        db.prepare('SELECT 1 FROM p6_channel LIMIT 1').get()
+        res.writeHead(200, { 'content-type': 'application/json' })
+        res.end(JSON.stringify({ status: 'ok', mode: 'simulation' }))
+        return
+      }
       let result: P6PaymentResult
       if (req.method === 'GET' && url.pathname === '/payments') {
         const key = url.searchParams.get('key') ?? ''

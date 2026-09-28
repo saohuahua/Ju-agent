@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1070" viewBox="0 0 1120 1070" role="img" aria-labelledby="title desc"><title id="title">多轮上下文：先保证关联，再讨论压缩</title><desc id="desc">上半部分为当前持久会话　下半部分为已有托管上下文模块　两者接入范围不同</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L7 4L0 8" fill="#52758a"/></marker><style>text{font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#253b49}.title{font-size:25px;font-weight:700}.subtitle{font-size:16px;fill:#607581}.head{font-size:19px;font-weight:700}.body{font-size:16px}.label{font-size:14px;fill:#405e70}.group{font-size:16px;font-weight:700;fill:#4c6b7d}</style></defs><rect width="1120" height="1070" fill="#f8fafb" rx="16"/>
+<text x="560" y="43" text-anchor="middle" class="title"><tspan x="560" dy="0">多轮上下文：先保证关联，再讨论压缩</tspan></text>
+<text x="560" y="74" text-anchor="middle" class="subtitle"><tspan x="560" dy="0">上半部分为当前持久会话　下半部分为已有托管上下文模块　两者接入范围不同</tspan></text>
+<rect x="35" y="112" width="1050" height="510" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="560" y="139" text-anchor="middle" class="group"><tspan x="560" dy="0">当前持久路径</tspan></text>
+<rect x="35" y="687" width="1050" height="290" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="560" y="714" text-anchor="middle" class="group"><tspan x="560" dy="0">已有模块：当前持久会话未调用 buildManagedContext</tspan></text>
+<path d="M355 235H420" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M700 235H765" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M905 285V353H365V439" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="539.75" y="336" width="126.5" height="23" rx="4" fill="#f8fafb"/>
+<text x="603" y="352" text-anchor="middle" class="label"><tspan x="603" dy="0">rebuildMessages</tspan></text>
+<path d="M905 353H820V439" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="858" y="375" width="98" height="23" rx="4" fill="#f8fafb"/>
+<text x="907" y="391" text-anchor="middle" class="label"><tspan x="907" dy="0">业务关联消息</tspan></text>
+<path d="M520 489H665" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<rect x="535" y="458" width="112" height="23" rx="4" fill="#f8fafb"/>
+<text x="591" y="474" text-anchor="middle" class="label"><tspan x="591" dy="0">先保证真实配对</tspan></text>
+<path d="M365 539V647H560V771" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<rect x="472" y="630" width="172" height="23" rx="4" fill="#f8fafb"/>
+<text x="558" y="646" text-anchor="middle" class="label"><tspan x="558" dy="0">旧 Runner 使用托管流程</tspan></text>
+<path d="M360 835H415" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M705 835H760" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="75" y="185" width="280" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="215" y="217" text-anchor="middle" class="head"><tspan x="215" dy="0">ask_user 补问</tspan></text>
+<text x="215" y="247" text-anchor="middle" class="body"><tspan x="215" dy="0">保存 toolCallId</tspan><tspan x="215" dy="23">run.paused 落库</tspan></text>
+<rect x="420" y="185" width="280" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="217" text-anchor="middle" class="head"><tspan x="560" dy="0">客户回复受理</tspan></text>
+<text x="560" y="247" text-anchor="middle" class="body"><tspan x="560" dy="0">绑定 replyToToolCallId</tspan><tspan x="560" dy="23">沿用原运行配置</tspan></text>
+<rect x="765" y="185" width="280" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="905" y="217" text-anchor="middle" class="head"><tspan x="905" dy="0">事件重建</tspan></text>
+<text x="905" y="247" text-anchor="middle" class="body"><tspan x="905" dy="0">agent.turn</tspan><tspan x="905" dy="23">agent.tool_results</tspan></text>
+<rect x="210" y="439" width="310" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="365" y="471" text-anchor="middle" class="head"><tspan x="365" dy="0">原生消息配对</tspan></text>
+<text x="365" y="501" text-anchor="middle" class="body"><tspan x="365" dy="0">assistant tool_use</tspan><tspan x="365" dy="23">user tool_result</tspan></text>
+<rect x="665" y="439" width="310" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="820" y="471" text-anchor="middle" class="head"><tspan x="820" dy="0">业务执行期补充</tspan></text>
+<text x="820" y="501" text-anchor="middle" class="body"><tspan x="820" dy="0">保留 businessToolCallId</tspan><tspan x="820" dy="23">不伪造业务成功结果</tspan></text>
+<rect x="70" y="771" width="290" height="126" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="215" y="816" text-anchor="middle" class="head"><tspan x="215" dy="0">工作便签</tspan></text>
+<text x="215" y="846" text-anchor="middle" class="body"><tspan x="215" dy="0">由已知事件确定性归约</tspan><tspan x="215" dy="23">当前订单与动作</tspan></text>
+<rect x="415" y="771" width="290" height="126" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="816" text-anchor="middle" class="head"><tspan x="560" dy="0">长度估算与清理</tspan></text>
+<text x="560" y="846" text-anchor="middle" class="body"><tspan x="560" dy="0">可选预算，超限清理</tspan><tspan x="560" dy="23">保留最近四个完整结果</tspan></text>
+<rect x="760" y="771" width="290" height="126" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="905" y="816" text-anchor="middle" class="head"><tspan x="905" dy="0">原始事件仍保留</tspan></text>
+<text x="905" y="846" text-anchor="middle" class="body"><tspan x="905" dy="0">占位不等于事实摘要</tspan><tspan x="905" dy="23">未自动提供按需回读</tspan></text>
+<text x="820" y="588" text-anchor="middle" class="label"><tspan x="820" dy="0">消息重排不改写原审计时间</tspan></text>
+<text x="560" y="1047" text-anchor="middle" class="label"><tspan x="560" dy="0">当前持久会话直接重建消息　保存历史、协议重建、压缩与长期记忆不能混称</tspan></text>
+</svg>

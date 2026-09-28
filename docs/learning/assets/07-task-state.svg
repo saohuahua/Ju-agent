@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1050" viewBox="0 0 1120 1050" role="img" aria-labelledby="title desc"><title id="title">持久任务状态：执行、重试、接管与核验</title><desc id="desc">只描述 p6_tasks 调度　会话等待、售后等待与退款结果需要分别判断</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L7 4L0 8" fill="#52758a"/></marker><style>text{font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#253b49}.title{font-size:25px;font-weight:700}.subtitle{font-size:16px;fill:#607581}.head{font-size:19px;font-weight:700}.body{font-size:16px}.label{font-size:14px;fill:#405e70}.group{font-size:16px;font-weight:700;fill:#4c6b7d}</style></defs><rect width="1120" height="1050" fill="#f8fafb" rx="16"/>
+<text x="560" y="43" text-anchor="middle" class="title"><tspan x="560" dy="0">持久任务状态：执行、重试、接管与核验</tspan></text>
+<text x="560" y="74" text-anchor="middle" class="subtitle"><tspan x="560" dy="0">只描述 p6_tasks 调度　会话等待、售后等待与退款结果需要分别判断</tspan></text>
+<path d="M560 188V296" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="372.5" y="229" width="157" height="23" rx="4" fill="#f8fafb"/>
+<text x="451" y="245" text-anchor="middle" class="label"><tspan x="451" dy="0">claim 校验类型与配额</tspan></text>
+<path d="M415 347H315" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="329.75" y="314" width="66.5" height="23" rx="4" fill="#f8fafb"/>
+<text x="363" y="330" text-anchor="middle" class="label"><tspan x="363" dy="0">release</tspan></text>
+<path d="M185 306V150H415" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="243" y="132" width="84" height="23" rx="4" fill="#f8fafb"/>
+<text x="285" y="148" text-anchor="middle" class="label"><tspan x="285" dy="0">到期再认领</tspan></text>
+<path d="M705 347H805" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="713" y="313" width="84" height="23" rx="4" fill="#f8fafb"/>
+<text x="755" y="329" text-anchor="middle" class="label"><tspan x="755" dy="0">租约已过期</tspan></text>
+<path d="M935 306V243H670V296" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="780.75" y="224" width="124.5" height="23" rx="4" fill="#f8fafb"/>
+<text x="843" y="240" text-anchor="middle" class="label"><tspan x="843" dy="0">generation 增加</tspan></text>
+<path d="M560 396V490H150V560" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 490H420V560" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 490H690V560" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 490H960V560" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 490V769" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="568" y="693" width="140" height="23" rx="4" fill="#f8fafb"/>
+<text x="638" y="709" text-anchor="middle" class="label"><tspan x="638" dy="0">已有资金且无法确认</tspan></text>
+<path d="M560 859V935" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="571" y="890" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="606" y="906" text-anchor="middle" class="label"><tspan x="606" dy="0">显式核验</tspan></text>
+<path d="M390 968H15V150H415" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<rect x="107" y="889" width="186" height="23" rx="4" fill="#f8fafb"/>
+<text x="200" y="905" text-anchor="middle" class="label"><tspan x="200" dy="0">回 queued 后仍只查询原键</tspan></text>
+<rect x="415" y="113" width="290" height="75" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="144" text-anchor="middle" class="head"><tspan x="560" dy="0">queued</tspan></text>
+<text x="560" y="174" text-anchor="middle" class="body"><tspan x="560" dy="0">命令受理，等待可执行时间</tspan></text>
+<rect x="415" y="296" width="290" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="328" text-anchor="middle" class="head"><tspan x="560" dy="0">running</tspan></text>
+<text x="560" y="358" text-anchor="middle" class="body"><tspan x="560" dy="0">owner · generation · lease</tspan><tspan x="560" dy="23">认领后 attempt 增加</tspan></text>
+<rect x="55" y="306" width="260" height="85" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="185" y="342" text-anchor="middle" class="head"><tspan x="185" dy="0">延迟重试</tspan></text>
+<text x="185" y="372" text-anchor="middle" class="body"><tspan x="185" dy="0">可重试调用错误</tspan></text>
+<rect x="805" y="306" width="260" height="85" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="935" y="342" text-anchor="middle" class="head"><tspan x="935" dy="0">过期接管</tspan></text>
+<text x="935" y="372" text-anchor="middle" class="body"><tspan x="935" dy="0">新代次认领同一任务</tspan></text>
+<rect x="35" y="560" width="230" height="90" rx="10" fill="#e5f0e9" stroke="#b8cbd7"/>
+<text x="150" y="598.5" text-anchor="middle" class="head"><tspan x="150" dy="0">completed</tspan></text>
+<text x="150" y="628.5" text-anchor="middle" class="body"><tspan x="150" dy="0">当前任务完成</tspan></text>
+<rect x="305" y="560" width="230" height="90" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="420" y="598.5" text-anchor="middle" class="head"><tspan x="420" dy="0">call_failed</tspan></text>
+<text x="420" y="628.5" text-anchor="middle" class="body"><tspan x="420" dy="0">调用失败或达到限制</tspan></text>
+<rect x="575" y="560" width="230" height="90" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="690" y="598.5" text-anchor="middle" class="head"><tspan x="690" dy="0">business_failed</tspan></text>
+<text x="690" y="628.5" text-anchor="middle" class="body"><tspan x="690" dy="0">明确业务失败</tspan></text>
+<rect x="845" y="560" width="230" height="90" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="960" y="598.5" text-anchor="middle" class="head"><tspan x="960" dy="0">cancelled</tspan></text>
+<text x="960" y="628.5" text-anchor="middle" class="body"><tspan x="960" dy="0">停止后续执行</tspan></text>
+<rect x="390" y="769" width="340" height="90" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="560" y="807.5" text-anchor="middle" class="head"><tspan x="560" dy="0">needs_confirmation</tspan></text>
+<text x="560" y="837.5" text-anchor="middle" class="body"><tspan x="560" dy="0">资金可能发出，结果待核验</tspan></text>
+<rect x="390" y="935" width="340" height="66" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="961.5" text-anchor="middle" class="head"><tspan x="560" dy="0">reconcile</tspan></text>
+<text x="560" y="991.5" text-anchor="middle" class="body"><tspan x="560" dy="0">重新排队，保留资金意图</tspan></text>
+<text x="560" y="1027" text-anchor="middle" class="label"><tspan x="560" dy="0">attempt 不等于退款次数　普通扫描不认领待核验任务　取消不表示已退款被撤销</tspan></text>
+</svg>

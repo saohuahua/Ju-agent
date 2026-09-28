@@ -1,0 +1,60 @@
+name: youju-p10
+services:
+  api:
+    image: youju-p10-api:local
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile
+      target: api
+    init: true
+    environment:
+      P6_BUSINESS_MODE: simulation
+      P6_EMBEDDED_SIMULATOR: '1'
+      API_HOST: 0.0.0.0
+      API_PORT: '8787'
+      DB_PATH: /data/business/app.db
+      P6_CHANNEL_DB_PATH: /data/channel/channel.db
+    ports:
+      - '127.0.0.1:${P10_API_PORT:-18787}:8787'
+    volumes:
+      - business:/data/business
+      - channel:/data/channel
+    stop_grace_period: 20s
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:8787/api/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 15s
+  web:
+    image: youju-p10-web:local
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile
+      target: web
+    init: true
+    ports:
+      - '127.0.0.1:${P10_WEB_PORT:-18790}:8790'
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:8790/api/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+volumes:
+  business:
+  channel:

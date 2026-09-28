@@ -91,14 +91,10 @@ export function clearBusinessData(db: SqliteDatabase): void {
     'customers',
     'policies',
   ]
-  db.exec('BEGIN')
-  try {
+  // 嵌套调用使用保存点 让首次播种与清理共享原子事务
+  db.transaction(() => {
     for (const table of tables) {
       db.exec(`DELETE FROM ${table}`)
     }
-    db.exec('COMMIT')
-  } catch (error) {
-    db.exec('ROLLBACK')
-    throw error
-  }
+  })()
 }

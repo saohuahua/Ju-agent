@@ -1,0 +1,2 @@
+$ tsx packages/eval/src/cli.ts "--offline" "--repeat" "1" "--db" "artifacts/p10-l1/application.db" "--output" "artifacts/p10-l1/reports" "--experiment-id" "p10-fixture-regression"
+{"reportId":"evr_fd50e59c","experimentId":"p10-fixture-regression","mode":"simulation","total":124,"passed":124,"gatePassed":true,"costUnit":"micro_yuan","scopeCommitted":3390,"hasUncertainCost":false,"blocked":false,"output":"D:\\project\\agent-new\\aftersales\\artifacts\\p10-l1\\reports"}

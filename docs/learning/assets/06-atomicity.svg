@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1120" viewBox="0 0 1120 1120" role="img" aria-labelledby="title desc"><title id="title">同一业务键的竞争：原子获权与围栏确认</title><desc id="desc">左右执行者对称展示竞争　中央为共享数据库边界　外部渠道不在本地事务内</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L7 4L0 8" fill="#52758a"/></marker><style>text{font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#253b49}.title{font-size:25px;font-weight:700}.subtitle{font-size:16px;fill:#607581}.head{font-size:19px;font-weight:700}.body{font-size:16px}.label{font-size:14px;fill:#405e70}.group{font-size:16px;font-weight:700;fill:#4c6b7d}</style></defs><rect width="1120" height="1120" fill="#f8fafb" rx="16"/>
+<text x="560" y="43" text-anchor="middle" class="title"><tspan x="560" dy="0">同一业务键的竞争：原子获权与围栏确认</tspan></text>
+<text x="560" y="74" text-anchor="middle" class="subtitle"><tspan x="560" dy="0">左右执行者对称展示竞争　中央为共享数据库边界　外部渠道不在本地事务内</tspan></text>
+<rect x="360" y="233" width="400" height="363" rx="14" fill="#e5f0e9" stroke="#cfdae1"/>
+<text x="560" y="260" text-anchor="middle" class="group"><tspan x="560" dy="0">业务 SQLite 写事务</tspan></text>
+<rect x="360" y="761" width="400" height="190" rx="14" fill="#e5f0e9" stroke="#cfdae1"/>
+<text x="560" y="788" text-anchor="middle" class="group"><tspan x="560" dy="0">结果确认事务</tspan></text>
+<path d="M190 211V270H390" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="252" y="253" width="42" height="23" rx="4" fill="#f8fafb"/>
+<text x="273" y="269" text-anchor="middle" class="label"><tspan x="273" dy="0">申请</tspan></text>
+<path d="M930 211V270H730" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="826" y="252" width="42" height="23" rx="4" fill="#f8fafb"/>
+<text x="847" y="268" text-anchor="middle" class="label"><tspan x="847" dy="0">竞争</tspan></text>
+<path d="M560 390V440" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M390 494H310" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M730 494H810" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M180 536V640" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="181" y="573" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="216" y="589" text-anchor="middle" class="label"><tspan x="216" dy="0">提交之后</tspan></text>
+<path d="M190 726V856H390" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="188" y="785" width="98" height="23" rx="4" fill="#f8fafb"/>
+<text x="237" y="801" text-anchor="middle" class="label"><tspan x="237" dy="0">明确渠道结果</tspan></text>
+<path d="M930 726V856H730" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="832" y="786" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="867" y="802" text-anchor="middle" class="label"><tspan x="867" dy="0">迟到响应</tspan></text>
+<path d="M480 900V956H225V982" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="314" y="939" width="42" height="23" rx="4" fill="#f8fafb"/>
+<text x="335" y="955" text-anchor="middle" class="label"><tspan x="335" dy="0">失败</tspan></text>
+<path d="M640 900V956H895V982" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="758" y="939" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="793" y="955" text-anchor="middle" class="label"><tspan x="793" dy="0">围栏拒绝</tspan></text>
+<rect x="50" y="125" width="280" height="86" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="190" y="161.5" text-anchor="middle" class="head"><tspan x="190" dy="0">执行器 A</tspan></text>
+<text x="190" y="191.5" text-anchor="middle" class="body"><tspan x="190" dy="0">请求同一业务键</tspan></text>
+<rect x="790" y="125" width="280" height="86" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="930" y="161.5" text-anchor="middle" class="head"><tspan x="930" dy="0">执行器 B</tspan></text>
+<text x="930" y="191.5" text-anchor="middle" class="body"><tspan x="930" dy="0">请求同一业务键</tspan></text>
+<rect x="390" y="292" width="340" height="98" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="323" text-anchor="middle" class="head"><tspan x="560" dy="0">核验前置条件</tspan></text>
+<text x="560" y="353" text-anchor="middle" class="body"><tspan x="560" dy="0">当前任务与原业务授权</tspan><tspan x="560" dy="23">同连接同步操作</tspan></text>
+<rect x="390" y="440" width="340" height="108" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="476" text-anchor="middle" class="head"><tspan x="560" dy="0">条件更新与意图写入</tspan></text>
+<text x="560" y="506" text-anchor="middle" class="body"><tspan x="560" dy="0">ready → sending</tspan><tspan x="560" dy="23">许可与效果共同提交</tspan></text>
+<rect x="50" y="453" width="260" height="83" rx="10" fill="#e5f0e9" stroke="#b8cbd7"/>
+<text x="180" y="488" text-anchor="middle" class="head"><tspan x="180" dy="0">changes = 1</tspan></text>
+<text x="180" y="518" text-anchor="middle" class="body"><tspan x="180" dy="0">唯一获权者</tspan></text>
+<rect x="810" y="453" width="260" height="83" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="940" y="488" text-anchor="middle" class="head"><tspan x="940" dy="0">changes = 0</tspan></text>
+<text x="940" y="518" text-anchor="middle" class="body"><tspan x="940" dy="0">冲突，不得发送</tspan></text>
+<rect x="50" y="640" width="280" height="86" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="190" y="676.5" text-anchor="middle" class="head"><tspan x="190" dy="0">本机模拟渠道</tspan></text>
+<text x="190" y="706.5" text-anchor="middle" class="body"><tspan x="190" dy="0">准备事务提交后才调用</tspan></text>
+<rect x="790" y="640" width="280" height="86" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="930" y="676.5" text-anchor="middle" class="head"><tspan x="930" dy="0">旧 Worker 迟到</tspan></text>
+<text x="930" y="706.5" text-anchor="middle" class="body"><tspan x="930" dy="0">资格可能已被新代次接管</tspan></text>
+<rect x="390" y="814" width="340" height="86" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="850.5" text-anchor="middle" class="head"><tspan x="560" dy="0">fenced 核对代次与租约</tspan></text>
+<text x="560" y="880.5" text-anchor="middle" class="body"><tspan x="560" dy="0">合法才共同回写结果与检查点</tspan></text>
+<rect x="50" y="982" width="350" height="64" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="225" y="1007.5" text-anchor="middle" class="head"><tspan x="225" dy="0">确认失败或进程退出</tspan></text>
+<text x="225" y="1037.5" text-anchor="middle" class="body"><tspan x="225" dy="0">保留原意图，后续查原交易</tspan></text>
+<rect x="720" y="982" width="350" height="64" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="895" y="1007.5" text-anchor="middle" class="head"><tspan x="895" dy="0">资格失效</tspan></text>
+<text x="895" y="1037.5" text-anchor="middle" class="body"><tspan x="895" dy="0">拒绝旧执行者写入</tspan></text>
+<text x="560" y="1097" text-anchor="middle" class="label"><tspan x="560" dy="0">胜者取决于条件更新　检查与占用不可分离　事务回滚不能撤销外部资金动作</tspan></text>
+</svg>

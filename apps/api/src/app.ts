@@ -23,6 +23,7 @@ import type { Actor } from '@aftersales/domain'
 import { PROMPT_VERSION } from '@aftersales/agent'
 import {
   EVAL_CASES,
+  SourceIdentityError,
   runBudgetedL1,
   offlineEvalRoles,
   saveP7EvalEvidence,
@@ -49,6 +50,9 @@ import { customerEvent, customerRun } from './customer-view.js'
 import { customerRefundProgress } from './customer-progress.js'
 
 export interface AppDependencies {
+  /** 部署探针仅检查依赖 不执行模型或资金动作 */
+  readiness?: () => Promise<boolean>
+  shutdownSignal?: AbortSignal
   system: ComposedSystem
   authEnv?: AuthEnv
   /** 模型不可用时创建运行返回 503 */
@@ -167,6 +171,10 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     await next()
   })
   app.use('/api/*', cors())
+  app.use('/api/*', async (context, next) => {
+    if (deps.shutdownSignal?.aborted) return context.json({ status: 'stopping' }, 503)
+    await next()
+  })
 
   // 根路径返回服务引导信息 浏览器直接访问不再 404
   app.get('/', (context) => {
@@ -190,6 +198,16 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
         : 'legacy',
       promptVersion: PROMPT_VERSION,
     })
+  })
+
+  app.get('/api/ready', async (context) => {
+    try {
+      system.db.prepare('SELECT 1').get()
+      const ready = deps.readiness ? await deps.readiness() : true
+      return context.json({ status: ready ? 'ready' : 'unavailable' }, ready ? 200 : 503)
+    } catch {
+      return context.json({ status: 'unavailable' }, 503)
+    }
   })
 
   app.use('/api/*', requireActor)
@@ -282,7 +300,10 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     try {
       return context.json({ progress: customerRefundProgress(system.db, run, system.clock.now()) })
     } catch {
-      return context.json({ error: 'PROGRESS_UNAVAILABLE', message: '进度暂时无法核验 请稍后重试' }, 503)
+      return context.json(
+        { error: 'PROGRESS_UNAVAILABLE', message: '进度暂时无法核验 请稍后重试' },
+        503,
+      )
     }
   })
 
@@ -515,6 +536,7 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     }
     const stream = createEventStream(
       {
+        signal: deps.shutdownSignal,
         listEvents: (id, from) => deps.system.eventRepo.listByRun(id, from, 200),
         projectEvent: actor.role === 'customer' ? customerEvent : undefined,
         getRunStatus: async (id) => (await system.runService.get(id)).status,
@@ -1020,6 +1042,8 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
 
   // 统一领域错误出口
   app.onError((error, context) => {
+    if (error instanceof SourceIdentityError)
+      return context.json({ error: 'SOURCE_IDENTITY_UNAVAILABLE', message: error.message }, 503)
     const mapped = errorResponse(error)
     if (mapped) {
       return context.json(mapped.body, mapped.status)

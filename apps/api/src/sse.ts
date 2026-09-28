@@ -14,6 +14,7 @@ const POLL_INTERVAL_MS = 250
 /** 运行终态 轮询到达终态并追平事件后关闭流 */
 
 export interface SseDependencies {
+  signal?: AbortSignal
   /** 只依赖查询能力 写入永远走领域服务 */
   listEvents: (runId: string, fromSequence: number) => ReturnType<EventRepository['listByRun']>
   isRunTerminal: (runId: string) => Promise<boolean>
@@ -52,7 +53,7 @@ export function createEventStream(
       }
 
       try {
-        while (!closed) {
+        while (!closed && !deps.signal?.aborted) {
           const events = await deps.listEvents(runId, cursor + 1)
           if (closed) break
           let deliveredCursor = cursor

@@ -27,7 +27,7 @@ export function contentHash(value: unknown): string {
 export const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
 
 // 仅读取代码及构建配置白名单 不读取环境文件和产物目录
-export function sourceIdentity(root = projectRoot) {
+function sourceContent(root: string) {
   const paths: string[] = []
   const walk = (dir: string) => {
     for (const entry of readdirSync(resolve(root, dir), { withFileTypes: true })) {
@@ -60,6 +60,52 @@ export function sourceIdentity(root = projectRoot) {
       .update(readFileSync(resolve(root, path)))
       .digest('hex'),
   }))
+  return {
+    scope:
+      'packages apps scripts 中代码与 JSON YAML 配置 以及根依赖锁和工具配置 排除隐藏目录与产物',
+    files,
+    hash: contentHash(files),
+  }
+}
+
+export class SourceIdentityError extends Error {
+  constructor() {
+    super('评测来源信息不可用 请核验构建清单与部署文件')
+    this.name = 'SourceIdentityError'
+  }
+}
+
+// 部署只声明实际内容身份 不伪造无法验证的提交或工作树状态
+export function deploymentSourceManifest(root = projectRoot) {
+  return {
+    schemaVersion: 1,
+    kind: 'deployment',
+    source: {
+      head: null,
+      dirty: null,
+      ...sourceContent(root),
+      completeness: 'verified-deployment-content-manifest',
+    },
+  }
+}
+
+// 指定清单后必须完整匹配实际文件 不退回 Git 或接受自报哈希
+export function sourceIdentity(root = projectRoot, manifestPath = process.env.P9_SOURCE_MANIFEST) {
+  try {
+    if (manifestPath !== undefined) {
+      const supplied: unknown = JSON.parse(readFileSync(resolve(root, manifestPath), 'utf8'))
+      const expected = deploymentSourceManifest(root)
+      if (canonical(supplied) !== canonical(expected)) throw new SourceIdentityError()
+      return expected.source
+    }
+    return workspaceSourceIdentity(root)
+  } catch {
+    throw new SourceIdentityError()
+  }
+}
+
+function workspaceSourceIdentity(root: string) {
+  const content = sourceContent(root)
   const git = (...args: string[]) =>
     execFileSync('git', ['-c', `safe.directory=${root.replaceAll('\\', '/')}`, ...args], {
       cwd: root,
@@ -69,10 +115,7 @@ export function sourceIdentity(root = projectRoot) {
   return {
     head: git('rev-parse', 'HEAD'),
     dirty: git('status', '--porcelain', '--untracked-files=all').length > 0,
-    scope:
-      'packages apps scripts 中代码与 JSON YAML 配置 以及根依赖锁和工具配置 排除隐藏目录与产物',
-    files,
-    hash: contentHash(files),
+    ...content,
     completeness: 'bounded-content-manifest-not-clean-head',
   }
 }

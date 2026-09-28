@@ -48,6 +48,7 @@ export {
   type FixturePatch,
 } from './fixtures.js'
 export * from './desk-repository.js'
+export * from './initialize-demo.js'
 export * from './approval-execution-repository.js'
 export * from './case-closure-repository.js'
 export * from './approval-progress-repository.js'

@@ -1,0 +1,45 @@
+{
+  "reviewDateAsiaShanghai": "2026-09-28",
+  "renderer": "Codex in-app browser",
+  "method": "Rendered SVG text bounding rectangles and pairwise overlap checks plus visual inspection of every diagram",
+  "typoraVerified": false,
+  "businessBrowserFlowRerun": false,
+  "files": [
+    { "file": "01-business-boundary.svg", "textNodes": 39, "overflow": [], "overlaps": [] },
+    { "file": "02-request-lifecycle.svg", "textNodes": 36, "overflow": [], "overlaps": [] },
+    { "file": "03-architecture.svg", "textNodes": 34, "overflow": [], "overlaps": [] },
+    { "file": "04-http-boundary.svg", "textNodes": 31, "overflow": [], "overlaps": [] },
+    { "file": "05-data-model.svg", "textNodes": 37, "overflow": [], "overlaps": [] },
+    { "file": "06-atomicity.svg", "textNodes": 34, "overflow": [], "overlaps": [] },
+    { "file": "07-task-state.svg", "textNodes": 31, "overflow": [], "overlaps": [] },
+    { "file": "08-agent-workflow.svg", "textNodes": 27, "overflow": [], "overlaps": [] },
+    { "file": "09-tool-loop.svg", "textNodes": 30, "overflow": [], "overlaps": [] },
+    { "file": "10-context.svg", "textNodes": 26, "overflow": [], "overlaps": [] },
+    { "file": "11-security.svg", "textNodes": 23, "overflow": [], "overlaps": [] },
+    { "file": "12-policy-retrieval.svg", "textNodes": 26, "overflow": [], "overlaps": [] },
+    { "file": "13-approval.svg", "textNodes": 29, "overflow": [], "overlaps": [] },
+    { "file": "14-normal-refund.svg", "textNodes": 24, "overflow": [], "overlaps": [] },
+    { "file": "14-recovery-decision.svg", "textNodes": 26, "overflow": [], "overlaps": [] },
+    { "file": "15-lease-fencing.svg", "textNodes": 29, "overflow": [], "overlaps": [] },
+    { "file": "16-recovery-windows.svg", "textNodes": 36, "overflow": [], "overlaps": [] },
+    { "file": "17-sse.svg", "textNodes": 22, "overflow": [], "overlaps": [] },
+    { "file": "18-budget.svg", "textNodes": 23, "overflow": [], "overlaps": [] },
+    { "file": "19-investigation.svg", "textNodes": 26, "overflow": [], "overlaps": [] },
+    { "file": "20-evaluation.svg", "textNodes": 22, "overflow": [], "overlaps": [] },
+    { "file": "21-deployment.svg", "textNodes": 24, "overflow": [], "overlaps": [] },
+    { "file": "22-tradeoffs.svg", "textNodes": 30, "overflow": [], "overlaps": [] },
+    { "file": "23-dag-extension.svg", "textNodes": 13, "overflow": [], "overlaps": [] }
+  ],
+  "correctedFindings": [
+    "审批与调查分支连线避开分组标题",
+    "未知交易路径绕过无关结果投影节点",
+    "评测各层先单独判定再汇入证据包",
+    "原生循环从只读结果确认回填而非从模型意图直接回环",
+    "自动授权与人工审批汇合时区分是否消费一次性凭据"
+  ],
+  "limitations": [
+    "浏览器渲染不等于 Typora 应用内逐页验收",
+    "文字边界扫描不能自动证明连线语义正确",
+    "产品截图仍引用有来源的历史证据"
+  ]
+}

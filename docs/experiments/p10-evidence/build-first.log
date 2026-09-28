@@ -1,0 +1,41 @@
+   ▲ Next.js 15.5.25
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 61s
+   Linting and checking validity of types ...
+
+ ⚠ The Next.js plugin was not detected in your ESLint configuration. See https://nextjs.org/docs/app/api-reference/config/eslint#migrating-existing-config
+   Collecting page data ...
+   Generating static pages (0/13) ...
+   Generating static pages (3/13)
+   Generating static pages (6/13)
+   Generating static pages (9/13)
+ ✓ Generating static pages (13/13)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                      123 B         102 kB
+├ ○ /_not-found                            985 B         103 kB
+├ ○ /analytics                           7.16 kB         122 kB
+├ ○ /approvals                           8.13 kB         148 kB
+├ ○ /console                             11.2 kB         161 kB
+├ ○ /eval                                12.6 kB         127 kB
+├ ○ /icon.svg                                0 B            0 B
+├ ○ /policies                            5.32 kB         151 kB
+├ ○ /runs                                6.03 kB         120 kB
+├ ƒ /runs/[runId]                        53.6 kB         168 kB
+├ ○ /settings                            1.73 kB         130 kB
+└ ○ /workbench                           8.43 kB         140 kB
++ First Load JS shared by all             102 kB
+  ├ chunks/303-6e0a07efb10b22c5.js       45.9 kB
+  ├ chunks/f6dd08d6-53f42b9527d8dc9c.js  54.2 kB
+  └ other shared chunks (total)          2.02 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+独立生产构建 D:\project\agent-new\aftersales\artifacts\p10-build\web-Fx6E70 退出码 0

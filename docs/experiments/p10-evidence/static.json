@@ -1,0 +1,31 @@
+{
+  "yamlParsed": true,
+  "composeCliValidated": false,
+  "services": [
+    "api",
+    "web"
+  ],
+  "volumes": [
+    "business",
+    "channel"
+  ],
+  "ports": [
+    [
+      "127.0.0.1:${P10_API_PORT:-18787}:8787"
+    ],
+    [
+      "127.0.0.1:${P10_WEB_PORT:-18790}:8790"
+    ]
+  ],
+  "productionRewrites": {
+    "beforeFiles": [],
+    "afterFiles": [
+      {
+        "source": "/api/:path*",
+        "destination": "http://api:8787/api/:path*",
+        "regex": "^/api(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$"
+      }
+    ],
+    "fallback": []
+  }
+}
