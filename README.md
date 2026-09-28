@@ -5,6 +5,10 @@
 
 不是客服聊天机器人 副作用治理与评测闭环才是这个项目的主体
 
+## 操作手册
+
+[完整操作手册](docs/manual/README.md)按业务人员、管理员、开发运维三个目录组织，包含真实页面截图、完整退款演练和可复制接口示例。[评测操作专章](docs/manual/devops/evaluation.md)说明当前离线 L1/L2、指标分母、Judge、失败排查与报告比较；当前命令和数据集以该章及实际源码为准。复现完整审批与退货流程可运行 `node --import tsx docs/manual/devops/demo.ts`，使用独立临时双库，不默认 build。
+
 ## 学习与当前实现入口
 
 完整材料从[导学：有据售后](docs/learning/导学-有据售后.md)开始，包含 22 章正文与源码阅读路线；[面经](docs/interview/面经-有据售后.md)提供 24 道主问与递进追问，配套[练习](docs/learning/渐进重建练习.md)、[自测](docs/learning/集中自测.md)和[证据索引](docs/learning/核心结论与证据索引.md)。精确复现命令见[本地离线演示](docs/runbooks/p11-local-offline-demo.md)，无需重复构建。
