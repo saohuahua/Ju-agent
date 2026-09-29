@@ -65,6 +65,8 @@ export default function SettingsPage() {
                   ? '正在读取服务状态'
                   : health.data?.modelTransport === 'live'
                     ? `真实模型已启用 · ${modelSettings.data?.model || '当前模型'}`
+                    : modelSettings.data?.keyConfigured && modelSettings.data.model
+                      ? `已读取 ${modelSettings.data.model} 配置 · 待连接测试并启用`
                     : '当前使用离线模拟模型'}
               </AlertDescription>
               {role === 'supervisor' && modelSettings.data && (

@@ -223,6 +223,14 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     localModelOrigin(context.req.header('Origin')) &&
     Boolean(deps.modelSettings?.authorized(context.req.header('X-Model-Local-Token')))
 
+  const localCustomerModelAccess = (context: Context<AppEnv>) =>
+    localModelAccess(context) ||
+    Boolean(
+      context.req.header('Origin') &&
+        localModelOrigin(context.req.header('Origin')) &&
+        deps.modelSettings?.usesEnvironmentKey(),
+    )
+
   app.get('/api/model-settings', (context) => {
     if (!requireRole(context, ['supervisor']))
       return context.json({ error: 'AUTHORIZATION_DENIED' }, 403)
@@ -333,7 +341,7 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
       // 重试原消息沿用原键 新消息使用新键 后端还会比较原始内容
       const key = context.req.header('Idempotency-Key') ?? ''
       try {
-        if (body.data.modelMode === 'live' && !localModelAccess(context))
+        if (body.data.modelMode === 'live' && !localCustomerModelAccess(context))
           return context.json({ error: 'AUTHORIZATION_DENIED' }, 403)
         const snapshot =
           body.data.modelMode === 'live' ? deps.modelSettings?.liveSnapshot() : undefined
@@ -503,7 +511,7 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
         409,
       )
     if (system.conversations?.owns(runId)) {
-      if (deps.modelSettings?.isLiveRun(runId) && !localModelAccess(context))
+      if (deps.modelSettings?.isLiveRun(runId) && !localCustomerModelAccess(context))
         return context.json({ error: 'AUTHORIZATION_DENIED' }, 403)
       try {
         const task = system.conversations.accept(

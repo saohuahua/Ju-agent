@@ -41,6 +41,11 @@ console.log(`演示初始化 ${initializeDemo(db)}`)
 const modelSettings = durableOptions
   ? new ModelSettingsStore(db, durableOptions.snapshot, process.env, process.env.MODEL_LOCAL_TOKEN)
   : undefined
+if (process.env.MODEL_AUTO_ENABLE === '1') {
+  if (!modelSettings) throw new Error('真实模型需要持久会话入口')
+  const enabled = modelSettings.enableEnvironment()
+  console.log(`本机真实模型已启用 ${enabled.model}`)
+}
 if (modelSettings) {
   console.log(
     process.env.MODEL_LOCAL_TOKEN
@@ -112,7 +117,12 @@ const server = serve(
   { fetch: app.fetch, port, hostname: process.env.API_HOST ?? '127.0.0.1' },
   (info) => {
     console.log(`售后 API 已启动 http://127.0.0.1:${info.port}`)
-    console.log(`模型 ${label}`)
+    console.log(
+      modelSettings?.status().enabled
+        ? `模型 真实 ${modelSettings.status().model}`
+        : `模型 ${label}`,
+    )
+    console.log('业务 订单与支付为本机模拟')
     console.log('健康检查 GET /api/health')
   },
 )

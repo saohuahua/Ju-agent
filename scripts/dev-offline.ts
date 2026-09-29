@@ -1,19 +1,20 @@
 import { spawn, type ChildProcess } from 'node:child_process'
 import { createServer } from 'node:net'
 import { resolve } from 'node:path'
-import { loadEnvFile } from 'node:process'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
+import { parseEnv } from 'node:util'
 import { clearOfflineRunning, markOfflineRunning } from './local-offline-lock.js'
 import { businessPath, channelPath, projectRoot } from './local-offline-paths.js'
 
 const root = projectRoot
 const envFile = resolve(root, '.env')
-if (existsSync(envFile)) loadEnvFile(envFile)
+const fileEnv = existsSync(envFile) ? parseEnv(readFileSync(envFile, 'utf8')) : {}
 const webRoot = resolve(root, 'apps/web')
 const nextCli = resolve(webRoot, 'node_modules/next/dist/bin/next')
 // 显式覆盖业务模式和代理地址 避免外部环境改变本地离线入口
 const env: NodeJS.ProcessEnv = {
   ...process.env,
+  ...fileEnv,
   NODE_ENV: 'development',
   P6_BUSINESS_MODE: 'simulation',
   P6_EMBEDDED_SIMULATOR: '1',
@@ -24,11 +25,6 @@ const env: NodeJS.ProcessEnv = {
   OFFLINE_DEPLOYMENT: '1',
   OFFLINE_DEV_INSTANCE: '1',
 }
-const webEnv = { ...env }
-for (const key of ['ANTHROPIC_API_KEY', 'OPENAI_API_KEY', 'MODEL_LOCAL_TOKEN']) {
-  delete webEnv[key]
-}
-
 const children: ChildProcess[] = []
 let stopping = false
 
@@ -115,6 +111,10 @@ try {
   const webUrl = `http://127.0.0.1:${webPort}`
   env.API_PORT = String(apiPort)
   env.OFFLINE_API_ORIGIN = apiUrl
+  const webEnv = { ...env }
+  for (const key of ['ANTHROPIC_API_KEY', 'OPENAI_API_KEY', 'MODEL_LOCAL_TOKEN']) {
+    delete webEnv[key]
+  }
   start('API', root, ['--import', 'tsx', 'apps/api/src/main.ts'])
   start('Web', webRoot, [nextCli, 'dev', '--turbopack', '-p', String(webPort), '-H', '127.0.0.1'], webEnv)
   await ready(`${apiUrl}/api/ready`, (response) => Promise.resolve(response.ok))

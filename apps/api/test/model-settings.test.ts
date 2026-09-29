@@ -230,6 +230,96 @@ it('当前协议缺少密钥时不借用另一协议的密钥状态', () => {
   }
 })
 
+it('本机客户可使用已启用的环境密钥 远端仍不能发起付费会话', async () => {
+  const db = createMemoryDatabase()
+  try {
+    initializeDemo(db)
+    const demo = conversationDemoOptions(true)
+    const fake = await provider('openai_chat')
+    const store = new ModelSettingsStore(
+      db,
+      demo.snapshot,
+      {
+        MODEL_PROTOCOL: 'openai_chat',
+        OPENAI_BASE_URL: fake.baseUrl,
+        OPENAI_MODEL: 'mock-model',
+        OPENAI_API_KEY: 'provider-secret',
+        MODEL_INPUT_CNY_PER_MILLION: '3',
+        MODEL_OUTPUT_CNY_PER_MILLION: '20',
+      },
+      'local-secret',
+    )
+    expect(store.enableEnvironment()).toMatchObject({ enabled: true, model: 'mock-model' })
+    expect(store.usesEnvironmentKey()).toBe(true)
+    const system = composeSystem({
+      db,
+      clock: new SystemClock(),
+      withFixture: false,
+      model: {
+        info: { provider: 'disabled', model: 'disabled' },
+        async *stream() {
+          yield* []
+        },
+      },
+      durableConversation: {
+        ...demo,
+        transport: (snapshot) =>
+          snapshot.mode === 'live' ? store.transport(snapshot) : demo.transport(snapshot),
+      },
+    })
+    const app = createApp({ system, modelAvailable: false, modelSettings: store })
+    const request = (origin: string, key: string) =>
+      app.request('/api/runs', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer cust-token-1001',
+          'Content-Type': 'application/json',
+          Origin: origin,
+          'Idempotency-Key': key,
+        },
+        body: JSON.stringify({ message: '查询订单', modelMode: 'live' }),
+      })
+    expect((await request('http://10.10.12.25:8790', 'remote')).status).toBe(403)
+    const local = await request('http://127.0.0.1:8790', 'local')
+    expect(local.status).toBe(202)
+    const { runId } = (await local.json()) as { runId: string }
+    expect(store.isLiveRun(runId)).toBe(true)
+    await system.conversations!.worker.runOnce()
+    const reply = await app.request(`/api/runs/${runId}/messages`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer cust-token-1001',
+        'Content-Type': 'application/json',
+        Origin: 'http://127.0.0.1:8790',
+        'Idempotency-Key': 'reply',
+      },
+      body: JSON.stringify({ message: '继续查询' }),
+    })
+    expect(reply.status).toBe(202)
+    expect((await system.runService.get(runId)).model).toBe('mock-model')
+    store.disable()
+    expect(store.usesEnvironmentKey()).toBe(false)
+  } finally {
+    db.close()
+  }
+})
+
+it('自动启用缺少费用配置时明确失败', () => {
+  const db = createMemoryDatabase()
+  try {
+    const store = new ModelSettingsStore(db, conversationDemoOptions(true).snapshot, {
+      MODEL_PROTOCOL: 'openai_chat',
+      OPENAI_BASE_URL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+      OPENAI_MODEL: 'gemini-3.5-flash-lite',
+      OPENAI_API_KEY: 'configured-key',
+    })
+    expect(() => store.enableEnvironment()).toThrow()
+    expect(store.status().enabled).toBe(false)
+  } finally {
+    db.close()
+  }
+})
+
 it('错误密钥不占住后续连接测试的并发槽', async () => {
   const db = createMemoryDatabase()
   const server = createServer(async (request, response) => {

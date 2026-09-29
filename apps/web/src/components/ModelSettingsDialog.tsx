@@ -224,7 +224,7 @@ export function ModelSettingsDialog({
               </Button>
             </div>
             <FieldDescription>
-              Key 不回传浏览器 填入项目根目录 .env 后重启服务可自动预填
+              协议 地址和模型从 .env 读取 Key 只显示是否已配置 不回传浏览器
             </FieldDescription>
           </Field>
           <div className="grid gap-4 sm:grid-cols-2">

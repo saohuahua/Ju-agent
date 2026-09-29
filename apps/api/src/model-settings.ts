@@ -70,6 +70,16 @@ export class ModelSettingsStore {
     return actual.length === expected.length && timingSafeEqual(actual, expected)
   }
 
+  usesEnvironmentKey(): boolean {
+    const settings = this.active?.settings
+    if (!settings) return false
+    const key =
+      settings.protocol === 'anthropic_messages'
+        ? this.environment.ANTHROPIC_API_KEY
+        : this.environment.OPENAI_API_KEY
+    return Boolean(key && key === settings.apiKey)
+  }
+
   status() {
     const settings = this.active?.settings
     const fallbackProtocol =
@@ -199,6 +209,21 @@ export class ModelSettingsStore {
     this.credentials.set(snapshot.version, settings)
     this.active = { settings, snapshot }
     this.lastTested = undefined
+    return this.status()
+  }
+
+  enableEnvironment(): ReturnType<ModelSettingsStore['status']> {
+    const configured = this.status()
+    const settings = this.resolve({
+      protocol: configured.protocol,
+      baseUrl: configured.baseUrl,
+      model: configured.model,
+      inputCnyPerMillion: configured.inputCnyPerMillion,
+      outputCnyPerMillion: configured.outputCnyPerMillion,
+    })
+    const snapshot = this.snapshot(settings, 512)
+    this.credentials.set(snapshot.version, settings)
+    this.active = { settings, snapshot }
     return this.status()
   }
 
