@@ -5,11 +5,13 @@
  * 纯函数设计 刷新重连与回放共用同一条路径 不依赖内存残留
  */
 
-import type { AgentEvent, RunStatus } from './types'
+import type { AgentEvent, RunStatus, OrderCandidates } from './types'
 
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system' | 'operator'
   text: string
+  requestKey?: string
+  delivery?: 'sending' | 'accepted' | 'failed' | 'unknown'
   /** 助手消息是否仍在流式拼接 */
   streaming?: boolean
 }
@@ -20,7 +22,8 @@ export interface ToolItem {
   /** 模型侧工具调用 id 用于流式期与执行期关联 */
   toolCallId?: string
   toolName: string
-  attempt: number
+  /** 事件未记录尝试次数时保持未知 不把首次看到结果当作首次执行 */
+  attempt?: number
   status: 'pending' | 'succeeded' | 'failed'
   /** 工具参数是否仍在流式生成 */
   inputStreaming?: boolean
@@ -50,10 +53,16 @@ export interface LogisticsItem {
 }
 
 export interface RunViewState {
+  consultation: 'ready' | 'clarify' | null
+  showChoices: boolean
+  sourceRunId: string | null
+  orderCandidates: OrderCandidates | null
+  orderSelectionSlot: string | null
   status: RunStatus
   connected: boolean
   messages: ChatMessage[]
   tools: ToolItem[]
+  processingTool: ToolItem | null
   approvals: ApprovalItem[]
   logistics: LogisticsItem[]
   steps: Array<{ stepId: string; stepName: string; outcome: string }>
@@ -65,10 +74,16 @@ export interface RunViewState {
 
 export function initialViewState(): RunViewState {
   return {
+    consultation: null,
+    showChoices: false,
+    sourceRunId: null,
+    orderCandidates: null,
+    orderSelectionSlot: null,
     status: 'created',
     connected: false,
     messages: [],
     tools: [],
+    processingTool: null,
     approvals: [],
     logistics: [],
     steps: [],
@@ -87,12 +102,31 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
   const payload = event.payload as Record<string, unknown>
 
   switch (event.type) {
+    case 'human.requested': {
+      next.sourceRunId = typeof payload.sourceRunId === 'string' ? payload.sourceRunId : null
+      return next
+    }
+    case 'order.candidates': {
+      next.orderCandidates = payload as unknown as OrderCandidates
+      return next
+    }
     case 'run.started': {
       next.status = 'running'
       return next
     }
     case 'message.user': {
-      next.messages = [...state.messages, { role: 'user', text: String(payload.text ?? '') }]
+      const requestKey = typeof payload.requestKey === 'string' ? payload.requestKey : undefined
+      // 相同请求的回放只确认一次 不合并用户合法发送的相同文本
+      if (requestKey && state.messages.some((message) => message.requestKey === requestKey))
+        return next
+      next.messages = [
+        ...state.messages,
+        {
+          role: 'user',
+          text: String(payload.text ?? ''),
+          ...(requestKey ? { requestKey } : {}),
+        },
+      ]
       return next
     }
     case 'message.delta': {
@@ -175,6 +209,11 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
     }
     case 'tool.requested': {
       const toolName = String(payload.toolName)
+      next.processingTool = {
+        executionId: String(payload.executionId),
+        toolName,
+        status: 'pending',
+      }
       // 流式期的幽灵条目按工具名关联 升级为执行条目
       const ghost = state.tools.find(
         (tool) =>
@@ -188,7 +227,7 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
             ? {
                 ...tool,
                 executionId: String(payload.executionId),
-                attempt: Number(payload.attempt ?? 1),
+                attempt: typeof payload.attempt === 'number' ? payload.attempt : undefined,
                 inputStreaming: false,
               }
             : tool,
@@ -200,25 +239,38 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
         {
           executionId: String(payload.executionId),
           toolName,
-          attempt: Number(payload.attempt ?? 1),
+          attempt: typeof payload.attempt === 'number' ? payload.attempt : undefined,
           status: 'pending',
         },
       ]
       return next
     }
     case 'tool.completed': {
-      const summary = payload.resultSummary as Record<string, unknown> | undefined
-      next.tools = state.tools.map((tool) =>
-        tool.executionId === String(payload.executionId)
-          ? {
-              ...tool,
-              status: payload.status === 'succeeded' ? 'succeeded' : 'failed',
-              errorCode: payload.errorCode ? String(payload.errorCode) : undefined,
-              latencyMs: Number(payload.latencyMs ?? 0),
-              resultSummary: summary,
-            }
-          : tool,
-      )
+      // 旧执行器先发 requested 持久会话则可能只投影已确认的 completed
+      // 优先按真实执行编号配对 独立结果使用运行编号和事件序号生成稳定展示键
+      // 不按工具名合并 同一工具在不同轮次执行时必须保留各自结果
+      const executionId = payload.executionId
+        ? String(payload.executionId)
+        : `event:${event.runId}:${event.sequence}`
+      const existing = state.tools.find((tool) => tool.executionId === executionId)
+      const summary = (payload.resultSummary ?? payload.result) as
+        Record<string, unknown> | undefined
+      const completed: ToolItem = {
+        ...existing,
+        executionId,
+        toolName: String(payload.toolName ?? existing?.toolName ?? ''),
+        attempt: typeof payload.attempt === 'number' ? payload.attempt : existing?.attempt,
+        status: payload.status === 'succeeded' ? 'succeeded' : 'failed',
+        inputStreaming: false,
+        errorCode: payload.errorCode ? String(payload.errorCode) : undefined,
+        // 缺少耗时的历史结果仍然有效 不用零毫秒冒充实际测量值
+        latencyMs: typeof payload.latencyMs === 'number' ? payload.latencyMs : undefined,
+        resultSummary: summary,
+      }
+      next.tools = existing
+        ? state.tools.map((tool) => (tool === existing ? completed : tool))
+        : [...state.tools, completed]
+      next.processingTool = completed
       return next
     }
     case 'approval.required': {
@@ -259,10 +311,22 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
       return next
     }
     case 'run.paused': {
+      next.consultation =
+        payload.consultation === 'ready' || payload.consultation === 'clarify'
+          ? payload.consultation
+          : null
+      next.showChoices = payload.showChoices === true
+      next.orderSelectionSlot = typeof payload.missingSlot === 'string' ? payload.missingSlot : null
       next.status = payload.reason === 'awaiting_input' ? 'awaiting_input' : 'awaiting_approval'
       return next
     }
     case 'run.resumed': {
+      next.consultation = null
+      next.showChoices = false
+      next.orderSelectionSlot = null
+      next.orderCandidates = null
+      // 新用户回合不沿用上一回合查询状态 历史工具列表仍然保留
+      next.processingTool = null
       next.status = 'running'
       return next
     }

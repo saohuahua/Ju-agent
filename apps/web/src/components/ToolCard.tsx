@@ -48,10 +48,8 @@ export function ToolCard({ tool }: { tool: ToolItem }) {
               参数生成中
             </span>
           )}
-          {tool.attempt > 1 && <span>第 {tool.attempt} 次尝试</span>}
-          {tool.latencyMs !== undefined && (
-            <span className="tabular-nums">{tool.latencyMs}ms</span>
-          )}
+          {tool.attempt !== undefined && tool.attempt > 1 && <span>第 {tool.attempt} 次尝试</span>}
+          {tool.latencyMs !== undefined && <span className="tabular-nums">{tool.latencyMs}ms</span>}
           <span className={STATUS_TEXT[tool.status]}>{STATUS_LABEL[tool.status]}</span>
         </span>
       </div>

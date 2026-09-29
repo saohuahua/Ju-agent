@@ -1,6 +1,22 @@
-import type { RunStatus } from '@/lib/types'
+import type { AgentEvent, OrderCandidates, RunStatus } from '@/lib/types'
 
 export const TERMINAL_STATUSES: RunStatus[] = ['completed', 'failed', 'cancelled']
+
+/** 选单命令保留后台标识 客户气泡只展示可核对的订单与商品 */
+export function customerMessageText(text: string, events: AgentEvent[]): string {
+  const selected = /^选择订单 (SO-\d{4}-\d{4}) 商品 (item-[\w-]+)$/u.exec(text)
+  if (!selected) return text
+  const [, orderNo, itemId] = selected
+  const candidates = [...events].reverse().filter((event) => event.type === 'order.candidates')
+  for (const event of candidates) {
+    const orders = (event.payload as unknown as OrderCandidates).orders
+    const item = orders
+      ?.find((order) => order.orderNo === orderNo)
+      ?.items.find((row) => row.itemId === itemId)
+    if (item) return `已选择${item.title}（订单 ${orderNo}）`
+  }
+  return `已选择商品（订单 ${orderNo}）`
+}
 
 export function canSendCustomerMessage(
   runId: string | null,

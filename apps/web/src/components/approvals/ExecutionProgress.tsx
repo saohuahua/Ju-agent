@@ -1,11 +1,12 @@
 'use client'
 
-import Link from 'next/link'
+import { NavigationLink as Link } from '@/components/NavigationLink'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowUpRight, RefreshCw } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { RefreshButton } from '@/components/ui/refresh-button'
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty'
 import { Skeleton } from '@/components/ui/skeleton'
 import { api } from '@/lib/api'
@@ -31,15 +32,14 @@ export function ExecutionProgress() {
     <section aria-label="审批执行进度" className={styles.executionSection}>
       <div className={styles.rowTop}>
         <h2>决定后的执行进度</h2>
-        <Button
+        <RefreshButton
           variant="outline"
           size="sm"
-          onClick={() => void records.refetch()}
+          onRefresh={() => records.refetch()}
           disabled={records.isFetching}
         >
-          <RefreshCw data-icon="inline-start" aria-hidden="true" />
           刷新执行进度
-        </Button>
+        </RefreshButton>
       </div>
       <p className={styles.meta}>
         最近 {records.data?.limit ?? 100} 条执行记录 每 5 秒更新 调用结束后仍需核验业务结果
@@ -50,7 +50,9 @@ export function ExecutionProgress() {
           <AlertDescription>无法确认最新结果 请重试 已有记录不会作为当前成功依据</AlertDescription>
         </Alert>
       ) : records.isPending ? (
-        <Skeleton className="h-32 w-full" />
+        <div role="status" aria-label="正在读取执行进度">
+          <Skeleton className="h-32 w-full" />
+        </div>
       ) : records.data.executions.length === 0 ? (
         <Empty>
           <EmptyHeader>

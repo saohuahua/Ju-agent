@@ -40,15 +40,15 @@
   gap: 16px;
   max-width: 1180px;
   margin: 0 auto;
-  padding: 28px 0 20px;
+  padding: 12px 0 10px;
 }
 .pageHeading h1 {
   color: var(--color-ink);
-  font-size: 25px;
+  font-size: 18px;
   font-weight: 600;
 }
 .pageHeading p {
-  margin-top: 6px;
+  margin-top: 3px;
   color: var(--color-muted-foreground);
   font-size: 13px;
 }
@@ -62,7 +62,7 @@
   grid-template-columns: 250px minmax(0, 1fr);
   max-width: 1180px;
   min-height: 480px;
-  height: min(780px, calc(100dvh - 245px));
+  height: min(820px, calc(100dvh - 194px));
   margin: 0 auto;
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -125,14 +125,6 @@
 .historyItemTop span:last-child {
   color: var(--color-accent-foreground);
   font-weight: 500;
-}
-.historyId {
-  overflow: hidden;
-  color: var(--color-muted-foreground);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .historyItem time {
   color: var(--color-muted-foreground);
@@ -236,6 +228,13 @@
   font-size: 13px;
   text-align: center;
 }
+.delivery {
+  display: block;
+  margin-top: 6px;
+  color: var(--color-muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
 .message {
   display: flex;
   align-items: flex-start;
@@ -325,13 +324,6 @@
   border-radius: 50%;
   background: #ad792d;
 }
-.connectionDot[data-connected='true'] {
-  background: #326346;
-}
-.statusNext {
-  margin-left: auto;
-  text-align: right;
-}
 
 .rating {
   display: flex;
@@ -365,33 +357,10 @@
 .ratingInput {
   width: 180px;
   max-width: 100%;
-  min-height: 32px;
-  padding: 5px 9px;
-  border: 1px solid var(--color-input);
-  border-radius: 6px;
-  background: white;
-  font-size: 12px;
 }
 .composer {
-  padding: 15px 24px 18px;
+  padding: 10px 16px 12px;
   border-top: 1px solid var(--color-border);
-}
-.messageInput {
-  min-height: 68px;
-  max-height: 180px;
-  resize: vertical;
-  background: white;
-}
-.composerBottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 10px;
-}
-.composerBottom span {
-  color: var(--color-muted-foreground);
-  font-size: 11px;
 }
 .errorText {
   margin-top: 9px;
@@ -428,10 +397,10 @@
     padding: 0 12px 20px;
   }
   .pageHeading {
-    padding: 18px 0;
+    padding: 10px 0;
   }
   .pageHeading h1 {
-    font-size: 22px;
+    font-size: 18px;
   }
   .pageHeading p {
     font-size: 12px;
@@ -500,9 +469,6 @@
   .statusRow,
   .rating {
     padding: 9px 12px;
-  }
-  .statusNext {
-    display: none;
   }
   .composer {
     padding: 10px 12px 12px;

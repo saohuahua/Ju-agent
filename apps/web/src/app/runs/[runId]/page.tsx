@@ -11,10 +11,12 @@
  * 深色控制台轨（工程侧）配色走语义 token。
  */
 
-import { use, useCallback, useEffect, useState, type FormEvent } from 'react'
-import { AppShell } from '@/components/AppShell'
+import { use, useMemo, useState, type FormEvent } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { GuardPanel } from '@/components/GuardPanel'
 import { NodeDetail } from '@/components/NodeDetail'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/Skeleton'
 import { StatusBadge } from '@/components/StatusBadge'
 import { Timeline } from '@/components/Timeline'
@@ -23,7 +25,8 @@ import { ToolCatalogPanel } from '@/components/ToolCatalogPanel'
 import { api, currentToken } from '@/lib/api'
 import { reduceEvents, initialViewState } from '@/lib/runReducer'
 import { projectTimeline } from '@/lib/timeline'
-import type { AgentEvent, RunRatingView, RunSummary } from '@/lib/types'
+import { runDetailOptions } from '@/lib/run-detail-query'
+import type { AgentEvent } from '@/lib/types'
 
 const EVENT_TYPE_LABEL: Record<string, string> = {
   'run.started': '运行开始',
@@ -56,9 +59,19 @@ const EVENT_TYPE_LABEL: Record<string, string> = {
 
 export default function RunDetailPage({ params }: { params: Promise<{ runId: string }> }) {
   const { runId } = use(params)
-  const [run, setRun] = useState<RunSummary | null>(null)
-  const [events, setEvents] = useState<AgentEvent[]>([])
-  const [rating, setRating] = useState<RunRatingView | null>(null)
+
+  // 动态路由可能复用页面组件 显式按案件重建草稿和操作状态
+  return <RunDetail key={runId} runId={runId} />
+}
+
+const EMPTY_EVENTS: AgentEvent[] = []
+
+function RunDetail({ runId }: { runId: string }) {
+  const client = useQueryClient()
+  const detail = useQuery(runDetailOptions(client, runId))
+  const run = detail.data?.run ?? null
+  const events = detail.data?.events ?? EMPTY_EVENTS
+  const rating = detail.data?.rating
   const [error, setError] = useState<string | null>(null)
   const [resuming, setResuming] = useState(false)
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
@@ -73,40 +86,23 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
   const [injectResult, setInjectResult] = useState<string | null>(null)
   const [injectError, setInjectError] = useState<string | null>(null)
 
-  const load = useCallback(async () => {
-    try {
-      const [runBody, eventBody, ratingBody] = await Promise.all([
-        api.getRun(runId),
-        api.listEvents(runId),
-        api.getRating(runId).catch(() => ({ rating: null })),
-      ])
-      setRun(runBody.run)
-      setEvents(eventBody.events)
-      setRating(ratingBody.rating)
-      setError(null)
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '加载失败')
-    }
-  }, [runId])
+  // 写后明确取消旧轮询 首次加载尚无缓存时也必须读取新的事件快照
+  const load = async () => {
+    await client.cancelQueries({ queryKey: ['run-detail', runId], exact: true })
+    return detail.refetch()
+  }
+  const displayError = error ?? detail.error?.message
 
-  useEffect(() => {
-    load()
-  }, [load])
-
-  // 执行中的运行轮询事件 让时间轴与门控面板近实时翻转
-  useEffect(() => {
-    if (run?.status !== 'running' && run?.status !== 'awaiting_approval') return
-    const timer = setInterval(load, 2500)
-    return () => clearInterval(timer)
-  }, [run?.status, load])
-
-  const view = reduceEvents(initialViewState(), events)
-  const nodes = projectTimeline(events)
+  // 只有事件数组变化才重建视图和时间轴 输入操作不重复回放历史
+  const view = useMemo(() => reduceEvents(initialViewState(), events), [events])
+  const nodes = useMemo(() => projectTimeline(events), [events])
+  const hasCatalog = events.some((event) => event.type === 'tools.catalog_changed')
   const selected = nodes.find((node) => node.key === selectedKey) ?? null
   const stuck = run?.status === 'running'
-  const loading = run === null && !error
+  const loading = detail.isPending
 
   const resume = async () => {
+    setError(null)
     if (resuming) return
     setResuming(true)
     try {
@@ -147,7 +143,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
   }
 
   return (
-    <AppShell>
+    <>
       <div className="page-enter px-6 py-8">
         <div className="flex items-center justify-between gap-4">
           <h1 className="flex shrink-0 items-center gap-3 text-xl font-semibold tracking-tight">
@@ -157,19 +153,24 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
           <div className="flex min-w-0 items-center gap-4">
             <p className="truncate font-mono text-xs text-stone-500">{runId}</p>
             {stuck && (
-              <button
+              <Button
+                loading={resuming}
                 onClick={resume}
                 disabled={resuming}
                 className="shrink-0 rounded-control bg-amber-700 px-4 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-amber-800 active:scale-[0.98] disabled:opacity-50"
               >
-                {resuming ? '恢复中' : '断点恢复'}
-              </button>
+                断点恢复
+              </Button>
             )}
           </div>
         </div>
 
         {loading && (
-          <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-4 lg:grid-cols-4">
+          <div
+            className="mt-6 grid grid-cols-2 gap-x-8 gap-y-4 lg:grid-cols-4"
+            role="status"
+            aria-label="正在读取运行详情"
+          >
             {[0, 1, 2, 3].map((index) => (
               <div key={index}>
                 <Skeleton className="h-3 w-14" />
@@ -187,10 +188,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
             <MetaField label="提示词版本" value={run.promptVersion} mono />
             <MetaField label="事件数" value={String(events.length)} mono />
             <MetaField label="会话来源" value={run.source === 'sim' ? '评测模拟' : '真实客户'} />
-            <MetaField
-              label="创建时间"
-              value={new Date(run.createdAt).toLocaleString('zh-CN')}
-            />
+            <MetaField label="创建时间" value={new Date(run.createdAt).toLocaleString('zh-CN')} />
             {rating && (
               <div>
                 <div className="text-xs text-stone-500">客户评分</div>
@@ -210,14 +208,16 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
           </div>
         )}
 
-        {error && (
+        {displayError && (
           <p className="mt-4 rounded-control border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            {error}
+            {displayError}
           </p>
         )}
 
         {/* 双栏主体：主栏时间轴与轨迹 右栏门控面板 */}
-        <div className="mt-6 grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div
+          className={`mt-6 grid items-start gap-4 ${hasCatalog ? 'xl:grid-cols-[minmax(0,1fr)_320px]' : ''}`}
+        >
           <div className="min-w-0 space-y-4">
             {nodes.length > 0 ? (
               <Timeline
@@ -268,12 +268,12 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
                   <label htmlFor="inject-order-no" className="sr-only">
                     订单号
                   </label>
-                  <input
+                  <Input
                     id="inject-order-no"
                     value={injectOrderNo}
                     onChange={(event) => setInjectOrderNo(event.target.value)}
                     placeholder="订单号 如 SO-2026-0002"
-                    className="w-52 rounded-control border border-hairline bg-surface px-3 py-1.5 font-mono text-xs text-stone-900 transition-colors duration-200 placeholder:text-stone-400 focus:border-sage-300 focus:outline-none"
+                    className="w-52 font-mono text-xs"
                   />
                   <label htmlFor="inject-status" className="sr-only">
                     物流状态
@@ -290,20 +290,21 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
                   <label htmlFor="inject-description" className="sr-only">
                     事件描述
                   </label>
-                  <input
+                  <Input
                     id="inject-description"
                     value={injectDescription}
                     onChange={(event) => setInjectDescription(event.target.value)}
                     placeholder="描述 如 上海浦东分拨中心积压 预计延迟两天"
-                    className="min-w-64 flex-1 rounded-control border border-hairline bg-surface px-3 py-1.5 text-xs text-stone-900 transition-colors duration-200 placeholder:text-stone-400 focus:border-sage-300 focus:outline-none"
+                    className="min-w-64 flex-1 text-xs"
                   />
-                  <button
+                  <Button
+                    loading={injecting}
                     type="submit"
                     disabled={injecting || !injectOrderNo.trim() || !injectDescription.trim()}
                     className="shrink-0 rounded-control bg-sage-700 px-4 py-1.5 text-xs font-medium text-white transition-colors duration-200 hover:bg-sage-800 active:scale-[0.98] disabled:opacity-50"
                   >
-                    {injecting ? '注入中' : '注入'}
-                  </button>
+                    注入
+                  </Button>
                 </form>
                 {injectResult && (
                   <p className="mt-2 rounded-control border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs text-emerald-800">
@@ -364,12 +365,14 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
             </section>
           </div>
 
-          <aside className="xl:sticky xl:top-6">
-            <ToolCatalogPanel events={events} />
-          </aside>
+          {hasCatalog && (
+            <aside className="xl:sticky xl:top-6">
+              <ToolCatalogPanel events={events} />
+            </aside>
+          )}
         </div>
       </div>
-    </AppShell>
+    </>
   )
 }
 

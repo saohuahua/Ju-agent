@@ -1,24 +1,33 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { AppShell } from '@/components/AppShell'
 import { DeskEmpty } from '@/components/desk/DeskEmpty'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
+import { RefreshButton } from '@/components/ui/refresh-button'
+import { ModelSettingsDialog } from '@/components/ModelSettingsDialog'
 import { api } from '@/lib/api'
 import { useIdentity } from '@/lib/identity'
 
-/** 配置尚无持久写入能力时只展示已核实状态 不提供虚假的保存按钮 */
 export default function SettingsPage() {
   const { role } = useIdentity()
+  const [local, setLocal] = useState(false)
+  useEffect(() => {
+    setLocal(['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname))
+  }, [])
   const health = useQuery({
     queryKey: ['health'],
     queryFn: api.health,
     enabled: role !== 'customer',
   })
+  const modelSettings = useQuery({
+    queryKey: ['model-settings'],
+    queryFn: api.modelSettings,
+    enabled: role === 'supervisor',
+  })
 
   return (
-    <AppShell>
+    <>
       {role === 'customer' ? (
         <DeskEmpty
           title="运行设置仅供团队查看"
@@ -28,46 +37,73 @@ export default function SettingsPage() {
         <div className="youju-page">
           <header className="youju-page-heading">
             <div>
-              <p className="youju-eyebrow">当前环境与能力边界</p>
               <h1>运行设置</h1>
-              <p>服务端配置只读展示 密钥不在浏览器中保存</p>
+              <p>模型连接与当前业务环境</p>
             </div>
-            <Button variant="outline" onClick={() => void health.refetch()}>
+            <RefreshButton
+              variant="outline"
+              disabled={health.isFetching || modelSettings.isFetching}
+              onRefresh={async () => {
+                await Promise.all([health.refetch(), modelSettings.refetch()])
+              }}
+            >
               刷新状态
-            </Button>
+            </RefreshButton>
           </header>
           <div className="flex flex-col gap-5">
-            {health.error && (
+            {(health.error || modelSettings.error) && (
               <Alert variant="destructive">
-                <AlertDescription>{health.error.message}</AlertDescription>
+                <AlertDescription>
+                  {health.error?.message ?? modelSettings.error?.message}
+                </AlertDescription>
               </Alert>
             )}
             <Alert>
-              <AlertTitle>模型服务</AlertTitle>
+              <AlertTitle>模型连接</AlertTitle>
               <AlertDescription>
                 {health.isPending
                   ? '正在读取服务状态'
-                  : health.data
-                    ? `${health.data.modelAvailable ? '已配置模型' : '尚未配置模型'} · 提示词版本 ${health.data.promptVersion}`
-                    : '暂时无法确认服务状态'}
+                  : health.data?.modelTransport === 'live'
+                    ? `真实模型已启用 · ${modelSettings.data?.model || '当前模型'}`
+                    : '当前使用离线模拟模型'}
+              </AlertDescription>
+              {role === 'supervisor' && modelSettings.data && (
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <ModelSettingsDialog
+                    key={JSON.stringify(modelSettings.data)}
+                    initial={modelSettings.data}
+                    local={local}
+                    onChanged={() => {
+                      void modelSettings.refetch()
+                      void health.refetch()
+                    }}
+                  />
+                  {!local && (
+                    <span className="text-sm text-muted-foreground">
+                      仅本机开放 请使用 127.0.0.1 地址打开设置
+                    </span>
+                  )}
+                </div>
+              )}
+              {role === 'operator' && (
+                <p className="mt-3 text-sm text-muted-foreground">模型配置需要主管身份</p>
+              )}
+            </Alert>
+            <Alert>
+              <AlertTitle>费用边界</AlertTitle>
+              <AlertDescription>
+                真实模型调用按填写的单价估算并记账 实际费用以提供商账单为准
               </AlertDescription>
             </Alert>
             <Alert>
-              <AlertTitle>实验预算</AlertTitle>
+              <AlertTitle>业务环境</AlertTitle>
               <AlertDescription>
-                首轮真实实验累计上限为人民币 100 元 统一费用计量与预算拦截仍在实施中
-                当前页面不提供付费实验入口
-              </AlertDescription>
-            </Alert>
-            <Alert>
-              <AlertTitle>本地演示环境</AlertTitle>
-              <AlertDescription>
-                当前身份为演示令牌 业务渠道为模拟实现 容器启动与进程恢复实验尚未验收
+                当前订单与支付渠道均为模拟实现 当前身份切换不是生产认证
               </AlertDescription>
             </Alert>
           </div>
         </div>
       )}
-    </AppShell>
+    </>
   )
 }

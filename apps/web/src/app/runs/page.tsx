@@ -5,29 +5,21 @@
  */
 
 import { ArrowRight, ClockCounterClockwise } from '@phosphor-icons/react'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { AppShell } from '@/components/AppShell'
+import { NavigationLink as Link } from '@/components/NavigationLink'
+import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '@/components/Skeleton'
 import { StatusBadge } from '@/components/StatusBadge'
 import { api } from '@/lib/api'
-import type { RunSummary } from '@/lib/types'
 
 export default function RunsPage() {
-  const [runs, setRuns] = useState<RunSummary[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    api
-      .listRuns()
-      .then((body) => setRuns(body.runs))
-      .catch((caught) => setError(caught instanceof Error ? caught.message : '加载失败'))
-      .finally(() => setLoading(false))
-  }, [])
+  // 列表返回时复用缓存 身份切换仍由上层提供器隔离数据
+  const query = useQuery({ queryKey: ['runs'], queryFn: () => api.listRuns() })
+  const runs = query.data?.runs ?? []
+  const error = query.error?.message
+  const loading = query.isPending
 
   return (
-    <AppShell>
+    <>
       <div className="page-enter mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-center justify-between gap-6">
           <h1 className="shrink-0 text-xl font-semibold tracking-tight">运行记录</h1>
@@ -42,7 +34,7 @@ export default function RunsPage() {
         )}
 
         {loading && (
-          <div className="mt-6 overflow-x-auto">
+          <div className="mt-6 overflow-x-auto" role="status" aria-label="正在读取运行记录">
             <table className="w-full text-sm">
               <tbody className="divide-y divide-hairline">
                 {[0, 1, 2, 3].map((index) => (
@@ -92,10 +84,7 @@ export default function RunsPage() {
               </thead>
               <tbody className="divide-y divide-hairline">
                 {runs.map((run) => (
-                  <tr
-                    key={run.runId}
-                    className="transition-colors duration-200 hover:bg-stone-100"
-                  >
+                  <tr key={run.runId} className="transition-colors duration-200 hover:bg-stone-100">
                     <td className="px-4 py-2.5 font-mono text-xs text-stone-600">{run.runId}</td>
                     <td className="px-4 py-2.5 text-stone-700">{run.customerId}</td>
                     <td className="px-4 py-2.5 text-stone-600">{run.intent ?? '-'}</td>
@@ -121,6 +110,6 @@ export default function RunsPage() {
           </div>
         )}
       </div>
-    </AppShell>
+    </>
   )
 }

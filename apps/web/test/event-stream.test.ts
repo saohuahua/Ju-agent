@@ -23,6 +23,21 @@ class FakeEventSource {
 afterEach(() => vi.unstubAllGlobals())
 
 describe('浏览器事件源生命周期', () => {
+  it('命名帧交付用户消息候选回复和暂停 格式错误不掩盖归约异常', () => {
+    vi.stubGlobal('EventSource', FakeEventSource)
+    const callbacks = { onEvent: vi.fn(), onConnection: vi.fn(), onComplete: vi.fn() }
+    subscribeEventStream('/events', callbacks)
+    const source = FakeEventSource.current
+    for (const type of ['message.user', 'order.candidates', 'message.completed', 'run.paused'])
+      source.emit(type, { type })
+    expect(callbacks.onEvent).toHaveBeenCalledTimes(4)
+    source.handlers.get('message.user')?.({ data: 'invalid-json' } as MessageEvent)
+    expect(callbacks.onEvent).toHaveBeenCalledTimes(4)
+    callbacks.onEvent.mockImplementation(() => {
+      throw new Error('归约错误')
+    })
+    expect(() => source.emit('message.user', {})).toThrow('归约错误')
+  })
   it('业务终态不提前丢弃消息 完成帧才关闭并忽略迟到事件', () => {
     vi.stubGlobal('EventSource', FakeEventSource)
     const callbacks = { onEvent: vi.fn(), onConnection: vi.fn(), onComplete: vi.fn() }

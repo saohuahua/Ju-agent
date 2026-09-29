@@ -1,14 +1,15 @@
 'use client'
 
-import Link from 'next/link'
+import { NavigationLink as Link } from '@/components/NavigationLink'
 import { useState } from 'react'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, ArrowUpRight, FileText, RefreshCw, Send } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, FileText, Send } from 'lucide-react'
 
 import { StatusBadge } from '@/components/StatusBadge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { RefreshButton } from '@/components/ui/refresh-button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -18,6 +19,7 @@ import { api } from '@/lib/api'
 import { deskApi, type DeskCase, type PolicyDocument } from '@/lib/desk-api'
 import { ATTENTION_STATUSES, deskTime, orderStatusLabel } from '@/lib/desk-format'
 import { useIdentity } from '@/lib/identity'
+import { useDebouncedValue } from '@/lib/use-debounced-value'
 import { useRunEvents } from '@/lib/sse'
 import { cn } from '@/lib/utils'
 import { DeskEmpty } from './DeskEmpty'
@@ -58,11 +60,11 @@ function StaffWorkspace() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('all')
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const query = useDebouncedValue(search.trim(), 250)
   const cases = useInfiniteQuery({
-    queryKey: ['desk', 'cases', search.trim(), filter],
+    queryKey: ['desk', 'cases', query, filter],
     initialPageParam: null as string | null,
-    queryFn: ({ signal, pageParam }) =>
-      deskApi.cases({ query: search.trim(), filter, cursor: pageParam }, signal),
+    queryFn: ({ signal, pageParam }) => deskApi.cases({ query, filter, cursor: pageParam }, signal),
     getNextPageParam: (page) => page.nextCursor,
     refetchInterval: 5000,
   })
@@ -81,32 +83,30 @@ function StaffWorkspace() {
 
   return (
     <div className="youju-desk">
-      <div className="youju-page-heading">
-        <div>
-          <p className="youju-eyebrow">把每一次处理 建立在依据之上</p>
-          <h1>处理工作台</h1>
-          <p>从客户问题出发 让会话 处理进度与证据始终在一起</p>
+      <header className="youju-desk-toolbar">
+        <h1>处理工作台</h1>
+        <div className="youju-desk-counts" aria-label="已加载案件统计">
+          <span>
+            已加载 <strong>{loaded.length}</strong>
+          </span>
+          <span>
+            需关注{' '}
+            <strong>{loaded.filter((item) => ATTENTION_STATUSES.has(item.status)).length}</strong>
+          </span>
+          <span>
+            人工处理中{' '}
+            <strong>{loaded.filter((item) => item.status === 'handling_human').length}</strong>
+          </span>
         </div>
-        <Button variant="outline" onClick={() => void cases.refetch()} disabled={cases.isFetching}>
-          <RefreshCw data-icon="inline-start" />
+        <RefreshButton
+          variant="outline"
+          size="sm"
+          onRefresh={() => cases.refetch()}
+          disabled={cases.isFetching}
+        >
           刷新案件
-        </Button>
-      </div>
-
-      <div className="youju-overview">
-        <span>
-          <strong>{loaded.length}</strong> 已加载案件
-        </span>
-        <span>
-          <strong>{loaded.filter((item) => ATTENTION_STATUSES.has(item.status)).length}</strong>{' '}
-          需要关注
-        </span>
-        <span>
-          <strong>{loaded.filter((item) => item.status === 'handling_human').length}</strong>{' '}
-          人工处理中
-        </span>
-        <small>按创建时间排序 · 统计仅限已加载案件</small>
-      </div>
+        </RefreshButton>
+      </header>
 
       {cases.error && (
         <Alert variant="destructive">
@@ -115,7 +115,11 @@ function StaffWorkspace() {
       )}
 
       <div className={cn('youju-workspace', selected && 'has-selection')}>
-        <aside className="youju-queue" aria-label="案件队列">
+        <aside
+          className="youju-queue"
+          aria-label="案件队列"
+          aria-busy={search.trim() !== query || cases.isFetching}
+        >
           <div className="youju-queue-tools">
             <FieldGroup>
               <Field>
@@ -145,11 +149,11 @@ function StaffWorkspace() {
                 <TabsTrigger value="active">处理中</TabsTrigger>
               </TabsList>
             </Tabs>
-            <p>{visible.length} 个案件</p>
+            <p>{visible.length} 个案件 · 按创建时间排序</p>
           </div>
 
           {cases.isPending ? (
-            <div className="youju-loading">
+            <div className="youju-loading" role="status" aria-label="正在读取案件列表">
               <Skeleton className="h-24" />
               <Skeleton className="h-24" />
               <Skeleton className="h-24" />
@@ -185,9 +189,10 @@ function StaffWorkspace() {
               <Button
                 variant="outline"
                 disabled={cases.isFetching}
+                loading={cases.isFetchingNextPage}
                 onClick={() => void cases.fetchNextPage()}
               >
-                {cases.isFetchingNextPage ? '正在加载' : '加载更多案件'}
+                加载更多案件
               </Button>
             </div>
           )}
@@ -274,15 +279,22 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
             <span>{item.customerName || item.customerId}</span>
           </div>
           <small>{item.runId}</small>
+          {state.sourceRunId && (
+            <Link href={`/runs/${encodeURIComponent(state.sourceRunId)}`}>查看关联售后记录</Link>
+          )}
         </header>
 
         {detail.error && (
           <Alert variant="destructive">
             <AlertDescription>
               {errorText(detail.error)}{' '}
-              <Button variant="link" onClick={() => void detail.refetch()}>
+              <RefreshButton
+                variant="link"
+                disabled={detail.isFetching}
+                onRefresh={() => detail.refetch()}
+              >
                 重试
-              </Button>
+              </RefreshButton>
             </AlertDescription>
           </Alert>
         )}
@@ -303,7 +315,10 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
               />
             )}
             {state.messages.map((message, index) => (
-              <article key={index} className={cn('youju-message', `youju-message-${message.role}`)}>
+              <article
+                key={index}
+                className={cn('youju-message youju-motion-enter', `youju-message-${message.role}`)}
+              >
                 <header>
                   <span className="youju-avatar">
                     {message.role === 'assistant' ? '据' : MESSAGE_ROLES[message.role].slice(0, 1)}
@@ -346,8 +361,8 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
                       : '执行中'}
                 </Badge>
                 <p>
-                  尝试 {tool.attempt} ·{' '}
-                  {tool.latencyMs === undefined ? '耗时待确认' : `${tool.latencyMs} ms`}
+                  {tool.attempt === undefined ? '尝试次数未记录' : `尝试 ${tool.attempt}`} ·{' '}
+                  {tool.latencyMs === undefined ? '耗时未记录' : `${tool.latencyMs} ms`}
                 </p>
                 {tool.errorCode && <p>{tool.errorCode}</p>}
               </article>
@@ -394,6 +409,7 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
               type="button"
               variant="outline"
               disabled={action.isPending}
+              loading={action.isPending && action.variables?.kind === 'takeover'}
               onClick={() => action.mutate({ kind: 'takeover' })}
             >
               接管案件并回复客户
@@ -481,6 +497,7 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
             </span>
             <Button
               type="submit"
+              loading={action.isPending && action.variables?.kind !== 'takeover'}
               disabled={
                 !draft.trim() ||
                 action.isPending ||
@@ -489,13 +506,7 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
               }
             >
               <Send data-icon="inline-start" />
-              {action.isPending
-                ? '正在提交'
-                : mode === 'note'
-                  ? '保存备注'
-                  : mode === 'resolve'
-                    ? '确认结案'
-                    : '发送回复'}
+              {mode === 'note' ? '保存备注' : mode === 'resolve' ? '确认结案' : '发送回复'}
             </Button>
           </footer>
         </form>
@@ -505,7 +516,11 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
         <h2>案件依据</h2>
         <p>来自实际查询与检索记录</p>
         <h3>关联订单</h3>
-        {detail.isPending && <Skeleton className="h-28" />}
+        {detail.isPending && (
+          <div role="status" aria-label="正在读取案件依据">
+            <Skeleton className="h-28" />
+          </div>
+        )}
         {detail.data?.orders.length === 0 && <p>尚未查询到关联订单</p>}
         {detail.data?.orders.map((order) => (
           <article className="youju-evidence-card" key={order.orderNo}>

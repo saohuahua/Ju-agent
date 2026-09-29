@@ -8,7 +8,9 @@
  * 「模型边想边写参数」的过程由此可逐帧回看。
  */
 
+import { useState } from 'react'
 import type { TimelineNode } from '@/lib/timeline'
+import { formatToolFeedbackContent, toolFeedbackResults } from '@/lib/tool-feedback'
 
 const EVENT_TYPE_LABEL: Record<string, string> = {
   'run.started': '运行开始',
@@ -40,6 +42,11 @@ const EVENT_TYPE_LABEL: Record<string, string> = {
 }
 
 export function NodeDetail({ node }: { node: TimelineNode | null }) {
+  // 模式与换行只改变本地展示 不修改时间轴事件和原始载荷
+  // 切换节点时保留阅读偏好 便于连续比对多次工具回灌
+  const [view, setView] = useState<'formatted' | 'raw'>('formatted')
+  const [wrap, setWrap] = useState(true)
+
   if (!node) {
     return (
       <div className="flex h-full min-h-40 items-center justify-center rounded-container border border-dashed border-hairline text-xs text-stone-400">
@@ -48,14 +55,55 @@ export function NodeDetail({ node }: { node: TimelineNode | null }) {
     )
   }
 
+  const hasFeedback = node.events.some((event) => event.type === 'agent.tool_results')
+  const codeClass = `rounded-control border border-hairline bg-stone-100 px-3 py-2 font-mono text-[11px] leading-5 text-stone-700 overflow-x-auto ${wrap ? 'whitespace-pre-wrap break-all' : 'whitespace-pre'}`
+
   return (
     <div className="rounded-container border border-hairline bg-surface">
-      <div className="flex items-center justify-between border-b border-hairline px-4 py-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hairline px-4 py-2.5">
         <h3 className="text-sm font-medium text-stone-700">{node.label}</h3>
         <span className="font-mono text-[10px] text-stone-400">
           #{node.key.replace('seq-', '')}
           {node.latencyMs !== undefined && ` · ${node.latencyMs}ms`}
         </span>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline px-4 py-2">
+        {hasFeedback ? (
+          <div
+            role="group"
+            aria-label="结果展示方式"
+            className="inline-flex rounded-control border border-hairline p-0.5 text-xs"
+          >
+            <button
+              type="button"
+              aria-pressed={view === 'formatted'}
+              onClick={() => setView('formatted')}
+              className="rounded-control px-2.5 py-1 aria-pressed:bg-accent aria-pressed:text-ink"
+            >
+              格式化
+            </button>
+            <button
+              type="button"
+              aria-pressed={view === 'raw'}
+              onClick={() => setView('raw')}
+              className="rounded-control px-2.5 py-1 aria-pressed:bg-accent aria-pressed:text-ink"
+            >
+              原始 JSON
+            </button>
+          </div>
+        ) : (
+          <span />
+        )}
+        <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-stone-600">
+          <input
+            type="checkbox"
+            checked={wrap}
+            onChange={(event) => setWrap(event.target.checked)}
+            className="accent-primary"
+          />
+          自动换行
+        </label>
       </div>
 
       <div className="max-h-96 space-y-3 overflow-y-auto px-4 py-3">
@@ -80,18 +128,54 @@ export function NodeDetail({ node }: { node: TimelineNode | null }) {
           </section>
         )}
 
-        {node.events.map((event) => (
-          <section key={event.sequence}>
-            <h4 className="mb-1 flex items-center gap-2 text-[10px] tracking-wider text-stone-400">
-              {EVENT_TYPE_LABEL[event.type] ?? event.type}
-              <span className="font-mono">seq {event.sequence}</span>
-              <span>{new Date(event.createdAt).toLocaleTimeString('zh-CN')}</span>
-            </h4>
-            <pre className="overflow-x-auto rounded-control border border-hairline bg-stone-100 px-3 py-2 font-mono text-[11px] leading-5 text-stone-700">
-              {JSON.stringify(event.payload, null, 2)}
-            </pre>
-          </section>
-        ))}
+        {node.events.map((event) => {
+          const results =
+            event.type === 'agent.tool_results' ? toolFeedbackResults(event.payload) : null
+          return (
+            <section key={event.sequence}>
+              <h4 className="mb-1 flex items-center gap-2 text-[10px] tracking-wider text-stone-400">
+                {EVENT_TYPE_LABEL[event.type] ?? event.type}
+                <span className="font-mono">seq {event.sequence}</span>
+                <span>{new Date(event.createdAt).toLocaleTimeString('zh-CN')}</span>
+              </h4>
+              {view === 'formatted' && results ? (
+                <div className="space-y-3">
+                  {results.map((result, index) => (
+                    <article
+                      key={`${result.toolCallId}-${index}`}
+                      className="min-w-0 overflow-hidden rounded-control border border-hairline bg-white"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hairline px-3 py-2">
+                        <div className="min-w-0">
+                          <strong className="block break-all font-mono text-xs text-stone-800">
+                            {result.toolName}
+                          </strong>
+                          {result.toolCallId && (
+                            <span className="block break-all font-mono text-[10px] text-stone-500">
+                              {result.toolCallId}
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={
+                            result.isError ? 'text-xs text-red-700' : 'text-xs text-emerald-700'
+                          }
+                        >
+                          {result.isError ? '执行失败' : '执行成功'}
+                        </span>
+                      </div>
+                      <pre className={`${codeClass} rounded-none border-0 bg-transparent`}>
+                        {formatToolFeedbackContent(result.content)}
+                      </pre>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <pre className={codeClass}>{JSON.stringify(event.payload, null, 2)}</pre>
+              )}
+            </section>
+          )
+        })}
       </div>
     </div>
   )

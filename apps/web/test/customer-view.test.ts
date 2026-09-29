@@ -2,11 +2,36 @@ import { describe, expect, it } from 'vitest'
 import {
   canSendCustomerMessage,
   customerError,
+  customerMessageText,
   customerStatus,
   TERMINAL_STATUSES,
 } from '../src/components/customer/customer-view'
 
 describe('客户会话状态', () => {
+  it('选单消息不展示内部商品行 ID 仍保留用户可核对的商品与订单', () => {
+    const command = '选择订单 SO-2026-0001 商品 item-0001-1'
+    const candidates = [
+      {
+        runId: 'r',
+        sequence: 2,
+        type: 'order.candidates',
+        createdAt: '',
+        payload: {
+          orders: [
+            {
+              orderNo: 'SO-2026-0001',
+              items: [{ itemId: 'item-0001-1', title: '降噪耳机', quantity: 1 }],
+            },
+          ],
+        },
+      },
+    ]
+    expect(customerMessageText(command, candidates)).toBe('已选择降噪耳机（订单 SO-2026-0001）')
+    expect(customerMessageText(command, [])).toBe('已选择商品（订单 SO-2026-0001）')
+    expect(customerMessageText('我要查询订单 SO-2026-0001', candidates)).toBe(
+      '我要查询订单 SO-2026-0001',
+    )
+  })
   it('人工接管仍允许继续留言且仅终态开放结案评价', () => {
     expect(customerStatus('handling_human').next).toContain('继续留言')
     expect(TERMINAL_STATUSES).not.toContain('handling_human')

@@ -11,9 +11,12 @@
 
 import { CaretRight, Gauge } from '@phosphor-icons/react'
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
-import { AppShell } from '@/components/AppShell'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/Skeleton'
+import { DeskEmpty } from '@/components/desk/DeskEmpty'
 import { api } from '@/lib/api'
+import { useIdentity } from '@/lib/identity'
 import type { EvalCaseResultView, EvalReportSummary, FailureKind, SimTaskView } from '@/lib/types'
 
 // ---------- 常量 ----------
@@ -667,9 +670,19 @@ function SimProgressCard({ task }: { task: SimTaskView }) {
 // ---------- 页面 ----------
 
 export default function EvalPage() {
-  const [reports, setReports] = useState<EvalReportSummary[]>([])
+  const client = useQueryClient()
+  const { role } = useIdentity()
+  // 报告查询复用身份隔离的缓存 短暂卸载不取消只读请求
+  // 严格模式再次挂载时复用在途请求 返回页面时先显示缓存再按需刷新
+  const reportQuery = useQuery({
+    queryKey: ['eval', 'reports'],
+    queryFn: api.listEvalReports,
+    enabled: role !== 'customer',
+  })
+  const reports = reportQuery.data?.reports ?? []
   const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const loading = reportQuery.isLoading
+  const displayError = error ?? reportQuery.error?.message
   const [runningL1, setRunningL1] = useState(false)
   const [startingL2, setStartingL2] = useState(false)
 
@@ -686,21 +699,13 @@ export default function EvalPage() {
 
   const [expandedCaseId, setExpandedCaseId] = useState<string | null>(null)
 
+  const { refetch } = reportQuery
+  // 首次读取尚无缓存时普通重新读取仍会复用在途请求
+  // 写后先明确取消旧查询 再读取包含本次操作结果的新快照
   const load = useCallback(async () => {
-    try {
-      const reportBody = await api.listEvalReports()
-      setReports(reportBody.reports)
-      setError(null)
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '加载失败')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    load()
-  }, [load])
+    await client.cancelQueries({ queryKey: ['eval', 'reports'], exact: true })
+    return refetch()
+  }, [client, refetch])
 
   // 轮询 L2 任务 每 2 秒一次 完成刷新报告列表
   useEffect(() => {
@@ -733,6 +738,7 @@ export default function EvalPage() {
 
   const triggerL1 = async () => {
     if (runningL1) return
+    setError(null)
     setRunningL1(true)
     try {
       await api.runEval()
@@ -832,8 +838,12 @@ export default function EvalPage() {
   // 当前表单仍是旧供应商模型入口 不以客户离线会话可用性开放
   const l2Unavailable = true
 
+  if (role === 'customer') {
+    return <DeskEmpty title="评测看板仅供团队查看" description="请从客户服务入口继续处理售后问题" />
+  }
+
   return (
-    <AppShell>
+    <>
       <div className="page-enter mx-auto max-w-5xl px-6 py-8">
         {/* 页头 */}
         <div className="flex items-center justify-between gap-6">
@@ -854,14 +864,15 @@ export default function EvalPage() {
                 ScriptedModel 回放理想轨迹，全量 111 条约 2 秒完成
               </span>
             </div>
-            <button
+            <Button
+              loading={runningL1}
               type="button"
               onClick={triggerL1}
               disabled={runningL1}
               className="shrink-0 rounded-control border border-zinc-200 bg-surface px-4 py-2 text-xs font-medium text-stone-700 transition-colors duration-200 hover:bg-blue-50 active:scale-[0.98] disabled:opacity-50"
             >
-              {runningL1 ? '评测执行中' : '运行 L1 脚本回归'}
-            </button>
+              运行 L1 脚本回归
+            </Button>
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-hairline pt-4">
@@ -890,14 +901,15 @@ export default function EvalPage() {
                 {SAMPLE_OPTIONS.find((option) => option.value === sample)!.label} {repeat} 轮约{' '}
                 {estimatedCases} 条用例，估算约 {(estimatedTokens / 10000).toFixed(1)} 万 token
               </span>
-              <button
+              <Button
+                loading={startingL2}
                 type="button"
                 onClick={startL2}
                 disabled={startingL2 || simTaskId !== null || l2Unavailable}
                 className="shrink-0 rounded-control bg-blue-600 px-4 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50"
               >
                 {startingL2 || simTaskId ? 'L2 评测运行中' : '启动 L2 用户模拟'}
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -915,14 +927,14 @@ export default function EvalPage() {
           )}
         </section>
 
-        {error && (
+        {displayError && (
           <p className="mt-4 rounded-control border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            {error}
+            {displayError}
           </p>
         )}
 
         {loading && (
-          <>
+          <div role="status" aria-label="正在读取评测报告">
             <div className="mt-8 grid gap-4 md:grid-cols-2">
               {[0, 1].map((index) => (
                 <div
@@ -941,7 +953,7 @@ export default function EvalPage() {
                 <Skeleton key={index} className="h-5 w-full max-w-md" />
               ))}
             </div>
-          </>
+          </div>
         )}
 
         {!loading && reports.length === 0 && (
@@ -1198,6 +1210,6 @@ export default function EvalPage() {
           </>
         )}
       </div>
-    </AppShell>
+    </>
   )
 }

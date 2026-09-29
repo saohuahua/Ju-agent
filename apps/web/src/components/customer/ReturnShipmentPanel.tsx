@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import { RefreshButton } from '@/components/ui/refresh-button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { Field, FieldGroup, FieldLabel, FieldDescription } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -37,24 +39,44 @@ export function ReturnShipmentPanel({
     retry: 1,
   })
   const refresh = query.refetch
+  const previous = useRef({ token, runId, sequence, connected })
+
+  // 首次挂载与身份或会话切换由查询本身负责读取
+  // 连续事件合并为一次尾随刷新 定时查询仍保证持续流式输出时能够更新
+  // 已有请求继续完成 避免每个事件都取消并重发同一进度查询
   useEffect(() => {
-    void refresh()
-  }, [sequence, connected, refresh])
-  if (query.fetchStatus === 'paused')
+    const last = previous.current
+    previous.current = { token, runId, sequence, connected }
+    if (last.token !== token || last.runId !== runId) return
+    if (last.sequence === sequence && last.connected === connected) return
+
+    const timer = window.setTimeout(() => void refresh({ cancelRefetch: false }), 200)
+    return () => window.clearTimeout(timer)
+  }, [token, runId, sequence, connected, refresh])
+  const unavailable = query.fetchStatus === 'paused' || query.isError
+  // 首屏没有数据时使用独立占位 已显示表单不因后台失败而卸载
+  // 缓存只用于保留用户草稿 不作为进度仍然允许提交的依据
+  if (!query.data && query.fetchStatus === 'paused')
     return (
       <Alert>
         <AlertDescription>连接已离线 售后进度暂时无法核验 恢复连接后将重新读取</AlertDescription>
       </Alert>
     )
-  if (query.isPending) return <p role="status">正在读取售后进度</p>
-  if (query.isError)
+  if (!query.data && query.isPending)
+    return (
+      <div role="status" aria-label="正在读取售后进度">
+        <span className="sr-only">正在读取售后进度</span>
+        <Skeleton className="h-28 w-full" />
+      </div>
+    )
+  if (!query.data)
     return (
       <Alert>
         <AlertDescription>
           售后进度暂时无法核验 请恢复连接后重试
-          <Button variant="link" onClick={() => void refresh()}>
+          <RefreshButton variant="link" onRefresh={() => refresh()}>
             重新读取进度
-          </Button>
+          </RefreshButton>
         </AlertDescription>
       </Alert>
     )
@@ -62,6 +84,13 @@ export function ReturnShipmentPanel({
   if (!progress) return null
   return (
     <section className={styles.refundPanel} aria-label="原售后进度">
+      {unavailable && (
+        <Alert>
+          <AlertDescription>
+            最新进度暂时无法核验 已保留填写内容 恢复连接并刷新进度后可继续提交
+          </AlertDescription>
+        </Alert>
+      )}
       <div className={styles.refundHeading}>
         <h3>原售后进度</h3>
         <Badge variant="secondary">{progress.type === 'return' ? '退货后退款' : '仅退款'}</Badge>
@@ -81,6 +110,7 @@ export function ReturnShipmentPanel({
           token={token}
           runId={runId}
           progress={progress}
+          unavailable={unavailable}
           refresh={async () => {
             const result = await refresh()
             if (result.isError) throw new Error('进度读取失败')
@@ -88,9 +118,14 @@ export function ReturnShipmentPanel({
           }}
         />
       ) : null}
-      <Button variant="link" size="sm" disabled={query.isFetching} onClick={() => void refresh()}>
-        {query.isFetching ? '正在核验' : '刷新进度'}
-      </Button>
+      <RefreshButton
+        variant="link"
+        size="sm"
+        disabled={query.isFetching}
+        onRefresh={() => refresh()}
+      >
+        刷新进度
+      </RefreshButton>
     </section>
   )
 }
@@ -99,11 +134,13 @@ function ShipmentForm({
   token,
   runId,
   progress,
+  unavailable,
   refresh,
 }: {
   token: string
   runId: string
   progress: CustomerRefundProgress
+  unavailable: boolean
   refresh: () => Promise<CustomerRefundProgress | null>
 }) {
   const [tracking, setTracking] = useState('')
@@ -113,6 +150,8 @@ function ShipmentForm({
   const [error, setError] = useState('')
   const active = useRef(false)
   const lock = useRef(false)
+  // 保存本次点击的按钮语义 首次提交写入 pending 时不改变加载中的按钮宽度
+  const retrying = useRef(false)
   const controller = useRef<AbortController | null>(null)
   const storageKey = shipmentStorageKey(token, runId)
   useEffect(() => {
@@ -133,12 +172,13 @@ function ShipmentForm({
   }, [storageKey, progress.returnNo])
 
   async function submit() {
-    if (lock.current || !ready) return
+    if (lock.current || !ready || unavailable) return
     if (!validTrackingNo(tracking)) {
       setError('请输入 1 至 100 个字符的物流单号')
       return
     }
     lock.current = true
+    retrying.current = Boolean(pending)
     setBusy(true)
     setError('')
     let persisted = Boolean(pending)
@@ -217,8 +257,8 @@ function ShipmentForm({
               ? '本次提交已保存 重试将使用相同单号与请求'
               : '')}
       </div>
-      <Button type="submit" disabled={busy || !ready}>
-        {busy ? '正在提交' : pending ? '使用原请求重试' : '登记寄回'}
+      <Button type="submit" loading={busy} disabled={busy || !ready || unavailable}>
+        {(busy ? retrying.current : Boolean(pending)) ? '使用原请求重试' : '登记寄回'}
       </Button>
     </form>
   )

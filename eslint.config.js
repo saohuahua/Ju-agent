@@ -35,6 +35,7 @@ export default tseslint.config(
       '**/node_modules/**',
       '**/dist/**',
       '**/.next/**',
+      '**/.next-offline/**',
       '**/coverage/**',
       'artifacts/**',
       // 会话级临时工作树 不属于仓库源码
@@ -68,6 +69,15 @@ export default tseslint.config(
       'apps/api/src/**/*.ts',
     ],
     languageOptions: { globals: NODE_GLOBALS },
+  },
+  {
+    // 图示复核脚本使用 CommonJS 并在页面中读取布局
+    files: ['docs/learning/assets/review-business-diagrams.cjs'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: { ...NODE_GLOBALS, ...BROWSER_GLOBALS, require: 'readonly', __dirname: 'readonly' },
+    },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
   {
     // 性能脚本把代码片段注入浏览器上下文执行 需同时具备两套全局量

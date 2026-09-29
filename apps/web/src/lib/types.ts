@@ -24,6 +24,20 @@ export interface AgentEvent {
   createdAt: string
 }
 
+/** 与订单候选公开事件契约一致 */
+export interface OrderCandidates {
+  orders: Array<{
+    orderNo: string
+    status: string
+    totalAmountCents: number
+    currency: string
+    createdAt: string
+    items: Array<{ itemId: string; title: string; quantity: number }>
+  }>
+  offset: number
+  nextOffset: number | null
+}
+
 export interface RunSummary {
   runId: string
   customerId: string

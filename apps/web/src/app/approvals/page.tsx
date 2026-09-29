@@ -1,14 +1,14 @@
 'use client'
 
-import Link from 'next/link'
+import { NavigationLink as Link } from '@/components/NavigationLink'
 import { useEffect, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowUpRight, Clock3, RefreshCw, ShieldCheck } from 'lucide-react'
+import { ArrowUpRight, Clock3, ShieldCheck } from 'lucide-react'
 
-import { AppShell } from '@/components/AppShell'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { RefreshButton } from '@/components/ui/refresh-button'
 import {
   Dialog,
   DialogContent,
@@ -39,7 +39,7 @@ export default function ApprovalsPage() {
   const { token, role } = useIdentity()
 
   return (
-    <AppShell>
+    <>
       {role === 'customer' ? (
         <div className="youju-page">
           <Empty className="mt-8 border">
@@ -55,7 +55,7 @@ export default function ApprovalsPage() {
       ) : (
         <ApprovalWorkspace key={token} canDecide={role === 'supervisor'} />
       )}
-    </AppShell>
+    </>
   )
 }
 
@@ -143,14 +143,13 @@ function ApprovalWorkspace({ canDecide }: { canDecide: boolean }) {
           <h1>审批中心</h1>
           <p>核对业务对象 金额和申请理由后作出决定</p>
         </div>
-        <Button
+        <RefreshButton
           variant="outline"
-          onClick={() => void list.refetch()}
+          onRefresh={() => list.refetch()}
           disabled={list.isFetching || !!busyId}
         >
-          <RefreshCw data-icon="inline-start" aria-hidden="true" />
           刷新待办
-        </Button>
+        </RefreshButton>
       </header>
 
       <div className={styles.summary}>
@@ -186,9 +185,13 @@ function ApprovalWorkspace({ canDecide }: { canDecide: boolean }) {
           <AlertTitle>待办加载失败</AlertTitle>
           <AlertDescription>
             {list.error instanceof Error ? list.error.message : '请稍后重试'}
-            <Button variant="link" onClick={() => void list.refetch()}>
+            <RefreshButton
+              variant="link"
+              disabled={list.isFetching}
+              onRefresh={() => list.refetch()}
+            >
               重试
-            </Button>
+            </RefreshButton>
           </AlertDescription>
         </Alert>
       )}
@@ -196,7 +199,7 @@ function ApprovalWorkspace({ canDecide }: { canDecide: boolean }) {
       <div className={styles.layout}>
         <section aria-label="待审批列表" className={styles.list}>
           {list.isPending ? (
-            <div className={styles.loading}>
+            <div className={styles.loading} role="status" aria-label="正在读取审批待办">
               {[0, 1, 2].map((index) => (
                 <Skeleton key={index} className="h-40 w-full" />
               ))}
@@ -350,9 +353,10 @@ function ApprovalWorkspace({ canDecide }: { canDecide: boolean }) {
             <Button
               variant={selection?.decision === 'rejected' ? 'destructive' : 'default'}
               disabled={!!busyId || selectedState !== 'pending'}
+              loading={!!busyId}
               onClick={() => void decide()}
             >
-              {busyId ? '提交中' : selection?.decision === 'approved' ? '确认同意' : '确认拒绝'}
+              {selection?.decision === 'approved' ? '确认同意' : '确认拒绝'}
             </Button>
           </DialogFooter>
         </DialogContent>

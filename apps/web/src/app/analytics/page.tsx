@@ -9,8 +9,8 @@
  */
 
 import { ChartBar } from '@phosphor-icons/react'
-import { useCallback, useEffect, useState } from 'react'
-import { AppShell } from '@/components/AppShell'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '@/components/Skeleton'
 import {
   DayTrendColumns,
@@ -19,8 +19,8 @@ import {
   RatingColumns,
   RatioMeter,
 } from '@/components/charts'
-import { api, ApiError, currentRole } from '@/lib/api'
-import type { AnalyticsOverview } from '@/lib/types'
+import { api } from '@/lib/api'
+import { useIdentity } from '@/lib/identity'
 
 const STATUS_LABEL: Record<string, string> = {
   completed: '已完成',
@@ -52,33 +52,21 @@ const DAY_OPTIONS = [
 ]
 
 export default function AnalyticsPage() {
-  const [overview, setOverview] = useState<AnalyticsOverview | null>(null)
   const [days, setDays] = useState(14)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [role, setRole] = useState<'customer' | 'operator' | 'supervisor'>('customer')
-
-  const load = useCallback(async (windowDays: number) => {
-    try {
-      const body = await api.getAnalytics(windowDays)
-      setOverview(body)
-      setError(null)
-    } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : '加载失败')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    setRole(currentRole())
-    load(days)
-  }, [load, days])
-
+  const { role } = useIdentity()
   const isStaff = role === 'operator' || role === 'supervisor'
+  // 时间窗口进入查询键 迟到响应只能更新原窗口而不能覆盖当前选择
+  const query = useQuery({
+    queryKey: ['analytics', days],
+    queryFn: () => api.getAnalytics(days),
+    enabled: isStaff,
+  })
+  const overview = query.data
+  const loading = query.isLoading
+  const error = query.error?.message
 
   return (
-    <AppShell>
+    <>
       <div className="page-enter mx-auto max-w-5xl px-6 py-8">
         <header className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -112,7 +100,7 @@ export default function AnalyticsPage() {
 
         {!isStaff && (
           <div className="mb-4 rounded-container border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800">
-            当前演示身份是客户 请切换到 售后专员 或 主管 身份查看运营分析
+            当前身份是客户 请切换到 售后专员 或 主管 身份查看运营分析
           </div>
         )}
 
@@ -123,7 +111,11 @@ export default function AnalyticsPage() {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div
+            className="grid grid-cols-2 gap-3 md:grid-cols-4"
+            role="status"
+            aria-label="正在读取运营统计"
+          >
             {[0, 1, 2, 3].map((index) => (
               <Skeleton key={index} className="h-24 w-full" />
             ))}
@@ -299,6 +291,6 @@ export default function AnalyticsPage() {
           </div>
         ) : null}
       </div>
-    </AppShell>
+    </>
   )
 }

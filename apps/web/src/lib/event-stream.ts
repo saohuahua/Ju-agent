@@ -1,6 +1,7 @@
 import type { AgentEvent, RunStatus } from './types'
 
 const EVENT_TYPES = [
+  'order.candidates',
   'run.started',
   'message.user',
   'message.delta',
@@ -24,6 +25,7 @@ const EVENT_TYPES = [
   'run.handover',
   'operator.message',
   'run.resolved',
+  'human.requested',
   'tools.catalog_changed',
   'guard.blocked',
 ]
@@ -53,11 +55,15 @@ export function subscribeEventStream(
 
   const handle = (event: Event) => {
     if (!active) return
+    let parsed: AgentEvent
     try {
-      callbacks.onEvent(JSON.parse((event as MessageEvent).data) as AgentEvent)
+      parsed = JSON.parse((event as MessageEvent).data) as AgentEvent
     } catch {
       // 无效数据帧不参与状态归约 等待后续有效事件
+      return
     }
+    // 仅隔离格式错误 归约异常必须可诊断 不能被当作坏帧静默吞掉
+    callbacks.onEvent(parsed)
   }
 
   for (const type of EVENT_TYPES) source.addEventListener(type, handle)

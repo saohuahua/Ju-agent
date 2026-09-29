@@ -36,6 +36,7 @@
   --color-muted-foreground: #7b695d;
   --color-accent: #fff0e7;
   --color-accent-foreground: #a23e23;
+  --color-navigation-active: #fce7d9;
   --color-destructive: #af352b;
   --color-border: #eadfd7;
   --color-input: #c7b5a9;
@@ -96,6 +97,51 @@
   ::selection {
     background: var(--color-accent);
     color: var(--color-ink);
+  }
+}
+
+/* 滚动条沿用界面的暖灰色 透明轨道避免在卡片和输入区域增加深色槽线 */
+/* 标准属性覆盖 Firefox 等浏览器 横向表格和纵向会话使用同一套规则 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-console-border) transparent;
+}
+
+/* 支持伪元素的浏览器使用六像素轨道和圆角滑块 悬停只加深滑块本身 */
+/* 恢复标准属性的默认值 避免 Chromium 用标准样式覆盖伪元素的精确尺寸 */
+@supports selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    min-height: 24px;
+    border-radius: 999px;
+    background: var(--color-console-border);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-muted-foreground);
+  }
+}
+
+/* 高对比度模式使用系统颜色 保留滑块可见性 不影响原生滚动和键盘操作 */
+@media (forced-colors: active) {
+  * {
+    scrollbar-color: auto;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: CanvasText;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: Highlight;
   }
 }
 
@@ -188,12 +234,38 @@
   height: 17px;
 }
 .youju-nav:hover,
-.youju-nav.active {
-  background: #fce7d9;
-  color: #a23e23;
+.youju-nav.active,
+.youju-nav:has(.youju-navigation-feedback[data-pending='true']) {
+  background: var(--color-navigation-active);
+  color: var(--color-accent-foreground);
 }
 .youju-nav.active {
   font-weight: 600;
+}
+/* 导航等待反馈不占据布局空间 避免点击后文本和图标跳动 */
+.youju-nav,
+.youju-entry,
+.youju-brand {
+  position: relative;
+}
+.youju-navigation-feedback {
+  position: absolute;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  pointer-events: none;
+}
+.youju-navigation-feedback[data-pending='true'] {
+  opacity: 1;
+}
+/* 正文链接参与顶部导航反馈 但不在链接边缘重复放置侧栏专用圆点 */
+.youju-content .youju-navigation-feedback {
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
 }
 .youju-sidebar-footer {
   margin-top: auto;
@@ -265,7 +337,39 @@
 
 /* 案件工作区按队列 会话 证据三列组织并保留独立滚动区域 */
 .youju-desk {
-  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: calc(100dvh - 55px);
+  min-height: 0;
+  padding: 10px 16px 12px;
+}
+/* 标题统计与刷新共用一行 将剩余视口交给案件处理 */
+.youju-desk-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px 20px;
+  min-height: 34px;
+}
+.youju-desk-toolbar h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+.youju-desk-toolbar > button {
+  margin-left: auto;
+}
+.youju-desk-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  color: var(--color-muted-foreground);
+  font-size: 12px;
+}
+.youju-desk-counts strong {
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
 }
 .youju-page-heading {
   display: flex;
@@ -315,8 +419,8 @@
   border-radius: 12px;
   overflow: hidden;
   background: white;
-  height: calc(100dvh - 252px);
-  min-height: 540px;
+  flex: 1;
+  min-height: 0;
 }
 .youju-queue {
   min-width: 0;
@@ -394,14 +498,14 @@
   overflow: hidden;
 }
 .youju-case-heading {
-  padding: 20px 22px 14px;
+  padding: 12px 18px 10px;
   border-bottom: 1px solid var(--color-border);
 }
 .youju-case-heading h2 {
   font-size: 17px;
   font-weight: 600;
   overflow-wrap: anywhere;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 .youju-case-heading > div {
   display: flex;
@@ -485,7 +589,7 @@
   justify-content: space-between;
   gap: 12px;
 }
-.youju-composer footer span {
+.youju-composer footer > span {
   font-size: 10px;
   color: var(--color-muted-foreground);
 }
@@ -619,11 +723,10 @@
   }
   .youju-workspace {
     grid-template-columns: 245px minmax(0, 1fr);
-    height: auto;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 160px);
   }
   .youju-conversation {
-    min-height: 620px;
-    max-height: 850px;
+    min-height: 0;
   }
   .youju-evidence {
     grid-column: 2;
@@ -631,7 +734,7 @@
   }
   .youju-queue {
     grid-row: span 2;
-    max-height: 1100px;
+    min-height: 0;
   }
   .youju-unselected {
     grid-column: 2;
@@ -694,6 +797,14 @@
   .youju-page {
     padding: 0 12px 20px;
   }
+  .youju-desk {
+    height: auto;
+    padding-top: 12px;
+  }
+  .youju-desk-counts {
+    order: 1;
+    flex-basis: 100%;
+  }
   .youju-page-heading {
     padding: 17px 2px;
   }
@@ -726,7 +837,7 @@
   }
   .youju-queue {
     border-right: 0;
-    max-height: none;
+    max-height: 65dvh;
   }
   .youju-unselected {
     display: none;
@@ -735,11 +846,12 @@
     display: none;
   }
   .youju-conversation {
-    min-height: 700px;
-    max-height: 1000px;
+    height: 75dvh;
+    min-height: 440px;
   }
   .youju-evidence {
     border-left: 0;
+    max-height: 360px;
   }
   .youju-mobile-back {
     display: inline-flex;
@@ -754,12 +866,167 @@
   }
 }
 
+/* 动效令牌统一交互节奏 只改变视觉反馈 不延迟数据更新和按钮解锁 */
+:root {
+  --motion-fast: 120ms;
+  --motion-normal: 200ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 图标加载独立于页面轮询 只有明确处于操作中的控件才添加此类 */
+.youju-spin {
+  animation: youju-spin 900ms linear infinite;
+}
+@keyframes youju-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+[data-slot='button'] {
+  position: relative;
+  transition-property: color, background-color, border-color, box-shadow, opacity;
+  transition-duration: var(--motion-fast);
+}
+.youju-button-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+}
+/* 内容和加载图标继承按钮前景色 不受外层提示文案样式影响 */
+[data-slot='button'] > .youju-button-content,
+[data-slot='button'] > .youju-button-loader {
+  color: inherit;
+  font: inherit;
+}
+[data-loading='true'] > .youju-button-content {
+  opacity: 0;
+}
+.youju-button-loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+/* 两套历史骨架屏使用同一动画 首屏保留尺寸 再次查询不卸载已显示内容 */
+.youju-skeleton {
+  animation: youju-breathe 1600ms ease-in-out infinite;
+}
+@keyframes youju-breathe {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* 框架的链接等待状态或路由占位存在时显示顶部不定进度条 */
+/* 延迟出现避免缓存命中的快速导航闪烁 状态结束即隐藏 不设置虚假完成定时器 */
+.youju-navigation-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 3px;
+  z-index: 100;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+}
+.youju-navigation-progress > span {
+  display: block;
+  width: 35%;
+  height: 100%;
+  background: var(--color-primary);
+}
+.youju-shell:has(.youju-navigation-feedback[data-pending='true'], [data-route-loading])
+  .youju-navigation-progress {
+  visibility: visible;
+  transition: visibility 0s 150ms;
+}
+.youju-shell:has(.youju-navigation-feedback[data-pending='true'], [data-route-loading])
+  .youju-navigation-progress
+  > span {
+  animation: youju-progress 1200ms ease-in-out infinite;
+}
+@keyframes youju-progress {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(390%);
+  }
+}
+
+/* 入场只在节点挂载时执行 流式文字更新和轮询不会重新触发 */
+.page-enter,
+.youju-page,
+.youju-desk,
+.youju-motion-enter,
+[data-slot='tabs-content'][data-state='active'],
+[data-slot='alert'] {
+  animation: youju-appear var(--motion-normal) var(--motion-ease);
+}
+@keyframes youju-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 弹窗沿用 Radix 的打开关闭状态 关闭更快且不改变焦点管理 */
+[data-slot='dialog-overlay'][data-state='open'] {
+  animation: youju-appear var(--motion-normal) ease-out;
+}
+[data-slot='dialog-overlay'][data-state='closed'] {
+  animation: youju-disappear var(--motion-fast) ease-in;
+}
+[data-slot='dialog-content'][data-state='open'] {
+  animation: youju-dialog-in var(--motion-normal) var(--motion-ease);
+}
+[data-slot='dialog-content'][data-state='closed'] {
+  animation: youju-disappear var(--motion-fast) ease-in;
+}
+@keyframes youju-dialog-in {
+  from {
+    opacity: 0;
+    scale: 0.98;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@keyframes youju-disappear {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* 无限循环不能缩短成极高速循环 减少动态效果时直接停止并保留静态状态反馈 */
+  .youju-spin,
+  .youju-skeleton,
+  .youju-navigation-progress > span {
+    animation: none !important;
+  }
+  .youju-navigation-progress > span {
+    width: 100%;
+    opacity: 0.65;
+  }
+  [data-slot='dialog-content'] {
+    scale: 1 !important;
   }
 }

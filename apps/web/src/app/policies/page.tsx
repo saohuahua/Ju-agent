@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { FileText } from 'lucide-react'
-import { AppShell } from '@/components/AppShell'
 import { DeskEmpty } from '@/components/desk/DeskEmpty'
 import { PolicyDialog } from '@/components/desk/PolicyDialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import { RefreshButton } from '@/components/ui/refresh-button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -20,13 +20,13 @@ export default function PoliciesPage() {
   const { role } = useIdentity()
 
   return (
-    <AppShell>
+    <>
       {role === 'customer' ? (
         <DeskEmpty title="政策管理仅供团队使用" description="客户可在售后会话中咨询适用条款" />
       ) : (
         <PolicyLibrary />
       )}
-    </AppShell>
+    </>
   )
 }
 
@@ -53,7 +53,7 @@ function PolicyLibrary() {
         <div>
           <p className="youju-eyebrow">可追溯的处理依据</p>
           <h1>知识与政策</h1>
-          <p>演示政策的原文 分块与确定性检索 不调用模型或 Embedding</p>
+          <p>政策快照的原文 分块与确定性检索 不调用模型或 Embedding</p>
         </div>
       </header>
       {library.data && (
@@ -104,14 +104,22 @@ function PolicyLibrary() {
           全部
         </Button>
       </form>
-      {active.isPending && <Skeleton className="mt-6 h-36" />}
+      {active.isPending && (
+        <div role="status" aria-label="正在读取政策">
+          <Skeleton className="mt-6 h-36" />
+        </div>
+      )}
       {active.error && (
         <Alert variant="destructive" className="mt-6">
           <AlertDescription>
             {active.error.message}
-            <Button variant="link" onClick={() => void active.refetch()}>
+            <RefreshButton
+              variant="link"
+              disabled={active.isFetching}
+              onRefresh={() => active.refetch()}
+            >
               重试
-            </Button>
+            </RefreshButton>
           </AlertDescription>
         </Alert>
       )}

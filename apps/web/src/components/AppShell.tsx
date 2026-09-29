@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ArrowUpRight, Inbox } from 'lucide-react'
 
@@ -8,9 +7,10 @@ import { DEMO_TOKENS, setToken } from '@/lib/api'
 import { useIdentity } from '@/lib/identity'
 import { isNavItemActive, pageTitle, STAFF_NAVIGATION } from '@/lib/nav'
 import { cn } from '@/lib/utils'
+import { NavigationLink } from './NavigationLink'
 
 /**
- * 应用外壳提供统一品牌导航与演示身份切换
+ * 应用外壳由根布局挂载 普通换页保留侧栏和顶栏节点
  * 客户入口只展示客户自己的操作范围
  * 身份更新会通知查询缓存和事件流一起重建
  */
@@ -21,12 +21,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="youju-shell">
+      {/* 导航标记和路由占位共同驱动指示条 不把后台数据轮询视作换页 */}
+      {/* 指示条只表达等待 不展示无法由路由状态核验的百分比 */}
+      <div className="youju-navigation-progress" aria-hidden="true">
+        <span />
+      </div>
       <a href="#main-content" className="youju-skip">
         跳到主内容
       </a>
 
       <aside className="youju-sidebar">
-        <Link
+        <NavigationLink
           href={isCustomer ? '/workbench' : '/console'}
           className="youju-brand"
           aria-label="有据售后平台首页"
@@ -35,12 +40,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <span>
             有据<small>AFTERSALES</small>
           </span>
-        </Link>
+        </NavigationLink>
 
         <div className="youju-team">
           <span>售</span>
           <div>
-            售后服务团队<small>本地演示工作空间</small>
+            售后服务团队<small>客户与团队协作</small>
           </div>
         </div>
 
@@ -48,13 +53,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <nav aria-label="主导航">
           {isCustomer ? (
-            <Link className="youju-nav active" href="/workbench" aria-current="page">
+            <NavigationLink className="youju-nav active" href="/workbench" aria-current="page">
               <Inbox />
               客户服务
-            </Link>
+            </NavigationLink>
           ) : (
             STAFF_NAVIGATION.map(({ href, label, icon: Icon }) => (
-              <Link
+              <NavigationLink
                 key={href}
                 href={href}
                 className={cn('youju-nav', isNavItemActive(href, pathname) && 'active')}
@@ -62,21 +67,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               >
                 <Icon aria-hidden="true" />
                 {label}
-              </Link>
+              </NavigationLink>
             ))
           )}
         </nav>
 
         <div className="youju-sidebar-footer">
           {!isCustomer && (
-            <Link href="/workbench" className="youju-entry">
+            <NavigationLink href="/workbench" className="youju-entry">
               客户服务入口
               <ArrowUpRight aria-hidden="true" />
-            </Link>
+            </NavigationLink>
           )}
 
           <label htmlFor="demo-identity" className="youju-identity-label">
-            演示身份
+            当前身份
           </label>
           <select
             id="demo-identity"
@@ -91,7 +96,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </select>
 
           <p className="youju-environment">
-            模拟业务环境
+            订单与支付为模拟
             <br />
             数据与处理记录由服务端保存
           </p>
@@ -104,7 +109,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             工作空间<span>/</span>
             <strong>{pageTitle(pathname)}</strong>
           </div>
-          <span className="youju-local">本地演示</span>
+          <span className="youju-local">本地运行</span>
         </header>
 
         <main id="main-content" className="youju-content">
