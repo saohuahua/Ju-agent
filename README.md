@@ -11,9 +11,15 @@
 
 ## 学习与当前实现入口
 
-完整材料从[导学：有据售后](docs/learning/导学-有据售后.md)开始，包含 22 章正文与源码阅读路线；[面经](docs/interview/面经-有据售后.md)提供 24 道主问与递进追问，配套[练习](docs/learning/渐进重建练习.md)、[自测](docs/learning/集中自测.md)和[证据索引](docs/learning/核心结论与证据索引.md)。精确复现命令见[本地离线演示](docs/runbooks/p11-local-offline-demo.md)，无需重复构建。
+2026-09-28 新增半自动售后引导：普通咨询连续追问、快捷说明、意图补问选项及可实际受理的人工入口；退款办理中通过关联咨询联系人工。已使用用户配置的 DeepSeek 完成有限真实模型及浏览器验收，旧快照保留原行为。启用方式、测试与费用边界见[售后引导交接](docs/handoffs/customer-guidance.md)。
 
-当前默认持久入口使用完整模型轮次确认、冻结版本工具集合和字符政策检索；旧版逐 token 事件、动态查单门控及上下文压缩不能直接视为此入口已启用能力。两类退款通过业务授权、发送意图和原交易查询恢复，未知资金不自动重发。P8 双分支调查为独立模块，未接默认客户入口。真实模型、真实支付及 Docker 运行验收的限制见[当前证据索引](docs/learning/核心结论与证据索引.md)。
+2026-09-28 客户消息与处理进度已修复：SSE 禁止代理压缩缓冲，默认持久智能会话发送即回显并按请求键确认，回复与订单选择卡片可恢复，进度只展示可核验动作。根因、接口兼容和验收范围见[消息与进度交接](docs/handoffs/customer-message-progress.md)。
+
+2026-09-28 新增最近订单查询与选单：默认 simulation 新会话无需手填订单号，可选择本人最近订单及商品，保留原始退货诉求，并识别“无法开机”等质量问题表述。旧会话保留冻结版本，需要新建咨询体验。实现、测试和已知边界见[最近订单选单交接](docs/handoffs/recent-order-selection.md)。
+
+完整材料从[导学：有据售后](docs/learning/导学-有据售后.md)开始，原 22 章按主题分层，新增[10 篇业务详解](docs/learning/03-业务逻辑详解/README.md)、10 张业务 SVG、[23 道业务练习与独立解析](docs/learning/09-练习与自测/业务流程练习.md)，建议先业务后机制阅读；[面经](docs/interview/面经-有据售后.md)提供主问与递进追问，配套[重建练习](docs/learning/09-练习与自测/渐进重建练习.md)、[技术自测](docs/learning/09-练习与自测/集中自测.md)和[证据索引](docs/learning/维护与证据/核心结论与证据索引.md)。精确复现命令见[本地离线演示](docs/runbooks/p11-local-offline-demo.md)，无需重复构建。
+
+当前默认持久入口使用完整模型轮次确认、冻结版本工具集合和字符政策检索；旧版逐 token 事件、动态查单门控及上下文压缩不能直接视为此入口已启用能力。两类退款通过业务授权、发送意图和原交易查询恢复，未知资金不自动重发。P8 双分支调查为独立模块，未接默认客户入口。真实模型、真实支付及 Docker 运行验收的限制见[当前证据索引](docs/learning/维护与证据/核心结论与证据索引.md)。
 
 ## 历史能力与实验背景
 
@@ -48,7 +54,9 @@ docker compose --env-file infra/docker/offline.env -p youju-p10 -f compose.yaml 
 
 浏览器访问 `http://127.0.0.1:18790/workbench`。默认不会占用原 8787/8790 服务，业务和渠道分别持久化。普通重启不运行 db:reset 或删除卷。镜像首次构建需要依赖下载或已有缓存，离线指运行期间不调用真实模型和资金，并非首次构建无需网络。
 
-本地开发保留 `pnpm dev` / `pnpm dev:web` 以及历史演示脚本，它们不替代默认容器部署验收。部署工具链固定 Node 22.23.2 与 pnpm 11.23.0，按锁文件安装。`infra/docker/docker-compose.yml` 仅保留历史 PostgreSQL/Redis 设施，当前运行时没有迁移到 PostgreSQL。
+本地离线开发只需运行 `pnpm dev:offline`，再打开终端打印的工作台地址。此入口与 Compose 使用相同的 simulation 业务模式和内嵌模拟渠道，网页同样经 `/api` 代理到 API；数据保存在独立的 `data/local-offline/`，不会读取 Docker 卷或原 `data/app.db`。完整用法与差异见[本地与容器一致性](docs/runbooks/local-offline.md)。旧的 `pnpm dev` / `pnpm dev:web` 保留为分别启动的开发入口，不自动启用完整离线业务。部署工具链固定 Node 22.23.2 与 pnpm 11.23.0，按锁文件安装。`infra/docker/docker-compose.yml` 仅保留历史 PostgreSQL/Redis 设施，当前运行时没有迁移到 PostgreSQL。
+
+换电脑保留当前本地数据时，先停止服务，运行 `pnpm data:backup:offline`，将打印的备份目录带到新电脑，在首次启动前运行 `pnpm data:restore:offline <备份目录>`。备份包含业务库和模拟渠道库，操作步骤见[本地与容器一致性](docs/runbooks/local-offline.md)。不迁移历史数据时，直接运行 `pnpm dev:offline` 会创建表和基础演示数据。
 
 演示令牌
 
@@ -59,7 +67,7 @@ docker compose --env-file infra/docker/offline.env -p youju-p10 -f compose.yaml 
 | 售后专员  | operator-token   |
 | 主管 审批 | supervisor-token |
 
-这些令牌仅用于本机离线演示，不是生产认证方案。正式 API 仅显式 simulation 启用持久退款会话；live 一律拒绝，填写真实密钥不会打开入口。
+这些令牌仅用于本机离线演示，不是生产认证方案。业务与支付仍固定为 simulation；真实模型对话可在本机设置页经过连接测试后单独启用，见[模型设置手册](docs/runbooks/model-settings.md)。
 
 ## 常用命令
 
@@ -80,7 +88,7 @@ pnpm build           # 构建前端生产包
 
 ## 接入真实模型
 
-当前已识别的正式真实模型入口保持关闭，不读取模型凭据或环境文件。真实传输、价格核验、Judge 校准与质量验证需要另立任务；P5 仍锁定。本轮 P10 不开启真实模型、P8 默认客户调查或公网发布。
+本机设置页支持 Anthropic Messages 与 OpenAI 兼容 Chat 协议的真实模型对话。API Key 只保存在服务端进程内存，连接测试和对话均须显式启用；模型调用费用按用户填写的单价估算，不代表供应商账单。订单与支付继续模拟，真实业务生产部署、Judge 校准与模型质量验证仍未完成。配置步骤和边界见[模型设置手册](docs/runbooks/model-settings.md)。
 
 以下旧 L2 成绩属于历史实验记录，不代表当前部署的真实模型质量。当前阶段事实以 [IMPLEMENTATION](IMPLEMENTATION.md) 和 [P10 交接](docs/handoffs/p10-offline-deployment.md) 为准。
 
@@ -124,7 +132,7 @@ infra/           PostgreSQL DDL Docker Compose 生产路径
 
 ## 文档索引
 
-- [P11 写作约定与章节规划](docs/learning/写作约定与章节规划.md) 已确认标准；22 章及配套材料从[导学](docs/learning/导学-有据售后.md)进入，检查范围见[编写与复核记录](docs/learning/编写与复核记录.md)
+- [P11 写作约定与章节规划](docs/learning/维护与证据/写作约定与章节规划.md) 已确认标准；22 章及配套材料从[导学](docs/learning/导学-有据售后.md)进入，检查范围见[编写与复核记录](docs/learning/维护与证据/编写与复核记录.md)
 - [架构设计](docs/architecture.md) 分层图 生命周期 退款安全链 事件协议
 - [业务背景](docs/business-context.md) 为什么做售后 Agent 人机分工边界
 - [术语表](docs/CONTEXT.md) 补偿与物流推送业务概念 词汇一致
