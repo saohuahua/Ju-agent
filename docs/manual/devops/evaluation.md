@@ -21,7 +21,7 @@
 
 ### 当前数据集
 
-源数据在 `packages/eval/src/cases.ts` 汇总，导入时按契约校验格式和 ID 唯一性。本次统计 124 条，均有 scenario；优先级 P0 42 条、P1 63 条、P2 19 条。
+源数据在 `packages/eval/src/cases.ts` 汇总，导入时按契约校验格式和 ID 唯一性。本次统计 124 条，均有 scenario；优先级 P0 42 条、P1 63 条、P2 19 条。`regression` 分类用于历史会话回流，目录为空时不增加条数。从会话生成草稿用 `pnpm case:from-run -- --run <runId>`，必须再执行 `pnpm case:adopt -- --draft <file> --id <id>` 才会进入回归集。
 
 | 分类             | 数量 | 主要观察点               |
 | ---------------- | ---: | ------------------------ |

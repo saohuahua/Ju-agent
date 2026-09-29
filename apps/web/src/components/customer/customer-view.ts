@@ -45,7 +45,7 @@ export function customerStatus(status: RunStatus): { label: string; next: string
     case 'failed':
       return { label: '处理暂停', next: '处理暂时中断 请联系售后团队核实进度' }
     case 'cancelled':
-      return { label: '已取消', next: '本次服务已取消' }
+      return { label: '已取消', next: '本次服务已结束 如需帮助请新建咨询' }
   }
 }
 

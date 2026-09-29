@@ -24,6 +24,9 @@
     "db:reset": "tsx scripts/db-reset.ts",
     "eval": "tsx packages/eval/src/cli.ts",
     "eval:dataset": "tsx scripts/export-dataset.ts",
+    "trace:export": "tsx scripts/trace-export.ts",
+    "case:from-run": "tsx scripts/case-from-run.ts",
+    "case:adopt": "tsx scripts/case-adopt.ts",
     "rag:check": "tsx scripts/rag-dataset-check.ts",
     "rag:baseline": "tsx scripts/rag-baseline.ts",
     "demo": "tsx scripts/demo.ts",
@@ -36,6 +39,7 @@
     "@aftersales/eval": "workspace:*",
     "@aftersales/persistence": "workspace:*",
     "@aftersales/runtime": "workspace:*",
+    "@aftersales/telemetry": "workspace:*",
     "@aftersales/tools": "workspace:*"
   },
   "devDependencies": {

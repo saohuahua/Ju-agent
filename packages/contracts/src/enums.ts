@@ -216,6 +216,7 @@ export const EVENT_TYPES = [
   'run.handover',
   'operator.message',
   'run.resolved',
+  'run.expired',
   'human.requested',
   // v4 深度可视化：门控与防线状态从 agent 内部计算提升为一等事件 供前端回放
   'tools.catalog_changed',

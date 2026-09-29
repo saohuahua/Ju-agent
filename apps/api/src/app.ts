@@ -47,6 +47,13 @@ import { requestsHuman } from '@aftersales/runtime'
 import { ToolExecutionError } from '@aftersales/tools'
 import { createAuthEnv, requireActor, requireRole, type AuthEnv } from './auth.js'
 import { createEventStream } from './sse.js'
+import {
+  actorKey,
+  ConnectionGate,
+  createRateLimitMiddleware,
+  type RateLimitOptions,
+} from './rate-limit.js'
+import { createRequestTimeoutMiddleware, type RequestTimeoutOptions } from './request-timeout.js'
 import { registerDeskRoutes } from './desk.js'
 import { customerEvent, customerRun } from './customer-view.js'
 import { customerRefundProgress } from './customer-progress.js'
@@ -62,6 +69,11 @@ export interface AppDependencies {
   /** 模型不可用时创建运行返回 503 */
   modelAvailable: boolean
   modelSettings?: ModelSettingsStore
+  /** false 关闭限流 对象可覆盖阈值 测试默认关闭 */
+  rateLimit?: false | RateLimitOptions
+  requestTimeout?: false | RequestTimeoutOptions
+  sseMaxLifetimeMs?: number
+  sseMaxConnections?: number
 }
 
 /** 领域错误码到 HTTP 状态码 字面量联合保证 hono 重载匹配 */
@@ -110,15 +122,16 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
   const app = new Hono<AppEnv>()
   const authEnv = deps.authEnv ?? createAuthEnv()
   const { system } = deps
+  const inTest = process.env.VITEST === 'true'
+  const rateLimitEnabled = deps.rateLimit === false ? false : Boolean(deps.rateLimit) || !inTest
+  const timeoutEnabled =
+    deps.requestTimeout === false ? false : Boolean(deps.requestTimeout) || !inTest
+  const sseGate = new ConnectionGate(deps.sseMaxConnections ?? 4)
   const approvalExecutions = new SqliteApprovalExecutionRepository(system.db)
 
   // 后台执行中的运行 进程内单飞锁 防止同一运行被并发驱动 单实例部署假设
   const executingRuns = new Map<string, Promise<void>>()
 
-  /**
-   * 运行提交后立即返回 事件经 SSE 实时推送
-   * 循环内的模型错误由 failRun 兜底 这里兜状态机外的意外异常
-   */
   /**
    * 运行提交后立即返回 事件经 SSE 实时推送
    * 循环内的模型错误由 failRun 兜底 这里兜状态机之外的意外异常
@@ -217,6 +230,20 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
   })
 
   app.use('/api/*', requireActor)
+  if (rateLimitEnabled) {
+    app.use(
+      '/api/*',
+      createRateLimitMiddleware(deps.rateLimit === false ? {} : (deps.rateLimit ?? {})),
+    )
+  }
+  if (timeoutEnabled) {
+    app.use(
+      '/api/*',
+      createRequestTimeoutMiddleware(
+        deps.requestTimeout === false ? {} : (deps.requestTimeout ?? {}),
+      ),
+    )
+  }
   registerDeskRoutes(app, system)
 
   const localModelAccess = (context: Context<AppEnv>) =>
@@ -227,8 +254,8 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     localModelAccess(context) ||
     Boolean(
       context.req.header('Origin') &&
-        localModelOrigin(context.req.header('Origin')) &&
-        deps.modelSettings?.usesEnvironmentKey(),
+      localModelOrigin(context.req.header('Origin')) &&
+      deps.modelSettings?.usesEnvironmentKey(),
     )
 
   app.get('/api/model-settings', (context) => {
@@ -700,6 +727,11 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     if (!Number.isSafeInteger(lastEventId) || lastEventId < 0) {
       return context.json({ error: 'VALIDATION_ERROR', message: '事件游标不合法' }, 400)
     }
+    const streamKey = actorKey(actor)
+    if (!sseGate.tryAcquire(streamKey)) {
+      context.header('Retry-After', '5')
+      return context.json({ error: 'RATE_LIMITED', message: '事件流连接过多 请稍后重试' }, 429)
+    }
     const stream = createEventStream(
       {
         signal: deps.shutdownSignal,
@@ -713,6 +745,8 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
             !executingRuns.has(id) && ['completed', 'failed', 'cancelled'].includes(current.status)
           )
         },
+        maxLifetimeMs: deps.sseMaxLifetimeMs ?? (inTest ? undefined : 15 * 60 * 1000),
+        onClose: () => sseGate.release(streamKey),
       },
       runId,
       lastEventId,

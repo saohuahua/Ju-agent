@@ -18,6 +18,7 @@ import type { Socket } from 'node:net'
 import { composeSystem } from '@aftersales/runtime'
 import { SystemClock } from '@aftersales/domain'
 import { createApp } from './app.js'
+import { startSessionExpiryScanner } from './session-expiry.js'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { resolveApiModelEntry } from './model-entry.js'
@@ -70,6 +71,7 @@ if (process.env.P6_EMBEDDED_SIMULATOR === '1') {
 const system = composeSystem({
   db,
   clock: new SystemClock(),
+  sessionIdleTtlHours: Number(process.env.SESSION_IDLE_TTL_HOURS ?? 72),
   model,
   withFixture: false,
   durableConversation: durableOptions
@@ -92,6 +94,11 @@ system.conversations?.start()
 system.durableBusiness?.start()
 
 const shutdown = new AbortController()
+startSessionExpiryScanner(
+  system.sessionExpiry,
+  Number(process.env.SESSION_IDLE_SCAN_MS ?? 600_000),
+  shutdown.signal,
+)
 const app = createApp({
   system,
   modelAvailable: available,

@@ -17,6 +17,19 @@ export interface P7LedgerRow {
   usage_json: string | null
 }
 
+/** 按会话导出追踪用的调用行 含时间与用途 */
+export interface P7CallTrace {
+  call_id: string
+  run_id: string
+  purpose: string
+  attempt: number
+  status: 'held' | 'unknown' | 'settled'
+  outcome: string | null
+  usage_json: string | null
+  created_at: string
+  settled_at: string | null
+}
+
 /** 账本所有写入使用立即事务 跨连接先占额度后允许外部调用 */
 export class P7Ledger {
   constructor(private readonly db: SqliteDatabase) {
@@ -137,5 +150,15 @@ export class P7Ledger {
     return this.db
       .prepare('SELECT * FROM p7_calls ORDER BY created_at, call_id')
       .all() as P7LedgerRow[]
+  }
+
+  /** 只读列出某会话的模型调用 供离线追踪导出 */
+  listByRun(runId: string): P7CallTrace[] {
+    return this.db
+      .prepare(
+        `SELECT call_id, run_id, purpose, attempt, status, outcome, usage_json, created_at, settled_at
+         FROM p7_calls WHERE run_id = ? ORDER BY created_at, call_id`,
+      )
+      .all(runId) as P7CallTrace[]
   }
 }

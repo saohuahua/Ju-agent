@@ -360,6 +360,14 @@ export function reduceEvent(state: RunViewState, event: AgentEvent): RunViewStat
       next.status = 'completed'
       return next
     }
+    case 'run.expired': {
+      next.status = 'cancelled'
+      next.messages = [
+        ...state.messages,
+        { role: 'system', text: '会话已因长时间无回复自动结束 如需帮助请新建咨询' },
+      ]
+      return next
+    }
     default: {
       // agent.turn agent.tool_results 等内部事件不影响视图状态
       return next

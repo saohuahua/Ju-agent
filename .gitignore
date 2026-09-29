@@ -12,6 +12,7 @@ artifacts/
 data/
 eval/reports/
 eval/failures/
+eval/traces/
 *.db
 *.db-journal
 

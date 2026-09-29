@@ -19,6 +19,7 @@ import {
   PriceProtectionService,
   RatingService,
   RunService,
+  SessionExpiryService,
   type Actor,
   type Clock,
   type PolicyArticleScorer,
@@ -87,6 +88,8 @@ export interface ComposeOptions {
    * 显式注入属于可信组合边界 付费打分器须经过现有网关
    */
   policyScorer?: PolicyArticleScorer
+  /** 客户空闲会话 TTL 小时 缺省 72 */
+  sessionIdleTtlHours?: number
 }
 
 /** 装配完成的系统句柄 */
@@ -112,6 +115,7 @@ export interface ComposedSystem {
   executor: ToolExecutor
   engine: WorkflowEngine
   runner: AgentRunner
+  sessionExpiry: SessionExpiryService
   /** 事件仓储 SSE 与事件查询共用 */
   eventRepo: SqliteEventRepository
   /** 评测断言用 按表白名单查行 */
@@ -241,6 +245,23 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     clock,
     maxSteps: options.maxSteps ?? 12,
   })
+  const sessionExpiry = new SessionExpiryService({
+    runs: runService,
+    clock,
+    ttlHours: options.sessionIdleTtlHours ?? 72,
+    guards: {
+      isBusy: (runId) =>
+        Boolean(
+          db
+            .prepare(
+              "SELECT 1 FROM p6_tasks WHERE run_id = ? AND status IN ('queued','running','needs_confirmation')",
+            )
+            .get(runId),
+        ),
+      hasRefundLink: (runId) =>
+        Boolean(db.prepare('SELECT 1 FROM p6_conversation_refunds WHERE run_id = ?').get(runId)),
+    },
+  })
 
   return {
     durableBusiness: options.durableBusiness
@@ -273,6 +294,7 @@ export function composeSystem(options: ComposeOptions): ComposedSystem {
     executor,
     engine,
     runner,
+    sessionExpiry,
     eventRepo,
     queryTable: (table, where) => queryTable(db, table, where),
   }

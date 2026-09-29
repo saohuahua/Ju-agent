@@ -82,6 +82,7 @@ export function customerEvent(event: AgentEventRow): AgentEventRow | null {
     case 'run.started':
     case 'run.resumed':
     case 'run.completed':
+    case 'run.expired':
     case 'run.escalated':
     case 'run.handover':
       payload = {}

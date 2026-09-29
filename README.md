@@ -84,6 +84,9 @@ pnpm eval:sim -- --repeat 3       # L2 三轮 Pass^3
 pnpm eval:sim -- --case <id>      # 单用例调试
 pnpm demo            # 终端离线演示 五个核心场景
 pnpm eval:dataset    # 导出评测数据集 JSON
+pnpm trace:export -- --run <id>   # 将会话导出为 OTLP JSON 并校验
+pnpm case:from-run -- --run <id>  # 从会话生成 L1 用例草稿
+pnpm case:adopt -- --draft <file> --id <id>  # 显式采纳草稿为 regression 用例
 pnpm db:reset        # 重置数据库
 pnpm build           # 构建前端生产包
 ```

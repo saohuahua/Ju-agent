@@ -25,6 +25,7 @@ const EVENT_TYPES = [
   'run.handover',
   'operator.message',
   'run.resolved',
+  'run.expired',
   'human.requested',
   'tools.catalog_changed',
   'guard.blocked',

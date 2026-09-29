@@ -2,6 +2,8 @@
 
 ## 当前有效进度
 
+2026-09-29 P12 可观测回流与平台加固完成：会话可导出为 OTLP JSON 并离线校验；历史 run 可生成 L1 草稿且必须显式采纳；API 单进程限流与 POST 超时、SSE 连接上限与最长存活；客户 awaiting_input 空闲 72 小时收尾为 cancelled 并落 run.expired。全仓测试、非增量类型、ESLint 和 L1 124/124 通过。未 build、未调用真实模型与支付。机制与边界见[P12 交接](docs/handoffs/p12-observability-and-platform.md)。
+
 2026-09-29 本机 `pnpm dev:offline` 已按 `.env` 中的 `MODEL_AUTO_ENABLE=1` 启用 Gemini 3.5 Flash-Lite 真实模型，订单与支付仍为本机模拟。修复本机 Next 代理误指向 Docker 主机 `api:8787`、环境配置读取顺序、Gemini 重复用量、缺失工具索引、工具结束标志及跨轮签名回放。8790 浏览器不带主管管理口令新建 live 咨询，真实检索政策后答复并可连续追问；本机业务库中该会话两次模型调用已结算并记录 token。设置弹窗预填非敏感 `.env` 字段，Key 不回传。完整测试与 L1 结果以本轮最终验证为准，操作边界见[模型设置手册](docs/runbooks/model-settings.md)。下方旧记录保留其当时的历史范围。
 
 2026-09-28 半自动售后引导完成：新版普通咨询可连续追问并显式结束，固定话术与真实模型分工，人工申请复用持久幂等命令，退款办理中另开关联人工咨询。DeepSeek 真实接口八条消息复测及桌面窄屏浏览器链路通过，隔离退货完成后渠道仅执行一次。最终全仓 754/754、非增量类型、ESLint 和 L1 124/124 通过。未 build、未重启原服务、未修改原演示数据；真实调用费用与初始失败未知费用分别记录，见[售后引导交接](docs/handoffs/customer-guidance.md)。

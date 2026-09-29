@@ -22,6 +22,9 @@ export interface SseDependencies {
   getRunStatus?: (runId: string) => Promise<string>
   /** 测试可缩短轮询间隔 线上保留默认值 */
   pollIntervalMs?: number
+  /** 连接最长存活 到期优雅关闭且不发完成帧 以便客户端带 Last-Event-ID 重连 */
+  maxLifetimeMs?: number
+  onClose?: () => void
 }
 
 function sleep(ms: number): Promise<void> {
@@ -42,6 +45,13 @@ export function createEventStream(
   let closed = false
   let cursor = lastEventId
 
+  const startedAt = Date.now()
+  const close = () => {
+    if (closed) return
+    closed = true
+    deps.onClose?.()
+  }
+
   return new ReadableStream<Uint8Array>({
     start(controller) {
       // 初始提示立即返回 避免代理等待首个业务事件
@@ -54,6 +64,10 @@ export function createEventStream(
 
       try {
         while (!closed && !deps.signal?.aborted) {
+          if (deps.maxLifetimeMs && Date.now() - startedAt >= deps.maxLifetimeMs) {
+            send(': server-refresh\n\n')
+            break
+          }
           const events = await deps.listEvents(runId, cursor + 1)
           if (closed) break
           let deliveredCursor = cursor
@@ -91,7 +105,7 @@ export function createEventStream(
       } catch {
         // 轮询异常直接结束流 客户端会重连
       }
-      closed = true
+      close()
       try {
         controller.close()
       } catch {
@@ -99,7 +113,7 @@ export function createEventStream(
       }
     },
     cancel() {
-      closed = true
+      close()
     },
   })
 }

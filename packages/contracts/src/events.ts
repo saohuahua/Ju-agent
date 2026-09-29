@@ -200,6 +200,12 @@ export const EVENT_PAYLOAD_SCHEMAS = {
     summary: z.string(),
     resolvedBy: z.string(),
   }),
+  /** 空闲超时系统收尾 状态迁往 cancelled 与客户主动结束咨询区分 */
+  'run.expired': z.object({
+    reason: z.literal('idle_ttl'),
+    idleHours: z.number().nonnegative(),
+    lastActiveAt: z.string(),
+  }),
   'human.requested': z.object({ sourceRunId: z.string().nullable() }),
   /**
    * 工具目录变更 能力门控的可观测化

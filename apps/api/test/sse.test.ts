@@ -62,6 +62,22 @@ describe('事件流生命周期', () => {
     expect(listEvents).toHaveBeenCalledTimes(calls)
   })
 
+  it('超过存活时长时不发送完成帧', async () => {
+    const stream = createEventStream(
+      {
+        listEvents: async () => [],
+        isRunTerminal: async () => false,
+        pollIntervalMs: 1,
+        maxLifetimeMs: 5,
+      },
+      'run_test',
+      0,
+    )
+    const body = await new Response(stream).text()
+    expect(body).toContain(': server-refresh')
+    expect(body).not.toContain('stream.complete')
+  })
+
   it('查询故障不发送正常完成帧 允许客户端重连', async () => {
     const stream = createEventStream(
       {
