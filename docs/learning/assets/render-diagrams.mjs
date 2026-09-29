@@ -1,8 +1,8 @@
 import { readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-function renderDiagram(spec){
+export function renderDiagram(spec){
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const wrap=(s,max)=>{const out=[];let line='',n=0;for(const c of s){const w=c.codePointAt(0)>255?1:.55;if(n+w>max){out.push(line);line='';n=0;}line+=c;n+=w;}if(line)out.push(line);return out};
 const text=(x,y,ls,cls='body',gap=24)=>`<text x="${x}" y="${y}" text-anchor="middle" class="${cls}">${ls.map((l,i)=>`<tspan x="${x}" dy="${i?gap:0}">${esc(l)}</tspan>`).join('')}</text>`;
@@ -15,6 +15,8 @@ for(const l of spec.labels||[])p.push(text(l.x,l.y,Array.isArray(l.text)?l.text:
 p.push(text(560,spec.height-23,[spec.footer||'实线表示调用或推进　虚线表示返回或逻辑关联　持久位置以数据库形状标注'],'label'),'</svg>');return p.join('\n')+'\n';
 }
 
-const directory = dirname(fileURLToPath(import.meta.url))
-const specs = JSON.parse(readFileSync(join(directory, 'diagram-specs.json'), 'utf8'))
-for (const spec of specs) writeFileSync(join(directory, spec.id + '.svg'), renderDiagram(spec), 'utf8')
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+  const directory = dirname(fileURLToPath(import.meta.url))
+  const specs = JSON.parse(readFileSync(join(directory, 'diagram-specs.json'), 'utf8'))
+  for (const spec of specs) writeFileSync(join(directory, spec.id + '.svg'), renderDiagram(spec), 'utf8')
+}

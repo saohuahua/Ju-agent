@@ -22,7 +22,7 @@
 <path d="M930 715V756H190V810" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
 <path d="M560 756V810" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
 <path d="M930 756V810" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
-<path d="M690 445H747V1037H770" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M690 445H747V980H790V1037H770" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
 <rect x="712" y="957" width="70" height="23" rx="4" fill="#f8fafb"/>
 <text x="747" y="973" text-anchor="middle" class="label"><tspan x="747" dy="0">协议拒绝</tspan></text>
 <rect x="55" y="180" width="270" height="110" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
@@ -39,13 +39,13 @@
 <text x="560" y="674.5" text-anchor="middle" class="body"><tspan x="560" dy="0">agent.turn 与步骤</tspan><tspan x="560" dy="23">同事务确认</tspan></text>
 <rect x="800" y="610" width="260" height="105" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
 <text x="930" y="656" text-anchor="middle" class="head"><tspan x="930" dy="0">工具分派</tspan></text>
-<text x="930" y="686" text-anchor="middle" class="body"><tspan x="930" dy="0">只读 / 终止 / 退款</tspan></text>
+<text x="930" y="686" text-anchor="middle" class="body"><tspan x="930" dy="0">只读 / 交互控制 / 退款</tspan></text>
 <rect x="55" y="610" width="270" height="105" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
 <text x="190" y="644.5" text-anchor="middle" class="head"><tspan x="190" dy="0">下一轮消息</tspan></text>
 <text x="190" y="674.5" text-anchor="middle" class="body"><tspan x="190" dy="0">原 tool_result 配对</tspan><tspan x="190" dy="23">恢复不猜测调用身份</tspan></text>
 <rect x="55" y="810" width="270" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
-<text x="190" y="853.5" text-anchor="middle" class="head"><tspan x="190" dy="0">ask_user / conclude</tspan></text>
-<text x="190" y="883.5" text-anchor="middle" class="body"><tspan x="190" dy="0">保存补问或明确结束</tspan></text>
+<text x="190" y="842" text-anchor="middle" class="head"><tspan x="190" dy="0">ask_user / conclude</tspan></text>
+<text x="190" y="872" text-anchor="middle" class="body"><tspan x="190" dy="0">补问或结束本轮答复</tspan><tspan x="190" dy="23">会话终态取决于版本</tspan></text>
 <rect x="425" y="810" width="270" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
 <text x="560" y="853.5" text-anchor="middle" class="head"><tspan x="560" dy="0">只读工具</tspan></text>
 <text x="560" y="883.5" text-anchor="middle" class="body"><tspan x="560" dy="0">查询后回填原 ID</tspan></text>
@@ -55,5 +55,5 @@
 <rect x="350" y="1000" width="420" height="75" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
 <text x="560" y="1031" text-anchor="middle" class="head"><tspan x="560" dy="0">协议失败或半段中断</tspan></text>
 <text x="560" y="1061" text-anchor="middle" class="body"><tspan x="560" dy="0">停止并保留调用费用事实</tspan></text>
-<text x="560" y="1097" text-anchor="middle" class="label"><tspan x="560" dy="0">退款及终止工具独占一轮　目录不是数据库访问权　当前持久入口不确认未完成的增量</tspan></text>
+<text x="560" y="1097" text-anchor="middle" class="label"><tspan x="560" dy="0">退款及交互控制工具独占一轮　新版咨询答复后仍可继续　目录不是数据库访问权</tspan></text>
 </svg>

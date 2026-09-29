@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="820" viewBox="0 0 1120 820" role="img" aria-labelledby="title desc"><title id="title">审批分支与持久交接</title><desc id="desc">决定绑定具体资源和金额　批准后的业务前置仍须满足</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L7 4L0 8" fill="#52758a"/></marker><style>text{font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#253b49}.title{font-size:25px;font-weight:700}.subtitle{font-size:16px;fill:#607581}.head{font-size:19px;font-weight:700}.body{font-size:16px}.label{font-size:14px;fill:#405e70}.group{font-size:16px;font-weight:700;fill:#4c6b7d}</style></defs><rect width="1120" height="820" fill="#f8fafb" rx="16"/>
+<text x="560" y="43" text-anchor="middle" class="title"><tspan x="560" dy="0">审批分支与持久交接</tspan></text>
+<text x="560" y="74" text-anchor="middle" class="subtitle"><tspan x="560" dy="0">决定绑定具体资源和金额　批准后的业务前置仍须满足</tspan></text>
+<path d="M355 170H440" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="367" y="138" width="56" height="23" rx="4" fill="#f8fafb"/>
+<text x="395" y="154" text-anchor="middle" class="label"><tspan x="395" dy="0">需审批</tspan></text>
+<path d="M210 220V310" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="222" y="252" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="257" y="268" text-anchor="middle" class="label"><tspan x="257" dy="0">自动允许</tspan></text>
+<path d="M715 170H795" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M927 220V265H575V310" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="651" y="237" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="686" y="253" text-anchor="middle" class="label"><tspan x="686" dy="0">有效决定</tspan></text>
+<path d="M575 120V95H1090V360H1065" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<rect x="945" y="75" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="980" y="91" text-anchor="middle" class="label"><tspan x="980" dy="0">时限扫描</tspan></text>
+<path d="M210 415V572H230" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M575 415V465H405V520" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="425" y="434" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="460" y="450" text-anchor="middle" class="label"><tspan x="460" dy="0">批准交接</tspan></text>
+<path d="M715 365H755V490H877V520" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="779" y="458" width="42" height="23" rx="4" fill="#f8fafb"/>
+<text x="800" y="474" text-anchor="middle" class="label"><tspan x="800" dy="0">拒绝</tspan></text>
+<path d="M932 415V520" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="947" y="458" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="982" y="474" text-anchor="middle" class="label"><tspan x="982" dy="0">安全过期</tspan></text>
+<path d="M405 625V680" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M580 572H640V723H695" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="609" y="638" width="84" height="23" rx="4" fill="#f8fafb"/>
+<text x="651" y="654" text-anchor="middle" class="label"><tspan x="651" dy="0">按业务类型</tspan></text>
+<rect x="65" y="120" width="290" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="210" y="163.5" text-anchor="middle" class="head"><tspan x="210" dy="0">领域输出</tspan></text>
+<text x="210" y="193.5" text-anchor="middle" class="body"><tspan x="210" dy="0">allow 或 needs_approval</tspan></text>
+<rect x="65" y="310" width="290" height="105" rx="10" fill="#e5f1e9" stroke="#b8cbd7"/>
+<text x="210" y="344.5" text-anchor="middle" class="head"><tspan x="210" dy="0">自动授权</tspan></text>
+<text x="210" y="374.5" text-anchor="middle" class="body"><tspan x="210" dy="0">原允许方案</tspan><tspan x="210" dy="23">无人工令牌</tspan></text>
+<rect x="440" y="120" width="275" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="577.5" y="152" text-anchor="middle" class="head"><tspan x="577.5" dy="0">原审批与检查点</tspan></text>
+<text x="577.5" y="182" text-anchor="middle" class="body"><tspan x="577.5" dy="0">资源 金额 原运行</tspan><tspan x="577.5" dy="23">pending 与有效期</tspan></text>
+<rect x="795" y="120" width="265" height="100" rx="10" fill="#fff1d6" stroke="#b8cbd7"/>
+<text x="927.5" y="152" text-anchor="middle" class="head"><tspan x="927.5" dy="0">主管决定</tspan></text>
+<text x="927.5" y="182" text-anchor="middle" class="body"><tspan x="927.5" dy="0">角色与原方案核验</tspan><tspan x="927.5" dy="23">条件更新防止覆盖</tspan></text>
+<rect x="435" y="310" width="280" height="105" rx="10" fill="#fff1d6" stroke="#b8cbd7"/>
+<text x="575" y="344.5" text-anchor="middle" class="head"><tspan x="575" dy="0">批准或拒绝落库</tspan></text>
+<text x="575" y="374.5" text-anchor="middle" class="body"><tspan x="575" dy="0">与执行意图共同提交</tspan><tspan x="575" dy="23">HTTP 202 表示决定受理</tspan></text>
+<rect x="800" y="310" width="265" height="105" rx="10" fill="#f8e6e2" stroke="#b8cbd7"/>
+<text x="932.5" y="344.5" text-anchor="middle" class="head"><tspan x="932.5" dy="0">过期安全检查</tspan></text>
+<text x="932.5" y="374.5" text-anchor="middle" class="body"><tspan x="932.5" dy="0">未接管且未发送等条件</tspan><tspan x="932.5" dy="23">未知资金不释放</tspan></text>
+<rect x="230" y="520" width="350" height="105" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="405" y="554.5" text-anchor="middle" class="head"><tspan x="405" dy="0">后台持久受理</tspan></text>
+<text x="405" y="584.5" text-anchor="middle" class="body"><tspan x="405" dy="0">人工凭据消费与命令共同提交</tspan><tspan x="405" dy="23">自动路径校验原允许方案</tspan></text>
+<rect x="695" y="520" width="365" height="105" rx="10" fill="#f8e6e2" stroke="#b8cbd7"/>
+<text x="877.5" y="554.5" text-anchor="middle" class="head"><tspan x="877.5" dy="0">非成功业务收口</tspan></text>
+<text x="877.5" y="584.5" text-anchor="middle" class="body"><tspan x="877.5" dy="0">拒绝或合法过期</tspan><tspan x="877.5" dy="23">保留事实 不发送资金</tspan></text>
+<rect x="230" y="680" width="350" height="85" rx="10" fill="#e5f1e9" stroke="#b8cbd7"/>
+<text x="405" y="716" text-anchor="middle" class="head"><tspan x="405" dy="0">仅退款</tspan></text>
+<text x="405" y="746" text-anchor="middle" class="body"><tspan x="405" dy="0">执行原资金动作</tspan></text>
+<rect x="695" y="680" width="365" height="85" rx="10" fill="#fff1d6" stroke="#b8cbd7"/>
+<text x="877.5" y="716" text-anchor="middle" class="head"><tspan x="877.5" dy="0">退货后退款</tspan></text>
+<text x="877.5" y="746" text-anchor="middle" class="body"><tspan x="877.5" dy="0">先等待寄回与收货</tspan></text>
+<text x="560" y="797" text-anchor="middle" class="label"><tspan x="560" dy="0">决定已保存与业务已完成不同　不得用批准状态绕过收货或资金核验</tspan></text>
+</svg>

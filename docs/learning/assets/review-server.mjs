@@ -6,7 +6,10 @@ import { fileURLToPath } from 'node:url'
 // 只向本机提供教材图示预览
 const directory = dirname(fileURLToPath(import.meta.url))
 const names = readdirSync(directory).filter(name => name.endsWith('.svg')).sort()
-const specs = JSON.parse(readFileSync(join(directory, 'diagram-specs.json'), 'utf8'))
+const specs = [
+  ...JSON.parse(readFileSync(join(directory, 'diagram-specs.json'), 'utf8')),
+  ...JSON.parse(readFileSync(join(directory, 'business-diagram-specs.json'), 'utf8')),
+]
 const server = createServer((request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1')
   const start = Math.max(0, Number(url.searchParams.get('start') || 0))

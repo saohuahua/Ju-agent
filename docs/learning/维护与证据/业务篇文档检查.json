@@ -1,0 +1,966 @@
+{
+  "checkedAt": "2026-09-28T15:48:41.688Z",
+  "scope": "Current maintainable Markdown links and learning structure",
+  "files": 172,
+  "localLinks": 1900,
+  "missing": [
+    {
+      "file": "docs/experiments/p8-offline-investigation.md",
+      "target": "p8-offline-investigation-evidence/typecheck-closed.log"
+    },
+    {
+      "file": "docs/experiments/p8-offline-investigation.md",
+      "target": "p8-offline-investigation-evidence/lint-closed.log"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/layout.tsx#L12"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/globals.css#L4"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/globals.css#L1"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L49"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L122"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L70"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L36"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L101"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/StatusBadge.tsx#L24"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/ToolCard.tsx#L27"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/ApprovalCard.tsx#L43"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/layout.tsx#L11"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/runReducer.ts#L208"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L82"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/StatusBadge.tsx#L10"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L50"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L136"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L90"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L70"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/globals.css#L8"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L166"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L64"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L32"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L96"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L46"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L84"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L99"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L68"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L87"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L69"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L49"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L100"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L46"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L49"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L99"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L57"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L50"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L60"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L70"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L50"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L101"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L106"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L36"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L72"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L134"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L80"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/types.ts#L62"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/ApprovalCard.tsx#L53"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L60"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L28"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L81"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L70"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L72"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L68"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/globals.css#L8"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/sse.ts"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/runReducer.ts"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/api.ts"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/api/src/auth.ts"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/types.ts"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/test/runReducer.test.ts"
+    },
+    {
+      "file": "docs/v2-ui-specs.md",
+      "target": "../v2-ui-mockups/01-eval-dashboard.html"
+    }
+  ],
+  "unresolvedAnchors": [],
+  "chapters": [
+    {
+      "file": "docs/learning/01-项目全貌/01-售后业务与项目边界.md",
+      "chineseCharacters": 2976,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/01-项目全貌/02-一次退款请求的全景.md",
+      "chineseCharacters": 3025,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/01-项目全貌/03-架构与源码阅读地图.md",
+      "chineseCharacters": 2501,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/02-后端必要基础/04-HTTP接口与身份边界.md",
+      "chineseCharacters": 3121,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/02-后端必要基础/05-数据建模与SQLite持久化.md",
+      "chineseCharacters": 3449,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/02-后端必要基础/06-事务唯一约束与条件更新.md",
+      "chineseCharacters": 3408,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/02-后端必要基础/07-状态机与异步任务.md",
+      "chineseCharacters": 2958,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/04-Agent机制/08-Agent与确定性工作流的分工.md",
+      "chineseCharacters": 3002,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/04-Agent机制/09-原生工具调用与Agent循环.md",
+      "chineseCharacters": 3457,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/04-Agent机制/10-多轮澄清与上下文管理.md",
+      "chineseCharacters": 3268,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/04-Agent机制/11-工具门控与安全边界.md",
+      "chineseCharacters": 3222,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/04-Agent机制/12-政策检索引用与确定性判定.md",
+      "chineseCharacters": 3295,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/05-资金执行与恢复/13-从售后申请到审批与执行.md",
+      "chineseCharacters": 3331,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/05-资金执行与恢复/14-退款幂等与结果未知.md",
+      "chineseCharacters": 3370,
+      "figures": 2,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/05-资金执行与恢复/15-Worker租约与检查点.md",
+      "chineseCharacters": 3080,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/05-资金执行与恢复/16-跨进程恢复与人工核验.md",
+      "chineseCharacters": 3231,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/06-交互与运行治理/17-SSE事件投影与前端状态.md",
+      "chineseCharacters": 2980,
+      "figures": 2,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/06-交互与运行治理/18-模型预算与费用账本.md",
+      "chineseCharacters": 3072,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/06-交互与运行治理/19-有限双分支调查与运行记忆.md",
+      "chineseCharacters": 3126,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/07-验证与设计取舍/20-测试L1L2与Judge.md",
+      "chineseCharacters": 3128,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/07-验证与设计取舍/21-本地演示双库备份与恢复.md",
+      "chineseCharacters": 2881,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/07-验证与设计取舍/22-设计取舍局限与迁移条件.md",
+      "chineseCharacters": 3067,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    }
+  ],
+  "business": [
+    {
+      "file": "docs/learning/03-业务逻辑详解/B01-业务能力全景与角色分工.md",
+      "chineseCharacters": 2678,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/03-业务逻辑详解/B02-业务对象与状态关系.md",
+      "chineseCharacters": 4507,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/03-业务逻辑详解/B03-售后资格与金额如何判定.md",
+      "chineseCharacters": 4008,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/03-业务逻辑详解/B04-仅退款的完整业务实现.md",
+      "chineseCharacters": 4634,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/03-业务逻辑详解/B05-退货后退款的完整业务实现.md",
+      "chineseCharacters": 4366,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/03-业务逻辑详解/B06-自动处理与人工审批.md",
+      "chineseCharacters": 4101,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/03-业务逻辑详解/B07-人工接管与结案.md",
+      "chineseCharacters": 4019,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/03-业务逻辑详解/B08-补偿价保与换货.md",
+      "chineseCharacters": 2529,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/03-业务逻辑详解/B09-物流事实与服务评价.md",
+      "chineseCharacters": 2554,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    },
+    {
+      "file": "docs/learning/03-业务逻辑详解/B10-从业务事实到客户页面.md",
+      "chineseCharacters": 2543,
+      "figures": 1,
+      "hasPrerequisite": true,
+      "hasImplementation": true,
+      "hasSources": true,
+      "headingDepthValid": true
+    }
+  ],
+  "businessQuestions": [
+    "B01A",
+    "B01B",
+    "B02A",
+    "B02B",
+    "B03A",
+    "B03B",
+    "B03C",
+    "B03D",
+    "B04A",
+    "B04B",
+    "B05A",
+    "B05B",
+    "B06A",
+    "B06B",
+    "B07A",
+    "B07B",
+    "B08A",
+    "B08B",
+    "B08C",
+    "B09A",
+    "B09B",
+    "B10A",
+    "B10B"
+  ],
+  "businessAnswers": [
+    "B01A",
+    "B01B",
+    "B02A",
+    "B02B",
+    "B03A",
+    "B03B",
+    "B03C",
+    "B03D",
+    "B04A",
+    "B04B",
+    "B05A",
+    "B05B",
+    "B06A",
+    "B06B",
+    "B07A",
+    "B07B",
+    "B08A",
+    "B08B",
+    "B08C",
+    "B09A",
+    "B09B",
+    "B10A",
+    "B10B"
+  ],
+  "originalSelfQuestions": [
+    "01A",
+    "01B",
+    "02A",
+    "02B",
+    "03A",
+    "03B",
+    "04A",
+    "04B",
+    "05A",
+    "05B",
+    "06A",
+    "06B",
+    "07A",
+    "07B",
+    "08A",
+    "08B",
+    "09A",
+    "09B",
+    "10A",
+    "10B",
+    "11A",
+    "11B",
+    "12A",
+    "12B",
+    "13A",
+    "13B",
+    "14A",
+    "14B",
+    "15A",
+    "15B",
+    "16A",
+    "16B",
+    "17A",
+    "17B",
+    "18A",
+    "18B",
+    "19A",
+    "19B",
+    "20A",
+    "20B",
+    "21A",
+    "21B",
+    "22A",
+    "22B"
+  ],
+  "diagrams": 10,
+  "diagramIssues": [],
+  "sourceHashes": {
+    "packages/domain/src/policy.ts": "6f7a0e3692134ec14ea226cca19ac779241cc32a00d78bbfe898a0d1a67296a2",
+    "packages/domain/src/services/after-sale-service.ts": "27be83d6d37013ca3a633c2b46c975d14a9159a5b66ccf6cb08dbab5ad832b34",
+    "packages/domain/src/services/compensation-service.ts": "62a0bbd81a42bfa18e232419162ee47ae67937f53b98d3485ad38f8dd0e1bab0",
+    "packages/domain/src/services/price-protection-service.ts": "e2671c6788ae6828c21419c7869734fdb635ff30af52a4a0ada21f237ba2efaa",
+    "packages/domain/src/services/rating-service.ts": "fe831f67598943ce03d915e9f4ac3d70509b848f0ec7925c126e202ff2c8396c",
+    "packages/domain/src/services/logistics-event-service.ts": "de75cb10ba445223f32904369ce7be6be46514700aebb7ad328c9e11adacda23",
+    "packages/domain/src/case-closure.ts": "1aa1d0b8e25249e305ef7a9ea5f7c2c6a8264ca367133a52e12afb64a62b855e",
+    "packages/persistence/src/case-closure-repository.ts": "727336ddc1b1f7165c3e7a320c9ccf29a4d0f99b7d54925475bf820db7165b03",
+    "packages/persistence/src/conversation-journal.ts": "73ca799c80c19bd330da282418095d84935340e30a6d998d94911a0cb814c12e",
+    "packages/persistence/src/p6-conversation-refund.ts": "e90f0b5235aefb8be1c89a8dc589bf320707fb5b28499f0eff8864e34d406ae0",
+    "packages/runtime/src/durable-business.ts": "640ebc57cd40f711f506a52dc49257cc140723ded39f7c7c0433f01a4f9feb30",
+    "apps/api/src/app.ts": "790adbca604c66194c9e45ec22199d30cca5c97e3aefca7f5f7c9aedfc45694a",
+    "apps/api/src/customer-progress.ts": "a88554b51efaba27b428dca869da6e78d7994612aa1bba9a9e9dbb3afc75099e",
+    "packages/runtime/src/durable-conversation.ts": "8ba07871b3e911c6fd99edf6e59d8cfa5e1c6c8028571c86939dd7527b31fca6",
+    "packages/runtime/src/customer-guidance.ts": "5d4e821134b1f40e75b6fbfb0cddeac1a4a6f39e6ca2e0ab6e02440560bef3fb"
+  },
+  "svgHashes": {
+    "b01-capabilities.svg": "e4e2bb2b3bf199eefe5810c7ae2a429fb7731a0ff602b9f3d1d9f468505a357d",
+    "b02-objects.svg": "5bdc6924f068ab1fc2e9545eda94412d938c3ad40be384d2eb4979100998ab98",
+    "b03-policy.svg": "fa790d14c25696f64fc788548e1d64c136385efa964811b95247352ad86111f9",
+    "b04-refund.svg": "12620498afb96fbefb9b1c7486edab62301680fdf63e7bf3b661021271f6dc3a",
+    "b05-return.svg": "360fa99621623f66bbb3001dfd98cf4831a6b860a935926cc7d65a5347f6689d",
+    "b06-approval.svg": "5b7ec7cb8f8711dc7fe8c612df6d9c1509d7a93205d35bcc4e7784a2b3dd0d42",
+    "b07-human-closure.svg": "be272e59e4f9cf67d1c6f4ca951c7a5f8236f2dda60e4aea30e0694bd10e8312",
+    "b08-other-business.svg": "213e272e0048a064448db45b2dd28697c3cd2fc84ea08f629858266217e9e364",
+    "b09-logistics-rating.svg": "58599120626bd98fe17ea207188bed04616cef24c588a71a5614da4811dea691",
+    "b10-customer-view.svg": "cfcb413a8dcb6c6356dce73e3b8045af111c269cf4eb0a3af4913114f31f0627"
+  },
+  "limitations": [
+    "未运行应用构建与业务测试",
+    "SVG 静态边界检查不代替视觉预览",
+    "未验证 Typora 实际显示",
+    "历史实验原始输出未改写"
+  ],
+  "blockingMissing": [],
+  "blockingAnchors": [],
+  "unrelatedMissing": [
+    {
+      "file": "docs/experiments/p8-offline-investigation.md",
+      "target": "p8-offline-investigation-evidence/typecheck-closed.log"
+    },
+    {
+      "file": "docs/experiments/p8-offline-investigation.md",
+      "target": "p8-offline-investigation-evidence/lint-closed.log"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/layout.tsx#L12"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/globals.css#L4"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/globals.css#L1"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L49"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L122"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L70"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L36"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L101"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/StatusBadge.tsx#L24"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/ToolCard.tsx#L27"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/ApprovalCard.tsx#L43"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/layout.tsx#L11"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/runReducer.ts#L208"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L82"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/StatusBadge.tsx#L10"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L50"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L136"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L90"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L70"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/globals.css#L8"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L166"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L64"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L32"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L96"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L46"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L84"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L99"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L68"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L87"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L69"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L49"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L100"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L46"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L49"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L99"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L57"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L50"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L60"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L70"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L50"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L101"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L106"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L36"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L72"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L134"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L80"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/types.ts#L62"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/ApprovalCard.tsx#L53"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/approvals/page.tsx#L60"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/runs/page.tsx#L28"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/eval/page.tsx#L81"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L70"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx#L72"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/workbench/page.tsx#L68"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/app/globals.css#L8"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/sse.ts"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/runReducer.ts"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/api.ts"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/components/AppShell.tsx"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/api/src/auth.ts"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/src/lib/types.ts"
+    },
+    {
+      "file": "docs/redesign-audit.md",
+      "target": "../../apps/web/test/runReducer.test.ts"
+    },
+    {
+      "file": "docs/v2-ui-specs.md",
+      "target": "../v2-ui-mockups/01-eval-dashboard.html"
+    }
+  ]
+}
