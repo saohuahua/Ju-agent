@@ -180,7 +180,8 @@ if (mode === 'channel') {
       },
       {
         owner: `worker-${process.pid}`,
-        leaseMs: 300,
+        // 跨进程调度延迟不应代替测试显式注入的租约过期
+        leaseMs: 3000,
         callTimeoutMs: scenario === 'long-read' ? 5000 : 150,
         maxAttempts: 2,
         retryDelayMs: 0,
