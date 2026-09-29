@@ -6,11 +6,14 @@
   "type": "module",
   "packageManager": "pnpm@11.23.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "dev": "pnpm --filter @aftersales/api dev",
     "dev:web": "pnpm --filter web dev",
+    "dev:offline": "node --import tsx scripts/dev-offline.ts",
+    "data:backup:offline": "node --import tsx scripts/local-offline-data.ts backup",
+    "data:restore:offline": "node --import tsx scripts/local-offline-data.ts restore",
     "build": "pnpm --filter web build",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",

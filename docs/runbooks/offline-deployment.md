@@ -1,6 +1,8 @@
 # 默认离线部署与恢复
 
-本入口用于本机演示，真实模型和真实资金均不启用。当前交付的容器运行验收受阻，不能据本文命令宣称已部署成功。身份仍为演示令牌，不适合公网、生产认证或真实售后。
+2026-09-28 接续状态：Docker 安装及旧套接字阻塞已处理，但固件虚拟化检查为未启用，WSL2 报 `HCS_E_HYPERV_NOT_INSTALLED`，Windows 组件也需要重启；容器构建和验收仍未完成。BIOS 开启 SVM 后的检查与接续命令见[本次部署记录](../handoffs/p10-deployment-resume-20260928.md)。
+
+本入口默认用于本机离线演示，启动时真实模型和真实资金均不启用。代码允许从本机设置页显式测试并启用真实模型对话，业务和资金仍为模拟；该可选路径尚未在 Docker 容器实测，见[模型设置手册](model-settings.md)。当前容器运行验收受阻，不能据本文命令宣称已部署成功。身份仍为演示令牌，不适合公网、生产认证或真实售后。
 
 ## 前提与默认命令
 
@@ -38,7 +40,7 @@ PowerShell 可用 `Invoke-RestMethod` 代替 curl。浏览器访问 `http://127.
 
 浏览器 `/api` 和 SSE → Web 同源 rewrite → `http://api:8787/api` → 原回环支付客户端 → 原模拟器。API 与模拟器同进程只共享网络和生命周期，不共享库；没有第二套支付服务。容器端口需对容器网络开放，宿主映射只绑定回环。
 
-Web 在镜像构建时设置 `NEXT_PUBLIC_API_BASE=''` 与 `OFFLINE_DEPLOYMENT=1`，生产客户端因此使用同源路径，构建产物保存内部 API rewrite。运行时改变 NEXT_PUBLIC_API_BASE 不会修改已打包客户端；若更改拓扑需重建，不能填浏览器无法解析的 api 容器名。源码开发默认 127.0.0.1:8787 保持不变。
+Web 客户端统一使用同源 `/api` 路径，构建产物保存内部 API rewrite。代理在 `OFFLINE_DEPLOYMENT=1` 时默认转发到容器网络中的 `http://api:8787`；本地 `pnpm dev:offline` 则把 `OFFLINE_API_ORIGIN` 设置为本次启动的 API 地址。独立运行 `pnpm dev:web` 时，同源 `/api` 代理到宿主机 `127.0.0.1:8787`，局域网浏览器无需访问自己的回环地址。生产环境更改代理目标需要重建 Web 镜像，不能让浏览器直接解析容器名。
 
 api/web 均以 node 用户运行，镜像内预建并赋权两个数据目录，首次新 named volume 继承目录内容与权限。新卷实际权限、Linux 原生库和重建读取必须在 Docker 环境验收；不要把 bind mount 未授权目录的失败用常驻 root 绕过去。
 
@@ -87,7 +89,7 @@ restore 预检两个目标目录均为空，并核对两个备份哈希；目标
 pnpm --config.verify-deps-before-run=false exec tsx scripts/p10-acceptance.ts
 ```
 
-脚本只接受本机 npipe/unix Docker context，创建独立 `p10-accept-*` project，使用 28787/28790 和新卷。端口已占用则失败，不结束其他服务。覆盖正式 HTTP 两类退款、重放、等待期杀容器和重建、原 toolCall 与客户事件、未知资金/费用、接管 409/普通留言/越权 403、停写备份、新 project 恢复和 live 拒绝。最后通过已有 puppeteer-core 对实际容器页面做同源 API/SSE 和桌面/窄屏截图检查；需要本机 Chrome/Chromium，可用 `P10_BROWSER_EXECUTABLE` 指定，不自动安装。没有运行浏览器就不能标记整套容器验收通过。
+脚本只接受本机 npipe/unix Docker context，创建独立 `p10-accept-*` project，使用 28787/28790 和新卷。端口已占用则失败，不结束其他服务。覆盖正式 HTTP 两类退款、重放、等待期杀容器和重建、原 toolCall 与客户事件、未知资金/费用、接管 409/普通留言/越权 403、停写备份、新 project 恢复和业务模式 live 拒绝。此处的业务模式拒绝不等于本机设置页无法启用真实模型传输。最后通过已有 puppeteer-core 对实际容器页面做同源 API/SSE 和桌面/窄屏截图检查；需要本机 Chrome/Chromium，可用 `P10_BROWSER_EXECUTABLE` 指定，不自动安装。没有运行浏览器就不能标记整套容器验收通过。
 
 结果写 `artifacts/p10/<时间>/`，失败也保留，完成后停止本轮服务并保留所有卷。不要将完整 JSON、库和截图自动提交。故障矩阵另复用已有 `apps/api/test/conversation-refund-process.test.ts`，不重写资金恢复框架。
 
