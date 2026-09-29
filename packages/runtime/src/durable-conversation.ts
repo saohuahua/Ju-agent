@@ -1,12 +1,20 @@
 import { randomUUID } from 'node:crypto'
 import {
   buildStepTools,
+  buildOrderListToolDefinition,
   buildSystemPrompt,
   rebuildMessages,
   type AssistantBlock,
   type ChatModel,
 } from '@aftersales/agent'
-import { ToolIO, P7Error, type P6Task, type P7Snapshot } from '@aftersales/contracts'
+import {
+  ToolIO,
+  P7Error,
+  ListMyOrdersInput,
+  OrderCandidates,
+  type P6Task,
+  type P7Snapshot,
+} from '@aftersales/contracts'
 import {
   redactDeep,
   redactText,
@@ -28,6 +36,12 @@ import { P6Worker } from './p6-worker.js'
 import { P7Gateway, type P7Transport } from './p7-gateway.js'
 import { p6ConfigFromP7 } from './p6-config-snapshot.js'
 import { restoreP7Snapshot } from './p7-snapshot.js'
+import {
+  CUSTOMER_GUIDANCE_VERSION,
+  customerGuidancePrompt,
+  fixedCustomerReply,
+  requestsHuman,
+} from './customer-guidance.js'
 import { P6ConversationRefundRepository } from '../../persistence/src/p6-conversation-refund.js'
 
 interface Turn {
@@ -58,7 +72,6 @@ export class DurableConversation {
     private readonly options: DurableConversationOptions,
     private readonly refundServices?: { afterSale: AfterSaleService; approvals: ApprovalService },
   ) {
-    if (options.snapshot.mode !== 'simulation') throw new Error('持久会话尚未开放真实模型传输')
     const tasks = new P6TaskRepository(db)
     this.journal = new ConversationJournal(db, tasks)
     this.worker = new P6Worker(
@@ -101,12 +114,13 @@ export class DurableConversation {
     message: string,
     runId?: string,
     returnShipment?: { returnNo: string; trackingNo: string },
+    snapshot: P7Snapshot = this.options.snapshot,
   ) {
     return this.journal.accept(
       customerId,
       key,
       message,
-      p6ConfigFromP7(this.options.snapshot),
+      p6ConfigFromP7(snapshot),
       runId,
       returnShipment,
     )
@@ -117,6 +131,17 @@ export class DurableConversation {
       this.db
         .prepare("SELECT 1 FROM p6_tasks WHERE run_id = ? AND tool = 'conversation'")
         .get(runId),
+    )
+  }
+
+  /** 人工申请与结束咨询使用本地持久命令 不要求供应商凭据可用 */
+  control(customerId: string, key: string, action: 'human' | 'end_consultation', runId?: string) {
+    return this.journal.control(
+      customerId,
+      key,
+      action,
+      p6ConfigFromP7(this.options.snapshot),
+      runId,
     )
   }
 
@@ -144,8 +169,35 @@ export class DurableConversation {
   private async execute(task: P6Task, signal: AbortSignal): Promise<void> {
     const snapshot = restoreP7Snapshot(task.input.config.value)
     const gateway = new P7Gateway(snapshot, new P7Ledger(this.db))
+    const guidance = snapshot.toolVersion === CUSTOMER_GUIDANCE_VERSION
+    const history = this.journal.events(task.runId)
+    const latestMessage = history.filter((event) => event.type === 'message.user').at(-1)
+      ?.payload as { text?: string; replyToToolCallId?: string } | undefined
+    // 固定话术也写入模型上下文并使用原租约确认边界
+    const human = guidance && requestsHuman(latestMessage?.text ?? '')
+    const fixed = guidance
+      ? fixedCustomerReply(latestMessage?.text ?? '', Boolean(latestMessage?.replyToToolCallId))
+      : undefined
+    if (human || fixed) {
+      const text = human ? '已申请人工帮助 请等待售后专员接管' : fixed!
+      this.journal.commit(task, 'fixed-reply', { text }, () => {
+        this.journal.append(task.runId, 'agent.turn', {
+          blocks: [{ type: 'text', text }],
+          stopReason: 'end_turn',
+        })
+        this.journal.append(task.runId, 'message.completed', { role: 'assistant', text })
+      })
+      this.journal.finish(task, human ? 'escalated' : 'awaiting_input', {
+        summary: text,
+        consultation: 'ready',
+      })
+      return
+    }
     // 旧只读快照恢复时不能因组合根升级而悄悄获得退款能力
-    const refundsEnabled = Boolean(this.refundServices && snapshot.toolVersion === 'refund-v1')
+    const orderSelectionEnabled = snapshot.toolVersion === 'refund-orders-v2' || guidance
+    const refundsEnabled = Boolean(
+      this.refundServices && (snapshot.toolVersion === 'refund-v1' || orderSelectionEnabled),
+    )
     const names = new Set([
       'get_order',
       'get_shipment',
@@ -158,27 +210,36 @@ export class DurableConversation {
     const tools = buildStepTools({
       actions: refundsEnabled ? ['escalate', 'submit_refund_only', 'submit_return'] : ['escalate'],
     }).filter((tool) => names.has(tool.name))
+    if (orderSelectionEnabled) tools.push(buildOrderListToolDefinition())
+    if (guidance) {
+      const conclude = tools.find((tool) => tool.name === 'conclude')!
+      conclude.description = '本轮咨询已答复 用摘要结束本轮 用户仍可继续咨询 不代表业务结案'
+      const orders = tools.find((tool) => tool.name === 'list_my_orders')!
+      orders.description =
+        '仅在需要查询具体订单或办理售后且缺少订单号时查询本人最近订单 普通政策咨询不需要选单'
+    }
     for (let step = 1; step <= (this.options.maxTurns ?? 12); step++) {
       signal.throwIfAborted()
       let turn = this.journal.tasks.step(task.taskId, `turn:${step}`) as Turn | undefined
       if (!turn) {
-        const model = gateway.chatModel(
-          task.runId,
-          'main_agent',
-          this.options.transport(snapshot),
-          signal,
-          JSON.stringify([task.commandId, 'turn', step, 'claim', task.attempt]),
-        )
         try {
+          const model = gateway.chatModel(
+            task.runId,
+            'main_agent',
+            this.options.transport(snapshot),
+            signal,
+            JSON.stringify([task.commandId, 'turn', step, 'claim', task.attempt]),
+          )
           turn = await this.collect(model, {
-            system:
-              buildSystemPrompt({
-                customerId: task.customerId,
-                currentTime: new Date().toISOString(),
-              }) +
-              (refundsEnabled
-                ? '\n本入口支持仅退款及退货退款 查证并补齐槽位后调用对应动作 补偿价保换货取消应升级人工 禁止声称资金已经成功 动作等待和资金结果由系统通知'
-                : '\n本入口仅提供查询与解释 涉及退款补偿价保或业务操作请升级人工 禁止宣称已经执行资金动作'),
+            system: guidance
+              ? customerGuidancePrompt(task.customerId, new Date().toISOString())
+              : buildSystemPrompt({
+                  customerId: task.customerId,
+                  currentTime: new Date().toISOString(),
+                }) +
+                (refundsEnabled
+                  ? '\n本入口支持仅退款及退货退款 查证并补齐槽位后调用对应动作 补偿价保换货取消应升级人工 禁止声称资金已经成功 动作等待和资金结果由系统通知'
+                  : '\n本入口仅提供查询与解释 涉及退款补偿价保或业务操作请升级人工 禁止宣称已经执行资金动作'),
             messages: rebuildMessages(this.journal.events(task.runId)),
             tools,
           })
@@ -221,7 +282,9 @@ export class DurableConversation {
             !confirmed.blocks.some(
               (block) =>
                 block.type === 'tool_use' &&
-                ['submit_refund_only', 'submit_return'].includes(block.toolName),
+                ['submit_refund_only', 'submit_return', ...(guidance ? ['ask_user'] : [])].includes(
+                  block.toolName,
+                ),
             )
           )
             this.journal.append(task.runId, 'message.completed', {
@@ -248,7 +311,9 @@ export class DurableConversation {
         const call = terminal[0]
         const status =
           call?.toolName === 'conclude'
-            ? 'completed'
+            ? guidance
+              ? 'awaiting_input'
+              : 'completed'
             : call?.toolName === 'escalate'
               ? 'escalated'
               : 'awaiting_input'
@@ -256,7 +321,34 @@ export class DurableConversation {
           call?.toolName === 'ask_user' && typeof call.input.question === 'string'
             ? redactText(call.input.question)
             : turn.text
+        const pauses = this.journal
+          .events(task.runId)
+          .filter((event) => event.type === 'run.paused')
+        const previousPause = pauses.at(-1)?.payload as { missingSlot?: string } | undefined
+        const showChoices =
+          guidance &&
+          call?.toolName === 'ask_user' &&
+          call.input.missingSlot === 'intent' &&
+          previousPause?.missingSlot === 'intent'
         this.journal.tasks.fenced(task, () => {
+          // conclude 在新版是轮次结束 补齐协议结果后下一轮才能继续调用真实模型
+          if (guidance && call?.toolName === 'conclude') {
+            this.journal.append(task.runId, 'agent.tool_results', {
+              results: [
+                {
+                  toolCallId: call.toolCallId,
+                  toolName: call.toolName,
+                  content: '本轮答复完成 可以继续咨询',
+                  isError: false,
+                },
+              ],
+            })
+            if (!turn.text && typeof call.input.summary === 'string')
+              this.journal.append(task.runId, 'message.completed', {
+                role: 'assistant',
+                text: redactText(call.input.summary),
+              })
+          }
           if (call?.toolName === 'ask_user')
             this.journal.append(task.runId, 'message.completed', {
               role: 'assistant',
@@ -269,6 +361,17 @@ export class DurableConversation {
                 : turn.text || '已升级人工核验',
             hint: question,
             toolCallId: call?.toolName === 'ask_user' ? call.toolCallId : undefined,
+            missingSlot:
+              orderSelectionEnabled && call?.toolName === 'ask_user'
+                ? String(call.input.missingSlot)
+                : undefined,
+            ...(guidance
+              ? {
+                  consultation:
+                    call?.toolName === 'ask_user' ? ('clarify' as const) : ('ready' as const),
+                  showChoices,
+                }
+              : {}),
           })
         })
         return
@@ -305,12 +408,25 @@ export class DurableConversation {
           await this.options.boundary?.('after-business-accept', task)
           return
         }
+        // 开始检查点仅记录动作展示 不代替原工具结果检查点
+        // 恢复仍按原结果决定是否查询 租约围栏阻止旧所有者追加进度
+        const executionId = `${task.taskId}:${key}`
+        this.journal.commit(task, `${key}:started`, { executionId }, () => {
+          this.journal.append(task.runId, 'tool.requested', {
+            executionId,
+            toolName: call.toolName,
+            attempt: task.attempt,
+            args: {},
+          })
+        })
         try {
           output = await this.read(
             call.toolName,
             call.input,
             task.customerId,
             snapshot.knowledgeSnapshotId,
+            orderSelectionEnabled,
+            guidance,
           )
         } catch {
           output = { error: '查询失败 请核对参数及订单归属' }
@@ -324,8 +440,21 @@ export class DurableConversation {
           isError,
         }
         this.journal.commit(task, key, result, () => {
+          if (call.toolName === 'list_my_orders' && !isError)
+            this.journal.append(task.runId, 'order.candidates', output)
+          if (orderSelectionEnabled && call.toolName === 'get_order' && !isError)
+            this.journal.append(
+              task.runId,
+              'order.candidates',
+              OrderCandidates.parse({
+                orders: [output],
+                offset: 0,
+                nextOffset: null,
+              }),
+            )
           this.journal.append(task.runId, 'agent.tool_results', { results: [result] })
           this.journal.append(task.runId, 'tool.completed', {
+            executionId,
             toolName: call.toolName,
             status: isError ? 'failed' : 'succeeded',
             result: redactDeep(output),
@@ -408,13 +537,26 @@ export class DurableConversation {
     args: Record<string, unknown>,
     customerId: string,
     knowledgeSnapshotId: string,
+    orderSelectionEnabled: boolean,
+    guidance = false,
   ): Promise<unknown> {
+    if (name === 'list_my_orders' && orderSelectionEnabled) {
+      const input = ListMyOrdersInput.parse(args)
+      return new SqliteOrderRepository(this.db).listByCustomer(customerId, input.offset)
+    }
     if (name === 'search_policy') {
       const input = ToolIO.search_policy.input.parse(args)
       const snapshot = buildKnowledgeSnapshot(new DeskRepository(this.db).policies())
       // 原版本不在当前库时明确失败 不将新语料静默当作旧运行的知识依据
       if (snapshot.snapshotId !== knowledgeSnapshotId) throw new Error('原知识快照不可用')
-      return { articles: retrieveKnowledge(snapshot, input.query, 'character-keyword-baseline', 3) }
+      return {
+        articles: retrieveKnowledge(
+          snapshot,
+          input.query,
+          'character-keyword-baseline',
+          guidance ? 5 : 3,
+        ),
+      }
     }
     if (name !== 'get_order' && name !== 'get_shipment') throw new Error('工具不在只读白名单')
     const input = ToolIO[name].input.parse(args)

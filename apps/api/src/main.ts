@@ -8,7 +8,7 @@
  *   OPERATOR_TOKEN    操作员令牌
  *   SUPERVISOR_TOKEN  主管令牌
  *
- * 真实模型入口保持关闭 不读取模型凭据或环境文件
+ * 真实模型由本机设置页在连接测试后显式启用
  */
 
 import { serve } from '@hono/node-server'
@@ -21,6 +21,7 @@ import { createApp } from './app.js'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { resolveApiModelEntry } from './model-entry.js'
+import { ModelSettingsStore } from './model-settings.js'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
 // 模式拒绝先于数据库初始化 不因真实模式请求迁移或播种任何业务库
@@ -36,6 +37,17 @@ const dbPath = resolve(repoRoot, process.env.DB_PATH ?? 'data/app.db')
 const db = openDatabase(dbPath)
 
 console.log(`演示初始化 ${initializeDemo(db)}`)
+
+const modelSettings = durableOptions
+  ? new ModelSettingsStore(db, durableOptions.snapshot, process.env, process.env.MODEL_LOCAL_TOKEN)
+  : undefined
+if (modelSettings) {
+  console.log(
+    process.env.MODEL_LOCAL_TOKEN
+      ? '本机模型管理口令已从环境变量加载'
+      : `本机模型管理口令 ${modelSettings.localToken}`,
+  )
+}
 
 // 组合部署复用原回环模拟器 渠道始终使用独立数据库
 let channelDb: ReturnType<typeof openDatabase> | undefined
@@ -55,7 +67,15 @@ const system = composeSystem({
   clock: new SystemClock(),
   model,
   withFixture: false,
-  durableConversation: durableOptions,
+  durableConversation: durableOptions
+    ? {
+        ...durableOptions,
+        transport: (snapshot) =>
+          snapshot.mode === 'live'
+            ? modelSettings!.transport(snapshot)
+            : durableOptions.transport(snapshot),
+      }
+    : undefined,
   durableBusiness: durableOptions
     ? {
         snapshot: durableOptions.snapshot,
@@ -70,6 +90,7 @@ const shutdown = new AbortController()
 const app = createApp({
   system,
   modelAvailable: available,
+  modelSettings,
   shutdownSignal: shutdown.signal,
   readiness: async () => {
     if (!durableOptions) return false

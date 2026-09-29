@@ -9,6 +9,7 @@ export function customerRefundProgress(
   run: AgentRunRecord,
   now: Date,
 ): CustomerRefundProgress | null {
+  // 同一读取事务核对关联与状态 避免拼接多个时点的页面进度
   return db.transaction(() => {
     const current = db
       .prepare('SELECT status, customer_id FROM agent_runs WHERE run_id = ?')
@@ -16,6 +17,7 @@ export function customerRefundProgress(
     if (!current || current.customer_id !== run.customerId) throw new Error('客户会话关联校验失败')
     const repository = new P6ConversationRefundRepository(db)
     const link = repository.link(run.runId)
+    // 没有原申请关联表示尚无退款进度 不表示失败也不表示成功
     if (!link) return null
     const { record, refund } = repository.validate(link)
     if (record.customerId !== run.customerId || !['return', 'refund_only'].includes(record.type))
@@ -53,6 +55,7 @@ export function customerRefundProgress(
       ORDER BY id LIMIT 1`,
       )
       .get(run.runId, record.returnNo, run.customerId) as { trackingNo: string | null } | undefined
+    // 售后 退款 资金效果与发送许可必须共同确认成功
     const succeeded =
       record.status === 'completed' &&
       refund?.status === 'succeeded' &&
@@ -60,6 +63,7 @@ export function customerRefundProgress(
       ownership?.owner === 'p6' &&
       ownership.state === 'succeeded' &&
       ownership.confirmed === 1
+    // 部分成功或未确认发送都需要核验 不能只挑成功字段展示
     const uncertain =
       tasks.some((task) => task.status === 'needs_confirmation') ||
       (effect && !['succeeded', 'rejected'].includes(effect.status)) ||
@@ -77,6 +81,7 @@ export function customerRefundProgress(
       ? approval?.status === 'approved'
       : Boolean(link.authorization_task_id)
     let progress: CustomerRefundProgress['progress'] = 'processing'
+    // 待核验优先于人工状态 防止转接沟通掩盖未知资金
     if (succeeded) progress = 'succeeded'
     else if (uncertain) progress = 'unknown'
     else if (expired) progress = 'expired'
@@ -102,6 +107,7 @@ export function customerRefundProgress(
       orderNo: record.orderNo,
       type: record.type as 'return' | 'refund_only',
       progress,
+      // 状态只是条件之一 原动作未投影且会话允许时才开放寄回
       canRegisterShipment:
         progress === 'awaiting_shipment' &&
         !link.projected &&

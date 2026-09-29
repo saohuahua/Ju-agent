@@ -19,6 +19,7 @@ function conflict(): never {
 export class ExecutionOwnershipRepository implements LegacyExecutionOwnership {
   constructor(private readonly db: SqliteDatabase) {}
 
+  /** 执行权跟随原资金业务键 查询本身不会重新授权 */
   get(businessKey: string): ExecutionOwnershipRecord | undefined {
     return this.db
       .prepare(
@@ -53,6 +54,7 @@ export class ExecutionOwnershipRepository implements LegacyExecutionOwnership {
   }
 
   private acquire(businessKey: string, owner: 'legacy' | 'p6', holder: string): ExecutionPermit {
+    // 新许可只在条件更新成功时有效 生成标识本身不代表获权
     const token = randomUUID()
     const changed = this.db
       .prepare(
@@ -60,6 +62,7 @@ export class ExecutionOwnershipRepository implements LegacyExecutionOwnership {
       WHERE business_key = ? AND owner = ? AND holder = ? AND state = 'ready'`,
       )
       .run(token, businessKey, owner, holder).changes
+    // 零行表示已被占用或关联不符 不能继续发送网络请求
     if (changed !== 1) conflict()
     return { businessKey, owner, holder, token }
   }
@@ -81,7 +84,9 @@ export class ExecutionOwnershipRepository implements LegacyExecutionOwnership {
           )
           .run(businessKey).changes
         if (changed !== 1) conflict()
+        // 许可接管与命令受理共用连接 保存命令失败会撤销接管
         const command = accept(this.db)
+        // 同步事务不能等待异步回调 否则无法保证共同提交
         if (!command || 'then' in command || !command.commandId) {
           throw new Error('执行权受理必须同步返回命令标识')
         }
@@ -93,6 +98,7 @@ export class ExecutionOwnershipRepository implements LegacyExecutionOwnership {
       .immediate()
   }
 
+  /** 保存原许可的确认成功 终态继续阻止其他路径重新发送 */
   succeed(permit: ExecutionPermit, result: unknown): void {
     this.settle(permit, 'succeeded', JSON.stringify(result))
   }
@@ -107,6 +113,7 @@ export class ExecutionOwnershipRepository implements LegacyExecutionOwnership {
     this.settle(permit, 'rejected', JSON.stringify(result))
   }
 
+  /** 确认须匹配原持有者与许可 未知结果可沿原许可继续核验 */
   private settle(permit: ExecutionPermit, state: string, result: string | null): void {
     const changed = this.db
       .prepare(

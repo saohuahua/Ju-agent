@@ -103,6 +103,7 @@ export class AfterSaleService {
     returnRequest.version += 1
   }
 
+  /** 仓储成功写入后才更新内存版本 供后续连续状态推进使用 */
   private async saveRefund(refund: Refund): Promise<void> {
     await this.refundRepo.update(refund)
     refund.version += 1
@@ -172,6 +173,7 @@ export class AfterSaleService {
       shipment,
       existing,
     )
+    // 兼容异步入口逐项保存 默认持久客户建单由外层同步事务统一保存
     await this.returnRepo.create(record)
     if (refund) {
       await this.refundRepo.create(refund)
@@ -208,6 +210,7 @@ export class AfterSaleService {
       (actor.role === 'customer' && order.customerId !== actor.customerId)
     )
       throw new DomainError(createToolError('AUTHORIZATION_DENIED', '无权访问该订单'))
+    // 同订单已有活跃申请就拒绝新建 并非只检查选中商品是否重复
     const active = existing.find((r) => ACTIVE_RETURN_STATUSES.includes(r.status))
     if (active) {
       throw new DomainError(
@@ -217,6 +220,7 @@ export class AfterSaleService {
         }),
       )
     }
+    // 已完成的非换货售后仍占位 不能据此支持剩余商品再次分批退款
     const refunded = existing.find((r) => r.status === 'completed' && r.type !== 'exchange')
     if (refunded) {
       throw new DomainError(
@@ -227,6 +231,7 @@ export class AfterSaleService {
       )
     }
 
+    // 使用可信订单 物流和时钟计算 客户与模型不直接决定金额
     const decision = decidePolicy({
       type: input.type,
       reason: input.reason,
@@ -238,6 +243,7 @@ export class AfterSaleService {
 
     const now = toIso(this.clock.now())
     const returnNo = this.noGenerator.nextNo('RT')
+    // 冻结本次类型 商品范围 政策和金额 后续只推进原方案
     const record: ReturnRequest = {
       returnNo,
       orderNo: input.orderNo,
@@ -276,7 +282,8 @@ export class AfterSaleService {
       record.status = 'awaiting_buyer_shipment'
     }
 
-    // 退款单预留 换货不产生退款 政策拒绝不预留
+    // 预留只确定原资金身份 不发送款项 待审批方案也会预留
+    // 换货与政策拒绝均不创建退款单
     let refundNo: string | null = null
     let refund: Refund | null = null
     if (input.type !== 'exchange' && decision.outcome !== 'deny') {
@@ -599,6 +606,7 @@ export class AfterSaleService {
       )
     }
     await this.assertReturnAccess(actor, returnRequest)
+    // 已登记时直接返回原售后 此分支不修改运单也不证明快递已发出
     if (returnRequest.status === 'buyer_shipped') {
       return returnRequest
     }
@@ -671,7 +679,7 @@ export class AfterSaleService {
     await this.saveReturn(returnRequest)
     await this.audit.record(actor, 'return_goods_received', 'return_request', returnNo, {}, runId)
 
-    // 换货直接完结 重发由仓储执行此处只留痕
+    // 当前换货收货后只完成留痕 此处没有库存扣减或重新发货实现
     if (returnRequest.type === 'exchange') {
       assertReturnTransition(returnRequest.status, 'completed')
       returnRequest.status = 'completed'
@@ -681,7 +689,8 @@ export class AfterSaleService {
       return { returnNo, status: 'completed', refundNo: null, refundStatus: null }
     }
 
-    // 退货退款 联动执行退款 内部路径 无需外部令牌
+    // 兼容退货路径继续原退款 默认持久入口另走收货命令与任务
+    // 此处复用收货事实 不创建第二笔退款
     const refundResult = await this.executeRefund(actor, { returnNo, internal: true }, runId)
     assertReturnTransition(returnRequest.status, 'completed')
     returnRequest.status = 'completed'

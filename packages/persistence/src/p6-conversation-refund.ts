@@ -45,6 +45,7 @@ export class P6ConversationRefundRepository {
     this.journal = new ConversationJournal(db, this.tasks)
   }
 
+  /** 从原会话定位业务关联 不按客户最近一笔退款猜测 */
   link(runId: string): Link | undefined {
     return this.db.prepare('SELECT * FROM p6_conversation_refunds WHERE run_id = ?').get(runId) as
       Link | undefined
@@ -66,9 +67,11 @@ export class P6ConversationRefundRepository {
         .get(task.runId) as { status: string }
       if (run.status !== 'running' || this.link(task.runId))
         throw new Error('会话已接管或存在原退款流程')
+      // 当前客户受控动作仅开放两种退款主线 不回退调用其他兼容资金服务
       const name = call.toolName
       if (name !== 'submit_refund_only' && name !== 'submit_return')
         throw new Error('此动作未迁移 请升级人工')
+      // 模型只提供诉求字段 金额和授权必须来自服务端业务事实
       if (
         Object.keys(call.input).some(
           (key) =>
@@ -81,6 +84,7 @@ export class P6ConversationRefundRepository {
       )
         throw new Error('模型不得指定金额或业务授权关联')
       const input = INTENT_SLOT_SCHEMAS[name].parse(call.input)
+      // 在围栏事务内重新读订单和已有售后 不信任早先查询的快照
       const order = new SqliteOrderRepository(this.db).findByOrderNoSync(input.orderNo)
       if (!order) throw new Error('订单不存在')
       const returns = new SqliteReturnRepository(this.db)
@@ -91,6 +95,7 @@ export class P6ConversationRefundRepository {
         new SqliteShipmentRepository(this.db).findByOrderNoSync(input.orderNo),
         returns.listByOrderNoSync(input.orderNo),
       )
+      // 领域函数只生成方案 同一连接在此统一保存所有相关记录
       const { record, refund, result } = prepared
       returns.createSync(record)
       if (refund) {
@@ -108,6 +113,7 @@ export class P6ConversationRefundRepository {
           })
         : undefined
       if (approval) new SqliteApprovalRepository(this.db).createSync(approval)
+      // 固定原客户 商品与金额 后续审批 收货和投影逐项核对
       const binding = {
         customerId: task.customerId,
         orderNo: record.orderNo,
@@ -151,6 +157,7 @@ export class P6ConversationRefundRepository {
           }),
           new Date().toISOString(),
         )
+      // 自动批准也必须持久接管执行权 不能直接调用渠道
       if (result.policyOutcome === 'allow') {
         if (!refund) throw new Error('自动授权缺少原退款')
         const authorization = new ExecutionOwnershipRepository(this.db).takeoverWithCommand(
@@ -165,6 +172,7 @@ export class P6ConversationRefundRepository {
               requestPayload: { ...binding, returnNo: record.returnNo, action: 'automatic_refund' },
               plan: {
                 input: '执行领域自动批准方案',
+                // 退货先建立等待任务 仅退款才在此携带资金计划
                 tool: record.type === 'return' ? 'after_sale_wait' : 'return_request',
                 ...(record.type === 'refund_only'
                   ? { payment: p6ReadyPayment(this.db, 'refund', refund.refundNo, task.customerId) }
@@ -210,6 +218,7 @@ export class P6ConversationRefundRepository {
       this.db
         .prepare('UPDATE agent_runs SET status = ?, updated_at = ? WHERE run_id = ?')
         .run(approval ? 'awaiting_approval' : 'running', new Date().toISOString(), task.runId)
+      // 完成的是本次会话建单片段 后续审批或资金任务可能尚未结束
       this.tasks.finish(task, 'completed')
     })
   }
@@ -223,6 +232,7 @@ export class P6ConversationRefundRepository {
   }
 
   /** 每次推进与发送都校验原冻结方案 不接受被替换的售后单或工具调用 */
+  /** 比较原任务 业务快照与原工具确认点 防止相似方案替换原申请 */
   validate(link: Link) {
     const origin = this.tasks.get(link.origin_task_id)
     const record = new SqliteReturnRepository(this.db).findByReturnNoSync(link.return_no)
@@ -250,6 +260,7 @@ export class P6ConversationRefundRepository {
           refund.idempotencyKey !== refundIdempotencyKey(record.returnNo)))
     )
       throw new Error('原会话退款业务关联冲突')
+    // 记录字段一致还不够 必须能回到实际提出动作的模型轮次
     const turnNumber = /^tool:(\d+):/.exec(link.step_key)?.[1]
     const turn = turnNumber
       ? (this.tasks.step(origin.taskId, `turn:${turnNumber}`) as
@@ -326,6 +337,7 @@ export class P6ConversationRefundRepository {
           !['queued', 'running', 'completed'].includes(authorization.status)
         )
           throw new Error('收货缺少原自动授权')
+        // 收货身份来自原售后 重复点击继续同一命令而非新建退款
         const key = receiveGoodsIdempotencyKey(returnNo)
         const existing = this.tasks.findRequest(origin.customerId, key)
         if (existing) {
@@ -337,6 +349,7 @@ export class P6ConversationRefundRepository {
             throw new Error('原收货命令不匹配')
           return existing
         }
+        // 仅原等待授权尚未发送时可交接 已发送或未知都不能借收货重获许可
         const ownership = new ExecutionOwnershipRepository(this.db).get(refund.idempotencyKey)
         if (
           record.status !== 'buyer_shipped' ||
@@ -375,6 +388,7 @@ export class P6ConversationRefundRepository {
             "UPDATE execution_ownership SET holder = ? WHERE business_key = ? AND owner = 'p6' AND holder = ? AND state = 'ready' AND token IS NULL",
           )
           .run(task.commandId, refund.idempotencyKey, authorization.commandId).changes
+        // 转绑失败会回滚同一事务的收货状态与任务 避免无人接手的半次交接
         if (changed !== 1) throw new Error('收货转绑冲突')
         this.accepted(task)
         this.db
@@ -395,6 +409,7 @@ export class P6ConversationRefundRepository {
     const { record } = this.validate(link)
     if (record.customerId !== customerId || record.type !== 'return')
       throw new Error('无权登记寄回')
+    // 已登记时不再覆盖原单号 本方法不提供运单更正功能
     if (record.status === 'buyer_shipped') return
     if (record.status !== 'awaiting_buyer_shipment') throw new Error('尚未取得寄回授权')
     assertReturnTransition(record.status, 'buyer_shipped')
@@ -403,6 +418,7 @@ export class P6ConversationRefundRepository {
         "UPDATE return_requests SET status = 'buyer_shipped', version = version + 1, updated_at = ? WHERE return_no = ?",
       )
       .run(new Date().toISOString(), returnNo)
+    // 只公开登记事实 字符串校验并不证明快递真实发出或仓库收货
     this.journal.append(runId, 'message.completed', {
       role: 'assistant',
       text: '已登记寄回 等待仓库确认收货 尚未退款',
@@ -457,6 +473,7 @@ export class P6ConversationRefundRepository {
             throw new Error('退款成功缺少原渠道及发送许可确认')
           const rejected = ['rejected', 'expired', 'cancelled'].includes(record.status)
           const uncertain = Boolean(effect && !['succeeded', 'rejected'].includes(effect.status))
+          // 未知资金只发布进度 原调用保留未完成状态供后续核验
           const terminal =
             succeeded ||
             (rejected && !uncertain) ||
@@ -476,6 +493,7 @@ export class P6ConversationRefundRepository {
                       ? `售后单 ${record.returnNo} 已批准 等待寄回或收货 尚未退款`
                       : ''
           if (!text) continue
+          // 用原任务下的稳定事件键防止重复扫描发出多次完成消息
           const progressKey = terminal
             ? 'refund-result'
             : `refund-progress:${record.status}:${failed}`
@@ -485,6 +503,7 @@ export class P6ConversationRefundRepository {
               .get(link.origin_task_id, progressKey)
           )
             continue
+          // 业务终态才回填原工具结果 不能把等待寄回当成调用成功
           if (terminal) {
             const result = {
               toolCallId: link.tool_call_id,

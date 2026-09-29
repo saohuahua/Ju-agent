@@ -29,8 +29,10 @@ const columns = `t.task_id AS taskId, t.command_id AS commandId, t.run_id AS run
  t.owner, t.generation, t.lease_until AS leaseUntil, t.attempt,
  t.cancel_requested AS cancelRequested, t.deadline, t.error, c.input_json AS inputJson`
 
+/** 执行资格已经失效 调用方应停止写回而非继续补业务结果 */
 export class P6OwnershipLost extends Error {}
 
+/** 保存输入身份与执行片段 不用任务完成替代退款完成 */
 export class P6TaskRepository {
   constructor(
     private readonly db: SqliteDatabase,
@@ -42,6 +44,7 @@ export class P6TaskRepository {
     if (!input.requestKey || !input.customerId || !input.config.snapshotId || lifetimeMs <= 0) {
       throw new Error('无效受理参数')
     }
+    // 受理资金计划先检查业务身份和整数分金额 不接受任意小数付款
     const payment = input.plan.payment
     if (
       payment &&
@@ -54,6 +57,7 @@ export class P6TaskRepository {
       throw new Error('无效资金计划')
     return this.db
       .transaction(() => {
+        // 同一客户的同一请求键定位原命令 与会话中第几条消息无关
         const existing = this.db
           .prepare(
             `SELECT command_id AS commandId, fingerprint FROM p6_commands
@@ -61,6 +65,7 @@ export class P6TaskRepository {
           )
           .get(input.customerId, input.requestKey) as
           { commandId: string; fingerprint: string } | undefined
+        // 有原始请求时比较用户输入 不因内部计划重建而改变重放身份
         const hash = fingerprint(
           input.requestPayload
             ? {
@@ -71,10 +76,12 @@ export class P6TaskRepository {
               }
             : input,
         )
+        // 同键同参返回原任务 同键异参拒绝 不追加另一笔工作
         if (existing) {
           if (existing.fingerprint !== hash) throw new Error('请求幂等键内容冲突')
           return this.getByCommand(existing.commandId)
         }
+        // 新输入可以继续原会话 但不能借原标识操作其他客户资源
         const runId = input.runId ?? `run_${randomUUID()}`
         const iso = new Date(this.now()).toISOString()
         if (input.runId) {
@@ -82,6 +89,7 @@ export class P6TaskRepository {
             .prepare('SELECT customer_id AS customerId FROM agent_runs WHERE run_id = ?')
             .get(runId) as { customerId: string } | undefined
           if (run?.customerId !== input.customerId) throw new Error('运行归属冲突')
+          // 恢复和补充沿用首次配置 防止处理中切换模型或工具语义
           const original = this.db
             .prepare(
               'SELECT input_json AS input FROM p6_commands WHERE run_id = ? ORDER BY rowid LIMIT 1',
@@ -111,6 +119,7 @@ export class P6TaskRepository {
               input.source ?? 'customer',
             )
         }
+        // 命令描述接受了什么 任务描述接下来谁执行 两者共同保存
         const commandId = randomUUID()
         const taskId = randomUUID()
         this.db
@@ -138,6 +147,7 @@ export class P6TaskRepository {
       .immediate()
   }
 
+  /** 查询时连接原命令恢复冻结计划 返回对象不是数据库可变引用 */
   get(taskId: string): P6Task | undefined {
     const row = this.db
       .prepare(
@@ -150,6 +160,7 @@ export class P6TaskRepository {
     return { ...task, input: JSON.parse(inputJson) as P6CommandInput }
   }
 
+  /** 请求键只在同一客户范围内唯一 不以消息文字作为身份 */
   findRequest(customerId: string, requestKey: string): P6Task | undefined {
     const row = this.db
       .prepare('SELECT command_id AS id FROM p6_commands WHERE customer_id = ? AND request_key = ?')
@@ -178,6 +189,7 @@ export class P6TaskRepository {
           )
           .all() as { id: string; runId: string }[]
         for (const intent of intents) {
+          // 映射必须指向原审批与运行 不能用相似金额替换授权对象
           const input = map(intent.id)
           if (
             input.approvalId !== intent.id ||
@@ -186,6 +198,7 @@ export class P6TaskRepository {
           ) {
             throw new Error('审批映射绑定冲突')
           }
+          // 任务受理失败会回滚本次意图处理 不留下只占用未受理的状态
           this.accept(input)
           this.db
             .prepare(
@@ -216,6 +229,8 @@ export class P6TaskRepository {
     }
     return this.db
       .transaction(() => {
+        // 只领到期排队或租约过期任务 待核验任务须显式重排
+        // 同时核对工具类型 受理凭据与配额 检查和认领共享写事务
         const now = this.now()
         const row = this.db
           .prepare(
@@ -251,6 +266,7 @@ export class P6TaskRepository {
             now,
             limits.tool,
           ) as { id: string } | undefined
+        // 暂无可领取任务不等于售后完成 也可能正在等客户或主管
         if (!row) return undefined
         this.db
           .prepare(
@@ -263,6 +279,7 @@ export class P6TaskRepository {
       .immediate()
   }
 
+  /** 所有者相同也不够 还须代次一致且租约有效才能确认本轮结果 */
   assertOwned(claim: P6Claim): P6Task {
     const task = this.get(claim.taskId)
     if (
@@ -276,6 +293,7 @@ export class P6TaskRepository {
     return task
   }
 
+  /** 条件续租返回是否更新一行 旧代次不能借相同所有者名称续命 */
   renew(claim: P6Claim, leaseMs: number): boolean {
     if (leaseMs <= 0) throw new Error('无效续约时长')
     return (
@@ -293,12 +311,14 @@ export class P6TaskRepository {
   fenced<T>(claim: P6Claim, work: () => T): T {
     return this.db
       .transaction(() => {
+        // 在写事务内重新验证资格 拒绝旧执行者迟到的确认
         this.assertOwned(claim)
         return work()
       })
       .immediate()
   }
 
+  /** 已确认步骤按任务与步骤名固定 恢复时复用而非重新调用模型 */
   checkpoint(claim: P6Claim, step: string, value: unknown): void {
     this.fenced(claim, () => {
       this.db
@@ -308,6 +328,7 @@ export class P6TaskRepository {
     })
   }
 
+  /** 未找到与已确认空值不同 调用方以未定义判断是否需要执行 */
   step(taskId: string, step: string): unknown {
     const row = this.db
       .prepare('SELECT value_json AS value FROM p6_steps WHERE task_id = ? AND step = ?')
@@ -315,6 +336,7 @@ export class P6TaskRepository {
     return row ? JSON.parse(row.value) : undefined
   }
 
+  /** 任务事件按稳定事件键去重 不等同于客户会话的消息序号 */
   event(claim: P6Claim, key: string, value: unknown): void {
     this.fenced(claim, () =>
       this.db
@@ -326,6 +348,7 @@ export class P6TaskRepository {
     )
   }
 
+  /** 此游标用于任务诊断 不能直接作为客户会话断线续传位置 */
   events(taskId: string, after = 0) {
     return this.db
       .prepare(
@@ -335,6 +358,7 @@ export class P6TaskRepository {
       .all(taskId, after) as { cursor: number; eventKey: string; payloadJson: string }[]
   }
 
+  /** 完成本执行片段并释放任务租约 不清除原资金发送许可 */
   finish(
     claim: P6Claim,
     status: Exclude<P6Status, 'running' | 'queued'>,
@@ -365,6 +389,7 @@ export class P6TaskRepository {
             task.runId,
           )
       }
+      // 未知资金继续保留审批执行中的事实 不能按普通失败收口
       if (task.approvalId && status !== 'needs_confirmation') {
         this.db
           .prepare(
@@ -381,6 +406,7 @@ export class P6TaskRepository {
     })
   }
 
+  /** 延后重试只改调度资格 保留累计尝试 检查点和资金意图 */
   release(claim: P6Claim, error: string, delayMs: number): void {
     this.fenced(claim, () =>
       this.db
@@ -416,6 +442,7 @@ export class P6TaskRepository {
     )
   }
 
+  /** 按原业务键查询资金事实 同键不同金额或资源必须冲突 */
   effect(payment: P6Payment): { status: string; result: P6PaymentResult | null } | undefined {
     const row = this.db
       .prepare(
@@ -441,7 +468,9 @@ export class P6TaskRepository {
     return this.fenced(claim, () => {
       const task = this.assertOwned(claim)
       if (task.cancelRequested || task.deadline <= this.now()) return false
+      // 已有意图只允许转查询 即使还没有成功记录也不能重新发送
       if (this.effect(payment)) return false
+      // 授权校验与发送许可在同一连接完成 插入意图失败则一起回滚
       prepare?.(this.db, payment, task)
       this.db
         .prepare(`INSERT INTO p6_effects VALUES (?,?,?,'sending',NULL,?)`)
@@ -461,7 +490,9 @@ export class P6TaskRepository {
       const prior = this.effect(payment)
       if (!prior) throw new Error('缺少已持久化资金意图')
       if (prior.status === 'succeeded' || prior.status === 'rejected') return
+      // 一次查询未找到不能证明从未退款 保守保留待核验
       const status = result.status === 'not_found' ? 'unknown' : result.status
+      // 只有明确渠道终态才回写业务 未知结果不能伪造失败或成功
       if (status === 'succeeded' || status === 'rejected') {
         const applied: unknown = apply(this.db, payment, result)
         if (applied && typeof applied === 'object' && 'then' in applied)

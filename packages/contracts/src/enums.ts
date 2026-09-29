@@ -191,6 +191,7 @@ export type ErrorCode = z.infer<typeof ErrorCode>
 
 /** SSE 事件类型 每个事件的 payload 在 events.ts 中定义 */
 export const EVENT_TYPES = [
+  'order.candidates',
   'run.started',
   'message.user',
   'message.delta',
@@ -215,6 +216,7 @@ export const EVENT_TYPES = [
   'run.handover',
   'operator.message',
   'run.resolved',
+  'human.requested',
   // v4 深度可视化：门控与防线状态从 agent 内部计算提升为一等事件 供前端回放
   'tools.catalog_changed',
   'guard.blocked',

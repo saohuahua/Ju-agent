@@ -63,17 +63,22 @@ export type AgentOutput = z.infer<typeof AgentOutput>
 export const CreateRunRequest = z.object({
   message: z.string().min(1),
   customerId: z.string().min(1).optional(),
+  modelMode: z.enum(['simulation', 'live']).optional(),
 })
 export type CreateRunRequest = z.infer<typeof CreateRunRequest>
 
 /** 补问答复请求 */
 export const ContinueRunRequest = z.object({
   message: z.string().min(1),
+  action: z.literal('end_consultation').optional(),
   returnShipment: z
     .object({ returnNo: z.string().min(1), trackingNo: z.string().trim().min(1).max(100) })
     .optional(),
 })
 export type ContinueRunRequest = z.infer<typeof ContinueRunRequest>
+
+/** 人工受理不依赖模型 来源会话只用于归属校验和上下文关联 */
+export const RequestHumanHelp = z.object({ sourceRunId: z.string().min(1).optional() }).strict()
 
 /** 客户原售后只读进度 不公开内部授权与任务 */
 export const CustomerRefundProgress = z.object({

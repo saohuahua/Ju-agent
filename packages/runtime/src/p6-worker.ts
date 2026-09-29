@@ -59,6 +59,7 @@ export class P6Worker {
     }
   }
 
+  /** 领取并处理一个执行片段 返回是否领到任务而非业务是否成功 */
   async runOnce(): Promise<boolean> {
     const task = this.repo.claim(
       this.options.owner,
@@ -67,12 +68,15 @@ export class P6Worker {
       this.options.tools,
       this.options.acceptedEvent,
     )
+    // 当前无可领取任务是正常空闲 业务可能仍在等待外部输入
     if (!task) return false
     const controller = new AbortController()
+    // 运行总时限来自首次受理 进程重启不能重新获得完整时长
     const deadlineTimer = setTimeout(
       () => controller.abort(new Error('运行时间上限')),
       Math.max(0, task.deadline - Date.now()),
     )
+    // 心跳维持本轮资格 续租失败后停止等待 结果写回仍须通过围栏
     const heartbeat = setInterval(
       () => {
         try {
@@ -92,11 +96,13 @@ export class P6Worker {
       if (error instanceof P6OwnershipLost) return true
       try {
         const current = this.repo.assertOwned(task)
+        // 异常分类先看是否已有资金意图 有意图就不能当作从未执行
         const effect = task.input.plan.payment
           ? this.repo.effect(task.input.plan.payment)
           : undefined
         const reason = error instanceof Error ? error.message : '调用异常'
         this.repo.event(task, `call-error:${task.attempt}`, { category: 'call_failure', reason })
+        // 资金未确认优先保留待核验 不因取消或重试耗尽抹掉原事实
         if (effect && effect.status !== 'succeeded' && effect.status !== 'rejected') {
           this.repo.finish(task, 'needs_confirmation', reason)
         } else if (current.cancelRequested && !effect) {
@@ -110,6 +116,7 @@ export class P6Worker {
         if (!(writeError instanceof P6OwnershipLost)) throw writeError
       }
     } finally {
+      // 无论成功失败都释放本轮计时器 不影响数据库中保存的待办
       clearInterval(heartbeat)
       clearTimeout(deadlineTimer)
       controller.abort()
@@ -137,6 +144,7 @@ export class P6Worker {
       this.options.callTimeoutMs,
     )
     try {
+      // 结束本地等待不保证渠道撤销请求 后续资金结果仍需核验
       return await Promise.race([
         Promise.resolve().then(() => {
           controller.signal.throwIfAborted()
@@ -151,10 +159,12 @@ export class P6Worker {
     }
   }
 
+  /** 从持久确认点继续 原资金计划不由恢复时的模型重新决定 */
   private async execute(task: P6Task, signal: AbortSignal): Promise<void> {
     const payment = task.input.plan.payment
     let effect = payment ? this.repo.effect(payment) : undefined
     const current = this.repo.assertOwned(task)
+    // 没有意图才能在取消时直接停止 已有意图必须先核验
     const stopping = current.cancelRequested || current.deadline <= Date.now()
     if (stopping && !effect) {
       this.repo.finish(
@@ -172,6 +182,7 @@ export class P6Worker {
       return
     }
 
+    // 专属管线自行确认终态 通用执行器不能代替它判断业务完成
     const handler = this.ports.handlers?.[task.input.plan.tool]
     if (handler) {
       await this.call(signal, (s) => handler(task, s))
@@ -186,6 +197,7 @@ export class P6Worker {
 
     // 已发送资金动作优先查询 不因模型重试取消或时间上限重新规划资金路径
     if (!effect) {
+      // 已保存完整模型结果就直接复用 避免恢复时生成另一份方案
       if (this.repo.step(task.taskId, 'model') === undefined) {
         await this.ports.boundary?.('before-model', task)
         const value = await this.call(signal, (s) =>
@@ -200,6 +212,7 @@ export class P6Worker {
         this.repo.checkpoint(task, 'model', value)
         await this.ports.boundary?.('after-model-checkpoint', task)
       }
+      // 只读结果也保留确认点 但进入未确认步骤前仍要检查取消
       if (this.repo.step(task.taskId, 'read') === undefined) {
         const beforeRead = this.repo.assertOwned(task)
         if (beforeRead.cancelRequested || beforeRead.deadline <= Date.now()) {
@@ -217,9 +230,11 @@ export class P6Worker {
 
     if (payment) {
       let result: P6PaymentResult
+      // 明确终态直接复用 不再发送也不重新解释原金额
       if (effect?.status === 'succeeded' || effect?.status === 'rejected') {
         result = effect.result!
       } else {
+        // 只有本次事务新建资金意图才允许首次发送 其他情况查询原交易
         const shouldSend = this.repo.beginPayment(task, payment, this.ports.preparePayment)
         effect = this.repo.effect(payment)
         if (!effect) {
@@ -243,6 +258,7 @@ export class P6Worker {
             category: 'call_failure',
             reason: error instanceof Error ? error.message : '渠道调用异常',
           })
+          // 发送异常可能发生在渠道已收款后 先查询而不是直接重发
           result = await this.call(querySignal, (s) =>
             this.ports.payment.query(payment.businessKey, s),
           )
@@ -251,10 +267,12 @@ export class P6Worker {
         this.repo.settle(task, payment, result, this.ports.applyPayment)
         await this.ports.boundary?.('after-payment-checkpoint', task)
       }
+      // 未找到也不释放发送许可 常规扫描暂停等待明确核验
       if (result.status === 'unknown' || result.status === 'not_found') {
         this.repo.finish(task, 'needs_confirmation', '资金结果未知 只允许查询或人工核验')
         return
       }
+      // 明确拒付属于业务失败 与网络调用失败分开记录
       if (result.status === 'rejected') {
         this.repo.finish(task, 'business_failed', result.reason)
         return

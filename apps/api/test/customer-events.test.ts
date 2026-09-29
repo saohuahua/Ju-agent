@@ -3,6 +3,7 @@ import { ScriptedModel } from '@aftersales/agent'
 import { FrozenClock } from '@aftersales/domain'
 import { composeSystem, type ComposedSystem } from '@aftersales/runtime'
 import { createApp } from '../src/app.js'
+import { customerEvent } from '../src/customer-view.js'
 
 const systems: ComposedSystem[] = []
 const auth = (token: string) => ({ Authorization: `Bearer ${token}` })
@@ -46,6 +47,40 @@ async function fixture() {
 }
 
 describe('客户公开视图', () => {
+  it('动作投影严格白名单 不能通过标识状态旁路泄漏参数和结果', () => {
+    for (const type of ['tool.requested', 'tool.completed'] as const) {
+      const projected = customerEvent({
+        runId: 'r',
+        sequence: 2,
+        type,
+        createdAt: '',
+        payload: {
+          executionId: 'action-a',
+          toolName: 'search_policy',
+          status: 'succeeded',
+          args: { key: 'private-key' },
+          result: { secret: 'private-result' },
+          errorCode: 'private-error',
+          attempt: 3,
+        },
+      })
+      expect(projected?.payload).toEqual({
+        executionId: 'action-a',
+        toolName: 'search_policy',
+        ...(type === 'tool.completed' ? { status: 'succeeded' } : {}),
+      })
+      expect(JSON.stringify(projected)).not.toContain('private-')
+    }
+    expect(
+      customerEvent({
+        runId: 'r',
+        sequence: 2,
+        type: 'tool.completed',
+        createdAt: '',
+        payload: { toolName: 'private-tool' },
+      }),
+    ).toBeNull()
+  })
   it('JSON 和 SSE 去除工具与内部字段 保留消息并推进隐藏尾部的游标', async () => {
     const { app, runId } = await fixture()
     const headers = auth('cust-token-1001')
@@ -60,6 +95,7 @@ describe('客户公开视图', () => {
     const stream = await app.request(`/api/runs/${runId}/events`, {
       headers: { ...headers, 'Last-Event-ID': '1' },
     })
+    expect(stream.headers.get('cache-control')).toContain('no-transform')
     const body = await stream.text()
     expect(body).not.toContain('private-')
     expect(body).not.toContain('id: 1\n')

@@ -1,6 +1,20 @@
 import { expect, it } from 'vitest'
 import { createMemoryDatabase, initializeDemo } from '../src/index.js'
 
+it('空库迁移时创建调查关联表', () => {
+  const db = createMemoryDatabase()
+  try {
+    const tables = db.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all() as {
+      name: string
+    }[]
+    expect(tables.map((table) => table.name)).toEqual(
+      expect.arrayContaining(['p8_investigations', 'p8_branches']),
+    )
+  } finally {
+    db.close()
+  }
+})
+
 it('首次事务播种和重复启动不增加记录或覆盖用户修改', () => {
   const db = createMemoryDatabase()
   try {

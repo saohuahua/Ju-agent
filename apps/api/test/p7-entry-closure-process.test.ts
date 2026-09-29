@@ -216,7 +216,7 @@ it('实际 main 的 live 模式在数据库初始化前拒绝且不读取环境�
   }
 }, 30000)
 
-it('实际 main 的 simulation 继续通过 P7 持久会话完成查询', async () => {
+it('实际 main 的 simulation 通过 P7 完成查询后保持咨询可继续', async () => {
   const process = launch('simulation')
   try {
     const url = await ready(process)
@@ -235,9 +235,15 @@ it('实际 main 的 simulation 继续通过 P7 持久会话完成查询', async 
             db.prepare('SELECT status FROM agent_runs WHERE run_id = ?').get(accepted.runId) as {
               status: string
             }
-          ).status === 'completed',
+          ).status === 'awaiting_input',
       )
       const calls = db.prepare('SELECT purpose,status,actual FROM p7_calls').all()
+      const pause = db
+        .prepare(
+          "SELECT payload_json FROM agent_events WHERE run_id = ? AND type = 'run.paused' ORDER BY sequence DESC LIMIT 1",
+        )
+        .get(accepted.runId) as { payload_json: string }
+      expect(JSON.parse(pause.payload_json)).toMatchObject({ consultation: 'ready' })
       expect(calls).toEqual([
         { purpose: 'main_agent', status: 'settled', actual: 0 },
         { purpose: 'main_agent', status: 'settled', actual: 0 },

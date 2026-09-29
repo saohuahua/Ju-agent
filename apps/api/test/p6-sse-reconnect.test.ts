@@ -39,6 +39,7 @@ it('P6 SSE 真实断网重连不漏不重且不泄漏原始结果', async () => 
     const url = `${ready.url}/commands/${ready.taskId}/events`
     const stop = new AbortController()
     const first = await fetch(url, { headers: { 'Test-Customer': 'C1' }, signal: stop.signal })
+    expect(first.headers.get('cache-control')).toContain('no-transform')
     const reader = first.body!.getReader()
     while (!firstText.includes('"step":"model"')) {
       const chunk = await reader.read()

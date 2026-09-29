@@ -12,6 +12,7 @@ import type {
 import { p8FactsFromEvidence } from '../../contracts/src/p8-investigation.js'
 import type { SqliteDatabase } from './db.js'
 import { P6TaskRepository } from './p6-task-repository.js'
+import { migrateP8 } from './p8-migration.js'
 
 interface Link {
   role: P8Role
@@ -44,18 +45,7 @@ export class P8InvestigationRepository {
   readonly tasks: P6TaskRepository
   constructor(readonly db: SqliteDatabase) {
     this.tasks = new P6TaskRepository(db)
-    db.exec(`
-      CREATE TABLE IF NOT EXISTS p8_investigations (
-        parent_task_id TEXT PRIMARY KEY REFERENCES p6_tasks(task_id),
-        input_json TEXT NOT NULL
-      );
-      CREATE TABLE IF NOT EXISTS p8_branches (
-        parent_task_id TEXT NOT NULL REFERENCES p8_investigations(parent_task_id),
-        role TEXT NOT NULL CHECK(role IN ('facts','policy')),
-        task_id TEXT NOT NULL UNIQUE REFERENCES p6_tasks(task_id),
-        PRIMARY KEY(parent_task_id, role)
-      );
-    `)
+    migrateP8(db)
   }
 
   /** 同参重放读取原冻结任务 不因源事实后续变化丢失已受理结果 */

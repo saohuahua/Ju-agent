@@ -60,15 +60,19 @@ describe('P7 统一预算', () => {
     expect(p7Cost(price, { inputTokens: 1, outputTokens: 0 })).toBe(1)
     expect(p7Cost(price, { inputTokens: 1000000, outputTokens: 0 })).toBe(7)
   })
-  it('价格缺失与真实调用都在运行前阻断', async () => {
+  it('价格缺失阻断调用 真实模式仅在计价后执行并记账', async () => {
     let calls = 0
     await expect(
       setup({ price: null }).gateway.invoke(context, async () => calls++),
     ).rejects.toMatchObject({ code: 'PRICE_MISSING' })
-    await expect(
-      setup({ mode: 'live' }).gateway.invoke(context, async () => calls++),
-    ).rejects.toMatchObject({ code: 'LIVE_DISABLED' })
     expect(calls).toBe(0)
+    const live = setup({ mode: 'live' })
+    await live.gateway.invoke(context, async (_signal, usage) => {
+      calls++
+      usage({ inputTokens: 10, outputTokens: 5 })
+    })
+    expect(calls).toBe(1)
+    expect(live.ledger.totals('live:first-real-cny-100').committed).toBeGreaterThan(0)
   })
   it('成功结算记录价格单位及币种', async () => {
     const { ledger, gateway, db } = setup()

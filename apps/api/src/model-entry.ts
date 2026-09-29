@@ -19,6 +19,6 @@ export function resolveApiModelEntry(mode?: string) {
     model: new DisabledApiModel(),
     available: false,
     label: mode === 'simulation' ? '持久退款离线模拟' : '真实模型入口已关闭',
-    durableConversation: mode === 'simulation' ? conversationDemoOptions(true) : undefined,
+    durableConversation: mode === 'simulation' ? conversationDemoOptions(true, true) : undefined,
   }
 }

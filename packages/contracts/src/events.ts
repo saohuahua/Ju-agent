@@ -7,6 +7,7 @@
  */
 
 import { z } from 'zod'
+import { OrderCandidates } from './order-selection.js'
 import {
   ErrorCode,
   EventType,
@@ -28,6 +29,7 @@ export type AgentEventRow = z.infer<typeof AgentEventRow>
 
 /** 各事件类型的 payload 契约 与 EventType 一一对应 */
 export const EVENT_PAYLOAD_SCHEMAS = {
+  'order.candidates': OrderCandidates,
   'run.started': z.object({
     customerId: z.string(),
     promptVersion: z.string(),
@@ -35,6 +37,8 @@ export const EVENT_PAYLOAD_SCHEMAS = {
   }),
   'message.user': z.object({
     text: z.string(),
+    /** 请求键用于确认本地消息 旧事件缺省时不按文本猜测关联 */
+    requestKey: z.string().max(200).optional(),
     /** 用户回复针对的提问工具调用 缺省为普通消息 */
     replyToToolCallId: z.string().optional(),
   }),
@@ -142,6 +146,9 @@ export const EVENT_PAYLOAD_SCHEMAS = {
     decidedBy: z.string(),
   }),
   'run.paused': z.object({
+    consultation: z.enum(['ready', 'clarify']).optional(),
+    showChoices: z.boolean().optional(),
+    missingSlot: z.string().optional(),
     reason: z.enum(['awaiting_input', 'awaiting_approval']),
     /** 补问文本或审批提示 */
     hint: z.string().optional(),
@@ -193,6 +200,7 @@ export const EVENT_PAYLOAD_SCHEMAS = {
     summary: z.string(),
     resolvedBy: z.string(),
   }),
+  'human.requested': z.object({ sourceRunId: z.string().nullable() }),
   /**
    * 工具目录变更 能力门控的可观测化
    *

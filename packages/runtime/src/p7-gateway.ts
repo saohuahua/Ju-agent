@@ -10,9 +10,9 @@ import type { P7Ledger } from '../../persistence/src/p7-ledger.js'
 import { p7Cost, p7Reservation, restoreP7Snapshot } from './p7-snapshot.js'
 import { decodeP7Stream, encodeP7Request } from './p7-protocol.js'
 
-/** 本阶段只接收离线传输替身 不包含网络实现也不读取环境密钥 */
+/** 网关通过传输接口调用模型 网络实现与密钥由传输层管理 */
 export interface P7Transport {
-  readonly mode: 'simulation'
+  readonly mode: P7Snapshot['mode']
   stream(body: Record<string, unknown>, signal: AbortSignal): AsyncIterable<unknown>
 }
 
@@ -20,7 +20,13 @@ function normalize(error: unknown): P7Error {
   if (error instanceof P7Error) return error
   const status = error && typeof error === 'object' && 'status' in error ? Number(error.status) : 0
   return new P7Error(
-    status === 429 ? 'RATE_LIMITED' : status >= 500 && status <= 599 ? 'UPSTREAM' : 'CONNECTION',
+    status === 429
+      ? 'RATE_LIMITED'
+      : status >= 400 && status < 500
+        ? 'CONFIG'
+        : status >= 500 && status <= 599
+          ? 'UPSTREAM'
+          : 'CONNECTION',
   )
 }
 
@@ -39,7 +45,6 @@ export class P7Gateway {
     operation: (signal: AbortSignal, reportUsage: (usage: P7Usage | null) => void) => Promise<T>,
   ): Promise<T> {
     const snapshot = this.snapshot
-    if (snapshot.mode !== 'simulation') throw new P7Error('LIVE_DISABLED')
     const reserve = p7Reservation(snapshot)
     const operationId = context.operationId ?? randomUUID()
     for (let attempt = 1; attempt <= snapshot.maxAttempts; attempt++) {
@@ -125,7 +130,7 @@ export class P7Gateway {
     return {
       info: { provider: snapshot.provider, model: snapshot.model },
       async *stream(request: ModelRequest): AsyncIterable<ModelStreamEvent> {
-        if (transport.mode !== 'simulation') throw new P7Error('LIVE_DISABLED')
+        if (transport.mode !== snapshot.mode) throw new P7Error('CONFIG')
         const capturedRequest = globalThis.structuredClone(request)
         const body = encodeP7Request(capturedRequest, snapshot)
         const result = await invoke(

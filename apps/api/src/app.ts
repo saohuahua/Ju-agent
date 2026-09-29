@@ -6,7 +6,7 @@
  * 测试通过注入组合系统驱动同一套路由
  */
 
-import { Hono } from 'hono'
+import { Hono, type Context } from 'hono'
 import { cors } from 'hono/cors'
 import {
   ApprovalDecisionRequest,
@@ -16,6 +16,7 @@ import {
   OperatorMessageRequest,
   RunRatingRequest,
   RunResolveRequest,
+  RequestHumanHelp,
 } from '@aftersales/contracts'
 import { randomUUID } from 'node:crypto'
 import { DomainError } from '@aftersales/domain'
@@ -42,12 +43,15 @@ import {
   SqliteApprovalProgressRepository,
 } from '@aftersales/persistence'
 import type { ComposedSystem } from '@aftersales/runtime'
+import { requestsHuman } from '@aftersales/runtime'
 import { ToolExecutionError } from '@aftersales/tools'
 import { createAuthEnv, requireActor, requireRole, type AuthEnv } from './auth.js'
 import { createEventStream } from './sse.js'
 import { registerDeskRoutes } from './desk.js'
 import { customerEvent, customerRun } from './customer-view.js'
 import { customerRefundProgress } from './customer-progress.js'
+import { localModelOrigin, type ModelSettingsStore } from './model-settings.js'
+import { P7Error } from '@aftersales/contracts'
 
 export interface AppDependencies {
   /** 部署探针仅检查依赖 不执行模型或资金动作 */
@@ -57,6 +61,7 @@ export interface AppDependencies {
   authEnv?: AuthEnv
   /** 模型不可用时创建运行返回 503 */
   modelAvailable: boolean
+  modelSettings?: ModelSettingsStore
 }
 
 /** 领域错误码到 HTTP 状态码 字面量联合保证 hono 重载匹配 */
@@ -197,6 +202,7 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
           : 'durable_readonly_simulation'
         : 'legacy',
       promptVersion: PROMPT_VERSION,
+      modelTransport: deps.modelSettings?.status().enabled ? 'live' : 'simulation',
     })
   })
 
@@ -213,8 +219,83 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
   app.use('/api/*', requireActor)
   registerDeskRoutes(app, system)
 
+  const localModelAccess = (context: Context<AppEnv>) =>
+    localModelOrigin(context.req.header('Origin')) &&
+    Boolean(deps.modelSettings?.authorized(context.req.header('X-Model-Local-Token')))
+
+  app.get('/api/model-settings', (context) => {
+    if (!requireRole(context, ['supervisor']))
+      return context.json({ error: 'AUTHORIZATION_DENIED' }, 403)
+    if (!deps.modelSettings) return context.json({ error: 'MODEL_UNAVAILABLE' }, 503)
+    context.header('Cache-Control', 'no-store')
+    return context.json(deps.modelSettings.status())
+  })
+
+  app.post('/api/model-settings/test', async (context) => {
+    if (!requireRole(context, ['supervisor']) || !localModelAccess(context))
+      return context.json({ error: 'AUTHORIZATION_DENIED' }, 403)
+    if (!deps.modelSettings) return context.json({ error: 'MODEL_UNAVAILABLE' }, 503)
+    try {
+      const result = await deps.modelSettings.test(await context.req.json())
+      return context.json(result)
+    } catch (error) {
+      return context.json(
+        {
+          error: 'MODEL_TEST_FAILED',
+          code: error instanceof P7Error ? error.code : 'CONFIG',
+          message: '模型测试未通过 请核对地址 密钥 模型和价格',
+        },
+        400,
+      )
+    }
+  })
+
+  app.put('/api/model-settings', async (context) => {
+    if (!requireRole(context, ['supervisor']) || !localModelAccess(context))
+      return context.json({ error: 'AUTHORIZATION_DENIED' }, 403)
+    if (!deps.modelSettings) return context.json({ error: 'MODEL_UNAVAILABLE' }, 503)
+    try {
+      return context.json(deps.modelSettings.enable(await context.req.json()))
+    } catch {
+      return context.json({ error: 'CONFIG', message: '请先使用相同配置通过连接测试' }, 400)
+    }
+  })
+
+  app.delete('/api/model-settings', (context) => {
+    if (!requireRole(context, ['supervisor']) || !localModelAccess(context))
+      return context.json({ error: 'AUTHORIZATION_DENIED' }, 403)
+    if (!deps.modelSettings) return context.json({ error: 'MODEL_UNAVAILABLE' }, 503)
+    return context.json(deps.modelSettings.disable())
+  })
+
   // ---------- 运行管理 ----------
 
+  // 客户申请与坐席接管分离 模型停用也能持久受理人工需求
+  app.post('/api/human-help', async (context) => {
+    const actor = context.get('actor') as Actor
+    if (actor.role !== 'customer' || !actor.customerId)
+      return context.json({ error: 'AUTHORIZATION_DENIED', message: '仅客户可申请人工帮助' }, 403)
+    const body = RequestHumanHelp.safeParse(await context.req.json().catch(() => null))
+    if (!body.success)
+      return context.json({ error: 'VALIDATION_ERROR', message: '请求体不合法' }, 400)
+    if (!system.conversations)
+      return context.json({ error: 'UNAVAILABLE', message: '人工受理入口暂不可用' }, 503)
+    try {
+      const task = system.conversations.control(
+        actor.customerId,
+        context.req.header('Idempotency-Key') ?? '',
+        'human',
+        body.data.sourceRunId,
+      )
+      return context.json({ runId: task.runId, accepted: true }, 202)
+    } catch (error) {
+      const mapped = errorResponse(error)
+      if (mapped) return context.json(mapped.body, mapped.status)
+      throw error
+    }
+  })
+
+  // 创建会话先保存客户输入 持久模式由后台继续处理
   app.post('/api/runs', async (context) => {
     if (!deps.modelAvailable && !system.conversations) {
       return context.json(
@@ -226,10 +307,12 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
       )
     }
     const actor = context.get('actor') as Actor
+    // 结构校验只确认输入形状 订单归属和退款资格仍由业务层检查
     const body = CreateRunRequest.safeParse(await context.req.json())
     if (!body.success) {
       return context.json({ error: 'VALIDATION_ERROR', message: '请求体不合法' }, 400)
     }
+    // 客户不能用请求体替换本人身份 团队代建才读取目标客户号
     const customerId = actor.role === 'customer' ? actor.customerId : body.data.customerId
     if (!customerId) {
       return context.json(
@@ -239,20 +322,38 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     }
 
     if (system.conversations) {
+      // 重试原消息沿用原键 新消息使用新键 后端还会比较原始内容
       const key = context.req.header('Idempotency-Key') ?? ''
       try {
-        const task = system.conversations.accept(customerId, key, body.data.message)
+        if (body.data.modelMode === 'live' && !localModelAccess(context))
+          return context.json({ error: 'AUTHORIZATION_DENIED' }, 403)
+        const snapshot =
+          body.data.modelMode === 'live' ? deps.modelSettings?.liveSnapshot() : undefined
+        if (body.data.modelMode === 'live' && !snapshot)
+          return context.json({ error: 'MODEL_UNAVAILABLE' }, 503)
+        const task = system.conversations.accept(
+          customerId,
+          key,
+          body.data.message,
+          undefined,
+          undefined,
+          snapshot,
+        )
+        // 这些标识只证明输入和任务已保存 尚不证明建单或退款成功
         return context.json(
           { runId: task.runId, commandId: task.commandId, taskId: task.taskId, accepted: true },
           202,
         )
       } catch (error) {
+        if (error instanceof P7Error)
+          return context.json({ error: 'MODEL_UNAVAILABLE', message: '真实模型配置不可用' }, 503)
         const mapped = errorResponse(error)
         if (mapped) return context.json(mapped.body, mapped.status)
         throw error
       }
     }
 
+    // 未装配持久会话才走兼容入口 两条路径的返回契约不同
     const run = await system.runService.start({
       customerId,
       promptVersion: PROMPT_VERSION,
@@ -272,6 +373,7 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
   app.get('/api/runs', async (context) => {
     const actor = context.get('actor') as Actor
     const status = context.req.query('status')
+    // 查询时就限制客户范围 不把其他客户数据交给浏览器过滤
     const runs = await system.runService.list({
       status,
       customerId: actor.role === 'customer' ? actor.customerId : undefined,
@@ -307,6 +409,7 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     }
   })
 
+  // 同一入口包含补问 留言和寄回 各分支成功的业务含义不同
   app.post('/api/runs/:runId/messages', async (context) => {
     const actor = context.get('actor') as Actor
     const runId = context.req.param('runId')
@@ -317,6 +420,49 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     const run = await system.runService.get(runId)
     if (actor.role === 'customer' && run.customerId !== actor.customerId) {
       return context.json({ error: 'AUTHORIZATION_DENIED', message: '无权访问该会话' }, 403)
+    }
+    // 显式结束不调用模型 也不允许借此结束人工案件或退款流程
+    if (body.data.action === 'end_consultation') {
+      if (actor.role !== 'customer' || !actor.customerId)
+        return context.json({ error: 'AUTHORIZATION_DENIED', message: '仅客户可结束咨询' }, 403)
+      if (body.data.returnShipment || !system.conversations)
+        return context.json({ error: 'CONFLICT', message: '当前会话不能结束咨询' }, 409)
+      try {
+        const task = system.conversations.control(
+          actor.customerId,
+          context.req.header('Idempotency-Key') ?? '',
+          'end_consultation',
+          runId,
+        )
+        return context.json({ runId: task.runId, accepted: true }, 202)
+      } catch (error) {
+        const mapped = errorResponse(error)
+        if (mapped) return context.json(mapped.body, mapped.status)
+        throw error
+      }
+    }
+    // 明确转接文字与按钮使用同一路径 办理中的原任务不会因转接被覆盖
+    if (
+      actor.role === 'customer' &&
+      actor.customerId &&
+      system.conversations &&
+      run.status !== 'handling_human' &&
+      !body.data.returnShipment &&
+      requestsHuman(body.data.message)
+    ) {
+      try {
+        const task = system.conversations.control(
+          actor.customerId,
+          context.req.header('Idempotency-Key') ?? '',
+          'human',
+          runId,
+        )
+        return context.json({ runId: task.runId, accepted: true }, 202)
+      } catch (error) {
+        const mapped = errorResponse(error)
+        if (mapped) return context.json(mapped.body, mapped.status)
+        throw error
+      }
     }
     // 人工处理中 客户消息直接落事件 不驱动模型 坐席端经 SSE 实时可见
     if (run.status === 'handling_human') {
@@ -342,12 +488,15 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
       }
       return context.json({ runId })
     }
+    // 已接管业务不能退回旧模型续跑 避免重新规划原退款
     if (system.durableBusiness?.owns(runId) && !system.conversations?.owns(runId))
       return context.json(
         { error: 'CONFLICT', message: '该业务已由持久任务接管 请从运营入口处理寄回与收货' },
         409,
       )
     if (system.conversations?.owns(runId)) {
+      if (deps.modelSettings?.isLiveRun(runId) && !localModelAccess(context))
+        return context.json({ error: 'AUTHORIZATION_DENIED' }, 403)
       try {
         const task = system.conversations.accept(
           run.customerId,
@@ -356,6 +505,7 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
           runId,
           body.data.returnShipment,
         )
+        // 补充或寄回受理后应刷新业务进度 不能直接显示退款成功
         return context.json({ runId: task.runId, commandId: task.commandId, accepted: true }, 202)
       } catch (error) {
         const mapped = errorResponse(error)
@@ -554,7 +704,8 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     return new Response(stream, {
       headers: {
         'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
+        // 禁止代理压缩转换 防止长连接只发压缩头而积压业务帧
+        'Cache-Control': 'no-cache, no-transform',
         Connection: 'keep-alive',
       },
     })
@@ -663,6 +814,7 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
         409,
       )
     }
+    // 检查点版本传到写入侧 防止读完方案后发生变化仍被批准
     const result = await system.approvalService.decide(
       actor,
       approvalId,
@@ -795,6 +947,7 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
     }
   })
 
+  // 客户登记运单不等于卖家收货 收货角色限制在此入口执行
   app.post('/api/operations/receive-goods', async (context) => {
     if (!requireRole(context, ['operator', 'supervisor'])) {
       return context.json({ error: 'AUTHORIZATION_DENIED', message: '仅操作员可确认收货' }, 403)

@@ -71,7 +71,13 @@ async function waitState(url: string, runId: string, status: string) {
 }
 
 describe('正式普通会话跨进程恢复', () => {
-  it.each(['accepted', 'after-model-response', 'after-turn-checkpoint', 'after-read-checkpoint'])(
+  it.each([
+    'accepted',
+    'after-model-response',
+    'after-turn-checkpoint',
+    'after-read-response',
+    'after-read-checkpoint',
+  ])(
     '%s 边界退出后不重复已确认消息和工具结果',
     async (fault) => {
       const directory = join(evidence, fault)
@@ -111,6 +117,17 @@ describe('正式普通会话跨进程恢复', () => {
               .prepare("SELECT COUNT(*) AS n FROM agent_events WHERE type = 'agent.tool_results'")
               .get(),
           ).toEqual({ n: 1 })
+          // 开始动作不是成功凭据 退出后仍确认原查询且使用同一公开执行标识
+          const actions = db
+            .prepare(
+              "SELECT type,payload_json AS payload FROM agent_events WHERE type IN ('tool.requested','tool.completed') ORDER BY sequence",
+            )
+            .all() as Array<{ type: string; payload: string }>
+          expect(actions.filter((event) => event.type === 'tool.requested')).toHaveLength(1)
+          expect(actions.filter((event) => event.type === 'tool.completed')).toHaveLength(1)
+          expect(JSON.parse(actions[0]!.payload).executionId).toBe(
+            JSON.parse(actions[1]!.payload).executionId,
+          )
           expect(db.prepare('SELECT COUNT(*) AS n FROM p7_calls').get()).toEqual({
             n: fault === 'after-model-response' ? 3 : 2,
           })

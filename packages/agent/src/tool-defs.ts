@@ -8,7 +8,13 @@
 
 import { z } from 'zod'
 import { zodToJsonSchema } from 'zod-to-json-schema'
-import { AGENT_TOOLS, INTENT_SLOT_SCHEMAS, ToolIO, TOOL_CATALOG } from '@aftersales/contracts'
+import {
+  AGENT_TOOLS,
+  INTENT_SLOT_SCHEMAS,
+  ToolIO,
+  TOOL_CATALOG,
+  ListMyOrdersInput,
+} from '@aftersales/contracts'
 import type { Intent, ToolName } from '@aftersales/contracts'
 import type { ToolDefinition } from './model.js'
 
@@ -27,6 +33,15 @@ export const ASK_USER_TOOL = 'ask_user'
 
 /** 任务完结协议工具 模型显式声明最终答复 结构上区分提问与完结 */
 export const CONCLUDE_TOOL = 'conclude'
+
+/** 新版持久会话按快照显式启用 不改变历史工具目录 */
+export function buildOrderListToolDefinition(): ToolDefinition {
+  return {
+    name: 'list_my_orders',
+    description: '查询当前客户最近五笔订单 缺少订单号时先查询并请客户选择 不得替客户确认订单',
+    inputSchema: jsonSchema(ListMyOrdersInput),
+  }
+}
 
 function describeTool(name: string): string {
   const descriptor = TOOL_CATALOG.find((tool) => tool.name === name)

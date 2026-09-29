@@ -2,13 +2,18 @@ import { createP7Snapshot } from './p7-snapshot.js'
 import type { DurableConversationOptions } from './durable-conversation.js'
 import { BASELINE_FIXTURE } from '@aftersales/persistence'
 import { buildKnowledgeSnapshot, POLICY_VERSION } from '@aftersales/domain'
+import { orderSelectionDecision } from './order-selection-demo.js'
+import { CUSTOMER_GUIDANCE_VERSION } from './customer-guidance.js'
 
 /**
  * 可恢复的无密钥演示传输 只依据已持久化消息选择固定响应
  * 不使用进程内递增脚本游标 因此重启不会重置对话进度
  * 零价为显式模拟价格 不代表任何真实供应商报价
  */
-export function conversationDemoOptions(refunds = false): DurableConversationOptions {
+export function conversationDemoOptions(
+  refunds = false,
+  guidance = false,
+): DurableConversationOptions {
   const knowledge = buildKnowledgeSnapshot(
     BASELINE_FIXTURE.policyArticles.map((article) => ({
       articleId: article.article_id,
@@ -28,9 +33,17 @@ export function conversationDemoOptions(refunds = false): DurableConversationOpt
       protocol: 'anthropic_messages',
       endpointRef: 'offline',
       credentialRef: 'none',
-      promptVersion: refunds ? 'durable-refund-v1' : 'durable-readonly-v1',
+      promptVersion: guidance
+        ? CUSTOMER_GUIDANCE_VERSION
+        : refunds
+          ? 'durable-refund-orders-v2'
+          : 'durable-readonly-v1',
       knowledgeSnapshotId: knowledge.snapshotId,
-      toolVersion: refunds ? 'refund-v1' : 'readonly-v1',
+      toolVersion: guidance
+        ? CUSTOMER_GUIDANCE_VERSION
+        : refunds
+          ? 'refund-orders-v2'
+          : 'readonly-v1',
       budgetRef: 'first-real-cny-100',
       capabilities: {
         tools: true,
@@ -59,7 +72,7 @@ export function conversationDemoOptions(refunds = false): DurableConversationOpt
       maxConcurrency: 4,
       maxOutputTokens: 1000,
     }),
-    transport: () => ({
+    transport: (snapshot) => ({
       mode: 'simulation',
       async *stream(body, signal) {
         signal.throwIfAborted()
@@ -148,6 +161,14 @@ export function conversationDemoOptions(refunds = false): DurableConversationOpt
                         }
                       : { orderNo: refundOrder, reason, explanation: '按客户诉求提交领域核验' }
           }
+        }
+        if (
+          snapshot.toolVersion === 'refund-orders-v2' ||
+          snapshot.toolVersion === CUSTOMER_GUIDANCE_VERSION
+        ) {
+          const decision = orderSelectionDecision(messages)
+          name = decision.name
+          args = decision.args
         }
         const text =
           name === 'conclude'

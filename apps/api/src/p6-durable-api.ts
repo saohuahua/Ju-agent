@@ -84,7 +84,8 @@ export function createP6DurableApi(ports: P6ApiPorts): Hono {
     if (!Number.isSafeInteger(cursor) || cursor < 0)
       return context.json({ error: 'INVALID_CURSOR' }, 400)
     return new Response(p6EventStream(ports.repository, task.taskId, cursor), {
-      headers: { 'content-type': 'text/event-stream', 'cache-control': 'no-cache' },
+      // 命令流同样要求逐帧交付 不允许代理压缩缓冲
+      headers: { 'content-type': 'text/event-stream', 'cache-control': 'no-cache, no-transform' },
     })
   })
 

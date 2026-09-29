@@ -33,7 +33,13 @@ import type {
   SkuPriceRepository,
 } from '@aftersales/domain'
 import type { PolicyDecisionRecord } from '@aftersales/domain'
-import type { OrderItem, ReturnReason, ReturnType } from '@aftersales/contracts'
+import {
+  ListMyOrdersInput,
+  OrderCandidates,
+  type OrderItem,
+  type ReturnReason,
+  type ReturnType,
+} from '@aftersales/contracts'
 import type { SqliteDatabase } from './db.js'
 
 interface OrderRow {
@@ -72,6 +78,21 @@ function rowToOrder(row: OrderRow): Order {
 
 export class SqliteOrderRepository implements OrderRepository {
   constructor(private readonly db: SqliteDatabase) {}
+
+  /** 身份由会话注入 同时按单号排序保证同时间订单分页稳定 */
+  listByCustomer(customerId: string, offset = 0) {
+    ListMyOrdersInput.parse({ offset })
+    const rows = this.db
+      .prepare(
+        'SELECT * FROM orders WHERE customer_id = ? ORDER BY created_at DESC, order_no DESC LIMIT 6 OFFSET ?',
+      )
+      .all(customerId, offset) as OrderRow[]
+    return OrderCandidates.parse({
+      orders: rows.slice(0, 5).map(rowToOrder),
+      offset,
+      nextOffset: rows.length > 5 && offset + 5 <= 10000 ? offset + 5 : null,
+    })
+  }
 
   async findByOrderNo(orderNo: string): Promise<Order | null> {
     return this.findByOrderNoSync(orderNo)
