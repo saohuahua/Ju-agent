@@ -56,6 +56,8 @@ docker compose --env-file infra/docker/offline.env -p youju-p10 -f compose.yaml 
 
 本地离线开发只需运行 `pnpm dev:offline`，再打开终端打印的工作台地址。此入口与 Compose 使用相同的 simulation 业务模式和内嵌模拟渠道，网页同样经 `/api` 代理到 API；数据保存在独立的 `data/local-offline/`，不会读取 Docker 卷或原 `data/app.db`。完整用法与差异见[本地与容器一致性](docs/runbooks/local-offline.md)。旧的 `pnpm dev` / `pnpm dev:web` 保留为分别启动的开发入口，不自动启用完整离线业务。部署工具链固定 Node 22.23.2 与 pnpm 11.23.0，按锁文件安装。`infra/docker/docker-compose.yml` 仅保留历史 PostgreSQL/Redis 设施，当前运行时没有迁移到 PostgreSQL。
 
+本机需要真实模型时，可在 `.env` 填写模型配置、估算单价和 `MODEL_AUTO_ENABLE=1`。同一入口此时让新客户咨询调用真实模型，订单与支付仍使用本机模拟数据；配置缺项会阻止启动。设置弹窗读取非敏感配置，密钥只保存在服务端。操作与边界见[模型设置手册](docs/runbooks/model-settings.md)。
+
 换电脑保留当前本地数据时，先停止服务，运行 `pnpm data:backup:offline`，将打印的备份目录带到新电脑，在首次启动前运行 `pnpm data:restore:offline <备份目录>`。备份包含业务库和模拟渠道库，操作步骤见[本地与容器一致性](docs/runbooks/local-offline.md)。不迁移历史数据时，直接运行 `pnpm dev:offline` 会创建表和基础演示数据。
 
 演示令牌
