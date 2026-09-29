@@ -1,14 +1,93 @@
-import { afterEach, expect, it } from 'vitest'
+import { afterEach, expect, it, vi } from 'vitest'
 import { createServer, type Server } from 'node:http'
 import { createMemoryDatabase, initializeDemo, P7Ledger } from '@aftersales/persistence'
 import { SystemClock } from '@aftersales/domain'
 import { composeSystem, conversationDemoOptions } from '@aftersales/runtime'
+import { P7Error } from '@aftersales/contracts'
 import { ModelSettingsStore, localModelOrigin } from '../src/model-settings.js'
 import { createApp } from '../src/app.js'
 
 const servers: Server[] = []
 afterEach(async () => {
+  vi.unstubAllGlobals()
   await Promise.all(servers.splice(0).map((server) => new Promise((done) => server.close(done))))
+})
+
+it('Gemini 连接测试预留足够的短回复长度', async () => {
+  const db = createMemoryDatabase()
+  let maxTokens = 0
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (_url: unknown, init: RequestInit) => {
+      maxTokens = (JSON.parse(String(init.body)) as { max_tokens: number }).max_tokens
+      return new Response(
+        'data: {"choices":[{"index":0,"delta":{"content":"连接成功"},"finish_reason":null}]}\n\n' +
+          'data: {"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}\n\n' +
+          'data: {"choices":[],"usage":{"prompt_tokens":10,"completion_tokens":5}}\n\n' +
+          'data: [DONE]\n\n',
+        { headers: { 'content-type': 'text/event-stream' } },
+      )
+    }),
+  )
+  try {
+    const store = new ModelSettingsStore(db, conversationDemoOptions(true).snapshot, {
+      OPENAI_API_KEY: 'configured-key',
+    })
+    await expect(
+      store.test({
+        protocol: 'openai_chat',
+        baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+        model: 'gemini-3.5-flash-lite',
+        inputCnyPerMillion: 3,
+        outputCnyPerMillion: 20,
+      }),
+    ).resolves.toMatchObject({ reply: '连接成功' })
+    expect(maxTokens).toBe(256)
+  } finally {
+    db.close()
+  }
+})
+
+it('供应商故障在设置接口中给出可操作提示', async () => {
+  const db = createMemoryDatabase()
+  try {
+    initializeDemo(db)
+    const demo = conversationDemoOptions(true)
+    const store = new ModelSettingsStore(db, demo.snapshot, {}, 'local-secret')
+    vi.spyOn(store, 'test').mockRejectedValue(new P7Error('UPSTREAM'))
+    const system = composeSystem({
+      db,
+      clock: new SystemClock(),
+      withFixture: false,
+      model: {
+        info: { provider: 'disabled', model: 'disabled' },
+        async *stream() {
+          yield* []
+        },
+      },
+      durableConversation: demo,
+    })
+    const response = await createApp({ system, modelAvailable: false, modelSettings: store }).request(
+      '/api/model-settings/test',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer supervisor-token',
+          Origin: 'http://127.0.0.1:8790',
+          'X-Model-Local-Token': 'local-secret',
+          'Content-Type': 'application/json',
+        },
+        body: '{}',
+      },
+    )
+    expect(response.status).toBe(400)
+    expect(await response.json()).toMatchObject({
+      code: 'UPSTREAM',
+      message: '模型服务暂时不可用 请稍后重试',
+    })
+  } finally {
+    db.close()
+  }
 })
 
 async function provider(protocol: 'anthropic_messages' | 'openai_chat') {

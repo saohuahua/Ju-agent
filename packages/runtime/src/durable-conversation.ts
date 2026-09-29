@@ -515,6 +515,7 @@ export class DurableConversation {
           toolCallId: event.toolCallId,
           toolName: event.toolName,
           input: {},
+          ...(event.thoughtSignature ? { thoughtSignature: event.thoughtSignature } : {}),
         })
         inputs.set(event.toolCallId, '')
       } else if (event.type === 'tool_input_delta')

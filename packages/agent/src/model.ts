@@ -28,12 +28,24 @@ export interface ToolDefinition {
 /** 模型轮次产出的内容块 */
 export type AssistantBlock =
   | { type: 'text'; text: string }
-  | { type: 'tool_use'; toolCallId: string; toolName: string; input: Record<string, unknown> }
+  | {
+      type: 'tool_use'
+      toolCallId: string
+      toolName: string
+      input: Record<string, unknown>
+      thoughtSignature?: number[]
+    }
 
 /** 回灌给模型的历史内容块 */
 export type ContextBlock =
   | { type: 'text'; text: string }
-  | { type: 'tool_use'; toolCallId: string; toolName: string; input: Record<string, unknown> }
+  | {
+      type: 'tool_use'
+      toolCallId: string
+      toolName: string
+      input: Record<string, unknown>
+      thoughtSignature?: number[]
+    }
   | {
       type: 'tool_result'
       toolCallId: string
@@ -58,7 +70,7 @@ export interface ModelRequest {
 /** 模型流式事件 与提供商 SSE 语义对齐 */
 export type ModelStreamEvent =
   | { type: 'text_delta'; text: string }
-  | { type: 'tool_call_start'; toolCallId: string; toolName: string }
+  | { type: 'tool_call_start'; toolCallId: string; toolName: string; thoughtSignature?: number[] }
   | { type: 'tool_input_delta'; toolCallId: string; partialJson: string }
   | {
       type: 'turn_completed'

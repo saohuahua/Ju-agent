@@ -132,6 +132,9 @@ export function rebuildMessages(events: EventRow[]): ModelMessage[] {
           toolCallId: String(raw.toolCallId),
           toolName: String(raw.toolName),
           input: (raw.input ?? {}) as Record<string, unknown>,
+          ...(Array.isArray(raw.thoughtSignature)
+            ? { thoughtSignature: raw.thoughtSignature as number[] }
+            : {}),
         }
       })
       messages.push({ role: 'assistant', content: blocks })

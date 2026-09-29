@@ -165,7 +165,12 @@ export class ModelSettingsStore {
 
   async test(input: unknown): Promise<{ latencyMs: number; reply: string }> {
     const settings = this.resolve(input)
-    const snapshot = this.snapshot(settings, 32)
+    const outputTokens =
+      settings.protocol === 'openai_chat' &&
+      new URL(settings.baseUrl).hostname === 'generativelanguage.googleapis.com'
+        ? 256
+        : 32
+    const snapshot = this.snapshot(settings, outputTokens)
     const gateway = new P7Gateway(snapshot, new P7Ledger(this.db))
     const model = gateway.chatModel(
       `model-test-${randomUUID()}`,
@@ -178,7 +183,7 @@ export class ModelSettingsStore {
       system: '你是连接测试助手',
       messages: [{ role: 'user', content: [{ type: 'text', text: '请回复连接成功' }] }],
       tools: [],
-      maxTokens: 32,
+      maxTokens: outputTokens,
     })) {
       if (event.type === 'text_delta') reply += event.text
     }

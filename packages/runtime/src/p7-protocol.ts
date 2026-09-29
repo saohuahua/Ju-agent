@@ -116,6 +116,15 @@ export function encodeP7Request(request: ModelRequest, snapshot: P7Snapshot): Re
                           id: b.toolCallId,
                           type: 'function',
                           function: { name: b.toolName, arguments: JSON.stringify(b.input) },
+                          ...(b.thoughtSignature
+                            ? {
+                                extra_content: {
+                                  google: {
+                                    thought_signature: Buffer.from(b.thoughtSignature).toString('utf8'),
+                                  },
+                                },
+                              }
+                            : {}),
                         })),
                       }
                     : {}),
@@ -141,7 +150,10 @@ export async function decodeP7Stream(
   snapshot: P7Snapshot,
   onUsage: (usage: P7Usage | null) => void,
 ): Promise<P7ProtocolResult> {
-  const tools = new Map<number, { id: string; name: string; json: string }>()
+  const tools = new Map<
+    number,
+    { id: string; name: string; json: string; thoughtSignature?: number[] }
+  >()
   const closedBlocks = new Set<number>()
   const blocks = new Set<number>()
   let text = ''
@@ -251,6 +263,17 @@ export async function decodeP7Stream(
             if (call.id !== undefined && call.id !== target.id) throw new P7Error('PROTOCOL')
             if (fn.name !== undefined) target.name += string(fn.name)
             if (fn.arguments !== undefined) target.json += string(fn.arguments)
+            if (call.extra_content !== undefined) {
+              const extra = object(call.extra_content)
+              if (extra.google !== undefined) {
+                const google = object(extra.google)
+                if (google.thought_signature !== undefined) {
+                  const signature = string(google.thought_signature)
+                  if (!signature || signature.length > 65536) throw new P7Error('PROTOCOL')
+                  target.thoughtSignature = [...Buffer.from(signature, 'utf8')]
+                }
+              }
+            }
           }
         }
         if (choice.finish_reason !== undefined && choice.finish_reason !== null) {
@@ -283,7 +306,12 @@ export async function decodeP7Stream(
       throw new P7Error('PROTOCOL')
     }
     events.push(
-      { type: 'tool_call_start', toolCallId: tool.id, toolName: tool.name },
+      {
+        type: 'tool_call_start',
+        toolCallId: tool.id,
+        toolName: tool.name,
+        ...(tool.thoughtSignature ? { thoughtSignature: tool.thoughtSignature } : {}),
+      },
       { type: 'tool_input_delta', toolCallId: tool.id, partialJson: tool.json || '{}' },
     )
   }

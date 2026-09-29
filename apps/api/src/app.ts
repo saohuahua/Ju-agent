@@ -239,11 +239,19 @@ export function createApp(deps: AppDependencies): Hono<AppEnv> {
       const result = await deps.modelSettings.test(await context.req.json())
       return context.json(result)
     } catch (error) {
+      const code = error instanceof P7Error ? error.code : 'CONFIG'
       return context.json(
         {
           error: 'MODEL_TEST_FAILED',
-          code: error instanceof P7Error ? error.code : 'CONFIG',
-          message: '模型测试未通过 请核对地址 密钥 模型和价格',
+          code,
+          message:
+            code === 'UPSTREAM'
+              ? '模型服务暂时不可用 请稍后重试'
+              : code === 'RATE_LIMITED'
+                ? '模型服务请求过多 请稍后重试'
+                : code === 'TRUNCATED'
+                  ? '模型回复超出测试长度 请调整模型后重试'
+                  : '模型测试未通过 请核对地址 密钥 模型和价格',
         },
         400,
       )
