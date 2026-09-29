@@ -213,7 +213,8 @@ export class DurableConversation {
     if (orderSelectionEnabled) tools.push(buildOrderListToolDefinition())
     if (guidance) {
       const conclude = tools.find((tool) => tool.name === 'conclude')!
-      conclude.description = '本轮咨询已答复 用摘要结束本轮 用户仍可继续咨询 不代表业务结案'
+      conclude.description =
+        '本轮咨询已答复 用户仍可继续咨询 没有单独答复正文时 summary 会直接展示给客户 必须写明完整结论和核实依据 不代表业务结案'
       const orders = tools.find((tool) => tool.name === 'list_my_orders')!
       orders.description =
         '仅在需要查询具体订单或办理售后且缺少订单号时查询本人最近订单 普通政策咨询不需要选单'
