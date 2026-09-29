@@ -305,6 +305,14 @@
   color: var(--color-muted-foreground);
   font-size: 11px;
 }
+/* 思考气泡里的步骤文字 跳点下方展示当前处理动作 变化时用入场动画过渡 */
+.thinkingStep {
+  display: block;
+  margin-top: 7px;
+  color: var(--color-muted-foreground);
+  font-size: 11px;
+  line-height: 1.6;
+}
 .threadAlert {
   max-width: 620px;
   margin: 0 auto 20px;

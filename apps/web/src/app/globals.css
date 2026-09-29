@@ -921,6 +921,48 @@
   }
 }
 
+/* 思考与生成中的跳动指示点 客户思考气泡与工作台生成标签共用 */
+/* 三点依次上浮回落 降级环境下静止为半透明圆点 仍可辨识处理中状态 */
+.youju-thinking-dots {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 12px;
+}
+.youju-thinking-dots > i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: youju-thinking-bounce 1200ms ease-in-out infinite;
+}
+.youju-thinking-dots > i:nth-child(2) {
+  animation-delay: 160ms;
+}
+.youju-thinking-dots > i:nth-child(3) {
+  animation-delay: 320ms;
+}
+@keyframes youju-thinking-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+/* 工作台流式标签 跳点与文字同行居中 */
+.youju-streaming-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* 框架的链接等待状态或路由占位存在时显示顶部不定进度条 */
 /* 延迟出现避免缓存命中的快速导航闪烁 状态结束即隐藏 不设置虚假完成定时器 */
 .youju-navigation-progress {

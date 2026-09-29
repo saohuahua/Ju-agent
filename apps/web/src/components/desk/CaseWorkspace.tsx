@@ -324,7 +324,16 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
                     {message.role === 'assistant' ? '据' : MESSAGE_ROLES[message.role].slice(0, 1)}
                   </span>
                   <strong>{MESSAGE_ROLES[message.role]}</strong>
-                  {message.streaming && <small>正在生成</small>}
+                  {message.streaming && (
+                    <small className="youju-streaming-note">
+                      <span className="youju-thinking-dots" aria-hidden="true">
+                        <i />
+                        <i />
+                        <i />
+                      </span>
+                      正在生成
+                    </small>
+                  )}
                 </header>
                 <div>{message.text}</div>
               </article>

@@ -15,6 +15,7 @@ import { api, ApiError, currentModelToken } from '@/lib/api'
 import { createRequestKey } from '@/lib/request-key'
 import { useIdentity } from '@/lib/identity'
 import { useRunEvents } from '@/lib/sse'
+import { useTypewriter } from '@/lib/use-typewriter'
 import type { RunRatingView, RunStatus } from '@/lib/types'
 import {
   canSendCustomerMessage,
@@ -131,6 +132,18 @@ function CustomerSession({ token }: { token: string }) {
     !awaitingConfirmation &&
     canSendCustomerMessage(runId, status, newRunAvailable)
   const processing = sending ? '正在提交您的消息' : customerProcessing({ ...state, status })
+  // 最后一条助手消息仍在流式拼接时由打字机接管展示 思考气泡退场
+  const lastStateMessage = state.messages[state.messages.length - 1]
+  const assistantTyping =
+    lastStateMessage?.role === 'assistant' && lastStateMessage.streaming === true
+  // 思考气泡覆盖提交确认与运行中的全部等待期 人工会话留言不暗示智能回复
+  const thinking =
+    !assistantTyping &&
+    !terminal &&
+    status !== 'handling_human' &&
+    (sending || awaitingConfirmation || status === 'running')
+  // 步骤文字 运行中展示工具进度 其余等待期没有可承诺的具体动作只展示通用思考
+  const thinkingText = sending || status === 'running' ? processing : '正在思考'
   const nextStep =
     status === 'awaiting_input' && !newRunAvailable
       ? '当前智能对话服务不可用 暂时不能继续处理'
@@ -164,9 +177,16 @@ function CustomerSession({ token }: { token: string }) {
     setRatingLoading(nextRunId !== null)
   }
 
+  // 流式期间气泡高度持续增长 消息条数不变也要跟随 以最后一条状态消息文本长度为准
+  const streamingLength = state.messages[state.messages.length - 1]?.text.length ?? 0
+  const previousCount = useRef(0)
   useEffect(() => {
-    if (runId) endRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' })
-  }, [runId, messages.length])
+    if (!runId) return
+    // 新消息进入用平滑滚动 流式增长用即时滚动 连续平滑动画会互相打断
+    const behavior = messages.length !== previousCount.current ? 'smooth' : 'auto'
+    previousCount.current = messages.length
+    endRef.current?.scrollIntoView({ block: 'end', behavior })
+  }, [runId, messages.length, streamingLength])
 
   useEffect(() => {
     // 窄屏切换时让当前会话留在横向列表的可见区域
@@ -567,10 +587,12 @@ function CustomerSession({ token }: { token: string }) {
                           ? '有据售后助手'
                           : '服务进度'}
                   </strong>
-                  <p className={styles.bubble}>
-                    {message.role === 'user'
-                      ? customerMessageText(message.text, events)
-                      : message.text}
+                  <p className={styles.bubble} aria-busy={message.streaming || undefined}>
+                    {message.role === 'user' ? (
+                      customerMessageText(message.text, events)
+                    ) : (
+                      <AssistantStreamText text={message.text} streaming={message.streaming} />
+                    )}
                     {message.streaming && <span className={styles.streaming}>正在回复</span>}
                   </p>
                   {message.delivery && (
@@ -581,6 +603,31 @@ function CustomerSession({ token }: { token: string }) {
                 </div>
               </article>
             ))}
+            {/* 思考气泡 助手未开始输出但流程在推进时展示 三个跳点加上当前步骤文字 */}
+            {runId && thinking && (
+              <article className={`${styles.message} youju-motion-enter`} data-role="assistant">
+                <span className={styles.messageAvatar} aria-hidden="true">
+                  据
+                </span>
+                <div className={styles.messageBody}>
+                  <strong>有据售后助手</strong>
+                  <p className={styles.bubble}>
+                    <span className="youju-thinking-dots" role="status" aria-label="正在思考">
+                      <i />
+                      <i />
+                      <i />
+                    </span>
+                    {/* 步骤文字变化时重挂载 用入场动画完成过渡 */}
+                    <span
+                      key={thinkingText}
+                      className={`${styles.thinkingStep} youju-motion-enter`}
+                    >
+                      {thinkingText}
+                    </span>
+                  </p>
+                </div>
+              </article>
+            )}
             {runId && terminal && state.error && (
               <Alert variant="destructive" className={styles.threadAlert}>
                 <AlertCircle aria-hidden="true" />
@@ -785,4 +832,13 @@ function CustomerSession({ token }: { token: string }) {
       </div>
     </div>
   )
+}
+
+/**
+ * 助手气泡文本 打字机只在流式期间逐字追赶
+ * 完成帧直接吸附权威文本 历史消息不走动画
+ */
+function AssistantStreamText({ text, streaming }: { text: string; streaming?: boolean }) {
+  const shown = useTypewriter(text, streaming === true)
+  return <>{shown}</>
 }
