@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+@import './staff-theme.css';
+@import './desk-workspace.css';
 
 /* 正式界面采用统一暖白主题 字体子集缺字时由系统中文字体补齐 */
 @font-face {
@@ -152,7 +154,7 @@
   min-height: 100dvh;
 }
 .youju-sidebar {
-  background: #fff8f3;
+  background: var(--staff-surface, #fff8f3);
   border-right: 1px solid var(--color-border);
   padding: 26px 16px;
   display: flex;
@@ -183,7 +185,7 @@
   width: 40px;
   height: 43px;
   color: white;
-  background: #d95d36;
+  background: var(--staff-strong, #d95d36);
   border-radius: 11px 3px 11px 3px;
   font-family: SimSun, serif;
 }
@@ -198,7 +200,7 @@
   font-size: 12px;
 }
 .youju-team > span {
-  background: #f5e5d9;
+  background: var(--staff-selected, #f5e5d9);
   padding: 5px 9px;
   border-radius: 7px;
 }
@@ -226,7 +228,7 @@
   padding: 12px;
   border-radius: 8px;
   font-size: 13px;
-  color: #756151;
+  color: var(--staff-secondary, #756151);
 }
 .youju-nav svg,
 .youju-entry svg {
@@ -391,7 +393,7 @@
 .youju-page-heading .youju-eyebrow {
   font-size: 10px;
   letter-spacing: 2px;
-  color: #a23e23;
+  color: var(--staff-link, #a23e23);
 }
 .youju-overview {
   display: flex;
@@ -405,7 +407,7 @@
 .youju-overview strong {
   font-size: 22px;
   font-weight: 600;
-  color: #795440;
+  color: var(--staff-strong, #795440);
   margin-right: 6px;
 }
 .youju-overview small {
@@ -425,7 +427,7 @@
 .youju-queue {
   min-width: 0;
   overflow-y: auto;
-  background: #fffcf8;
+  background: var(--staff-muted, #fffcf8);
   border-right: 1px solid var(--color-border);
 }
 .youju-queue-tools {
@@ -447,11 +449,11 @@
   border-left: 3px solid transparent;
 }
 .youju-case-row:hover {
-  background: #fff6ed;
+  background: var(--staff-selected, #fff6ed);
 }
 .youju-case-row.selected {
-  background: #fff0e3;
-  border-left-color: #d95d36;
+  background: var(--staff-selected, #fff0e3);
+  border-left-color: var(--staff-strong, #d95d36);
 }
 .youju-case-row > div {
   display: flex;
@@ -551,19 +553,19 @@
   height: 26px;
   display: grid;
   place-items: center;
-  background: #f3e8da;
+  background: var(--staff-selected, #f3e8da);
   border-radius: 8px;
 }
 .youju-message-assistant .youju-avatar {
-  background: #ffeadb;
-  color: #bf4726;
+  background: var(--staff-selected, #ffeadb);
+  color: var(--staff-strong, #bf4726);
 }
 .youju-message > div {
   font-size: 13px;
   line-height: 1.9;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  background: #faf6f0;
+  background: var(--staff-muted, #faf6f0);
   padding: 13px 16px;
   border-radius: 0 10px 10px 10px;
 }
@@ -581,7 +583,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background: #fffefa;
+  background: var(--staff-surface, #fffefa);
 }
 .youju-composer footer {
   display: flex;
@@ -601,7 +603,7 @@
   min-width: 0;
   overflow-y: auto;
   border-left: 1px solid var(--color-border);
-  background: #fffdfa;
+  background: var(--staff-surface, #fffdfa);
 }
 .youju-evidence h2 {
   font-size: 14px;
@@ -641,17 +643,17 @@
 .youju-policy-button svg {
   width: 18px;
   height: 18px;
-  color: #bf4726;
+  color: var(--staff-strong, #bf4726);
   margin-bottom: 9px;
 }
 .youju-policy-button span {
   display: block;
   margin-top: 12px;
   font-size: 10px;
-  color: #a23e23;
+  color: var(--staff-link, #a23e23);
 }
 .youju-policy-button:hover {
-  border-color: #bf4726;
+  border-color: var(--staff-strong, #bf4726);
 }
 .youju-evidence-footnote {
   border-top: 1px solid var(--color-border);

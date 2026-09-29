@@ -1,13 +1,18 @@
 'use client'
 
 import { NavigationLink as Link } from '@/components/NavigationLink'
-import { useState } from 'react'
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, ArrowUpRight, FileText, Send } from 'lucide-react'
+import { useRef, useState, type CSSProperties } from 'react'
+import {
+  useInfiniteQuery,
+  useIsMutating,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
+import { ArrowLeft, FileText, Send, PanelRightOpen, MoreHorizontal } from 'lucide-react'
 
 import { StatusBadge } from '@/components/StatusBadge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { RefreshButton } from '@/components/ui/refresh-button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
@@ -24,6 +29,12 @@ import { useRunEvents } from '@/lib/sse'
 import { cn } from '@/lib/utils'
 import { DeskEmpty } from './DeskEmpty'
 import { PolicyDialog } from './PolicyDialog'
+import { AgentPanel } from './AgentPanel'
+import { SplitHandle } from './SplitHandle'
+
+type DraftMode = 'note' | 'reply' | 'resolve'
+type CaseDraft = { mode: DraftMode; note: string; reply: string; resolve: string }
+const emptyDraft = (): CaseDraft => ({ mode: 'note', note: '', reply: '', resolve: '' })
 
 const MESSAGE_ROLES = {
   user: '客户',
@@ -57,6 +68,11 @@ export function CaseWorkspace() {
 }
 
 function StaffWorkspace() {
+  const [drafts, setDrafts] = useState(new Map<string, CaseDraft>())
+  const workspace = useRef<HTMLDivElement>(null)
+  const [queueWidth, setQueueWidth] = useState(280)
+  const [agentPercent, setAgentPercent] = useState(42)
+  const [agentHidden, setAgentHidden] = useState(false)
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('all')
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -82,7 +98,7 @@ function StaffWorkspace() {
   const selected = visible.find((item) => item.runId === selectedId)
 
   return (
-    <div className="youju-desk">
+    <div className="youju-desk desk-compact">
       <header className="youju-desk-toolbar">
         <h1>处理工作台</h1>
         <div className="youju-desk-counts" aria-label="已加载案件统计">
@@ -114,7 +130,21 @@ function StaffWorkspace() {
         </Alert>
       )}
 
-      <div className={cn('youju-workspace', selected && 'has-selection')}>
+      <div
+        ref={workspace}
+        className={cn(
+          'youju-workspace',
+          selected && 'has-selection',
+          agentHidden && 'agent-hidden',
+        )}
+        style={
+          {
+            '--queue-width': `${queueWidth}px`,
+            '--agent-fr': `${agentPercent}fr`,
+            '--conversation-fr': `${100 - agentPercent}fr`,
+          } as CSSProperties
+        }
+      >
         <aside
           className="youju-queue"
           aria-label="案件队列"
@@ -169,17 +199,24 @@ function StaffWorkspace() {
                 key={item.runId}
                 className={cn('youju-case-row', selected?.runId === item.runId && 'selected')}
                 aria-pressed={selected?.runId === item.runId}
+                disabled={search.trim() !== query}
+                title={`${item.title || '尚未收到客户消息'} · ${item.customerName || item.customerId}`}
                 onClick={() => setSelectedId(item.runId)}
               >
-                <div>
-                  <span>{item.customerName || item.customerId}</span>
-                  <small>{deskTime(item.updatedAt)}</small>
-                </div>
                 <h2>{item.title || '尚未收到客户消息'}</h2>
-                <p>{item.preview || '等待会话内容'}</p>
-                <footer>
+                <div className="desk-queue-meta">
+                  <span className="desk-case-id" title={item.runId}>
+                    {item.runId}
+                  </span>
+                  <span title={item.intent ?? '未识别'}>{item.intent || '未识别'}</span>
                   <StatusBadge status={item.status} />
-                  <Badge variant="outline">{item.source === 'sim' ? '评测' : '客户会话'}</Badge>
+                </div>
+                <footer>
+                  <span>
+                    {item.source === 'sim' ? '评测 · ' : ''}
+                    {item.customerName || item.customerId}
+                  </span>
+                  <time dateTime={item.createdAt}>{deskTime(item.createdAt)}</time>
                 </footer>
               </button>
             ))
@@ -198,13 +235,39 @@ function StaffWorkspace() {
           )}
         </aside>
 
+        <SplitHandle
+          label="调整工单队列宽度"
+          value={queueWidth}
+          min={220}
+          max={380}
+          onDelta={(delta) => setQueueWidth((value) => Math.max(220, Math.min(380, value + delta)))}
+        />
         {selected ? (
-          <CaseDetail key={selected.runId} item={selected} onBack={() => setSelectedId(null)} />
+          <CaseDetail
+            key={selected.runId}
+            item={selected}
+            onBack={() => setSelectedId(null)}
+            drafts={drafts}
+            onUpdateDraft={(runId, update) =>
+              setDrafts((current) => {
+                const next = new Map(current)
+                next.set(runId, update(current.get(runId) ?? emptyDraft()))
+                return next
+              })
+            }
+            agentHidden={agentHidden}
+            onToggleAgent={() => setAgentHidden((value) => !value)}
+            agentPercent={agentPercent}
+            onResizeAgent={(delta) => {
+              const width = (workspace.current?.clientWidth ?? 1400) - queueWidth - 10
+              setAgentPercent((value) => Math.max(25, Math.min(55, value - (delta / width) * 100)))
+            }}
+          />
         ) : (
           <div className="youju-unselected">
             <DeskEmpty
               title="选择一个案件开始处理"
-              description="会话与处理记录显示在中间 订单和政策依据显示在右侧"
+              description="会话显示在中间 Agent 执行轨迹与业务依据显示在右侧"
             />
           </div>
         )}
@@ -218,22 +281,48 @@ function StaffWorkspace() {
  * 服务端读模型负责事实与归属校验 事件流负责会话增量展示
  * 内部备注与对外回复使用独立操作并在提交前绑定当前案件
  */
-function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
+function CaseDetail({
+  item,
+  onBack,
+  drafts,
+  onUpdateDraft,
+  agentHidden,
+  onToggleAgent,
+  agentPercent,
+  onResizeAgent,
+}: {
+  item: DeskCase
+  onBack: () => void
+  drafts: Map<string, CaseDraft>
+  onUpdateDraft: (runId: string, update: (draft: CaseDraft) => CaseDraft) => void
+  agentHidden: boolean
+  onToggleAgent: () => void
+  agentPercent: number
+  onResizeAgent: (delta: number) => void
+}) {
   const client = useQueryClient()
   const detail = useQuery({
     queryKey: ['desk', item.runId],
     queryFn: ({ signal }) => deskApi.detail(item.runId, signal),
     refetchInterval: 5000,
   })
-  const { state, connected, complete } = useRunEvents(item.runId)
-  const [draft, setDraft] = useState('')
-  const [mode, setMode] = useState('note')
+  const { state, connected, complete, events } = useRunEvents(item.runId)
+  // 草稿由当前身份的工作台持有 按案件与用途隔离
+  const caseDraft = drafts.get(item.runId) ?? emptyDraft()
+  const mode = caseDraft.mode
+  const draft = caseDraft[mode]
+  const setDraft = (text: string) =>
+    onUpdateDraft(item.runId, (saved) => ({ ...saved, [mode]: text }))
+  const setMode = (value: DraftMode) =>
+    onUpdateDraft(item.runId, (saved) => ({ ...saved, mode: value }))
+  const busy = useIsMutating({ mutationKey: ['desk-action', item.runId] }) > 0
   const [document, setDocument] = useState<PolicyDocument | null>(null)
   const [notice, setNotice] = useState('')
   const status = detail.data?.run.status ?? item.status
   const canResolve = detail.data?.closure?.canResolve === true && !detail.isError
 
   const action = useMutation({
+    mutationKey: ['desk-action', item.runId],
     mutationFn: async ({
       kind,
       text = '',
@@ -247,7 +336,15 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
       return deskApi.note(item.runId, text)
     },
     onSuccess: async (_result, input) => {
-      setDraft('')
+      // 异步提交只清除原案件中仍与已提交内容相同的草稿
+      if (input.kind !== 'takeover') {
+        const submittedMode = input.kind
+        onUpdateDraft(item.runId, (saved) =>
+          saved[submittedMode].trim() === (input.text ?? '')
+            ? { ...saved, [submittedMode]: '' }
+            : saved,
+        )
+      }
       setNotice(
         input.kind === 'note'
           ? '内部备注已保存 客户不可见'
@@ -272,13 +369,87 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
             <ArrowLeft data-icon="inline-start" />
             返回队列
           </Button>
-          <h2>{detail.data?.title || item.title || '售后案件'}</h2>
+          <div className="desk-title-row">
+            <h2>{detail.data?.title || item.title || '售后案件'}</h2>
+            <div className="desk-case-actions">
+              {status === 'escalated' && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={busy}
+                  onClick={() => action.mutate({ kind: 'takeover' })}
+                >
+                  接管案件
+                </Button>
+              )}
+              {status === 'handling_human' && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={busy}
+                  onClick={() => setMode('resolve')}
+                >
+                  人工结案
+                </Button>
+              )}
+              <details className="desk-more">
+                <summary aria-label="更多工单操作">
+                  <MoreHorizontal size={18} />
+                </summary>
+                <div>
+                  <Link href={`/runs/${encodeURIComponent(item.runId)}`}>完整运行记录</Link>
+                  <button
+                    type="button"
+                    onClick={() => void detail.refetch()}
+                    disabled={detail.isFetching}
+                  >
+                    刷新工单详情
+                  </button>
+                </div>
+              </details>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={agentHidden ? '展开 Agent 面板' : '收起 Agent 面板'}
+                onClick={onToggleAgent}
+              >
+                <PanelRightOpen />
+              </Button>
+            </div>
+          </div>
           <div>
             <StatusBadge status={status} />
             <span>{complete ? '记录已同步' : connected ? '事件流已连接' : '事件流未连接'}</span>
             <span>{item.customerName || item.customerId}</span>
           </div>
-          <small>{item.runId}</small>
+          <small>
+            {item.runId} · 创建于 {deskTime(item.createdAt)}
+          </small>
+          <details className="desk-customer-details">
+            <summary>用户资料与问题描述</summary>
+            <dl>
+              <div>
+                <dt>客户</dt>
+                <dd>{item.customerName || item.customerId}</dd>
+              </div>
+              <div>
+                <dt>客户编号</dt>
+                <dd>{item.customerId}</dd>
+              </div>
+              <div>
+                <dt>分类</dt>
+                <dd>{item.intent || '未识别'}</dd>
+              </div>
+              <div>
+                <dt>来源</dt>
+                <dd>{item.source === 'sim' ? '评测会话' : '客户会话'}</dd>
+              </div>
+            </dl>
+            <p className="desk-description-label">首条客户消息</p>
+            <p>
+              {state.messages.find((message) => message.role === 'user')?.text || '暂无客户描述'}
+            </p>
+          </details>
           {state.sourceRunId && (
             <Link href={`/runs/${encodeURIComponent(state.sourceRunId)}`}>查看关联售后记录</Link>
           )}
@@ -302,7 +473,6 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
         <Tabs defaultValue="messages" className="youju-conversation-tabs">
           <TabsList variant="line" aria-label="会话视图">
             <TabsTrigger value="messages">会话与处理</TabsTrigger>
-            <TabsTrigger value="trace">执行轨迹</TabsTrigger>
             <TabsTrigger value="notes">内部备注 {detail.data?.notes.length ?? 0}</TabsTrigger>
           </TabsList>
           <TabsContent value="messages" className="youju-message-list">
@@ -352,37 +522,6 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
               </Alert>
             )}
           </TabsContent>
-          <TabsContent value="trace" className="youju-message-list">
-            {state.tools.length === 0 && (
-              <DeskEmpty
-                title="尚无工具执行记录"
-                description="工具实际执行后将在这里显示结果与错误"
-              />
-            )}
-            {state.tools.map((tool) => (
-              <article className="youju-trace-item" key={tool.executionId}>
-                <strong>{tool.toolName}</strong>
-                <Badge variant="outline">
-                  {tool.status === 'succeeded'
-                    ? '执行成功'
-                    : tool.status === 'failed'
-                      ? '执行失败'
-                      : '执行中'}
-                </Badge>
-                <p>
-                  {tool.attempt === undefined ? '尝试次数未记录' : `尝试 ${tool.attempt}`} ·{' '}
-                  {tool.latencyMs === undefined ? '耗时未记录' : `${tool.latencyMs} ms`}
-                </p>
-                {tool.errorCode && <p>{tool.errorCode}</p>}
-              </article>
-            ))}
-            <Button asChild variant="outline">
-              <Link href={`/runs/${item.runId}`}>
-                查看完整运行记录
-                <ArrowUpRight data-icon="inline-end" />
-              </Link>
-            </Button>
-          </TabsContent>
           <TabsContent value="notes" className="youju-message-list">
             {!detail.data?.notes.length && (
               <DeskEmpty
@@ -406,44 +545,29 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
           onSubmit={(event) => {
             event.preventDefault()
             if (mode === 'resolve' && !canResolve) return
-            if (draft.trim() && !action.isPending)
+            if (draft.trim() && !busy)
               action.mutate({
                 kind: mode === 'note' ? 'note' : mode === 'resolve' ? 'resolve' : 'reply',
                 text: draft.trim(),
               })
           }}
         >
-          {status === 'escalated' && (
-            <Button
-              type="button"
-              variant="outline"
-              disabled={action.isPending}
-              loading={action.isPending && action.variables?.kind === 'takeover'}
-              onClick={() => action.mutate({ kind: 'takeover' })}
-            >
-              接管案件并回复客户
-            </Button>
-          )}
           <Tabs
             value={mode}
             onValueChange={(value) => {
-              setMode(value)
-              setDraft('')
+              setMode(value as DraftMode)
               setNotice('')
               action.reset()
             }}
           >
             <TabsList aria-label="编辑类型">
-              <TabsTrigger value="note" disabled={action.isPending}>
+              <TabsTrigger value="note" disabled={busy}>
                 内部备注
               </TabsTrigger>
-              <TabsTrigger value="reply" disabled={action.isPending || status !== 'handling_human'}>
+              <TabsTrigger value="reply" disabled={busy || status !== 'handling_human'}>
                 回复客户
               </TabsTrigger>
-              <TabsTrigger
-                value="resolve"
-                disabled={action.isPending || status !== 'handling_human'}
-              >
+              <TabsTrigger value="resolve" disabled={busy || status !== 'handling_human'}>
                 人工结案
               </TabsTrigger>
             </TabsList>
@@ -479,7 +603,7 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
                 maxLength={2000}
                 value={draft}
                 onChange={(event) => setDraft(event.target.value)}
-                disabled={action.isPending || (mode !== 'note' && status !== 'handling_human')}
+                disabled={busy || (mode !== 'note' && status !== 'handling_human')}
                 placeholder={
                   mode === 'note'
                     ? '记录核验结论或下一步安排'
@@ -506,10 +630,10 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
             </span>
             <Button
               type="submit"
-              loading={action.isPending && action.variables?.kind !== 'takeover'}
+              loading={busy && action.variables?.kind !== 'takeover'}
               disabled={
                 !draft.trim() ||
-                action.isPending ||
+                busy ||
                 (mode === 'resolve' && !canResolve) ||
                 (mode !== 'note' && status !== 'handling_human')
               }
@@ -521,44 +645,91 @@ function CaseDetail({ item, onBack }: { item: DeskCase; onBack: () => void }) {
         </form>
       </section>
 
-      <aside className="youju-evidence" aria-label="订单与政策证据">
-        <h2>案件依据</h2>
-        <p>来自实际查询与检索记录</p>
-        <h3>关联订单</h3>
-        {detail.isPending && (
-          <div role="status" aria-label="正在读取案件依据">
-            <Skeleton className="h-28" />
-          </div>
-        )}
-        {detail.data?.orders.length === 0 && <p>尚未查询到关联订单</p>}
-        {detail.data?.orders.map((order) => (
-          <article className="youju-evidence-card" key={order.orderNo}>
-            <strong>{order.orderNo}</strong>
-            <p>{orderStatusLabel(order.status)}</p>
-            <b>¥ {(order.totalAmountCents / 100).toFixed(2)}</b>
-            {order.items.map((product, index) => (
-              <p key={index}>
-                {product.title || product.sku || '订单商品'} × {product.quantity ?? 1}
-              </p>
-            ))}
-          </article>
-        ))}
-        <h3>政策与条款</h3>
-        {detail.data?.policies.length === 0 && <p>尚无检索依据 不代表没有适用政策</p>}
-        {detail.data?.policies.map((policy) => (
-          <button
-            className="youju-evidence-card youju-policy-button"
-            key={policy.articleId}
-            onClick={() => setDocument(policy)}
-          >
-            <FileText aria-hidden="true" />
-            <strong>{policy.title}</strong>
-            <p>版本 {policy.policyVersion}</p>
-            <span>查看原文与来源</span>
-          </button>
-        ))}
-        <p className="youju-evidence-footnote">检索命中代表候选依据 适用条件与业务结果仍需核验</p>
-      </aside>
+      {!agentHidden && (
+        <SplitHandle
+          label="调整会话与执行面板宽度"
+          value={100 - agentPercent}
+          min={45}
+          max={75}
+          onDelta={onResizeAgent}
+        />
+      )}
+      <AgentPanel
+        key={item.runId}
+        events={events}
+        runId={item.runId}
+        status={status}
+        connected={connected}
+        complete={complete}
+        hidden={agentHidden}
+        onClose={onToggleAgent}
+      >
+        <div className="youju-evidence" aria-label="订单与政策证据">
+          <h2>处理进度与待办</h2>
+          <p>
+            <StatusBadge status={status} />
+          </p>
+          {status === 'awaiting_approval' && (
+            <p>
+              需要主管审批 <Link href="/approvals">前往审批中心</Link>
+            </p>
+          )}
+          {status === 'escalated' && <p>等待售后专员接管案件</p>}
+          {status === 'awaiting_input' && <p>等待客户补充信息</p>}
+          {state.error && (
+            <Alert variant="destructive">
+              <AlertDescription>{state.error}</AlertDescription>
+            </Alert>
+          )}
+          {detail.error && (
+            <Alert variant="destructive">
+              <AlertDescription>{errorText(detail.error)}</AlertDescription>
+            </Alert>
+          )}
+          {detail.data?.closure?.blockers.map((blocker) => (
+            <p key={`${blocker.resourceType}:${blocker.resourceId}`}>
+              {blocker.resourceId} · {blocker.reason}
+            </p>
+          ))}
+
+          <h2>案件依据</h2>
+          <p>来自实际查询与检索记录</p>
+          <h3>关联订单</h3>
+          {detail.isPending && (
+            <div role="status" aria-label="正在读取案件依据">
+              <Skeleton className="h-28" />
+            </div>
+          )}
+          {detail.data?.orders.length === 0 && <p>尚未查询到关联订单</p>}
+          {detail.data?.orders.map((order) => (
+            <article className="youju-evidence-card" key={order.orderNo}>
+              <strong>{order.orderNo}</strong>
+              <p>{orderStatusLabel(order.status)}</p>
+              <b>¥ {(order.totalAmountCents / 100).toFixed(2)}</b>
+              {order.items.map((product, index) => (
+                <p key={index}>
+                  {product.title || product.sku || '订单商品'} × {product.quantity ?? 1}
+                </p>
+              ))}
+            </article>
+          ))}
+          <h3>政策与条款</h3>
+          {detail.data?.policies.length === 0 && <p>尚无检索依据 不代表没有适用政策</p>}
+          {detail.data?.policies.map((policy) => (
+            <button
+              className="youju-evidence-card youju-policy-button"
+              key={policy.articleId}
+              onClick={() => setDocument(policy)}
+            >
+              <FileText aria-hidden="true" />
+              <strong>{policy.title}</strong>
+              <p>版本 {policy.policyVersion}</p>
+              <span>查看原文与来源</span>
+            </button>
+          ))}
+          <p className="youju-evidence-footnote">检索命中代表候选依据 适用条件与业务结果仍需核验</p>
+        </div>
+      </AgentPanel>
 
       <PolicyDialog document={document} onClose={() => setDocument(null)} />
     </>

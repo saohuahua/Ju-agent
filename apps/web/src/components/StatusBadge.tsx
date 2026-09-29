@@ -50,6 +50,7 @@ export function StatusBadge({ status }: { status: RunStatus }) {
   const style = RUN_STATUS_STYLE[status] ?? RUN_STATUS_STYLE.created
   return (
     <span
+      data-run-status={status}
       className={`inline-flex items-center rounded-badge border px-2 py-0.5 text-[11px] font-medium ${style.className}`}
     >
       {style.label}

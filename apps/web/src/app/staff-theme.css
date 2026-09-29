@@ -1,0 +1,150 @@
+/* 员工主题覆盖同时作用于页面和挂载到文档的弹窗 */
+:root[data-theme='staff'] {
+  --color-canvas: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-ink: #20252b;
+  --color-hairline: #e5e8ec;
+  --color-background: #ffffff;
+  --color-foreground: #20252b;
+  --color-card: #ffffff;
+  --color-card-foreground: #20252b;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #20252b;
+  --color-primary: #315f80;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f0f1f3;
+  --color-secondary-foreground: #454f5c;
+  --color-muted: #f7f8fa;
+  --color-muted-foreground: #626c78;
+  --color-accent: #f0f1f3;
+  --color-accent-foreground: #20252b;
+  --color-navigation-active: #f0f1f3;
+  --color-destructive: #a13e38;
+  --color-border: #e5e8ec;
+  --color-input: #c7ced6;
+  --color-ring: #626c78;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-container: 6px;
+  --radius-control: 4px;
+  --radius-badge: 3px;
+  --color-sage-50: #f7f8fa;
+  --color-sage-100: #f0f1f3;
+  --color-sage-200: #e5e8ec;
+  --color-sage-300: #c7ced6;
+  --color-sage-400: #929ba7;
+  --color-sage-500: #737e8a;
+  --color-sage-600: #626c78;
+  --color-sage-700: #454f5c;
+  --color-sage-800: #343d48;
+  --color-sage-900: #20252b;
+  --color-console-canvas: #f7f8fa;
+  --color-console-surface: #ffffff;
+  --color-console-raised: #f0f1f3;
+  --color-console-hairline: #e5e8ec;
+  --color-console-border: #c7ced6;
+  --color-console-ink: #20252b;
+  --color-console-muted: #626c78;
+  --color-console-dim: #626c78;
+  --color-console-accent: #454f5c;
+  --color-console-accent-dim: #343d48;
+  --color-console-ok: #376744;
+  --color-console-warn: #805e20;
+  --color-console-danger: #a13e38;
+  --color-console-info: #454f5c;
+  --staff-surface: #ffffff;
+  --staff-muted: #f7f8fa;
+  --staff-selected: #f0f1f3;
+  --staff-strong: #454f5c;
+  --staff-secondary: #626c78;
+  --staff-link: #315f80;
+}
+
+:root[data-theme='staff'] .youju-wordmark {
+  background: #454f5c;
+}
+:root[data-theme='staff'] [data-run-status] {
+  background: #f0f1f3;
+  border-color: #e5e8ec;
+  color: #454f5c;
+}
+:root[data-theme='staff'] [data-run-status='completed'] {
+  background: #edf6ee;
+  border-color: #d5e5d8;
+  color: #376744;
+}
+:root[data-theme='staff']
+  :is(
+    [data-run-status='awaiting_input'],
+    [data-run-status='awaiting_approval'],
+    [data-run-status='escalated']
+  ) {
+  background: #fbf5e6;
+  border-color: #e9dfc3;
+  color: #805e20;
+}
+:root[data-theme='staff'] [data-run-status='failed'] {
+  background: #fbefee;
+  border-color: #ecd5d3;
+  color: #a13e38;
+}
+:root[data-theme='staff'] .youju-content a:not([data-slot='button']) {
+  color: var(--color-primary);
+}
+:root[data-theme='staff'] .youju-policy-button svg {
+  color: var(--color-ink);
+}
+
+/* 工作台导航只收起文字 保留所有路由与展开入口 */
+.youju-shell.youju-shell-compact {
+  grid-template-columns: 64px minmax(0, 1fr);
+}
+.youju-shell-compact .youju-sidebar {
+  padding: 12px 8px;
+  gap: 16px;
+}
+.youju-shell-compact .youju-brand {
+  padding: 0 4px;
+}
+.youju-shell-compact .youju-wordmark {
+  width: 36px;
+  height: 36px;
+  font-size: 22px;
+  border-radius: 4px;
+}
+.youju-shell-compact
+  :is(
+    .youju-brand > span:nth-child(2),
+    .youju-team,
+    .youju-nav-label,
+    .youju-nav-text,
+    .youju-sidebar-footer
+  ) {
+  display: none;
+}
+.youju-shell-compact .youju-nav {
+  justify-content: center;
+  padding: 12px;
+}
+.desk-nav-toggle {
+  align-self: center;
+}
+@media (max-width: 760px) {
+  .youju-shell.youju-shell-compact {
+    display: block;
+  }
+  .youju-shell-compact .youju-sidebar {
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 10px;
+  }
+  .youju-shell-compact .youju-sidebar nav {
+    flex: 1;
+  }
+  .youju-shell-compact .youju-nav svg {
+    display: block;
+  }
+  .youju-shell-compact .youju-nav {
+    padding: 8px;
+  }
+}

@@ -1,7 +1,9 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { ArrowUpRight, Inbox } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { ArrowUpRight, Inbox, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { Button } from './ui/button'
 
 import { DEMO_TOKENS, setToken } from '@/lib/api'
 import { useIdentity } from '@/lib/identity'
@@ -18,9 +20,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const { token, role } = useIdentity()
   const isCustomer = role === 'customer'
+  const staffTheme = !isCustomer && pathname !== '/workbench'
+  const isDesk = staffTheme && pathname === '/console'
+  const [navigationExpanded, setNavigationExpanded] = useState(false)
+  const compactNavigation = isDesk && !navigationExpanded
+
+  // 主题挂到根节点以覆盖弹窗 同时保留客户入口原有配色
+  useEffect(() => {
+    if (staffTheme) document.documentElement.dataset.theme = 'staff'
+    else delete document.documentElement.dataset.theme
+    return () => {
+      delete document.documentElement.dataset.theme
+    }
+  }, [staffTheme])
 
   return (
-    <div className="youju-shell">
+    <div className={cn('youju-shell', compactNavigation && 'youju-shell-compact')}>
       {/* 导航标记和路由占位共同驱动指示条 不把后台数据轮询视作换页 */}
       {/* 指示条只表达等待 不展示无法由路由状态核验的百分比 */}
       <div className="youju-navigation-progress" aria-hidden="true">
@@ -31,6 +46,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </a>
 
       <aside className="youju-sidebar">
+        {isDesk && (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="desk-nav-toggle"
+            aria-label={compactNavigation ? '展开主导航' : '收起主导航'}
+            aria-expanded={!compactNavigation}
+            onClick={() => setNavigationExpanded((value) => !value)}
+          >
+            {compactNavigation ? <PanelLeftOpen /> : <PanelLeftClose />}
+          </Button>
+        )}
         <NavigationLink
           href={isCustomer ? '/workbench' : '/console'}
           className="youju-brand"
@@ -62,11 +89,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <NavigationLink
                 key={href}
                 href={href}
+                title={label}
+                aria-label={label}
                 className={cn('youju-nav', isNavItemActive(href, pathname) && 'active')}
                 aria-current={isNavItemActive(href, pathname) ? 'page' : undefined}
               >
                 <Icon aria-hidden="true" />
-                {label}
+                <span className="youju-nav-text">{label}</span>
               </NavigationLink>
             ))
           )}
