@@ -64,6 +64,8 @@ export async function requireActor(context: Context, next: Next): Promise<Respon
 
 > **边界**：中间件确认了是谁，并没有替路由证明某张订单或某个会话属于他。
 
+身份确定之后，接口还要限制同一身份短时间内能发出多少请求。当前实现用进程内固定窗口，按客户或角色分组：创建会话、补问、评测触发和普通读取限额不同；SSE 另计并发连接，不走同一计数。超过限额返回 429 和 Retry-After，这是传输保护，不是业务拒绝。POST 还有请求级超时，评测入口更长，GET 事件流不走该超时。单元测试默认关闭这两项，避免把轮询打成限流失败。单进程计数不能在多实例间共享，也不能代替生产网关或按 IP 的防护。
+
 ## 输入正确与业务正确
 
 Zod 校验能拒绝不符合结构的消息，但它无法单独判断订单是否属于当前客户、订单是否允许退款，或金额是否被篡改。这些需要读取业务事实。
@@ -189,6 +191,7 @@ K、C、T 只是教学符号，不是实际业务值。对应动手任务见[渐
 | 入口 | 核心问题 |
 | --- | --- |
 | [auth.ts](../../../apps/api/src/auth.ts) | 身份解析、头部优先与角色判断 |
+| [rate-limit.ts](../../../apps/api/src/rate-limit.ts)、[request-timeout.ts](../../../apps/api/src/request-timeout.ts) | 按身份的内存限流与 POST 超时 |
 | [app.ts](../../../apps/api/src/app.ts) | 创建、消息、进度、审批及人工入口的实际条件 |
 | [conversation-journal.ts](../../../packages/persistence/src/conversation-journal.ts) | 请求键重放、原配置与原补问绑定 |
 | [customer-view.ts](../../../apps/api/src/customer-view.ts) | 面向客户的字段投影 |

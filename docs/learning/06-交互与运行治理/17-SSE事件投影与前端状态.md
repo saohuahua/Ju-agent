@@ -45,6 +45,8 @@
 
 轮询错误会结束当前流，客户端再重连。关闭页面或服务停止也会取消连接。事件来源是持久表，所以传输失败不需要重新运行产生事件的业务。
 
+连接还受存活时长约束。当前实现默认单身份最多四条事件流，约十五分钟后服务端只发送 `: server-refresh` 注释并关闭连接，**不发送** `stream.complete`。完成帧表示这一运行已经追平并结束传输；刷新注释只表示当前连接该换一条，浏览器应携带 Last-Event-ID 重连，从原序号之后继续补发。把到期关闭当成业务终态，会让页面误显示咨询已经结束。
+
 ## 前端如何避免重复与迟到
 
 `useRunEvents` 以 token 和 runId 组成订阅身份。身份变化时立即返回空视图，新 effect 建立独立归约状态；旧连接清理后，已经排队的回调也因 active 标记失效而不能写入。
@@ -73,6 +75,7 @@
 - 切换客户后旧订阅收到消息，active 与订阅身份使其被忽略。
 - 发消息失败后重试，同请求键返回原受理，避免重复消息触发任务。
 - 运行终态事件先到，客户端继续接收直到完成帧，避免截断尾部内容。
+- 事件流因存活时长关闭，页面仍显示原等待状态，重连后从原游标补发，不把刷新注释当成结案。
 
 错误提示应对应用户能采取的动作。内部异常详情不直接显示给客户，通用“请重试”也不能用于未知资金这种不允许重发的状态。
 
@@ -106,12 +109,12 @@
 
 | 入口 | 内容 |
 | --- | --- |
-| [服务端 SSE](../../../apps/api/src/sse.ts) | 补发、水位、终态二次追平与关闭 |
-| [customer-view.ts](../../../apps/api/src/customer-view.ts) | 客户白名单投影 |
+| [服务端 SSE](../../../apps/api/src/sse.ts) | 补发、水位、终态二次追平、存活时长与关闭 |
+| [customer-view.ts](../../../apps/api/src/customer-view.ts) | 客户白名单投影，含 `run.expired` |
 | [event-stream.ts](../../../apps/web/src/lib/event-stream.ts) | EventSource 生命周期与完成帧 |
 | [前端 SSE hook](../../../apps/web/src/lib/sse.ts)、[runReducer.ts](../../../apps/web/src/lib/runReducer.ts) | 订阅身份与事件归约 |
 | [CustomerWorkspace.tsx](../../../apps/web/src/components/customer/CustomerWorkspace.tsx) | 请求键与迟到结果隔离 |
-| [重连测试](../../../apps/api/test/p6-sse-reconnect.test.ts)、[客户事件测试](../../../apps/api/test/customer-events.test.ts) | 传输恢复与信息边界 |
+| [重连测试](../../../apps/api/test/p6-sse-reconnect.test.ts)、[客户事件测试](../../../apps/api/test/customer-events.test.ts)、[存活时长测试](../../../apps/api/test/sse.test.ts) | 传输恢复、信息边界与到期不发完成帧 |
 
 数据库轮询易于本机复现，不需要额外消息设施，但连接数增长会放大轮询与序列化成本。未来若引入发布订阅，它可以降低通知延迟，却不应替代持久事件作为补发来源。需要保留的核心是事件身份、权限投影和恢复协议，而不只是换一条传输通道。
 

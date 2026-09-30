@@ -34,6 +34,14 @@ L1 使用脚本化模型，使行为轨迹可控。它适合验证：某工具�
 
 也不能把全仓 692 项测试与 L1 124 条相加成“816 条智能问答准确率”。两者检查对象和分母不同，定向测试通常又包含在全仓运行中。
 
+## 坏例怎样进入回归
+
+固定题集解决的是“已知轨迹能否重复通过”。一次真实或本机会话失败后，若只能靠人工回忆改写成用例，回归会落后于现场。当前可以把一次 `run` 的事件流导出为 L1 草稿：用户消息成为 `turns`，模型工具调用成为 `modelScript`，终态写入断言，冻结时间取会话创建时刻。
+
+草稿默认使用 baseline 夹具，并标出需要人工核对的字段。`case:from-run` 只写入 `eval/traces`，**必须再执行带显式编号的 `case:adopt`** 才会进入 `regression` 分类。空目录不增加现有 124 条基数。禁止把未审查的对话自动训练成政策或提示词；夹具与真实会话数据不一致时，重放失败说明草稿还不能作为回归，而不是 L1 失效。
+
+同一套事件还可以映射为 OTLP JSON 并做离线校验，便于对照用量、工具延迟和压缩记录。这证明会话事实能转成标准追踪结构，不表示已经接入外部 collector 或开始在线采样。
+
 ## L2 的多轮不确定性
 
 L2 模拟客户与 Agent 交互，允许模型决定下一步。失败可能来自 Agent 选错动作，也可能来自模拟用户没有按场景提供信息、供应商故障或裁判误判。
@@ -111,7 +119,8 @@ P10 对无 Git 部署增加内容清单，允许核验镜像实际源码；其�
 
 | 入口 | 内容 |
 | --- | --- |
-| [cases.ts](../../../packages/eval/src/cases.ts)、[metrics.ts](../../../packages/eval/src/metrics.ts) | 数据集与指标聚合 |
+| [cases.ts](../../../packages/eval/src/cases.ts)、[trace-extract.ts](../../../packages/eval/src/trace-extract.ts)、[telemetry](../../../packages/telemetry/src/mapper.ts) | 数据集、会话转草稿与 OTLP 导出 |
+| [metrics.ts](../../../packages/eval/src/metrics.ts) | 指标聚合 |
 | [judge.ts](../../../packages/eval/src/judge.ts) | 主观判定输出校验和取消 |
 | [p9-calibration.ts](../../../packages/eval/src/p9-calibration.ts) | 合成与人工标注的状态区分 |
 | [p9-metadata.ts](../../../packages/eval/src/p9-metadata.ts) | 条件与源码身份 |
