@@ -88,7 +88,9 @@ export default function SettingsPage() {
                 </div>
               )}
               {role === 'operator' && (
-                <p className="mt-3 text-sm text-muted-foreground">模型配置需要主管身份</p>
+                <p className="col-start-2 mt-3 min-w-0 text-sm text-muted-foreground">
+                  模型配置需要主管身份
+                </p>
               )}
             </Alert>
             <Alert>
