@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "demo:durable": "tsx src/durable-demo.ts",
+    "demo:desk": "tsx src/desk-demo.ts",
     "dev": "tsx watch src/main.ts",
     "start": "tsx src/main.ts",
     "typecheck": "tsc --noEmit",
@@ -19,7 +21,8 @@
     "@aftersales/tools": "workspace:*",
     "@aftersales/workflow": "workspace:*",
     "@hono/node-server": "^1.13.5",
-    "hono": "^4.6.14"
+    "hono": "^4.6.14",
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "vitest": "^3.0.5"

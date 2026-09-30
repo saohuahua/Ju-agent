@@ -1,0 +1,116 @@
+{
+  "passed": true,
+  "p6_tasks": [
+    {
+      "task_id": "14eef4e7-b9ea-4161-bca2-ba30fc7e4b25",
+      "command_id": "e5fdbdae-7ad3-4998-bd69-cd942dadb5ad",
+      "run_id": "run_6628991f-f0df-4cb1-b9d2-7d59453efaee",
+      "customer_id": "C1001",
+      "provider": "scripted",
+      "tool": "compensation",
+      "approval_id": null,
+      "status": "business_failed",
+      "available_at": 1790405607562,
+      "owner": "worker-92544",
+      "generation": 1,
+      "lease_until": 0,
+      "attempt": 1,
+      "cancel_requested": 0,
+      "deadline": 1790405907562,
+      "error": "模拟渠道明确拒绝"
+    }
+  ],
+  "p6_commands": [
+    {
+      "command_id": "e5fdbdae-7ad3-4998-bd69-cd942dadb5ad",
+      "customer_id": "C1001",
+      "request_key": "request-1",
+      "fingerprint": "d69f972b748475471a5a5711edd20df49918f4b0c16a9d44df5dbdc05e42dbd9",
+      "run_id": "run_6628991f-f0df-4cb1-b9d2-7d59453efaee",
+      "input_json": "{\"requestKey\":\"request-1\",\"customerId\":\"C1001\",\"kind\":\"start\",\"config\":{\"snapshotId\":\"scripted-frozen-v1\",\"provider\":\"scripted\",\"model\":\"scripted-v1\",\"promptVersion\":\"p6-v1\",\"value\":{\"scenario\":\"normal\",\"paid\":false}},\"source\":\"sim\",\"plan\":{\"input\":\"验证持久恢复\",\"tool\":\"compensation\",\"payment\":{\"businessKey\":\"compensation:CP-P6\",\"resourceId\":\"compensation:CP-P6\",\"amountCents\":1000,\"currency\":\"CNY\"}}}"
+    }
+  ],
+  "p6_steps": [
+    {
+      "task_id": "14eef4e7-b9ea-4161-bca2-ba30fc7e4b25",
+      "step": "model",
+      "value_json": "{\"text\":\"脚本模型完整结果\",\"snapshotId\":\"scripted-frozen-v1\"}"
+    },
+    {
+      "task_id": "14eef4e7-b9ea-4161-bca2-ba30fc7e4b25",
+      "step": "read",
+      "value_json": "{\"orderNo\":\"O-P6\",\"source\":\"local-script\"}"
+    },
+    {
+      "task_id": "14eef4e7-b9ea-4161-bca2-ba30fc7e4b25",
+      "step": "payment",
+      "value_json": "{\"status\":\"rejected\",\"reason\":\"模拟渠道明确拒绝\"}"
+    }
+  ],
+  "p6_effects": [
+    {
+      "business_key": "compensation:CP-P6",
+      "fingerprint": "5ef81b9177e699df9305ffee7f41d2cc21104ef7448a1e5acc0e8b69d358514a",
+      "payment_json": "{\"businessKey\":\"compensation:CP-P6\",\"resourceId\":\"compensation:CP-P6\",\"amountCents\":1000,\"currency\":\"CNY\"}",
+      "status": "rejected",
+      "result_json": "{\"status\":\"rejected\",\"reason\":\"模拟渠道明确拒绝\"}",
+      "task_id": "14eef4e7-b9ea-4161-bca2-ba30fc7e4b25"
+    }
+  ],
+  "p6_events": [
+    {
+      "cursor": 1,
+      "task_id": "14eef4e7-b9ea-4161-bca2-ba30fc7e4b25",
+      "event_key": "step:model",
+      "payload_json": "{\"text\":\"脚本模型完整结果\",\"snapshotId\":\"scripted-frozen-v1\"}"
+    },
+    {
+      "cursor": 2,
+      "task_id": "14eef4e7-b9ea-4161-bca2-ba30fc7e4b25",
+      "event_key": "step:read",
+      "payload_json": "{\"orderNo\":\"O-P6\",\"source\":\"local-script\"}"
+    },
+    {
+      "cursor": 3,
+      "task_id": "14eef4e7-b9ea-4161-bca2-ba30fc7e4b25",
+      "event_key": "step:payment",
+      "payload_json": "{\"status\":\"rejected\",\"reason\":\"模拟渠道明确拒绝\"}"
+    },
+    {
+      "cursor": 4,
+      "task_id": "14eef4e7-b9ea-4161-bca2-ba30fc7e4b25",
+      "event_key": "status:business_failed",
+      "payload_json": "{\"status\":\"business_failed\",\"error\":\"模拟渠道明确拒绝\"}"
+    }
+  ],
+  "compensations": [
+    {
+      "compensation_no": "CP-P6",
+      "order_no": "O-P6",
+      "customer_id": "C1001",
+      "reason": "logistics_delay",
+      "status": "failed",
+      "amount_cents": 1000,
+      "currency": "CNY",
+      "channel": "local-sim",
+      "requires_approval": 0,
+      "policy_version": "test",
+      "created_at": "2026-09-26T06:53:27.551Z",
+      "updated_at": "2026-09-26T06:53:28.211Z",
+      "version": 3
+    }
+  ],
+  "approval_execution_intents": [],
+  "idempotency_records": [],
+  "channel": [
+    {
+      "business_key": "compensation:CP-P6",
+      "payment_json": "[\"compensation:CP-P6\",1000,\"CNY\"]",
+      "status": "rejected",
+      "transaction_id": "3724e76d-567b-4bcd-945b-f241a16b27ff",
+      "submissions": 1,
+      "charges": 0
+    }
+  ],
+  "channelQueries": []
+}

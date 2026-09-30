@@ -1,0 +1,2813 @@
+{
+  "generatedAt": "2026-09-25T14:11:43.678Z",
+  "protocolVersion": "rag-protocol-v1",
+  "datasetVersion": "rag-relevance-v1.1",
+  "corpusSha256": "0cc13af5b780717f7bf323682fd3f1cf5d45bfc749eb13ef391d9130bbac3a3e",
+  "snapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+  "codeHead": "38801d92cc3003b8611576dfc0c7cddff15df686",
+  "sourceHashes": {
+    "packages/domain/src/knowledge.ts": "22103a456eb5c148e79ffe51d46b1a422aee95c08fd6f8d2c63ba082acbe26bc",
+    "packages/eval/src/retrieval-metrics.ts": "62fdfbb7df9f59d618c1ecbf13e0ddddce66ca9e976e320e585c6c2a23a55e9b",
+    "scripts/rag-baseline.ts": "9750985684e16e0e848f12f3b6c7f1e9037820c8bf553be5a710291305bf30c5",
+    "eval/rag/dataset-v1.1.json": "cf1cd7349a534e026e2423ded8c29494e773d665c53ff8266d096405de426255",
+    "eval/rag/protocol-v1.json": "1deb1a9eb79bd9f72fa79718016d0c3956b1caaa563058f47a5fb77bc13c2290"
+  },
+  "config": {
+    "chunkVersion": "paragraph-window-v1",
+    "maxChunkChars": 320,
+    "k1": 1.2,
+    "b": 0.75
+  },
+  "model": null,
+  "promptVersion": null,
+  "costCents": 0,
+  "modelCalls": 0,
+  "repeats": 1,
+  "note": "确定性检索模块评测 不代表答案正确率 引用支持率或真实模型能力 两个待复核题不计入主指标",
+  "aggregates": [
+    {
+      "strategy": "character-keyword-baseline",
+      "split": "tuning",
+      "k": 3,
+      "total": 11,
+      "relevantDenominator": 10,
+      "unsupportedDenominator": 1,
+      "recall": 0.95,
+      "mrr": 0.95,
+      "allEvidenceRate": 0.9,
+      "emptyRetrievalRate": 0
+    },
+    {
+      "strategy": "character-keyword-baseline",
+      "split": "tuning",
+      "k": 5,
+      "total": 11,
+      "relevantDenominator": 10,
+      "unsupportedDenominator": 1,
+      "recall": 1,
+      "mrr": 0.95,
+      "allEvidenceRate": 1,
+      "emptyRetrievalRate": 0
+    },
+    {
+      "strategy": "character-keyword-baseline",
+      "split": "holdout",
+      "k": 3,
+      "total": 11,
+      "relevantDenominator": 10,
+      "unsupportedDenominator": 1,
+      "recall": 0.76,
+      "mrr": 0.9,
+      "allEvidenceRate": 0.6,
+      "emptyRetrievalRate": 0
+    },
+    {
+      "strategy": "character-keyword-baseline",
+      "split": "holdout",
+      "k": 5,
+      "total": 11,
+      "relevantDenominator": 10,
+      "unsupportedDenominator": 1,
+      "recall": 1,
+      "mrr": 0.9199999999999999,
+      "allEvidenceRate": 1,
+      "emptyRetrievalRate": 0
+    },
+    {
+      "strategy": "bm25-bigram-v1",
+      "split": "tuning",
+      "k": 3,
+      "total": 11,
+      "relevantDenominator": 10,
+      "unsupportedDenominator": 1,
+      "recall": 0.95,
+      "mrr": 0.9333333333333332,
+      "allEvidenceRate": 0.9,
+      "emptyRetrievalRate": 1
+    },
+    {
+      "strategy": "bm25-bigram-v1",
+      "split": "tuning",
+      "k": 5,
+      "total": 11,
+      "relevantDenominator": 10,
+      "unsupportedDenominator": 1,
+      "recall": 1,
+      "mrr": 0.9333333333333332,
+      "allEvidenceRate": 1,
+      "emptyRetrievalRate": 1
+    },
+    {
+      "strategy": "bm25-bigram-v1",
+      "split": "holdout",
+      "k": 3,
+      "total": 11,
+      "relevantDenominator": 10,
+      "unsupportedDenominator": 1,
+      "recall": 0.86,
+      "mrr": 0.9333333333333332,
+      "allEvidenceRate": 0.7,
+      "emptyRetrievalRate": 0
+    },
+    {
+      "strategy": "bm25-bigram-v1",
+      "split": "holdout",
+      "k": 5,
+      "total": 11,
+      "relevantDenominator": 10,
+      "unsupportedDenominator": 1,
+      "recall": 0.95,
+      "mrr": 0.9333333333333332,
+      "allEvidenceRate": 0.9,
+      "emptyRetrievalRate": 0
+    }
+  ],
+  "traces": [
+    {
+      "caseId": "T01_keyboard_quality_badcase",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 2.3564999999999827,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 14
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 12
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 11
+        },
+        {
+          "articleId": "D5_large_item_install",
+          "chunkId": "D5_large_item_install:ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966:0",
+          "revision": "ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966",
+          "score": 9
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 9
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T02_unshipped_cancel",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.3276000000000181,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 9
+        },
+        {
+          "articleId": "D4_cross_border_customs",
+          "chunkId": "D4_cross_border_customs:9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e:0",
+          "revision": "9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e",
+          "score": 5
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 5
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 4
+        },
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 4
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T03_shipped_cancel_boundary",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.28469999999998663,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 10
+        },
+        {
+          "articleId": "D6_pre_order_deposit",
+          "chunkId": "D6_pre_order_deposit:1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1:0",
+          "revision": "1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1",
+          "score": 8
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 8
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 7
+        },
+        {
+          "articleId": "D4_cross_border_customs",
+          "chunkId": "D4_cross_border_customs:9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e:0",
+          "revision": "9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e",
+          "score": 7
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T04_fresh_no_reason",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.34669999999999845,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 16
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 16
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 12
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 12
+        },
+        {
+          "articleId": "D5_large_item_install",
+          "chunkId": "D5_large_item_install:ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966:0",
+          "revision": "ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966",
+          "score": 11
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 0.5,
+          "reciprocalRank": 1,
+          "allEvidence": false,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T05_price_before_delivery",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.2598000000000411,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 7
+        },
+        {
+          "articleId": "PP2_window_expired",
+          "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+          "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+          "score": 7
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 6
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 6
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 5
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T06_price_drop_formula",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.31349999999997635,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 11
+        },
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 9
+        },
+        {
+          "articleId": "PP2_window_expired",
+          "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+          "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+          "score": 6
+        },
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 6
+        },
+        {
+          "articleId": "R2_lost_package",
+          "chunkId": "R2_lost_package:778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4:0",
+          "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4",
+          "score": 6
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T07_no_price_drop",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.43739999999996826,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 9
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 9
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 8
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 7
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 7
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T08_custom_quality",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.40039999999999054,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 15
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 14
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 12
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 12
+        },
+        {
+          "articleId": "D5_large_item_install",
+          "chunkId": "D5_large_item_install:ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966:0",
+          "revision": "ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966",
+          "score": 11
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 0.5,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 0.5,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T09_warranty_service_fee_gap",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "unsupported",
+      "excluded": false,
+      "elapsedMs": 1.3590999999999553,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 4
+        },
+        {
+          "articleId": "PP2_window_expired",
+          "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+          "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+          "score": 3
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 3
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 3
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 2
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": null,
+          "reciprocalRank": null,
+          "allEvidence": null,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": null,
+          "reciprocalRank": null,
+          "allEvidence": null,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T10_vague_no_reason",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "needs_clarification",
+      "excluded": true,
+      "elapsedMs": 0.27129999999999654,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 4
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 4
+        },
+        {
+          "articleId": "D4_cross_border_customs",
+          "chunkId": "D4_cross_border_customs:9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e:0",
+          "revision": "9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e",
+          "score": 3
+        },
+        {
+          "articleId": "D6_pre_order_deposit",
+          "chunkId": "D6_pre_order_deposit:1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1:0",
+          "revision": "1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1",
+          "score": 3
+        },
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 3
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 0.5,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 0.5,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T11_presale_deposit",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.22540000000003602,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D6_pre_order_deposit",
+          "chunkId": "D6_pre_order_deposit:1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1:0",
+          "revision": "1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1",
+          "score": 11
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 5
+        },
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 5
+        },
+        {
+          "articleId": "D4_cross_border_customs",
+          "chunkId": "D4_cross_border_customs:9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e:0",
+          "revision": "9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e",
+          "score": 5
+        },
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 5
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T12_active_return_price_protection",
+      "split": "tuning",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.255800000000022,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP3_active_return",
+          "chunkId": "PP3_active_return:39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e:0",
+          "revision": "39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e",
+          "score": 12
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 9
+        },
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 8
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 7
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 6
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H01_confirmed_lost_package",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.24579999999997426,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R2_lost_package",
+          "chunkId": "R2_lost_package:778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4:0",
+          "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4",
+          "score": 9
+        },
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 6
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 5
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 4
+        },
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 2
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H02_activated_virtual_good",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.2518000000000029,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 9
+        },
+        {
+          "articleId": "D4_cross_border_customs",
+          "chunkId": "D4_cross_border_customs:9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e:0",
+          "revision": "9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e",
+          "score": 5
+        },
+        {
+          "articleId": "D8_gift_card_rules",
+          "chunkId": "D8_gift_card_rules:53fe8399768e1cc2cd084ae11faff559f744b749c83fea824cda2952c735a337:0",
+          "revision": "53fe8399768e1cc2cd084ae11faff559f744b749c83fea824cda2952c735a337",
+          "score": 5
+        },
+        {
+          "articleId": "D6_pre_order_deposit",
+          "chunkId": "D6_pre_order_deposit:1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1:0",
+          "revision": "1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1",
+          "score": 4
+        },
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 4
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H03_installed_large_item",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.3576999999999657,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D5_large_item_install",
+          "chunkId": "D5_large_item_install:ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966:0",
+          "revision": "ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966",
+          "score": 16
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 14
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 13
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 13
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 11
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 0.5,
+          "reciprocalRank": 1,
+          "allEvidence": false,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H04_second_hand_quality",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": true,
+      "elapsedMs": 0.2844000000000051,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 19
+        },
+        {
+          "articleId": "D6_pre_order_deposit",
+          "chunkId": "D6_pre_order_deposit:1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1:0",
+          "revision": "1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1",
+          "score": 12
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 11
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 11
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 9
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H05_cross_border_customs",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.23610000000002174,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D4_cross_border_customs",
+          "chunkId": "D4_cross_border_customs:9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e:0",
+          "revision": "9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e",
+          "score": 13
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 10
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 9
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 9
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 9
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 0.5,
+          "reciprocalRank": 1,
+          "allEvidence": false,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H06_gift_card_cashout",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.18489999999997053,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D8_gift_card_rules",
+          "chunkId": "D8_gift_card_rules:53fe8399768e1cc2cd084ae11faff559f744b749c83fea824cda2952c735a337:0",
+          "revision": "53fe8399768e1cc2cd084ae11faff559f744b749c83fea824cda2952c735a337",
+          "score": 5
+        },
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 3
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 3
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 3
+        },
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 3
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H07_expired_price_protection",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.21119999999996253,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 10
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 9
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 9
+        },
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 8
+        },
+        {
+          "articleId": "PP2_window_expired",
+          "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+          "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+          "score": 8
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 0,
+          "reciprocalRank": 0,
+          "allEvidence": false,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 0.2,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H08_large_refund_approval",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.2126999999999839,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R6_large_amount",
+          "chunkId": "R6_large_amount:028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1:0",
+          "revision": "028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1",
+          "score": 14
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 6
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 5
+        },
+        {
+          "articleId": "D6_pre_order_deposit",
+          "chunkId": "D6_pre_order_deposit:1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1:0",
+          "revision": "1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1",
+          "score": 5
+        },
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 5
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H09_expired_coupon_gap",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "unsupported",
+      "excluded": false,
+      "elapsedMs": 0.18800000000004502,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 5
+        },
+        {
+          "articleId": "R2_lost_package",
+          "chunkId": "R2_lost_package:778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4:0",
+          "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4",
+          "score": 5
+        },
+        {
+          "articleId": "PP2_window_expired",
+          "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+          "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+          "score": 4
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 4
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 3
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": null,
+          "reciprocalRank": null,
+          "allEvidence": null,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": null,
+          "reciprocalRank": null,
+          "allEvidence": null,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H10_vague_price_protection",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "needs_clarification",
+      "excluded": false,
+      "elapsedMs": 0.1604000000000383,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 3
+        },
+        {
+          "articleId": "PP3_active_return",
+          "chunkId": "PP3_active_return:39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e:0",
+          "revision": "39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e",
+          "score": 3
+        },
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 3
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 3
+        },
+        {
+          "articleId": "PP2_window_expired",
+          "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+          "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+          "score": 2
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 0.6,
+          "reciprocalRank": 1,
+          "allEvidence": false,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H11_unactivated_virtual_large_refund",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.4356000000000222,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 10
+        },
+        {
+          "articleId": "R6_large_amount",
+          "chunkId": "R6_large_amount:028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1:0",
+          "revision": "028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1",
+          "score": 9
+        },
+        {
+          "articleId": "PP3_active_return",
+          "chunkId": "PP3_active_return:39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e:0",
+          "revision": "39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e",
+          "score": 6
+        },
+        {
+          "articleId": "R2_lost_package",
+          "chunkId": "R2_lost_package:778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4:0",
+          "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4",
+          "score": 6
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 6
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H12_lost_package_large_refund",
+      "split": "holdout",
+      "strategy": "character-keyword-baseline",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.25729999999998654,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R2_lost_package",
+          "chunkId": "R2_lost_package:778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4:0",
+          "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4",
+          "score": 10
+        },
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 6
+        },
+        {
+          "articleId": "R6_large_amount",
+          "chunkId": "R6_large_amount:028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1:0",
+          "revision": "028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1",
+          "score": 6
+        },
+        {
+          "articleId": "R5_no_match",
+          "chunkId": "R5_no_match:d53b8ee429dda7cce44744f8c02bd389c42c45caa27cb832741ac186c44ff962:0",
+          "revision": "d53b8ee429dda7cce44744f8c02bd389c42c45caa27cb832741ac186c44ff962",
+          "score": 5
+        },
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 4
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T01_keyboard_quality_badcase",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 1.1043999999999983,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 10.003374386011311
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 5.960190358741611
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 5.814803110911454
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 5.533940431889427
+        },
+        {
+          "articleId": "D5_large_item_install",
+          "chunkId": "D5_large_item_install:ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966:0",
+          "revision": "ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966",
+          "score": 4.561490194266257
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T02_unshipped_cancel",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.350400000000036,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 1.948569035190735
+        },
+        {
+          "articleId": "PP3_active_return",
+          "chunkId": "PP3_active_return:39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e:0",
+          "revision": "39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e",
+          "score": 1.8082574154830033
+        },
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 1.300802381105865
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 1.276214174930095
+        },
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 1.2410267154149313
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T03_shipped_cancel_boundary",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.30970000000002074,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 18.95407754771402
+        },
+        {
+          "articleId": "R2_lost_package",
+          "chunkId": "R2_lost_package:778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4:0",
+          "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4",
+          "score": 4.258780623868166
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 4.067788471586064
+        },
+        {
+          "articleId": "R5_no_match",
+          "chunkId": "R5_no_match:d53b8ee429dda7cce44744f8c02bd389c42c45caa27cb832741ac186c44ff962:0",
+          "revision": "d53b8ee429dda7cce44744f8c02bd389c42c45caa27cb832741ac186c44ff962",
+          "score": 3.6373265566080204
+        },
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 2.357304678712178
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T04_fresh_no_reason",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.391900000000021,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 12.704385522010993
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 11.446970882570167
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 11.110237412913861
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 10.239490421019804
+        },
+        {
+          "articleId": "D5_large_item_install",
+          "chunkId": "D5_large_item_install:ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966:0",
+          "revision": "ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966",
+          "score": 7.067187100975505
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 0.5,
+          "reciprocalRank": 1,
+          "allEvidence": false,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T05_price_before_delivery",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.23689999999999145,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP2_window_expired",
+          "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+          "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+          "score": 6.900987760344085
+        },
+        {
+          "articleId": "PP3_active_return",
+          "chunkId": "PP3_active_return:39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e:0",
+          "revision": "39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e",
+          "score": 4.823785904137029
+        },
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 4.676220116426466
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 2.9860729000514086
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 2.028919685331411
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 0.3333333333333333,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 0.3333333333333333,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T06_price_drop_formula",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.3786000000000058,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 7.6023559894036215
+        },
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 6.141602018372842
+        },
+        {
+          "articleId": "PP2_window_expired",
+          "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+          "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+          "score": 5.106030036363879
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 3.9190923591345923
+        },
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 3.8796186320890786
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T07_no_price_drop",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.3990000000000009,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 7.622252483975853
+        },
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 5.9969189639609075
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 3.667583513147414
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 3.4980892729160606
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 3.107686226238719
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T08_custom_quality",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.33789999999999054,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 11.476879971847334
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 11.207287869160458
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 10.115276015920204
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 6.558378813299229
+        },
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 5.731153415908463
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T09_warranty_service_fee_gap",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "unsupported",
+      "excluded": false,
+      "elapsedMs": 0.24459999999999127,
+      "validCitations": 0,
+      "citationCount": 0,
+      "retrieved": [],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": null,
+          "reciprocalRank": null,
+          "allEvidence": null,
+          "emptyRetrieval": true
+        },
+        {
+          "k": 5,
+          "recall": null,
+          "reciprocalRank": null,
+          "allEvidence": null,
+          "emptyRetrieval": true
+        }
+      ]
+    },
+    {
+      "caseId": "T10_vague_no_reason",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "needs_clarification",
+      "excluded": true,
+      "elapsedMs": 0.1916999999999689,
+      "validCitations": 0,
+      "citationCount": 0,
+      "retrieved": [],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 0,
+          "reciprocalRank": 0,
+          "allEvidence": false,
+          "emptyRetrieval": true
+        },
+        {
+          "k": 5,
+          "recall": 0,
+          "reciprocalRank": 0,
+          "allEvidence": false,
+          "emptyRetrieval": true
+        }
+      ]
+    },
+    {
+      "caseId": "T11_presale_deposit",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.2563000000000102,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D6_pre_order_deposit",
+          "chunkId": "D6_pre_order_deposit:1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1:0",
+          "revision": "1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1",
+          "score": 14.428428335430437
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 0.8474910840117386
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 0.7856370496625069
+        },
+        {
+          "articleId": "D4_cross_border_customs",
+          "chunkId": "D4_cross_border_customs:9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e:0",
+          "revision": "9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e",
+          "score": 0.7856370496625069
+        },
+        {
+          "articleId": "D5_large_item_install",
+          "chunkId": "D5_large_item_install:ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966:0",
+          "revision": "ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966",
+          "score": 0.7856370496625069
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "T12_active_return_price_protection",
+      "split": "tuning",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.31630000000001246,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP3_active_return",
+          "chunkId": "PP3_active_return:39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e:0",
+          "revision": "39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e",
+          "score": 10.550589237889733
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 7.403981145041932
+        },
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 3.085164891596975
+        },
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 2.9683264660889446
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 2.7248546326683365
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H01_confirmed_lost_package",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.3317000000000121,
+      "validCitations": 3,
+      "citationCount": 3,
+      "retrieved": [
+        {
+          "articleId": "R2_lost_package",
+          "chunkId": "R2_lost_package:778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4:0",
+          "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4",
+          "score": 6.5949718289719685
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 1.6602625014793915
+        },
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 1.616109330755756
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H02_activated_virtual_good",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.21949999999998226,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 13.804332434048556
+        },
+        {
+          "articleId": "D8_gift_card_rules",
+          "chunkId": "D8_gift_card_rules:53fe8399768e1cc2cd084ae11faff559f744b749c83fea824cda2952c735a337:0",
+          "revision": "53fe8399768e1cc2cd084ae11faff559f744b749c83fea824cda2952c735a337",
+          "score": 4.396950538215849
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 2.830328812523561
+        },
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 1.696423097782685
+        },
+        {
+          "articleId": "R6_large_amount",
+          "chunkId": "R6_large_amount:028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1:0",
+          "revision": "028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1",
+          "score": 1.5956354890443165
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H03_installed_large_item",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.3805999999999585,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D5_large_item_install",
+          "chunkId": "D5_large_item_install:ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966:0",
+          "revision": "ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966",
+          "score": 15.839969733183677
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 10.371994973784348
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 9.348396661399207
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 8.23274487480898
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 7.950681224236467
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 0.5,
+          "reciprocalRank": 1,
+          "allEvidence": false,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 0.5,
+          "reciprocalRank": 1,
+          "allEvidence": false,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H04_second_hand_quality",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": true,
+      "elapsedMs": 0.41700000000003,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 25.50993826989178
+        },
+        {
+          "articleId": "D6_pre_order_deposit",
+          "chunkId": "D6_pre_order_deposit:1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1:0",
+          "revision": "1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1",
+          "score": 6.565896526348931
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 5.944101312194915
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 5.572543516795457
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 4.801289803589007
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H05_cross_border_customs",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.32450000000000045,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D4_cross_border_customs",
+          "chunkId": "D4_cross_border_customs:9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e:0",
+          "revision": "9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e",
+          "score": 15.41646184719084
+        },
+        {
+          "articleId": "R4_no_reason_7d",
+          "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+          "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+          "score": 9.475906939217717
+        },
+        {
+          "articleId": "D2_customized_no_return",
+          "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+          "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+          "score": 8.473598108878228
+        },
+        {
+          "articleId": "D7_second_hand_quality",
+          "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+          "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+          "score": 8.392038160123757
+        },
+        {
+          "articleId": "D1_fresh_food_no_return",
+          "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+          "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+          "score": 7.125601159814562
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H06_gift_card_cashout",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.261099999999999,
+      "validCitations": 1,
+      "citationCount": 1,
+      "retrieved": [
+        {
+          "articleId": "D8_gift_card_rules",
+          "chunkId": "D8_gift_card_rules:53fe8399768e1cc2cd084ae11faff559f744b749c83fea824cda2952c735a337:0",
+          "revision": "53fe8399768e1cc2cd084ae11faff559f744b749c83fea824cda2952c735a337",
+          "score": 7.354767396303379
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H07_expired_price_protection",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.3609000000000151,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 8.149410008647147
+        },
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 7.166251209684773
+        },
+        {
+          "articleId": "PP2_window_expired",
+          "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+          "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+          "score": 4.630775258696917
+        },
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 4.437212478642687
+        },
+        {
+          "articleId": "PP3_active_return",
+          "chunkId": "PP3_active_return:39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e:0",
+          "revision": "39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e",
+          "score": 2.687368452561089
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 0.3333333333333333,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 0.3333333333333333,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H08_large_refund_approval",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.28220000000004575,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R6_large_amount",
+          "chunkId": "R6_large_amount:028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1:0",
+          "revision": "028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1",
+          "score": 20.06165086916915
+        },
+        {
+          "articleId": "R5_no_match",
+          "chunkId": "R5_no_match:d53b8ee429dda7cce44744f8c02bd389c42c45caa27cb832741ac186c44ff962:0",
+          "revision": "d53b8ee429dda7cce44744f8c02bd389c42c45caa27cb832741ac186c44ff962",
+          "score": 2.8075647557491985
+        },
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 1.696423097782685
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 1.6602625014793915
+        },
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 1.5848796679852428
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H09_expired_coupon_gap",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "unsupported",
+      "excluded": false,
+      "elapsedMs": 0.2519999999999527,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 1.3168511482096357
+        },
+        {
+          "articleId": "PP2_window_expired",
+          "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+          "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+          "score": 0.9341661505519373
+        },
+        {
+          "articleId": "PP3_active_return",
+          "chunkId": "PP3_active_return:39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e:0",
+          "revision": "39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e",
+          "score": 0.8791110370780854
+        },
+        {
+          "articleId": "R2_lost_package",
+          "chunkId": "R2_lost_package:778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4:0",
+          "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4",
+          "score": 0.8150633245189534
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 0.8150633245189534
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": null,
+          "reciprocalRank": null,
+          "allEvidence": null,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": null,
+          "reciprocalRank": null,
+          "allEvidence": null,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H10_vague_price_protection",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "needs_clarification",
+      "excluded": false,
+      "elapsedMs": 0.20879999999999654,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "PP2_window_expired",
+          "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+          "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+          "score": 2.2652778129654636
+        },
+        {
+          "articleId": "PP5_price_drop",
+          "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+          "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+          "score": 2.0164652053978
+        },
+        {
+          "articleId": "PP3_active_return",
+          "chunkId": "PP3_active_return:39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e:0",
+          "revision": "39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e",
+          "score": 1.8082574154830033
+        },
+        {
+          "articleId": "PP4_no_price_drop",
+          "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+          "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+          "score": 1.78436251049111
+        },
+        {
+          "articleId": "PP1_not_delivered",
+          "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+          "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+          "score": 1.7272997506740135
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 0.6,
+          "reciprocalRank": 1,
+          "allEvidence": false,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H11_unactivated_virtual_large_refund",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.4368999999999801,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 11.577709077794728
+        },
+        {
+          "articleId": "R6_large_amount",
+          "chunkId": "R6_large_amount:028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1:0",
+          "revision": "028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1",
+          "score": 5.273019187196006
+        },
+        {
+          "articleId": "R3_quality_window",
+          "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+          "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+          "score": 3.282417988265242
+        },
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 2.489810554728895
+        },
+        {
+          "articleId": "R2_lost_package",
+          "chunkId": "R2_lost_package:778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4:0",
+          "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4",
+          "score": 2.30929261122686
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    },
+    {
+      "caseId": "H12_lost_package_large_refund",
+      "split": "holdout",
+      "strategy": "bm25-bigram-v1",
+      "answerability": "supported",
+      "excluded": false,
+      "elapsedMs": 0.3919999999999959,
+      "validCitations": 5,
+      "citationCount": 5,
+      "retrieved": [
+        {
+          "articleId": "R2_lost_package",
+          "chunkId": "R2_lost_package:778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4:0",
+          "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4",
+          "score": 16.30687902044365
+        },
+        {
+          "articleId": "R5_no_match",
+          "chunkId": "R5_no_match:d53b8ee429dda7cce44744f8c02bd389c42c45caa27cb832741ac186c44ff962:0",
+          "revision": "d53b8ee429dda7cce44744f8c02bd389c42c45caa27cb832741ac186c44ff962",
+          "score": 6.3689893921708665
+        },
+        {
+          "articleId": "R1_unshipped_cancel",
+          "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+          "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+          "score": 5.552606759211979
+        },
+        {
+          "articleId": "R6_large_amount",
+          "chunkId": "R6_large_amount:028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1:0",
+          "revision": "028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1",
+          "score": 4.310202696003012
+        },
+        {
+          "articleId": "D3_virtual_activated",
+          "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+          "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+          "score": 1.5848796679852428
+        }
+      ],
+      "metrics": [
+        {
+          "k": 3,
+          "recall": 0.5,
+          "reciprocalRank": 1,
+          "allEvidence": false,
+          "emptyRetrieval": false
+        },
+        {
+          "k": 5,
+          "recall": 1,
+          "reciprocalRank": 1,
+          "allEvidence": true,
+          "emptyRetrieval": false
+        }
+      ]
+    }
+  ]
+}

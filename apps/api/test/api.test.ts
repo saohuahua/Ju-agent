@@ -260,6 +260,17 @@ describe('审批闭环', () => {
     const resumed = await settleRun(app, created.runId, CUSTOMER_TOKEN)
     expect(resumed.status).toBe('completed')
 
+    // 审批决定与恢复执行记录各自可查 客户不能读取内部执行错误
+    const executions = await app.request('/api/approvals/executions', {
+      headers: auth(authEnv.operatorToken),
+    })
+    expect(await executions.json()).toMatchObject({
+      executions: [{ approvalId: approval!.approvalId, decision: 'approved', status: 'completed' }],
+    })
+    expect(
+      (await app.request('/api/approvals/executions', { headers: auth(CUSTOMER_TOKEN) })).status,
+    ).toBe(403)
+
     // 重复决定被拦截
     const duplicate = await app.request(
       `/api/runs/${created.runId}/approvals/${approval!.approvalId}/decide`,
@@ -296,8 +307,8 @@ describe('SSE 事件流', () => {
 
     const body = await readStreamUntilComplete(response.body!)
     const ids = parseEventIds(body)
-    // 从 3 开始补发 不重复 1 2
-    expect(ids[0]).toBe(3)
+    // 客户事件允许跳过内部序号 但不能重放已确认的事件
+    expect(ids.every((id) => id > 2)).toBe(true)
     expect(ids).toEqual([...new Set(ids)])
     expect(ids.length).toBeGreaterThan(1)
   })
@@ -528,7 +539,7 @@ async function readStreamUntilComplete(stream: ReadableStream<Uint8Array>): Prom
     const { done, value } = await reader.read()
     if (value) {
       text += decoder.decode(value)
-      if (text.includes('stream-complete')) {
+      if (text.includes('event: stream.complete')) {
         break
       }
     }

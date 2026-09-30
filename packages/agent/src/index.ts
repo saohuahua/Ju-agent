@@ -30,6 +30,7 @@ export {
   ASK_USER_TOOL,
   CONCLUDE_TOOL,
   buildStepTools,
+  buildOrderListToolDefinition,
   isActionTool,
 } from './tool-defs.js'
 export {

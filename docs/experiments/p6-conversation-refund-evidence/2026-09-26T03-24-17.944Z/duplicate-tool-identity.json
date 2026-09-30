@@ -1,0 +1,83 @@
+{
+  "directory": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\p6-conversation-refund-CjQoVK",
+  "links": [],
+  "tasks": [
+    {
+      "task_id": "f2f2da64-b671-4e30-8b97-2d799daa56f6",
+      "command_id": "6fbdcdcb-4967-4739-8327-3dbaf795543d",
+      "tool": "conversation",
+      "status": "call_failed",
+      "attempt": 1
+    }
+  ],
+  "refunds": [
+    {
+      "refund_no": "RF-2026-0001",
+      "return_no": "RT-2026-0001",
+      "status": "succeeded",
+      "attempts": 1
+    }
+  ],
+  "ownership": [],
+  "channel": [],
+  "calls": [
+    {
+      "operation_id": "[\"6fbdcdcb-4967-4739-8327-3dbaf795543d\",\"turn\",1,\"claim\",1]",
+      "attempt": 1,
+      "status": "settled",
+      "actual": 10,
+      "reserved": 10
+    },
+    {
+      "operation_id": "[\"6fbdcdcb-4967-4739-8327-3dbaf795543d\",\"turn\",2,\"claim\",1]",
+      "attempt": 1,
+      "status": "settled",
+      "actual": 10,
+      "reserved": 10
+    }
+  ],
+  "events": [
+    {
+      "run_id": "run_b8101b8d-ff2a-4095-90a5-c41c48e8ef39",
+      "sequence": 1,
+      "type": "run.started",
+      "payload_json": "{\"customerId\":\"C1001\",\"model\":\"refund-offline-fixture\",\"promptVersion\":\"refund-fixture-v1\"}"
+    },
+    {
+      "run_id": "run_b8101b8d-ff2a-4095-90a5-c41c48e8ef39",
+      "sequence": 2,
+      "type": "message.user",
+      "payload_json": "{\"text\":\"申请退款 SO-2026-0001\"}"
+    },
+    {
+      "run_id": "run_b8101b8d-ff2a-4095-90a5-c41c48e8ef39",
+      "sequence": 3,
+      "type": "agent.turn",
+      "payload_json": "{\"blocks\":[{\"type\":\"tool_use\",\"toolCallId\":\"reused-id\",\"toolName\":\"get_order\",\"input\":{\"orderNo\":\"SO-2026-0001\"}}],\"stopReason\":\"tool_use\"}"
+    },
+    {
+      "run_id": "run_b8101b8d-ff2a-4095-90a5-c41c48e8ef39",
+      "sequence": 4,
+      "type": "agent.tool_results",
+      "payload_json": "{\"results\":[{\"toolCallId\":\"reused-id\",\"toolName\":\"get_order\",\"content\":\"{\\\"orderNo\\\":\\\"SO-2026-0001\\\",\\\"customerId\\\":\\\"C1001\\\",\\\"status\\\":\\\"paid\\\",\\\"totalAmountCents\\\":29900,\\\"currency\\\":\\\"CNY\\\",\\\"paymentChannel\\\":\\\"alipay\\\",\\\"items\\\":[{\\\"itemId\\\":\\\"item-0001-1\\\",\\\"sku\\\":\\\"SKU-HP-001\\\",\\\"title\\\":\\\"降噪无线耳机\\\",\\\"category\\\":\\\"electronics\\\",\\\"quantity\\\":1,\\\"unitPriceCents\\\":299900},{\\\"itemId\\\":\\\"item-0001-2\\\",\\\"sku\\\":\\\"SKU-WA-001\\\",\\\"title\\\":\\\"智能手表\\\",\\\"category\\\":\\\"electronics\\\",\\\"quantity\\\":1,\\\"unitPriceCents\\\":400000}],\\\"paidAt\\\":\\\"2026-09-19T10:00:00.000Z\\\",\\\"shippedAt\\\":null,\\\"deliveredAt\\\":null,\\\"createdAt\\\":\\\"2026-09-19T10:00:00.000Z\\\",\\\"updatedAt\\\":\\\"2026-09-19T10:00:00.000Z\\\",\\\"version\\\":1}\",\"isError\":false}]}"
+    },
+    {
+      "run_id": "run_b8101b8d-ff2a-4095-90a5-c41c48e8ef39",
+      "sequence": 5,
+      "type": "tool.completed",
+      "payload_json": "{\"toolName\":\"get_order\",\"status\":\"succeeded\",\"result\":{\"orderNo\":\"SO-2026-0001\",\"customerId\":\"C1001\",\"status\":\"paid\",\"totalAmountCents\":29900,\"currency\":\"CNY\",\"paymentChannel\":\"alipay\",\"items\":[{\"itemId\":\"item-0001-1\",\"sku\":\"SKU-HP-001\",\"title\":\"降噪无线耳机\",\"category\":\"electronics\",\"quantity\":1,\"unitPriceCents\":299900},{\"itemId\":\"item-0001-2\",\"sku\":\"SKU-WA-001\",\"title\":\"智能手表\",\"category\":\"electronics\",\"quantity\":1,\"unitPriceCents\":400000}],\"paidAt\":\"2026-09-19T10:00:00.000Z\",\"shippedAt\":null,\"deliveredAt\":null,\"createdAt\":\"2026-09-19T10:00:00.000Z\",\"updatedAt\":\"2026-09-19T10:00:00.000Z\",\"version\":1}}"
+    },
+    {
+      "run_id": "run_b8101b8d-ff2a-4095-90a5-c41c48e8ef39",
+      "sequence": 6,
+      "type": "message.completed",
+      "payload_json": "{\"role\":\"assistant\",\"text\":\"模型返回了未支持或无效的工具调用 已停止处理 请联系人工核验\"}"
+    },
+    {
+      "run_id": "run_b8101b8d-ff2a-4095-90a5-c41c48e8ef39",
+      "sequence": 7,
+      "type": "run.failed",
+      "payload_json": "{\"errorCode\":\"INTERNAL_ERROR\",\"message\":\"处理已中断 请联系人工核验\"}"
+    }
+  ]
+}

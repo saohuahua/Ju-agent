@@ -1,0 +1,211 @@
+{
+  "generatedAt": "2026-09-26T06:53:59.198Z",
+  "node": "v22.19.0",
+  "platform": "win32",
+  "sourceHashes": {
+    "packages/contracts/src/p6-durable.ts": "7f522934e2ead5908a2da883ef2ea26f55aed2df87590f5e10a00ac06f9b387a",
+    "packages/persistence/src/p6-migration.ts": "c5a0dd1a23cdc864e4d10678d4bd75f0d3d15c62277c6c4498095bfa0676fce3",
+    "packages/persistence/src/p6-task-repository.ts": "70c6feb0f36569d7aee915d5f6aa81dded1a4b51c08b49fefa1141dfe37c4bd9",
+    "packages/persistence/src/p6-business-adapter.ts": "526cced79937d2ba217f289ddaa8cdcd45174eb74080fefc8b55c43d42802521",
+    "packages/persistence/src/p6-payment-simulator.ts": "02a918cdb3828d3ca1b206ed0a6083f9fe16592b013de789c291b9e2d245025e",
+    "packages/runtime/src/p6-worker.ts": "e518403e1710248cf84ace341243e34d646db09405b4411699ff9561371f17da",
+    "packages/runtime/test/fixtures/p6-process.ts": "79b651ed8e5d34b5d090f9e58e3465010841d73eecd44801dfa2d3bf797956e2",
+    "packages/runtime/test/p6-process.test.ts": "5c971c8d4d2d06f1d6ed2daab4cbb4f85df88ee6429d6d0f698e455f15de9d34"
+  },
+  "realPaymentCalls": 0,
+  "paidModelCalls": 0,
+  "scope": "P6 独立组合根进程实验 非正式 API 全链路验收",
+  "scenarios": [
+    {
+      "name": "accepted-before-worker",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\accepted-before-worker",
+      "processExits": [
+        null,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "before-model",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\before-model",
+      "processExits": [
+        null,
+        73,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "mid-stream",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\mid-stream",
+      "processExits": [
+        null,
+        73,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "after-model-checkpoint",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\after-model-checkpoint",
+      "processExits": [
+        null,
+        73,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "after-payment-response",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\after-payment-response",
+      "processExits": [
+        null,
+        73,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "after-payment-checkpoint",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\after-payment-checkpoint",
+      "processExits": [
+        null,
+        73,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "approval-accepted-exit",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\approval-accepted-exit",
+      "processExits": [
+        null,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "channel-response_lost",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\channel-response_lost",
+      "processExits": [
+        null,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "channel-rejected",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\channel-rejected",
+      "processExits": [
+        null,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "channel-unknown",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\channel-unknown",
+      "processExits": [
+        null,
+        73,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "channel-delayed",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\channel-delayed",
+      "processExits": [
+        null,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "intent-before-send-exit",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\intent-before-send-exit",
+      "processExits": [
+        null,
+        73,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "two-workers",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\two-workers",
+      "processExits": [
+        null,
+        73,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "stale-worker-return",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\stale-worker-return",
+      "processExits": [
+        null,
+        73,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "read-timeout",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\read-timeout",
+      "processExits": [
+        null,
+        73,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "cancel-after-send",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\cancel-after-send",
+      "processExits": [
+        null,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "cancel-long-task",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\cancel-long-task",
+      "processExits": [
+        null,
+        73,
+        0
+      ]
+    },
+    {
+      "name": "channel-restart-new-run",
+      "passed": true,
+      "directory": "D:\\project\\agent-new\\aftersales\\docs\\experiments\\p6-results\\2026-09-26T06-52-57.350Z\\channel-restart-new-run",
+      "processExits": [
+        null,
+        73,
+        0,
+        73
+      ]
+    }
+  ]
+}

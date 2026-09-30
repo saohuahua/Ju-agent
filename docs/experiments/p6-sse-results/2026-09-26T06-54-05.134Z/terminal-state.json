@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "events": [
+    {
+      "cursor": 1,
+      "task_id": "8f1f75ff-a217-4a37-b3de-2a0cd49a0f0e",
+      "event_key": "step:model",
+      "payload_json": "{\"private\":\"内部模型结果禁止展示\"}"
+    },
+    {
+      "cursor": 2,
+      "task_id": "8f1f75ff-a217-4a37-b3de-2a0cd49a0f0e",
+      "event_key": "step:read",
+      "payload_json": "{\"private\":\"内部工具结果禁止展示\"}"
+    },
+    {
+      "cursor": 3,
+      "task_id": "8f1f75ff-a217-4a37-b3de-2a0cd49a0f0e",
+      "event_key": "status:completed",
+      "payload_json": "{\"status\":\"completed\",\"error\":null}"
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "8f1f75ff-a217-4a37-b3de-2a0cd49a0f0e",
+      "command_id": "3166cf39-e6d2-4aae-969c-111da67cdd9a",
+      "run_id": "run_b9d6a7c8-debf-49c3-8e76-c2f95d83fc1b",
+      "customer_id": "C1",
+      "provider": "scripted",
+      "tool": "readonly",
+      "approval_id": null,
+      "status": "completed",
+      "available_at": 1790405645871,
+      "owner": "sse-fixture",
+      "generation": 1,
+      "lease_until": 0,
+      "attempt": 1,
+      "cancel_requested": 0,
+      "deadline": 1790405945871,
+      "error": null
+    }
+  ]
+}

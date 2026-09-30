@@ -3,6 +3,7 @@
  */
 
 import type { AssertionFailure } from './validators.js'
+import type { BusinessEvidence } from './p9-evidence.js'
 
 export interface ToolExecution {
   toolName: string
@@ -20,6 +21,8 @@ export interface JudgeFailure {
 
 /** 用例执行明细 供指标分层统计 */
 export interface CaseDetail {
+  /** 离线原始证据在业务库关闭前捕获 */
+  evidence?: BusinessEvidence
   caseId: string
   category: string
   priority: 'P0' | 'P1' | 'P2'

@@ -1,0 +1,407 @@
+{
+  "snapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+  "chunkVersion": "paragraph-window-v1",
+  "articles": [
+    {
+      "articleId": "D1_fresh_food_no_return",
+      "title": "生鲜食品售后规则",
+      "content": "生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请",
+      "source": "platform",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c"
+    },
+    {
+      "articleId": "D2_customized_no_return",
+      "title": "定制商品售后规则",
+      "content": "定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理",
+      "source": "platform",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88"
+    },
+    {
+      "articleId": "D3_virtual_activated",
+      "title": "虚拟商品售后规则",
+      "content": "虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款",
+      "source": "platform",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d"
+    },
+    {
+      "articleId": "D4_cross_border_customs",
+      "title": "跨境商品售后规则",
+      "content": "跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准",
+      "source": "platform",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e"
+    },
+    {
+      "articleId": "D5_large_item_install",
+      "title": "大件商品售后规则",
+      "content": "大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先",
+      "source": "platform",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966"
+    },
+    {
+      "articleId": "D6_pre_order_deposit",
+      "title": "预售商品定金规则",
+      "content": "预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理",
+      "source": "platform",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1"
+    },
+    {
+      "articleId": "D7_second_hand_quality",
+      "title": "二手商品售后规则",
+      "content": "二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准",
+      "source": "platform",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3"
+    },
+    {
+      "articleId": "D8_gift_card_rules",
+      "title": "礼品卡使用规则",
+      "content": "礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款",
+      "source": "platform",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "53fe8399768e1cc2cd084ae11faff559f744b749c83fea824cda2952c735a337"
+    },
+    {
+      "articleId": "PP1_not_delivered",
+      "title": "价保需签收后申请",
+      "content": "订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价",
+      "source": "rules",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f"
+    },
+    {
+      "articleId": "PP2_window_expired",
+      "title": "价保窗口时限",
+      "content": "价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准",
+      "source": "rules",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d"
+    },
+    {
+      "articleId": "PP3_active_return",
+      "title": "进行中售后与价保互斥",
+      "content": "订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张",
+      "source": "rules",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e"
+    },
+    {
+      "articleId": "PP4_no_price_drop",
+      "title": "价保需有降价事实",
+      "content": "订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准",
+      "source": "rules",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7"
+    },
+    {
+      "articleId": "PP5_price_drop",
+      "title": "价保差价退还规则",
+      "content": "自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次",
+      "source": "rules",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1"
+    },
+    {
+      "articleId": "R1_unshipped_cancel",
+      "title": "未发货订单仅退款",
+      "content": "订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款",
+      "source": "rules",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476"
+    },
+    {
+      "articleId": "R2_lost_package",
+      "title": "物流丢件仅退款",
+      "content": "物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关",
+      "source": "rules",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4"
+    },
+    {
+      "articleId": "R3_quality_window",
+      "title": "质量问题退换窗口",
+      "content": "商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理",
+      "source": "rules",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44"
+    },
+    {
+      "articleId": "R4_no_reason_7d",
+      "title": "七天无理由退货",
+      "content": "自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用",
+      "source": "rules",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373"
+    },
+    {
+      "articleId": "R5_no_match",
+      "title": "无匹配政策的处理",
+      "content": "没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款",
+      "source": "rules",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "d53b8ee429dda7cce44744f8c02bd389c42c45caa27cb832741ac186c44ff962"
+    },
+    {
+      "articleId": "R6_large_amount",
+      "title": "大额退款人工审批",
+      "content": "退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全",
+      "source": "rules",
+      "policyVersion": "2026.09-v3",
+      "createdAt": "2026-09-20T12:00:00.000Z",
+      "revision": "028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1"
+    }
+  ],
+  "chunks": [
+    {
+      "chunkId": "D1_fresh_food_no_return:555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c:0",
+      "articleId": "D1_fresh_food_no_return",
+      "revision": "555af52702f9ad280ee15b83751d7b6906670c1759b63a5d184d63cb7332648c",
+      "policyVersion": "2026.09-v3",
+      "source": "platform",
+      "title": "生鲜食品售后规则",
+      "content": "生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请",
+      "start": 0,
+      "end": 56,
+      "position": 0
+    },
+    {
+      "chunkId": "D2_customized_no_return:432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88:0",
+      "articleId": "D2_customized_no_return",
+      "revision": "432092149e9388d1192b41a51a9c5189e227b779fc3ed635f798f269698cda88",
+      "policyVersion": "2026.09-v3",
+      "source": "platform",
+      "title": "定制商品售后规则",
+      "content": "定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理",
+      "start": 0,
+      "end": 36,
+      "position": 0
+    },
+    {
+      "chunkId": "D3_virtual_activated:ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d:0",
+      "articleId": "D3_virtual_activated",
+      "revision": "ec3998be0d3f68eaf9594cba72a5fc715d740563f9eac1ff35e14c0620cdea8d",
+      "policyVersion": "2026.09-v3",
+      "source": "platform",
+      "title": "虚拟商品售后规则",
+      "content": "虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款",
+      "start": 0,
+      "end": 37,
+      "position": 0
+    },
+    {
+      "chunkId": "D4_cross_border_customs:9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e:0",
+      "articleId": "D4_cross_border_customs",
+      "revision": "9de10380da97accc9590710e43e222f5909fdb802d89f2ab95639e177edc116e",
+      "policyVersion": "2026.09-v3",
+      "source": "platform",
+      "title": "跨境商品售后规则",
+      "content": "跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准",
+      "start": 0,
+      "end": 36,
+      "position": 0
+    },
+    {
+      "chunkId": "D5_large_item_install:ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966:0",
+      "articleId": "D5_large_item_install",
+      "revision": "ffe3640551286851b06b41972ae1cec29b9e3aef3c011da59b2f4a075f92a966",
+      "policyVersion": "2026.09-v3",
+      "source": "platform",
+      "title": "大件商品售后规则",
+      "content": "大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先",
+      "start": 0,
+      "end": 42,
+      "position": 0
+    },
+    {
+      "chunkId": "D6_pre_order_deposit:1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1:0",
+      "articleId": "D6_pre_order_deposit",
+      "revision": "1d663446bde2a3335aeec7fc637a5d9cda64b17ef8900fcfe2626b04cb81f8d1",
+      "policyVersion": "2026.09-v3",
+      "source": "platform",
+      "title": "预售商品定金规则",
+      "content": "预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理",
+      "start": 0,
+      "end": 44,
+      "position": 0
+    },
+    {
+      "chunkId": "D7_second_hand_quality:42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3:0",
+      "articleId": "D7_second_hand_quality",
+      "revision": "42801a7f27d082808c92b097a3eba70c972ff7bb846c2caa3d552e3a150d7ea3",
+      "policyVersion": "2026.09-v3",
+      "source": "platform",
+      "title": "二手商品售后规则",
+      "content": "二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准",
+      "start": 0,
+      "end": 40,
+      "position": 0
+    },
+    {
+      "chunkId": "D8_gift_card_rules:53fe8399768e1cc2cd084ae11faff559f744b749c83fea824cda2952c735a337:0",
+      "articleId": "D8_gift_card_rules",
+      "revision": "53fe8399768e1cc2cd084ae11faff559f744b749c83fea824cda2952c735a337",
+      "policyVersion": "2026.09-v3",
+      "source": "platform",
+      "title": "礼品卡使用规则",
+      "content": "礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款",
+      "start": 0,
+      "end": 39,
+      "position": 0
+    },
+    {
+      "chunkId": "PP1_not_delivered:c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f:0",
+      "articleId": "PP1_not_delivered",
+      "revision": "c001fd16800f64a1f0099e0fb051831b5ddedd0689cc4691495702465c24b99f",
+      "policyVersion": "2026.09-v3",
+      "source": "rules",
+      "title": "价保需签收后申请",
+      "content": "订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价",
+      "start": 0,
+      "end": 45,
+      "position": 0
+    },
+    {
+      "chunkId": "PP2_window_expired:95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d:0",
+      "articleId": "PP2_window_expired",
+      "revision": "95698c0a59c71b431cac55dffc45d747cecee98f12376722d23191c55121643d",
+      "policyVersion": "2026.09-v3",
+      "source": "rules",
+      "title": "价保窗口时限",
+      "content": "价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准",
+      "start": 0,
+      "end": 42,
+      "position": 0
+    },
+    {
+      "chunkId": "PP3_active_return:39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e:0",
+      "articleId": "PP3_active_return",
+      "revision": "39c7fb309716a23242ed43da763d32913e7bb9294d5a9a4c7659bdf6b2a00d6e",
+      "policyVersion": "2026.09-v3",
+      "source": "rules",
+      "title": "进行中售后与价保互斥",
+      "content": "订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张",
+      "start": 0,
+      "end": 38,
+      "position": 0
+    },
+    {
+      "chunkId": "PP4_no_price_drop:9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7:0",
+      "articleId": "PP4_no_price_drop",
+      "revision": "9b01836fb8ebb903866b5bae0a83bb230f0327366c4aae69b8f8b66409787dd7",
+      "policyVersion": "2026.09-v3",
+      "source": "rules",
+      "title": "价保需有降价事实",
+      "content": "订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准",
+      "start": 0,
+      "end": 40,
+      "position": 0
+    },
+    {
+      "chunkId": "PP5_price_drop:0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1:0",
+      "articleId": "PP5_price_drop",
+      "revision": "0515bbdd64b69a873fe31eb3289d1e65852deeaa8392391b5d7d15de0836f6c1",
+      "policyVersion": "2026.09-v3",
+      "source": "rules",
+      "title": "价保差价退还规则",
+      "content": "自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次",
+      "start": 0,
+      "end": 47,
+      "position": 0
+    },
+    {
+      "chunkId": "R1_unshipped_cancel:efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476:0",
+      "articleId": "R1_unshipped_cancel",
+      "revision": "efe262e479648b400bda618ed1d8392a2e2584fe2716f50d2a298ebf2e161476",
+      "policyVersion": "2026.09-v3",
+      "source": "rules",
+      "title": "未发货订单仅退款",
+      "content": "订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款",
+      "start": 0,
+      "end": 53,
+      "position": 0
+    },
+    {
+      "chunkId": "R2_lost_package:778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4:0",
+      "articleId": "R2_lost_package",
+      "revision": "778e6727c9d0819c6fab5b533ccdd2fd3965a7b3d6d5a4641828b6bfcb2569a4",
+      "policyVersion": "2026.09-v3",
+      "source": "rules",
+      "title": "物流丢件仅退款",
+      "content": "物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关",
+      "start": 0,
+      "end": 51,
+      "position": 0
+    },
+    {
+      "chunkId": "R3_quality_window:e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44:0",
+      "articleId": "R3_quality_window",
+      "revision": "e7d8dc2d49e92bc45569afe060f63d11281c8fb7dcdf7df1229de76a65186c44",
+      "policyVersion": "2026.09-v3",
+      "source": "rules",
+      "title": "质量问题退换窗口",
+      "content": "商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理",
+      "start": 0,
+      "end": 56,
+      "position": 0
+    },
+    {
+      "chunkId": "R4_no_reason_7d:0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373:0",
+      "articleId": "R4_no_reason_7d",
+      "revision": "0163ae2cd36774a671b7a92af7ab7a474428c7e2553a521641382dd89a8ed373",
+      "policyVersion": "2026.09-v3",
+      "source": "rules",
+      "title": "七天无理由退货",
+      "content": "自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用",
+      "start": 0,
+      "end": 56,
+      "position": 0
+    },
+    {
+      "chunkId": "R5_no_match:d53b8ee429dda7cce44744f8c02bd389c42c45caa27cb832741ac186c44ff962:0",
+      "articleId": "R5_no_match",
+      "revision": "d53b8ee429dda7cce44744f8c02bd389c42c45caa27cb832741ac186c44ff962",
+      "policyVersion": "2026.09-v3",
+      "source": "rules",
+      "title": "无匹配政策的处理",
+      "content": "没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款",
+      "start": 0,
+      "end": 45,
+      "position": 0
+    },
+    {
+      "chunkId": "R6_large_amount:028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1:0",
+      "articleId": "R6_large_amount",
+      "revision": "028113975c706e92ef6546e317a9198ab98139606af8aab4abe51b20f8c3e3f1",
+      "policyVersion": "2026.09-v3",
+      "source": "rules",
+      "title": "大额退款人工审批",
+      "content": "退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全",
+      "start": 0,
+      "end": 46,
+      "position": 0
+    }
+  ]
+}

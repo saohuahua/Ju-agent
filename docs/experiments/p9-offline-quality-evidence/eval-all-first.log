@@ -1,0 +1,25 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/eval
+
+ ✓ test/retrieval-metrics.test.ts (2 tests) 4ms
+ ✓ test/p9-judge.test.ts (9 tests) 10ms
+ ✓ test/p7-cost-report.test.ts (15 tests) 115ms
+ ✓ test/p7-eval-budget.test.ts (20 tests) 150ms
+ ✓ test/validators.test.ts (15 tests) 8ms
+ ✓ test/p7-entry.test.ts (8 tests) 3061ms
+   ✓ 正式 L1 工厂按重复轮次归因并保存业务关联 清库保留费用及附件  366ms
+   ✓ 正式 L2 入口经过真实模拟器与主循环 同身份重放不新增传输  564ms
+   ✓ 先前实验费用阻断后续入口 保留零行拒绝证据  553ms
+   ✓ rec_crash_during_verification 正式预算回放保留领域断言并符合工具结果配对  349ms
+   ✓ lg_pending_approval_queued 正式预算回放保留领域断言并符合工具结果配对  359ms
+   ✓ sec_cross_customer_order 正式预算回放保留领域断言并符合工具结果配对  308ms
+ ✓ test/p9-quality.test.ts (13 tests) 4298ms
+   ✓ 两轮原始证据可解析 次轮失败不被首轮掩盖 费用保留未知  827ms
+   ✓ 版本或样本变化拒绝比较 不输出提升差值  371ms
+   ✓ 缺失重复篡改及错配证据均拒绝  543ms
+   ✓ 真实预算预检查阻断无账本行且原占用不清零  596ms
+
+ Test Files  7 passed (7)
+      Tests  82 passed (82)
+   Start at  15:48:41
+   Duration  6.79s (transform 1.51s, setup 0ms, collect 6.80s, tests 7.65s, environment 2ms, prepare 1.61s)

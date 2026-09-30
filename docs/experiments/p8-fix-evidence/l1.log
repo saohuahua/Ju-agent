@@ -1,0 +1,2 @@
+$ tsx packages/eval/src/cli.ts "--offline" "--db" "C:\\Users\\htlocal\\AppData\\Local\\Temp\\p8-fix-l1-7dedc912-4708-46ab-b854-06f7fb7f7c64.db" "--output" "docs/experiments/p8-fix-evidence/l1-reports" "--experiment-id" "p8-fix-l1"
+{"reportId":"evr_6754112e","experimentId":"p8-fix-l1","mode":"simulation","total":124,"passed":124,"gatePassed":true,"costUnit":"micro_yuan","scopeCommitted":3390,"hasUncertainCost":false,"blocked":false,"output":"D:\\project\\agent-new\\aftersales\\docs\\experiments\\p8-fix-evidence\\l1-reports"}

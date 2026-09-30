@@ -24,6 +24,20 @@ export interface AgentEvent {
   createdAt: string
 }
 
+/** 与订单候选公开事件契约一致 */
+export interface OrderCandidates {
+  orders: Array<{
+    orderNo: string
+    status: string
+    totalAmountCents: number
+    currency: string
+    createdAt: string
+    items: Array<{ itemId: string; title: string; quantity: number }>
+  }>
+  offset: number
+  nextOffset: number | null
+}
+
 export interface RunSummary {
   runId: string
   customerId: string
@@ -36,6 +50,29 @@ export interface RunSummary {
   source: 'customer' | 'sim'
   createdAt: string
   updatedAt: string
+}
+
+/** 与客户公开进度契约保持一致 */
+export interface CustomerRefundProgress {
+  runId: string
+  returnNo: string
+  orderNo: string
+  type: 'return' | 'refund_only'
+  progress:
+    | 'awaiting_approval'
+    | 'awaiting_shipment'
+    | 'awaiting_receipt'
+    | 'processing'
+    | 'succeeded'
+    | 'rejected'
+    | 'expired'
+    | 'cancelled'
+    | 'failed'
+    | 'unknown'
+    | 'human'
+  canRegisterShipment: boolean
+  shipmentRegistered: boolean
+  trackingNo: string | null
 }
 
 /** 会话满意度评分 */
@@ -77,6 +114,33 @@ export interface ApprovalRequest {
   createdAt: string
 }
 
+/** 对齐审批执行公开契约 调用完成与业务成功分别展示 */
+export interface ApprovalExecutionView {
+  approvalId: string
+  runId: string
+  decision: 'approved' | 'rejected'
+  decidedBy: string
+  status: 'pending' | 'running' | 'completed' | 'failed'
+  lastError: string | null
+  createdAt: string
+  updatedAt: string
+  resourceType: string | null
+  resourceId: string | null
+  amountCents: number | null
+  businessStatus: string | null
+  refundStatus: string | null
+  taskStatus:
+    | 'queued'
+    | 'running'
+    | 'completed'
+    | 'call_failed'
+    | 'business_failed'
+    | 'needs_confirmation'
+    | 'cancelled'
+    | null
+  outcome: 'pending' | 'running' | 'waiting_return' | 'succeeded' | 'failed' | 'closed' | 'unknown'
+}
+
 /** 结构化失败明细 kind 与判定四层映射 */
 export type FailureKind =
   | 'state'
@@ -96,6 +160,8 @@ export interface EvalFailureView {
 }
 
 export interface EvalCaseResultView {
+  /** 旧报告未保存重复轮次 */
+  repeat?: number
   caseId: string
   priority: string
   passed: boolean

@@ -1,0 +1,9 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/apps/api
+
+ ✓ test/p10-health.test.ts (3 tests) 117ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  18:12:58
+   Duration  4.10s (transform 1.09s, setup 0ms, collect 3.00s, tests 117ms, environment 0ms, prepare 280ms)

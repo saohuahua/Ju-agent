@@ -1,0 +1,506 @@
+/* 紧凑工作台以分隔线划分区域 不叠加装饰卡片 */
+.youju-desk.desk-compact {
+  padding: 0;
+  gap: 0;
+  font-size: 14px;
+  background: var(--color-surface);
+}
+.desk-compact .youju-desk-toolbar {
+  padding: 8px 16px;
+  min-height: 48px;
+  border-bottom: 1px solid var(--color-border);
+}
+.desk-compact .youju-desk-toolbar h1 {
+  font-size: 14px;
+}
+.desk-compact .youju-workspace {
+  grid-template-columns: var(--queue-width) 5px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  border: 0;
+  border-radius: 0;
+}
+.desk-compact .youju-workspace.has-selection {
+  grid-template-columns: var(--queue-width) 5px minmax(0, var(--conversation-fr)) 5px minmax(
+      0,
+      var(--agent-fr)
+    );
+}
+.desk-compact .youju-workspace.agent-hidden {
+  grid-template-columns: var(--queue-width) 5px minmax(0, 1fr);
+}
+.desk-compact .youju-unselected {
+  grid-column: 3;
+}
+.desk-compact .youju-queue {
+  background: var(--color-muted);
+  border: 0;
+  grid-row: auto;
+}
+.desk-compact .youju-queue-tools {
+  padding: 12px;
+  gap: 10px;
+}
+.desk-compact .youju-case-row {
+  padding: 12px;
+  border-left: 0;
+}
+.desk-compact .youju-case-row:hover {
+  background: var(--color-accent);
+}
+.desk-compact .youju-case-row.selected {
+  background: var(--color-navigation-active);
+  box-shadow: inset 0 0 0 1px var(--color-input);
+}
+.desk-compact .youju-case-row h2 {
+  margin: 0 0 9px;
+  font-size: 14px;
+}
+.desk-compact .desk-queue-meta {
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.desk-queue-meta > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.desk-queue-meta .desk-case-id {
+  max-width: 76px;
+}
+.desk-queue-meta > span:nth-child(2) {
+  max-width: 70px;
+}
+.desk-compact .youju-case-row footer {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+  justify-content: space-between;
+}
+.desk-compact .youju-case-row footer span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.desk-compact .youju-case-row time {
+  white-space: nowrap;
+}
+.desk-split {
+  cursor: col-resize;
+  touch-action: none;
+  background: var(--color-surface);
+  border-inline: 1px solid var(--color-border);
+}
+.desk-split:hover,
+.desk-split:focus-visible {
+  background: var(--color-input);
+}
+.desk-compact .youju-case-heading {
+  padding: 14px 16px 10px;
+  flex-shrink: 0;
+  max-height: 36%;
+  overflow: auto;
+}
+.desk-compact .youju-case-heading h2 {
+  color: var(--color-ink);
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
+.desk-compact .youju-case-heading > div {
+  font-size: 12px;
+  gap: 8px;
+}
+.desk-compact .youju-case-heading > small {
+  font-size: 12px;
+}
+.desk-compact .desk-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.desk-case-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.desk-customer-details {
+  font-size: 13px;
+  margin-top: 10px;
+}
+.desk-customer-details summary {
+  cursor: pointer;
+  color: var(--color-muted-foreground);
+}
+.desk-customer-details dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  padding-block: 10px;
+}
+.desk-customer-details dl > div {
+  display: flex;
+  gap: 6px;
+}
+.desk-customer-details dt,
+.desk-description-label {
+  color: var(--color-muted-foreground);
+}
+.desk-customer-details dd,
+.desk-customer-details p {
+  overflow-wrap: anywhere;
+}
+.desk-customer-details p {
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+.desk-more {
+  position: relative;
+}
+.desk-more > summary {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  list-style: none;
+}
+.desk-more > summary::-webkit-details-marker {
+  display: none;
+}
+.desk-more > div {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: 156px;
+  border: 1px solid var(--color-input);
+  background: var(--color-surface);
+  padding: 6px;
+  z-index: 2;
+}
+.desk-more a,
+.desk-more button {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  text-align: left;
+}
+.desk-compact .youju-conversation-tabs {
+  min-height: 80px;
+}
+.desk-compact .youju-conversation-tabs > [data-slot='tabs-list'] {
+  margin: 0 16px;
+  flex-shrink: 0;
+}
+.desk-compact .youju-message-list {
+  padding: 16px;
+}
+.desk-compact .youju-message {
+  margin-bottom: 18px;
+  max-width: 90%;
+}
+.desk-compact .youju-message-user {
+  margin-left: auto;
+}
+.desk-compact .youju-message-user header {
+  justify-content: flex-end;
+}
+.desk-compact .youju-message header {
+  font-size: 12px;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.desk-compact .youju-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+.desk-compact .youju-message > div {
+  font-size: 14px;
+  line-height: 1.75;
+  padding: 10px 12px;
+  border-radius: 4px;
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+}
+.desk-compact .youju-message-assistant > div,
+.desk-compact .youju-message-operator > div {
+  background: var(--color-surface);
+}
+.desk-compact .youju-composer {
+  padding: 10px 16px;
+  gap: 8px;
+  background: var(--color-surface);
+  flex-shrink: 0;
+  max-height: 46%;
+  overflow: auto;
+}
+.desk-compact .youju-composer textarea {
+  min-height: 64px;
+  max-height: 120px;
+  font-size: 14px;
+}
+.desk-compact .youju-composer footer > span {
+  font-size: 12px;
+}
+.desk-compact .youju-note {
+  border-radius: 4px;
+  padding: 12px;
+}
+.desk-agent {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.desk-agent[hidden] {
+  display: none;
+}
+.desk-agent-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.desk-agent-heading h2 {
+  font-weight: 600;
+  font-size: 14px;
+}
+.desk-agent-heading button {
+  margin-left: auto;
+}
+.desk-agent-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-bottom: 1px solid var(--color-border);
+  padding: 10px 6px;
+}
+.desk-agent-stats > span {
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+  border-right: 1px solid var(--color-border);
+}
+.desk-agent-stats > span:last-child {
+  border: 0;
+}
+.desk-agent-stats strong {
+  display: block;
+  color: var(--color-ink);
+  font-weight: 600;
+  margin-top: 3px;
+  font-variant-numeric: tabular-nums;
+}
+.desk-agent-tabs {
+  flex: 1;
+  min-height: 0;
+  gap: 0;
+}
+.desk-agent-tabs > [data-slot='tabs-list'] {
+  margin: 0 12px 6px;
+  flex-shrink: 0;
+}
+.desk-debug {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+.desk-debug[data-state='active'] {
+  display: flex;
+  flex-direction: column;
+}
+.desk-event-scroll {
+  min-height: 0;
+  overflow: auto;
+  flex: 1;
+  padding: 12px;
+  overflow-anchor: none;
+}
+.desk-timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.desk-event {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 10px;
+}
+.desk-event > time {
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+  padding-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.desk-event-body {
+  position: relative;
+  padding: 0 0 20px 14px;
+  border-left: 1px solid var(--color-border);
+  min-width: 0;
+}
+.desk-event-body::before {
+  content: '';
+  position: absolute;
+  left: -3px;
+  top: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-muted-foreground);
+}
+.desk-event-body header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+}
+.desk-event-body strong {
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+.desk-event-body p,
+.desk-event-body summary {
+  color: var(--color-muted-foreground);
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 6px;
+}
+.desk-event-body summary {
+  cursor: pointer;
+}
+.desk-event-body small {
+  display: block;
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+  margin: 8px 0 4px;
+}
+.desk-event-body pre {
+  max-height: 240px;
+  overflow: auto;
+  padding: 8px 10px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--color-muted);
+  font-size: 12px;
+  line-height: 1.7;
+  border-radius: 3px;
+}
+.desk-event-status {
+  font-size: 11px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: var(--color-accent);
+}
+.desk-event[data-status='succeeded'] .desk-event-status {
+  color: #376744;
+  background: #edf6ee;
+}
+.desk-event[data-status='failed'] .desk-event-status {
+  color: #a13e38;
+  background: #fbefee;
+}
+.desk-follow {
+  position: absolute;
+  bottom: 10px;
+  right: 16px;
+}
+.desk-agent-footer {
+  border-top: 1px solid var(--color-border);
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.desk-business {
+  overflow: auto;
+  min-height: 0;
+}
+.desk-compact .youju-evidence {
+  background: var(--color-surface);
+  border: 0;
+  padding: 12px 16px;
+  overflow: visible;
+}
+.desk-compact .youju-evidence h3 {
+  font-size: 14px;
+  margin: 18px 0 8px;
+}
+.desk-compact .youju-evidence p {
+  font-size: 13px;
+}
+.desk-compact .youju-evidence-card {
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: 10px 0;
+  margin: 0;
+}
+.desk-compact .youju-evidence-card b {
+  font-size: 18px;
+}
+.desk-compact .youju-policy-button span {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+/* 中等宽度将右栏作为可收起的下方面板 保留会话宽度 */
+@media (min-width: 761px) and (max-width: 1250px) {
+  .desk-compact .youju-workspace.has-selection {
+    grid-template-columns: var(--queue-width) 5px minmax(0, 1fr);
+    grid-template-rows: minmax(320px, 3fr) minmax(200px, 2fr);
+  }
+  .desk-compact .youju-queue,
+  .desk-compact .youju-queue + .desk-split {
+    grid-row: 1 / -1;
+  }
+  .desk-compact .youju-conversation {
+    grid-column: 3;
+  }
+  .desk-compact .youju-conversation + .desk-split {
+    display: none;
+  }
+  .desk-agent {
+    grid-column: 3;
+    border-top: 1px solid var(--color-border);
+  }
+  .desk-compact .youju-workspace.agent-hidden {
+    grid-template-rows: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .desk-compact {
+    height: auto;
+    padding: 0;
+  }
+  .desk-compact .youju-workspace,
+  .desk-compact .youju-workspace.has-selection {
+    display: block;
+  }
+  .desk-split {
+    display: none;
+  }
+  .desk-compact .youju-queue {
+    max-height: 75dvh;
+  }
+  .desk-compact .youju-conversation {
+    height: 78dvh;
+    min-height: 520px;
+  }
+  .desk-compact .desk-title-row {
+    flex-wrap: wrap;
+  }
+  .desk-agent {
+    height: 65dvh;
+    border-top: 1px solid var(--color-border);
+  }
+  .desk-compact .youju-composer footer {
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,18 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/apps/api
+
+stdout | test/p6-sse-reconnect.test.ts > P6 SSE 真实断网重连不漏不重且不泄漏原始结果
+P6 SSE 证据 D:\project\agent-new\aftersales\docs\experiments\p6-sse-results\2026-09-26T05-16-58.279Z
+
+ ✓ test/p6-sse-reconnect.test.ts (1 test) 826ms
+   ✓ P6 SSE 真实断网重连不漏不重且不泄漏原始结果  825ms
+ ✓ test/customer-events.test.ts (3 tests) 51ms
+ ✓ test/customer-progress.test.ts (8 tests) 722ms
+ ✓ test/conversation-refund.test.ts (22 tests) 2127ms
+   ✓ 发送后取消仍保留已确认退款和原调用结果  566ms
+
+ Test Files  4 passed (4)
+      Tests  34 passed (34)
+   Start at  13:16:57
+   Duration  5.40s (transform 1.17s, setup 0ms, collect 7.56s, tests 3.73s, environment 1ms, prepare 944ms)
+

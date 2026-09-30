@@ -21,6 +21,8 @@ import type {
 import type { ApprovalService } from './approval-service.js'
 import type { AuditService } from './audit-service.js'
 import type { Clock } from '../clock.js'
+import type { LegacyExecutionOwnership } from '../../../contracts/src/execution-ownership-contract.js'
+import { LegacyExecutionGuard } from '../execution-ownership-guard.js'
 import { toIso } from '../clock.js'
 import { assertRefundTransition, assertReturnTransition } from '../state-machines.js'
 import { decidePolicy, POLICY_VERSION } from '../policy.js'
@@ -86,6 +88,8 @@ export class AfterSaleService {
     private readonly approvals: ApprovalService,
     private readonly audit: AuditService,
     private readonly clock: Clock,
+    // 未注入仅兼容旧模式 不具备持久执行权防线
+    private readonly executionOwnership?: LegacyExecutionOwnership,
   ) {}
 
   /**
@@ -99,6 +103,7 @@ export class AfterSaleService {
     returnRequest.version += 1
   }
 
+  /** 仓储成功写入后才更新内存版本 供后续连续状态推进使用 */
   private async saveRefund(refund: Refund): Promise<void> {
     await this.refundRepo.update(refund)
     refund.version += 1
@@ -160,6 +165,52 @@ export class AfterSaleService {
     await this.assertOrderAccess(actor, order)
 
     const existing = await this.returnRepo.listByOrderNo(input.orderNo)
+    const shipment = await this.shipmentRepo.findByOrderNo(input.orderNo)
+    const { record, refund, result } = this.prepareReturnRequest(
+      actor,
+      input,
+      order,
+      shipment,
+      existing,
+    )
+    // 兼容异步入口逐项保存 默认持久客户建单由外层同步事务统一保存
+    await this.returnRepo.create(record)
+    if (refund) {
+      await this.refundRepo.create(refund)
+      this.executionOwnership?.registerNew(refund.idempotencyKey)
+    }
+    await this.audit.record(
+      actor,
+      'return_created',
+      'return_request',
+      record.returnNo,
+      {
+        orderNo: input.orderNo,
+        type: input.type,
+        reason: input.reason,
+        policyOutcome: result.policyOutcome,
+        policyRule: record.policyDecision.ruleId,
+        refundNo: result.refundNo,
+      },
+      runId,
+    )
+    return result
+  }
+
+  /** 同步生成领域方案供持久事务复用 不写业务单据或调用资金渠道 */
+  prepareReturnRequest(
+    actor: Actor,
+    input: CreateReturnInput,
+    order: Order,
+    shipment: Shipment | null,
+    existing: ReturnRequest[],
+  ): { record: ReturnRequest; refund: Refund | null; result: CreateReturnResult } {
+    if (
+      order.orderNo !== input.orderNo ||
+      (actor.role === 'customer' && order.customerId !== actor.customerId)
+    )
+      throw new DomainError(createToolError('AUTHORIZATION_DENIED', '无权访问该订单'))
+    // 同订单已有活跃申请就拒绝新建 并非只检查选中商品是否重复
     const active = existing.find((r) => ACTIVE_RETURN_STATUSES.includes(r.status))
     if (active) {
       throw new DomainError(
@@ -169,6 +220,7 @@ export class AfterSaleService {
         }),
       )
     }
+    // 已完成的非换货售后仍占位 不能据此支持剩余商品再次分批退款
     const refunded = existing.find((r) => r.status === 'completed' && r.type !== 'exchange')
     if (refunded) {
       throw new DomainError(
@@ -179,7 +231,7 @@ export class AfterSaleService {
       )
     }
 
-    const shipment = await this.shipmentRepo.findByOrderNo(input.orderNo)
+    // 使用可信订单 物流和时钟计算 客户与模型不直接决定金额
     const decision = decidePolicy({
       type: input.type,
       reason: input.reason,
@@ -191,6 +243,7 @@ export class AfterSaleService {
 
     const now = toIso(this.clock.now())
     const returnNo = this.noGenerator.nextNo('RT')
+    // 冻结本次类型 商品范围 政策和金额 后续只推进原方案
     const record: ReturnRequest = {
       returnNo,
       orderNo: input.orderNo,
@@ -228,12 +281,13 @@ export class AfterSaleService {
       assertReturnTransition(record.status, 'awaiting_buyer_shipment')
       record.status = 'awaiting_buyer_shipment'
     }
-    await this.returnRepo.create(record)
 
-    // 退款单预留 换货不产生退款 政策拒绝不预留
+    // 预留只确定原资金身份 不发送款项 待审批方案也会预留
+    // 换货与政策拒绝均不创建退款单
     let refundNo: string | null = null
+    let refund: Refund | null = null
     if (input.type !== 'exchange' && decision.outcome !== 'deny') {
-      const refund: Refund = {
+      refund = {
         refundNo: this.noGenerator.nextNo('RF'),
         returnNo,
         orderNo: input.orderNo,
@@ -248,34 +302,21 @@ export class AfterSaleService {
         updatedAt: now,
         version: 1,
       }
-      await this.refundRepo.create(refund)
       refundNo = refund.refundNo
     }
 
-    await this.audit.record(
-      actor,
-      'return_created',
-      'return_request',
-      returnNo,
-      {
-        orderNo: input.orderNo,
-        type: input.type,
-        reason: input.reason,
-        policyOutcome: decision.outcome,
-        policyRule: decision.ruleId,
-        refundNo,
-      },
-      runId,
-    )
-
     return {
-      returnNo,
-      status: record.status,
-      policyOutcome: decision.outcome,
-      policyExplanation: decision.explanation,
-      refundNo,
-      refundAmountCents: decision.refundAmountCents,
-      requiresApproval: decision.outcome === 'needs_approval',
+      record,
+      refund,
+      result: {
+        returnNo,
+        status: record.status,
+        policyOutcome: decision.outcome,
+        policyExplanation: decision.explanation,
+        refundNo,
+        refundAmountCents: decision.refundAmountCents,
+        requiresApproval: decision.outcome === 'needs_approval',
+      },
     }
   }
 
@@ -395,13 +436,20 @@ export class AfterSaleService {
 
     const key = refundIdempotencyKey(input.returnNo)
     const recorded = await this.idempotencyRepo.find(key)
-    if (recorded) {
+    if (recorded || refund.status === 'succeeded') {
       // 第一道防线拦截 幂等键命中 重复请求短路返回首次结果 未触碰网关
-      await this.audit.record(actor, 'guard_idempotency_replay', 'refund', refund.refundNo, {
-        layer: 'idempotency',
-        key,
-        action: 'execute_refund',
-      }, runId)
+      await this.audit.record(
+        actor,
+        'guard_idempotency_replay',
+        'refund',
+        refund.refundNo,
+        {
+          layer: 'idempotency',
+          key,
+          action: 'execute_refund',
+        },
+        runId,
+      )
       return {
         refundNo: refund.refundNo,
         status: 'succeeded',
@@ -443,19 +491,23 @@ export class AfterSaleService {
       }
     }
 
-    assertRefundTransition(refund.status, 'executing')
-    refund.status = 'executing'
-    refund.attempts += 1
-    refund.updatedAt = toIso(this.clock.now())
-    await this.saveRefund(refund)
+    // 发送许可与接管原子互斥 所有失败重试必须重新经过此闸门
+    const execution = new LegacyExecutionGuard(this.executionOwnership, key)
 
     try {
+      assertRefundTransition(refund.status, 'executing')
+      refund.status = 'executing'
+      refund.attempts += 1
+      refund.updatedAt = toIso(this.clock.now())
+      await this.saveRefund(refund)
+
       const gatewayResult = await this.gateway.withRefund(key, {
         refundNo: refund.refundNo,
         amountCents: refund.amountCents,
         currency: refund.currency,
         channel: refund.channel,
       })
+      execution.succeeded(gatewayResult)
       assertRefundTransition(refund.status, 'succeeded')
       refund.status = 'succeeded'
       refund.updatedAt = toIso(this.clock.now())
@@ -491,11 +543,18 @@ export class AfterSaleService {
 
       // 第三道防线兜底 业务幂等记录丢失但网关按幂等键去重了 未产生重复扣款
       if (gatewayResult.deduped) {
-        await this.audit.record(actor, 'guard_gateway_dedup', 'refund', refund.refundNo, {
-          layer: 'gateway',
-          key,
-          action: 'execute_refund',
-        }, runId)
+        await this.audit.record(
+          actor,
+          'guard_gateway_dedup',
+          'refund',
+          refund.refundNo,
+          {
+            layer: 'gateway',
+            key,
+            action: 'execute_refund',
+          },
+          runId,
+        )
       }
       return {
         refundNo: refund.refundNo,
@@ -506,7 +565,9 @@ export class AfterSaleService {
         gatewayDeduped: gatewayResult.deduped,
       }
     } catch (error) {
-      // 网关失败进入 failed 允许再次执行 重试走同一幂等键
+      // 成功后的本地失败不改写成功事实 未知许可持续阻止重发与接管
+      if (!execution.failed()) throw error
+      // 业务失败不等于渠道未支付 注入守卫后未知许可仍阻止重试
       refund.status = 'failed'
       refund.lastError = error instanceof Error ? error.message : String(error)
       refund.updatedAt = toIso(this.clock.now())
@@ -545,6 +606,7 @@ export class AfterSaleService {
       )
     }
     await this.assertReturnAccess(actor, returnRequest)
+    // 已登记时直接返回原售后 此分支不修改运单也不证明快递已发出
     if (returnRequest.status === 'buyer_shipped') {
       return returnRequest
     }
@@ -617,7 +679,7 @@ export class AfterSaleService {
     await this.saveReturn(returnRequest)
     await this.audit.record(actor, 'return_goods_received', 'return_request', returnNo, {}, runId)
 
-    // 换货直接完结 重发由仓储执行此处只留痕
+    // 当前换货收货后只完成留痕 此处没有库存扣减或重新发货实现
     if (returnRequest.type === 'exchange') {
       assertReturnTransition(returnRequest.status, 'completed')
       returnRequest.status = 'completed'
@@ -627,7 +689,8 @@ export class AfterSaleService {
       return { returnNo, status: 'completed', refundNo: null, refundStatus: null }
     }
 
-    // 退货退款 联动执行退款 内部路径 无需外部令牌
+    // 兼容退货路径继续原退款 默认持久入口另走收货命令与任务
+    // 此处复用收货事实 不创建第二笔退款
     const refundResult = await this.executeRefund(actor, { returnNo, internal: true }, runId)
     assertReturnTransition(returnRequest.status, 'completed')
     returnRequest.status = 'completed'

@@ -1,0 +1,17 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/eval
+
+ ✓ test/p9-quality.test.ts (16 tests) 5763ms
+   ✓ 两轮原始证据可解析 次轮失败不被首轮掩盖 费用保留未知  823ms
+   ✓ 旧报告格式读取兼容 缺少元数据不得凭旧分母比较  301ms
+   ✓ 版本或样本变化拒绝比较 不输出提升差值  379ms
+   ✓ 缺失重复篡改及错配证据均拒绝  528ms
+   ✓ 真实预算预检查阻断无账本行且原占用不清零  615ms
+   ✓ Judge 失败不覆盖确定性业务成功 原始 Judge 输出可追溯  340ms
+   ✓ 配置模型变量必须声明 其余运行配置不能夹带变化  735ms
+   ✓ 共享账本已有 held 导出与比较均保留且不修改账本  355ms
+
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+   Start at  16:03:08
+   Duration  8.64s (transform 773ms, setup 0ms, collect 2.16s, tests 5.76s, environment 0ms, prepare 178ms)

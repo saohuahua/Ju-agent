@@ -1,0 +1,104 @@
+{
+  "status": "passed",
+  "scope": "local main process only",
+  "source": "artifacts/p10/2026-09-26T10-10-02.064Z/summary.json",
+  "sha256": "a4c2982647f99176adc5eac70214ceb2c8618901a760109726539e716c31092d",
+  "runIds": {
+    "refund": {
+      "runId": "run_c5222aa6-fc5a-41ab-9110-372dd48bce56",
+      "commandId": "e3ddc4a4-35b9-47f5-9a28-77db2a230a6a",
+      "taskId": "b1149cf0-9a4f-471c-b5f9-e04d7915800f",
+      "accepted": true
+    },
+    "returning": {
+      "runId": "run_f7e15bc4-3df2-4007-978d-ddf72f8ae722",
+      "commandId": "656d890c-39d6-4b9c-9545-abebc4126f9c",
+      "taskId": "cdf8f8bf-0123-476d-820b-880eb38e4b3e",
+      "accepted": true
+    },
+    "human": {
+      "runId": "run_8978cf16-e51d-4d24-85c5-ae14984f2255",
+      "commandId": "257b73ec-8455-424e-9ff2-1ae72c455e4a",
+      "taskId": "44c9d3af-8267-472b-b616-c5caf87b5d6f",
+      "accepted": true
+    },
+    "unknown": {
+      "runId": "run_0299fbbb-83bb-493f-9721-2785c94020e0",
+      "commandId": "b775135a-3601-4c76-a4e9-8d369eb3c67d",
+      "taskId": "10ad425b-d51e-4060-8447-b1775a803818",
+      "accepted": true
+    }
+  },
+  "channelsBeforeCrash": [
+    {
+      "business_key": "refund:RT-2026-0002",
+      "status": "succeeded",
+      "submissions": 1,
+      "charges": 1
+    }
+  ],
+  "channelsAfterRestartAndRestore": [
+    {
+      "business_key": "refund:RT-2026-0002",
+      "status": "succeeded",
+      "submissions": 1,
+      "charges": 1
+    },
+    {
+      "business_key": "refund:RT-2026-0003",
+      "status": "succeeded",
+      "submissions": 1,
+      "charges": 1
+    },
+    {
+      "business_key": "refund:RT-2026-0004",
+      "status": "unknown",
+      "submissions": 1,
+      "charges": 0
+    }
+  ],
+  "costs": {
+    "committed": 1234,
+    "active": 1
+  },
+  "unknownCalls": [
+    {
+      "call_id": "p10-unknown",
+      "status": "unknown",
+      "reserved": 1234,
+      "actual": null,
+      "outcome": "CANCELLED"
+    }
+  ],
+  "originalActions": [
+    {
+      "runId": "run_0299fbbb-83bb-493f-9721-2785c94020e0",
+      "taskId": "10ad425b-d51e-4060-8447-b1775a803818",
+      "toolCallId": "demo-5-submit_return",
+      "returnNo": "RT-2026-0004",
+      "projected": 0
+    },
+    {
+      "runId": "run_c5222aa6-fc5a-41ab-9110-372dd48bce56",
+      "taskId": "b1149cf0-9a4f-471c-b5f9-e04d7915800f",
+      "toolCallId": "demo-5-submit_refund_only",
+      "returnNo": "RT-2026-0002",
+      "projected": 1
+    },
+    {
+      "runId": "run_f7e15bc4-3df2-4007-978d-ddf72f8ae722",
+      "taskId": "cdf8f8bf-0123-476d-820b-880eb38e4b3e",
+      "toolCallId": "demo-5-submit_return",
+      "returnNo": "RT-2026-0003",
+      "projected": 1
+    }
+  ],
+  "counts": {
+    "orders": 11,
+    "runs": 4,
+    "tasks": 11,
+    "calls": 11
+  },
+  "container": "blocked docker CLI unavailable",
+  "followupLocalSseRun": "artifacts/p10/2026-09-26T10-23-55.578Z/summary.json"
+}

@@ -1,0 +1,452 @@
+{
+  "mode": "simulation",
+  "experimentId": "integrated-cli-l2",
+  "cases": [
+    {
+      "identity": {
+        "experimentId": "integrated-cli-l2",
+        "caseId": "hp_query_order_status",
+        "repeat": 1
+      },
+      "modelRunIds": {
+        "main_agent": "[\"p7-eval-v1\",\"integrated-cli-l2\",\"hp_query_order_status\",1,\"main_agent\"]",
+        "simulator": "[\"p7-eval-v1\",\"integrated-cli-l2\",\"hp_query_order_status\",1,\"simulator\"]",
+        "judge": "[\"p7-eval-v1\",\"integrated-cli-l2\",\"hp_query_order_status\",1,\"judge\"]"
+      },
+      "businessRunId": "run_a031c746",
+      "passed": false,
+      "failures": [
+        {
+          "kind": "judge",
+          "message": "judge 判定未通过 答复基于查询结果 未编造状态 离线脚本不评估主观质量"
+        }
+      ]
+    }
+  ],
+  "costs": {
+    "schemaVersion": 1,
+    "scope": "simulation:first-real-cny-100",
+    "currency": "CNY",
+    "unit": "micro_yuan",
+    "observation": {
+      "readStartedAt": "2026-09-26T02:13:19.605Z",
+      "readCompletedAt": "2026-09-26T02:13:19.605Z",
+      "consistency": "single_statement",
+      "authorization": false
+    },
+    "scopeSummary": {
+      "attempts": 8,
+      "logicalCalls": 8,
+      "settled": {
+        "actual": 80,
+        "count": 8
+      },
+      "unknown": {
+        "reserved": 0,
+        "count": 0
+      },
+      "held": {
+        "reserved": 0,
+        "count": 0
+      },
+      "committed": 80,
+      "hasUncertainCost": false,
+      "active": 0,
+      "observation": "recorded_calls"
+    },
+    "budget": {
+      "scope": "simulation:first-real-cny-100",
+      "state": "recorded",
+      "limit": 100000000,
+      "blocked": false,
+      "concurrencyLimit": 4,
+      "remaining": 99999920
+    },
+    "selection": {
+      "experimentId": "integrated-cli-l2",
+      "summary": {
+        "attempts": 4,
+        "logicalCalls": 4,
+        "settled": {
+          "actual": 40,
+          "count": 4
+        },
+        "unknown": {
+          "reserved": 0,
+          "count": 0
+        },
+        "held": {
+          "reserved": 0,
+          "count": 0
+        },
+        "committed": 40,
+        "hasUncertainCost": false,
+        "active": 0,
+        "observation": "recorded_calls"
+      },
+      "callIds": [
+        "bf5531cc-42f9-4624-819c-307750d21685",
+        "eb587360-5878-4ce2-8140-7fb04dd29a2f",
+        "ebd123b4-d93d-47a2-b048-641a3cc1a03b",
+        "58444d60-2697-4f6c-a727-f2573d5bffc2"
+      ]
+    },
+    "attributionGroups": [
+      {
+        "kind": "eval",
+        "summary": {
+          "attempts": 8,
+          "logicalCalls": 8,
+          "settled": {
+            "actual": 80,
+            "count": 8
+          },
+          "unknown": {
+            "reserved": 0,
+            "count": 0
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 80,
+          "hasUncertainCost": false,
+          "active": 0,
+          "observation": "recorded_calls"
+        },
+        "callIds": [
+          "c0282191-94fd-4187-87eb-1201a410a01c",
+          "99f1ef05-189c-4ed3-9cc2-cb5683bd9277",
+          "e98b30ef-4acb-49a1-bd0f-4ba63228b7a2",
+          "98cb66a3-59ea-4d89-97f7-65f542acde37",
+          "bf5531cc-42f9-4624-819c-307750d21685",
+          "eb587360-5878-4ce2-8140-7fb04dd29a2f",
+          "ebd123b4-d93d-47a2-b048-641a3cc1a03b",
+          "58444d60-2697-4f6c-a727-f2573d5bffc2"
+        ]
+      },
+      {
+        "kind": "unattributed",
+        "summary": {
+          "attempts": 0,
+          "logicalCalls": 0,
+          "settled": {
+            "actual": 0,
+            "count": 0
+          },
+          "unknown": {
+            "reserved": 0,
+            "count": 0
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 0,
+          "hasUncertainCost": false,
+          "active": 0,
+          "observation": "no_recorded_calls"
+        },
+        "callIds": []
+      },
+      {
+        "kind": "anomaly",
+        "summary": {
+          "attempts": 0,
+          "logicalCalls": 0,
+          "settled": {
+            "actual": 0,
+            "count": 0
+          },
+          "unknown": {
+            "reserved": 0,
+            "count": 0
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 0,
+          "hasUncertainCost": false,
+          "active": 0,
+          "observation": "no_recorded_calls"
+        },
+        "callIds": []
+      }
+    ],
+    "scopeConfigurations": [
+      {
+        "snapshotVersion": "f31694dcf470569286adcd061e4d5af2c9fa44f4f126e6a4cdc52b42a67dc7da",
+        "priceVersion": "synthetic-eval-fixed-v1",
+        "summary": {
+          "attempts": 6,
+          "logicalCalls": 6,
+          "settled": {
+            "actual": 60,
+            "count": 6
+          },
+          "unknown": {
+            "reserved": 0,
+            "count": 0
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 60,
+          "hasUncertainCost": false,
+          "active": 0,
+          "observation": "recorded_calls"
+        },
+        "callIds": [
+          "c0282191-94fd-4187-87eb-1201a410a01c",
+          "99f1ef05-189c-4ed3-9cc2-cb5683bd9277",
+          "e98b30ef-4acb-49a1-bd0f-4ba63228b7a2",
+          "98cb66a3-59ea-4d89-97f7-65f542acde37",
+          "eb587360-5878-4ce2-8140-7fb04dd29a2f",
+          "ebd123b4-d93d-47a2-b048-641a3cc1a03b"
+        ]
+      },
+      {
+        "snapshotVersion": "771c3efc29b8ba9267ae5c404a4c938fa10a6dc1d00e4f717469334cc25c9e70",
+        "priceVersion": "synthetic-eval-fixed-v1",
+        "summary": {
+          "attempts": 1,
+          "logicalCalls": 1,
+          "settled": {
+            "actual": 10,
+            "count": 1
+          },
+          "unknown": {
+            "reserved": 0,
+            "count": 0
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 10,
+          "hasUncertainCost": false,
+          "active": 0,
+          "observation": "recorded_calls"
+        },
+        "callIds": [
+          "bf5531cc-42f9-4624-819c-307750d21685"
+        ]
+      },
+      {
+        "snapshotVersion": "3038c4fd13bfe316c54e71a2643345b15c6426c9cb1acf1e7ddeb85dd39c56a8",
+        "priceVersion": "synthetic-eval-fixed-v1",
+        "summary": {
+          "attempts": 1,
+          "logicalCalls": 1,
+          "settled": {
+            "actual": 10,
+            "count": 1
+          },
+          "unknown": {
+            "reserved": 0,
+            "count": 0
+          },
+          "held": {
+            "reserved": 0,
+            "count": 0
+          },
+          "committed": 10,
+          "hasUncertainCost": false,
+          "active": 0,
+          "observation": "recorded_calls"
+        },
+        "callIds": [
+          "58444d60-2697-4f6c-a727-f2573d5bffc2"
+        ]
+      }
+    ],
+    "calls": [
+      {
+        "callId": "c0282191-94fd-4187-87eb-1201a410a01c",
+        "operationId": "[\"[\\\"p7-eval-v1\\\",\\\"integrated-cli-l1\\\",\\\"hp_query_order_status\\\",1,\\\"main_agent\\\"]\",1]",
+        "runId": "[\"p7-eval-v1\",\"integrated-cli-l1\",\"hp_query_order_status\",1,\"main_agent\"]",
+        "purpose": "main_agent",
+        "attempt": 1,
+        "snapshotVersion": "f31694dcf470569286adcd061e4d5af2c9fa44f4f126e6a4cdc52b42a67dc7da",
+        "priceVersion": "synthetic-eval-fixed-v1",
+        "reserved": 10,
+        "actual": 10,
+        "status": "settled",
+        "attribution": {
+          "kind": "eval",
+          "reason": null,
+          "identity": {
+            "experimentId": "integrated-cli-l1",
+            "caseId": "hp_query_order_status",
+            "repeat": 1,
+            "role": "main_agent"
+          },
+          "callRound": 1
+        }
+      },
+      {
+        "callId": "99f1ef05-189c-4ed3-9cc2-cb5683bd9277",
+        "operationId": "[\"[\\\"p7-eval-v1\\\",\\\"integrated-cli-l1\\\",\\\"hp_query_order_status\\\",1,\\\"main_agent\\\"]\",2]",
+        "runId": "[\"p7-eval-v1\",\"integrated-cli-l1\",\"hp_query_order_status\",1,\"main_agent\"]",
+        "purpose": "main_agent",
+        "attempt": 1,
+        "snapshotVersion": "f31694dcf470569286adcd061e4d5af2c9fa44f4f126e6a4cdc52b42a67dc7da",
+        "priceVersion": "synthetic-eval-fixed-v1",
+        "reserved": 10,
+        "actual": 10,
+        "status": "settled",
+        "attribution": {
+          "kind": "eval",
+          "reason": null,
+          "identity": {
+            "experimentId": "integrated-cli-l1",
+            "caseId": "hp_query_order_status",
+            "repeat": 1,
+            "role": "main_agent"
+          },
+          "callRound": 2
+        }
+      },
+      {
+        "callId": "e98b30ef-4acb-49a1-bd0f-4ba63228b7a2",
+        "operationId": "[\"[\\\"p7-eval-v1\\\",\\\"integrated-cli-l1\\\",\\\"hp_query_order_status\\\",2,\\\"main_agent\\\"]\",1]",
+        "runId": "[\"p7-eval-v1\",\"integrated-cli-l1\",\"hp_query_order_status\",2,\"main_agent\"]",
+        "purpose": "main_agent",
+        "attempt": 1,
+        "snapshotVersion": "f31694dcf470569286adcd061e4d5af2c9fa44f4f126e6a4cdc52b42a67dc7da",
+        "priceVersion": "synthetic-eval-fixed-v1",
+        "reserved": 10,
+        "actual": 10,
+        "status": "settled",
+        "attribution": {
+          "kind": "eval",
+          "reason": null,
+          "identity": {
+            "experimentId": "integrated-cli-l1",
+            "caseId": "hp_query_order_status",
+            "repeat": 2,
+            "role": "main_agent"
+          },
+          "callRound": 1
+        }
+      },
+      {
+        "callId": "98cb66a3-59ea-4d89-97f7-65f542acde37",
+        "operationId": "[\"[\\\"p7-eval-v1\\\",\\\"integrated-cli-l1\\\",\\\"hp_query_order_status\\\",2,\\\"main_agent\\\"]\",2]",
+        "runId": "[\"p7-eval-v1\",\"integrated-cli-l1\",\"hp_query_order_status\",2,\"main_agent\"]",
+        "purpose": "main_agent",
+        "attempt": 1,
+        "snapshotVersion": "f31694dcf470569286adcd061e4d5af2c9fa44f4f126e6a4cdc52b42a67dc7da",
+        "priceVersion": "synthetic-eval-fixed-v1",
+        "reserved": 10,
+        "actual": 10,
+        "status": "settled",
+        "attribution": {
+          "kind": "eval",
+          "reason": null,
+          "identity": {
+            "experimentId": "integrated-cli-l1",
+            "caseId": "hp_query_order_status",
+            "repeat": 2,
+            "role": "main_agent"
+          },
+          "callRound": 2
+        }
+      },
+      {
+        "callId": "bf5531cc-42f9-4624-819c-307750d21685",
+        "operationId": "[\"[\\\"p7-eval-v1\\\",\\\"integrated-cli-l2\\\",\\\"hp_query_order_status\\\",1,\\\"simulator\\\"]\",1]",
+        "runId": "[\"p7-eval-v1\",\"integrated-cli-l2\",\"hp_query_order_status\",1,\"simulator\"]",
+        "purpose": "simulator",
+        "attempt": 1,
+        "snapshotVersion": "771c3efc29b8ba9267ae5c404a4c938fa10a6dc1d00e4f717469334cc25c9e70",
+        "priceVersion": "synthetic-eval-fixed-v1",
+        "reserved": 10,
+        "actual": 10,
+        "status": "settled",
+        "attribution": {
+          "kind": "eval",
+          "reason": null,
+          "identity": {
+            "experimentId": "integrated-cli-l2",
+            "caseId": "hp_query_order_status",
+            "repeat": 1,
+            "role": "simulator"
+          },
+          "callRound": 1
+        }
+      },
+      {
+        "callId": "eb587360-5878-4ce2-8140-7fb04dd29a2f",
+        "operationId": "[\"[\\\"p7-eval-v1\\\",\\\"integrated-cli-l2\\\",\\\"hp_query_order_status\\\",1,\\\"main_agent\\\"]\",1]",
+        "runId": "[\"p7-eval-v1\",\"integrated-cli-l2\",\"hp_query_order_status\",1,\"main_agent\"]",
+        "purpose": "main_agent",
+        "attempt": 1,
+        "snapshotVersion": "f31694dcf470569286adcd061e4d5af2c9fa44f4f126e6a4cdc52b42a67dc7da",
+        "priceVersion": "synthetic-eval-fixed-v1",
+        "reserved": 10,
+        "actual": 10,
+        "status": "settled",
+        "attribution": {
+          "kind": "eval",
+          "reason": null,
+          "identity": {
+            "experimentId": "integrated-cli-l2",
+            "caseId": "hp_query_order_status",
+            "repeat": 1,
+            "role": "main_agent"
+          },
+          "callRound": 1
+        }
+      },
+      {
+        "callId": "ebd123b4-d93d-47a2-b048-641a3cc1a03b",
+        "operationId": "[\"[\\\"p7-eval-v1\\\",\\\"integrated-cli-l2\\\",\\\"hp_query_order_status\\\",1,\\\"main_agent\\\"]\",2]",
+        "runId": "[\"p7-eval-v1\",\"integrated-cli-l2\",\"hp_query_order_status\",1,\"main_agent\"]",
+        "purpose": "main_agent",
+        "attempt": 1,
+        "snapshotVersion": "f31694dcf470569286adcd061e4d5af2c9fa44f4f126e6a4cdc52b42a67dc7da",
+        "priceVersion": "synthetic-eval-fixed-v1",
+        "reserved": 10,
+        "actual": 10,
+        "status": "settled",
+        "attribution": {
+          "kind": "eval",
+          "reason": null,
+          "identity": {
+            "experimentId": "integrated-cli-l2",
+            "caseId": "hp_query_order_status",
+            "repeat": 1,
+            "role": "main_agent"
+          },
+          "callRound": 2
+        }
+      },
+      {
+        "callId": "58444d60-2697-4f6c-a727-f2573d5bffc2",
+        "operationId": "[\"[\\\"p7-eval-v1\\\",\\\"integrated-cli-l2\\\",\\\"hp_query_order_status\\\",1,\\\"judge\\\"]\",1]",
+        "runId": "[\"p7-eval-v1\",\"integrated-cli-l2\",\"hp_query_order_status\",1,\"judge\"]",
+        "purpose": "judge",
+        "attempt": 1,
+        "snapshotVersion": "3038c4fd13bfe316c54e71a2643345b15c6426c9cb1acf1e7ddeb85dd39c56a8",
+        "priceVersion": "synthetic-eval-fixed-v1",
+        "reserved": 10,
+        "actual": 10,
+        "status": "settled",
+        "attribution": {
+          "kind": "eval",
+          "reason": null,
+          "identity": {
+            "experimentId": "integrated-cli-l2",
+            "caseId": "hp_query_order_status",
+            "repeat": 1,
+            "role": "judge"
+          },
+          "callRound": 1
+        }
+      }
+    ]
+  }
+}

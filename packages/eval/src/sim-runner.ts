@@ -17,6 +17,7 @@ import { BASELINE_FROZEN_TIME, composeSystem, type ComposedSystem } from '@after
 import { UserSimulator, TallyingModel } from './simulator.js'
 import { judgeTranscript, type TranscriptTurn } from './judge.js'
 import type { CaseDetail, JudgeFailure } from './types.js'
+import { captureBusinessEvidence, redactEvidence } from './p9-evidence.js'
 import type { AssertionFailure } from './validators.js'
 import { collectAssertions, driveApproval, driveHandoverStep, driveTurn } from './runner.js'
 
@@ -103,7 +104,7 @@ function exportFailureStub(
   const file = `${dir}/${simCase.id}-${Date.now()}.json`
   try {
     mkdirSync(dir, { recursive: true })
-    writeFileSync(file, JSON.stringify(stub, null, 2), 'utf-8')
+    writeFileSync(file, JSON.stringify(redactEvidence(stub), null, 2), 'utf-8')
   } catch {
     // 导出失败不影响评测结果
   }
@@ -251,23 +252,23 @@ export async function runSimCase(simCase: EvalCase, options: RunSimOptions): Pro
 
     // 第三层 LLM judge 只评主观判据
     const rubric = simCase.assertions.judgeRubric ?? []
-    if (rubric.length > 0 && options.judgeModel) {
+    if (rubric.length > 0) {
       transcript = readTranscript(system, runId)
-      judgeFailures = await judgeTranscript({ model: options.judgeModel }, rubric, transcript)
+      try {
+        judgeFailures = options.judgeModel
+          ? await judgeTranscript({ model: options.judgeModel }, rubric, transcript)
+          : [{ rubric: 'judge 未配置', reason: '存在主观判据但缺少评判模型' }]
+      } catch {
+        judgeFailures = [
+          { rubric: 'judge 服务失败', reason: '未获得完整主观判定 业务断言独立保留' },
+        ]
+      }
       for (const failure of judgeFailures) {
         failures.push({
           kind: 'judge',
           message: `judge 判定未通过 ${failure.rubric} ${failure.reason}`,
         })
       }
-    }
-
-    // 失败用例导出 场景与 transcript 供人工归因与回流
-    if (failures.length > 0 && options.failureDir) {
-      if (transcript.length === 0) {
-        transcript = readTranscript(system, runId)
-      }
-      exportFailureStub(options.failureDir, simCase, runId, transcript, failures)
     }
   } catch (error) {
     failures.push({
@@ -277,7 +278,12 @@ export async function runSimCase(simCase: EvalCase, options: RunSimOptions): Pro
   }
 
   const stateFailures = failures.filter((f) => f.kind === 'state' || f.kind === 'exception')
+  const evidence = captureBusinessEvidence(system, simCase, runId, 'L2')
+  if (failures.length > 0 && options.failureDir)
+    exportFailureStub(options.failureDir, simCase, runId, readTranscript(system, runId), failures)
+  system.db.close()
   return {
+    evidence,
     caseId: simCase.id,
     category: simCase.category,
     priority: simCase.priority,

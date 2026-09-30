@@ -1,0 +1,31 @@
+   ▲ Next.js 15.5.25
+   - Local:        http://127.0.0.1:59136
+   - Network:      http://127.0.0.1:59136
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+ ✓ Starting...
+ ✓ Ready in 3.2s
+ ○ Compiling /workbench ...
+ ⨯ Module not found: Error: Can't resolve './D:/project/agent-new/aftersales/node_modules/.pnpm/next@15.5.25_@types+node@22_fe13c0caa0f8cee11d38db71949090b5/node_modules/next/dist/client/app-next-dev.js' in 'C:\Users\htlocal\AppData\Local\Temp\customer-return-ui-20260926-124648\apps\web'
+ ⨯ Module not found: Error: Can't resolve './D:/project/agent-new/aftersales/node_modules/.pnpm/next@15.5.25_@types+node@22_fe13c0caa0f8cee11d38db71949090b5/node_modules/next/dist/client/next-dev.js' in 'C:\Users\htlocal\AppData\Local\Temp\customer-return-ui-20260926-124648\apps\web'
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\htlocal\AppData\Local\Temp\customer-return-ui-20260926-124648\apps\web\.next\fallback-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\htlocal\\AppData\\Local\\Temp\\customer-return-ui-20260926-124648\\apps\\web\\.next\\fallback-build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\htlocal\AppData\Local\Temp\customer-return-ui-20260926-124648\apps\web\.next\fallback-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\htlocal\\AppData\\Local\\Temp\\customer-return-ui-20260926-124648\\apps\\web\\.next\\fallback-build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\htlocal\AppData\Local\Temp\customer-return-ui-20260926-124648\apps\web\.next\fallback-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\htlocal\\AppData\\Local\\Temp\\customer-return-ui-20260926-124648\\apps\\web\\.next\\fallback-build-manifest.json'
+}
+ GET /workbench 500 in 10659ms
+ GET /workbench 500 in 240ms

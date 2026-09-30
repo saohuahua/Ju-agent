@@ -1,0 +1,27 @@
+{
+  "mode": "simulation",
+  "directory": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\p7-entry-closure-wYLVlx",
+  "probe": "",
+  "log": "已载入演示数据 客户令牌 cust-token-1001 cust-token-1002 cust-token-1003\n售后 API 已启动 http://127.0.0.1:55557\n模型 持久退款离线模拟\n健康检查 GET /api/health\n",
+  "result": {
+    "accepted": {
+      "runId": "run_24089987-15b3-48d3-a299-ab25c240eff2",
+      "commandId": "a4be0119-2f8a-41db-aec3-869225a9f585",
+      "taskId": "e6ae7be7-f873-49a4-868b-69df07a313db",
+      "accepted": true
+    },
+    "calls": [
+      {
+        "purpose": "main_agent",
+        "status": "settled",
+        "actual": 0
+      },
+      {
+        "purpose": "main_agent",
+        "status": "settled",
+        "actual": 0
+      }
+    ],
+    "externalModelCalls": 0
+  }
+}

@@ -35,7 +35,9 @@ export default tseslint.config(
       '**/node_modules/**',
       '**/dist/**',
       '**/.next/**',
+      '**/.next-offline/**',
       '**/coverage/**',
+      'artifacts/**',
       // 会话级临时工作树 不属于仓库源码
       '.claude/worktrees/**',
       'apps/web/next-env.d.ts',
@@ -69,9 +71,30 @@ export default tseslint.config(
     languageOptions: { globals: NODE_GLOBALS },
   },
   {
+    // 图示复核脚本使用 CommonJS 并在页面中读取布局
+    files: ['docs/learning/assets/review-business-diagrams.cjs'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: { ...NODE_GLOBALS, ...BROWSER_GLOBALS, require: 'readonly', __dirname: 'readonly' },
+    },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
+  {
     // 性能脚本把代码片段注入浏览器上下文执行 需同时具备两套全局量
     files: ['apps/web/scripts/**/*.mjs'],
     languageOptions: { globals: { ...NODE_GLOBALS, ...BROWSER_GLOBALS } },
+  },
+  {
+    // 归档脚本在浏览器上下文执行片段 仅声明这四份实验文件需要的全局量
+    files: [
+      'docs/experiments/customer-return-shipment-ui-evidence/browser-check.mjs',
+      'docs/experiments/customer-return-shipment-ui-evidence/final-ui-check.mjs',
+      'docs/experiments/customer-return-shipment-ui-evidence/finish-check.mjs',
+      'docs/experiments/customer-return-shipment-ui-evidence/pending-switch-check.mjs',
+    ],
+    languageOptions: {
+      globals: { document: 'readonly', innerWidth: 'readonly', fetch: 'readonly' },
+    },
   },
   {
     // 故障注入测试替身用「只抛不产出」的异步生成器模拟上游中断 是有意为之

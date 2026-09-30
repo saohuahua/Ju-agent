@@ -1,0 +1,806 @@
+{
+  "test": "P8 离线调查和运行记忆 > 失去租约的旧 Worker 无法确认结果",
+  "reports": [
+    {
+      "schemaVersion": 1,
+      "mode": "deterministic-offline",
+      "input": {
+        "customerId": "C1001",
+        "orderNo": "SO-2026-0002",
+        "policyVersion": "2026.09-v3",
+        "knowledgeVersion": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+        "evidence": [
+          {
+            "kind": "order",
+            "version": "1",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "orderNo": "SO-2026-0002",
+              "customerId": "C1001",
+              "status": "shipped",
+              "totalAmountCents": 29900,
+              "currency": "CNY",
+              "paymentChannel": "wechat",
+              "items": [
+                {
+                  "itemId": "item-0002-1",
+                  "sku": "SKU-SP-001",
+                  "title": "便携蓝牙音箱",
+                  "category": "electronics",
+                  "quantity": 1,
+                  "unitPriceCents": 29900
+                }
+              ],
+              "paidAt": "2026-09-16T08:00:00.000Z",
+              "shippedAt": "2026-09-17T08:00:00.000Z",
+              "deliveredAt": null,
+              "createdAt": "2026-09-16T08:00:00.000Z",
+              "updatedAt": "2026-09-16T08:00:00.000Z",
+              "version": 1
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"order\",\"1\",\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\"]"
+          },
+          {
+            "kind": "shipment",
+            "version": "1",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "shipmentId": "SH-2026-0002",
+              "orderNo": "SO-2026-0002",
+              "carrier": "顺丰速运",
+              "trackingNo": "SF1357924680",
+              "status": "lost",
+              "events": [
+                {
+                  "time": "2026-09-17T09:00:00.000Z",
+                  "description": "包裹已从杭州转运中心发出"
+                },
+                {
+                  "time": "2026-09-19T08:00:00.000Z",
+                  "description": "包裹到达上海浦东分拨中心"
+                }
+              ],
+              "deliveredAt": null,
+              "updatedAt": "2026-09-20T12:00:00.000Z",
+              "version": 1
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"shipment\",\"1\",\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R1_unshipped_cancel",
+              "policyVersion": "2026.09-v3",
+              "title": "未发货订单仅退款",
+              "content": "订单未发货时 可申请全额仅退款 提交后系统按原支付渠道自动退款 买家不承担任何费用 已发货订单不适用本条款",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R2_lost_package",
+              "policyVersion": "2026.09-v3",
+              "title": "物流丢件仅退款",
+              "content": "物流公司官方确认丢件后 可申请全额仅退款 以物流官方认定结果为准 对承运商的追偿由商家负责 与买家无关",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R3_quality_window",
+              "policyVersion": "2026.09-v3",
+              "title": "质量问题退换窗口",
+              "content": "商品存在质量问题 自签收起 15 天内可申请退货或换货 退货运费由商家承担 超过 15 天窗口的情形需转人工处理",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R4_no_reason_7d",
+              "policyVersion": "2026.09-v3",
+              "title": "七天无理由退货",
+              "content": "自签收起 7 天内 商品完好未使用可申请无理由退货 运费由买家承担 生鲜食品 定制商品 虚拟商品等特殊类目不适用",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R5_no_match",
+              "policyVersion": "2026.09-v3",
+              "title": "无匹配政策的处理",
+              "content": "没有匹配自动化政策的情形 系统将拒绝自动办理并建议转人工 由售后专员核实后跟进 不自动退款",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "R6_large_amount",
+              "policyVersion": "2026.09-v3",
+              "title": "大额退款人工审批",
+              "content": "退款或补偿金额达到 5000 元时 需转人工审批 审批通过后执行 未通过不执行 保障资金安全",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "PP1_not_delivered",
+              "policyVersion": "2026.09-v3",
+              "title": "价保需签收后申请",
+              "content": "订单尚未签收时不满足价保申请条件 请在签收后申请 系统对比签收时的成交价与当前售价计算差价",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "PP2_window_expired",
+              "policyVersion": "2026.09-v3",
+              "title": "价保窗口时限",
+              "content": "价保自签收起 7 天内有效 超过 7 天即超出价保窗口 无法申请价保 以签收时间为准",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "PP3_active_return",
+              "policyVersion": "2026.09-v3",
+              "title": "进行中售后与价保互斥",
+              "content": "订单存在进行中的售后流程时 需先完成该售后 再申请价保 避免同一订单重复主张",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "PP4_no_price_drop",
+              "policyVersion": "2026.09-v3",
+              "title": "价保需有降价事实",
+              "content": "订单商品当前售价未低于成交价时不满足价保条件 无法退还差价 以系统记录的售价为准",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "PP5_price_drop",
+              "policyVersion": "2026.09-v3",
+              "title": "价保差价退还规则",
+              "content": "自签收起 7 天价保窗口内商品降价 按单价差乘数量全额退还差价 上不封顶 同一订单仅可价保一次",
+              "source": "rules",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D1_fresh_food_no_return",
+              "policyVersion": "2026.09-v3",
+              "title": "生鲜食品售后规则",
+              "content": "生鲜食品等商品不支持七天无理由退货 签收后因个人原因不支持退换 质量问题需在签收后 24 小时内凭照片或视频申请",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D2_customized_no_return",
+              "policyVersion": "2026.09-v3",
+              "title": "定制商品售后规则",
+              "content": "定制商品下单即制作 不支持七天无理由退货 存在质量问题按质量问题窗口处理",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D3_virtual_activated",
+              "policyVersion": "2026.09-v3",
+              "title": "虚拟商品售后规则",
+              "content": "虚拟商品如充值卡 会员等在激活或到账后不支持退款 未激活未到账支持全额退款",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D4_cross_border_customs",
+              "policyVersion": "2026.09-v3",
+              "title": "跨境商品售后规则",
+              "content": "跨境商品清关后不支持无理由退货 已缴纳的关税部分不予退还 以海关政策为准",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D5_large_item_install",
+              "policyVersion": "2026.09-v3",
+              "title": "大件商品售后规则",
+              "content": "大件商品如家具 家电安装后不支持无理由退货 未安装支持 质量问题 30 天内换新优先",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D6_pre_order_deposit",
+              "policyVersion": "2026.09-v3",
+              "title": "预售商品定金规则",
+              "content": "预售商品定金不退 尾款未支付时定金不退还 平台规则另有约定的除外 质量问题按质量窗口处理",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D7_second_hand_quality",
+              "policyVersion": "2026.09-v3",
+              "title": "二手商品售后规则",
+              "content": "二手商品不支持七天无理由退货 质量问题自签收起 7 天内可退 以平台验机报告为准",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\"]"
+          },
+          {
+            "kind": "policy",
+            "version": "2026.09-v3",
+            "customerId": "C1001",
+            "orderNo": "SO-2026-0002",
+            "data": {
+              "articleId": "D8_gift_card_rules",
+              "policyVersion": "2026.09-v3",
+              "title": "礼品卡使用规则",
+              "content": "礼品卡按卡面标注有效期使用 绑定账户后不可转让 不支持折现 逾期未用不支持退款",
+              "source": "platform",
+              "createdAt": "2026-09-01T00:00:00.000Z"
+            },
+            "ref": "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\"]"
+          }
+        ],
+        "businessReferences": [],
+        "experimentId": "p8-offline-v1",
+        "caseId": "case",
+        "repeat": 1,
+        "mode": "parallel",
+        "snapshot": {
+          "schemaVersion": 1,
+          "mode": "simulation",
+          "provider": "local-demo",
+          "model": "p8-deterministic-v1",
+          "protocol": "anthropic_messages",
+          "endpointRef": "offline",
+          "credentialRef": "none",
+          "promptVersion": "p8-analysis-v1",
+          "knowledgeSnapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+          "toolVersion": "p8-readonly-v1",
+          "budgetRef": "first-real-cny-100",
+          "capabilities": {
+            "tools": true,
+            "parallelTools": false,
+            "streamedArguments": true,
+            "structuredOutput": false,
+            "cancellation": true,
+            "usage": "required",
+            "contextTokens": 8000,
+            "maxOutputTokens": 1000
+          },
+          "price": {
+            "version": "p8-synthetic-fixed-v1",
+            "currency": "CNY",
+            "inputMicroPerMillion": 0,
+            "outputMicroPerMillion": 0,
+            "fixedMicroPerCall": 10,
+            "fxNumerator": 1,
+            "fxDenominator": 1,
+            "source": "P8 synthetic fixture",
+            "fxSource": "identity",
+            "verifiedAt": "2026-09-25"
+          },
+          "timeoutMs": 1000,
+          "maxAttempts": 1,
+          "maxConcurrency": 4,
+          "maxOutputTokens": 1000,
+          "version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539"
+        },
+        "userStatements": [
+          "我尚未收到商品 请核验丢件退款条件"
+        ],
+        "acceptedAt": 1790399793873
+      },
+      "parent": {
+        "taskId": "84f81180-dbff-4e11-8e9f-8bc28cb9c738",
+        "commandId": "07dbd4f8-48ce-4024-8ec5-53ad818142cb",
+        "runId": "run_d86f6926-f671-4af5-b592-3e7cc0975a20",
+        "customerId": "C1001",
+        "provider": "local-demo",
+        "tool": "p8-parent",
+        "approvalId": null,
+        "status": "queued",
+        "owner": "",
+        "generation": 0,
+        "leaseUntil": 0,
+        "attempt": 0,
+        "cancelRequested": 0,
+        "deadline": 1790400093874,
+        "error": null,
+        "input": {
+          "requestKey": "[\"p8-parent-v1\",\"p8-offline-v1\",\"case\",1,\"parallel\"]",
+          "customerId": "C1001",
+          "kind": "start",
+          "source": "sim",
+          "config": {
+            "snapshotId": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+            "provider": "local-demo",
+            "model": "p8-deterministic-v1",
+            "promptVersion": "p8-analysis-v1",
+            "value": {
+              "schemaVersion": 1,
+              "mode": "simulation",
+              "provider": "local-demo",
+              "model": "p8-deterministic-v1",
+              "protocol": "anthropic_messages",
+              "endpointRef": "offline",
+              "credentialRef": "none",
+              "promptVersion": "p8-analysis-v1",
+              "knowledgeSnapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+              "toolVersion": "p8-readonly-v1",
+              "budgetRef": "first-real-cny-100",
+              "capabilities": {
+                "tools": true,
+                "parallelTools": false,
+                "streamedArguments": true,
+                "structuredOutput": false,
+                "cancellation": true,
+                "usage": "required",
+                "contextTokens": 8000,
+                "maxOutputTokens": 1000
+              },
+              "price": {
+                "version": "p8-synthetic-fixed-v1",
+                "currency": "CNY",
+                "inputMicroPerMillion": 0,
+                "outputMicroPerMillion": 0,
+                "fixedMicroPerCall": 10,
+                "fxNumerator": 1,
+                "fxDenominator": 1,
+                "source": "P8 synthetic fixture",
+                "fxSource": "identity",
+                "verifiedAt": "2026-09-25"
+              },
+              "timeoutMs": 1000,
+              "maxAttempts": 1,
+              "maxConcurrency": 4,
+              "maxOutputTokens": 1000,
+              "version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539"
+            }
+          },
+          "plan": {
+            "tool": "p8-parent",
+            "input": "SO-2026-0002"
+          }
+        }
+      },
+      "tasks": [
+        {
+          "taskId": "84f81180-dbff-4e11-8e9f-8bc28cb9c738",
+          "commandId": "07dbd4f8-48ce-4024-8ec5-53ad818142cb",
+          "runId": "run_d86f6926-f671-4af5-b592-3e7cc0975a20",
+          "customerId": "C1001",
+          "provider": "local-demo",
+          "tool": "p8-parent",
+          "approvalId": null,
+          "status": "queued",
+          "owner": "",
+          "generation": 0,
+          "leaseUntil": 0,
+          "attempt": 0,
+          "cancelRequested": 0,
+          "deadline": 1790400093874,
+          "error": null,
+          "input": {
+            "requestKey": "[\"p8-parent-v1\",\"p8-offline-v1\",\"case\",1,\"parallel\"]",
+            "customerId": "C1001",
+            "kind": "start",
+            "source": "sim",
+            "config": {
+              "snapshotId": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+              "provider": "local-demo",
+              "model": "p8-deterministic-v1",
+              "promptVersion": "p8-analysis-v1",
+              "value": {
+                "schemaVersion": 1,
+                "mode": "simulation",
+                "provider": "local-demo",
+                "model": "p8-deterministic-v1",
+                "protocol": "anthropic_messages",
+                "endpointRef": "offline",
+                "credentialRef": "none",
+                "promptVersion": "p8-analysis-v1",
+                "knowledgeSnapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+                "toolVersion": "p8-readonly-v1",
+                "budgetRef": "first-real-cny-100",
+                "capabilities": {
+                  "tools": true,
+                  "parallelTools": false,
+                  "streamedArguments": true,
+                  "structuredOutput": false,
+                  "cancellation": true,
+                  "usage": "required",
+                  "contextTokens": 8000,
+                  "maxOutputTokens": 1000
+                },
+                "price": {
+                  "version": "p8-synthetic-fixed-v1",
+                  "currency": "CNY",
+                  "inputMicroPerMillion": 0,
+                  "outputMicroPerMillion": 0,
+                  "fixedMicroPerCall": 10,
+                  "fxNumerator": 1,
+                  "fxDenominator": 1,
+                  "source": "P8 synthetic fixture",
+                  "fxSource": "identity",
+                  "verifiedAt": "2026-09-25"
+                },
+                "timeoutMs": 1000,
+                "maxAttempts": 1,
+                "maxConcurrency": 4,
+                "maxOutputTokens": 1000,
+                "version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539"
+              }
+            },
+            "plan": {
+              "tool": "p8-parent",
+              "input": "SO-2026-0002"
+            }
+          }
+        },
+        {
+          "taskId": "da10ede6-ad66-422e-af38-af9fba935037",
+          "commandId": "c7c81f87-cd8b-4c94-899b-a0a0ff5cd480",
+          "runId": "run_330ee1a0-a2aa-44d5-9ce9-c49692ec6683",
+          "customerId": "C1001",
+          "provider": "local-demo",
+          "tool": "p8-facts",
+          "approvalId": null,
+          "status": "running",
+          "owner": "new",
+          "generation": 2,
+          "leaseUntil": 1790399794875,
+          "attempt": 2,
+          "cancelRequested": 0,
+          "deadline": 1790400093875,
+          "error": null,
+          "input": {
+            "requestKey": "[\"p8-child-v1\",\"84f81180-dbff-4e11-8e9f-8bc28cb9c738\",\"facts\"]",
+            "customerId": "C1001",
+            "kind": "start",
+            "source": "sim",
+            "config": {
+              "snapshotId": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+              "provider": "local-demo",
+              "model": "p8-deterministic-v1",
+              "promptVersion": "p8-analysis-v1",
+              "value": {
+                "schemaVersion": 1,
+                "mode": "simulation",
+                "provider": "local-demo",
+                "model": "p8-deterministic-v1",
+                "protocol": "anthropic_messages",
+                "endpointRef": "offline",
+                "credentialRef": "none",
+                "promptVersion": "p8-analysis-v1",
+                "knowledgeSnapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+                "toolVersion": "p8-readonly-v1",
+                "budgetRef": "first-real-cny-100",
+                "capabilities": {
+                  "tools": true,
+                  "parallelTools": false,
+                  "streamedArguments": true,
+                  "structuredOutput": false,
+                  "cancellation": true,
+                  "usage": "required",
+                  "contextTokens": 8000,
+                  "maxOutputTokens": 1000
+                },
+                "price": {
+                  "version": "p8-synthetic-fixed-v1",
+                  "currency": "CNY",
+                  "inputMicroPerMillion": 0,
+                  "outputMicroPerMillion": 0,
+                  "fixedMicroPerCall": 10,
+                  "fxNumerator": 1,
+                  "fxDenominator": 1,
+                  "source": "P8 synthetic fixture",
+                  "fxSource": "identity",
+                  "verifiedAt": "2026-09-25"
+                },
+                "timeoutMs": 1000,
+                "maxAttempts": 1,
+                "maxConcurrency": 4,
+                "maxOutputTokens": 1000,
+                "version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539"
+              }
+            },
+            "plan": {
+              "tool": "p8-facts",
+              "input": "SO-2026-0002"
+            }
+          }
+        },
+        {
+          "taskId": "91e0a263-5066-496d-964b-7d0b9f4a3dc0",
+          "commandId": "0fb942b7-7795-4efa-8ef5-2a2ce3489d36",
+          "runId": "run_3f597981-539e-4285-8ba0-9fe2a47f3062",
+          "customerId": "C1001",
+          "provider": "local-demo",
+          "tool": "p8-policy",
+          "approvalId": null,
+          "status": "queued",
+          "owner": "",
+          "generation": 0,
+          "leaseUntil": 0,
+          "attempt": 0,
+          "cancelRequested": 0,
+          "deadline": 1790400093875,
+          "error": null,
+          "input": {
+            "requestKey": "[\"p8-child-v1\",\"84f81180-dbff-4e11-8e9f-8bc28cb9c738\",\"policy\"]",
+            "customerId": "C1001",
+            "kind": "start",
+            "source": "sim",
+            "config": {
+              "snapshotId": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539",
+              "provider": "local-demo",
+              "model": "p8-deterministic-v1",
+              "promptVersion": "p8-analysis-v1",
+              "value": {
+                "schemaVersion": 1,
+                "mode": "simulation",
+                "provider": "local-demo",
+                "model": "p8-deterministic-v1",
+                "protocol": "anthropic_messages",
+                "endpointRef": "offline",
+                "credentialRef": "none",
+                "promptVersion": "p8-analysis-v1",
+                "knowledgeSnapshotId": "cab4cd6557d87cf2d90d2f0a31a542487d5e6dbab327f5bba13993287628661d",
+                "toolVersion": "p8-readonly-v1",
+                "budgetRef": "first-real-cny-100",
+                "capabilities": {
+                  "tools": true,
+                  "parallelTools": false,
+                  "streamedArguments": true,
+                  "structuredOutput": false,
+                  "cancellation": true,
+                  "usage": "required",
+                  "contextTokens": 8000,
+                  "maxOutputTokens": 1000
+                },
+                "price": {
+                  "version": "p8-synthetic-fixed-v1",
+                  "currency": "CNY",
+                  "inputMicroPerMillion": 0,
+                  "outputMicroPerMillion": 0,
+                  "fixedMicroPerCall": 10,
+                  "fxNumerator": 1,
+                  "fxDenominator": 1,
+                  "source": "P8 synthetic fixture",
+                  "fxSource": "identity",
+                  "verifiedAt": "2026-09-25"
+                },
+                "timeoutMs": 1000,
+                "maxAttempts": 1,
+                "maxConcurrency": 4,
+                "maxOutputTokens": 1000,
+                "version": "9c1fcc9599cff365744d1b10a0fdc237ae44b8c6c419337e8be9574444a21539"
+              }
+            },
+            "plan": {
+              "tool": "p8-policy",
+              "input": "SO-2026-0002"
+            }
+          }
+        }
+      ],
+      "steps": [],
+      "events": [
+        {
+          "cursor": 1,
+          "task_id": "da10ede6-ad66-422e-af38-af9fba935037",
+          "event_key": "p8-branch:84f81180-dbff-4e11-8e9f-8bc28cb9c738",
+          "payload_json": "{}"
+        },
+        {
+          "cursor": 2,
+          "task_id": "91e0a263-5066-496d-964b-7d0b9f4a3dc0",
+          "event_key": "p8-branch:84f81180-dbff-4e11-8e9f-8bc28cb9c738",
+          "payload_json": "{}"
+        }
+      ],
+      "branches": [
+        null,
+        null
+      ],
+      "memory": {
+        "parentRunId": "run_d86f6926-f671-4af5-b592-3e7cc0975a20",
+        "customerId": "C1001",
+        "orderNo": "SO-2026-0002",
+        "userStatements": [
+          "我尚未收到商品 请核验丢件退款条件"
+        ],
+        "evidenceRefs": [
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"order\",\"1\",\"1249e0de755bf07a03ab5b299bc9550802a0c16fb8c9ec5fdb7af3e9bd8bc27c\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"shipment\",\"1\",\"6ccedd22ae8d594c29bf7b117ad18c31e88a01d763d121e2e151c4a3a8b9f8c8\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c4be3e948a93cae1433c9b2d7f44ee481d0a93e31eac1108a81e7b22d995ecf3\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"dde13f383dac2ecbaac2181b0eab920c441efa2a2ecd44312633c4b700df3f07\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"8414905c4233cb28a04967e188fdfc2890a26a49d9911ac1ee195aac91e698e8\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"c8bb36fa5fb82bc1c129881a8dcb867f2867c833135143eb9f4e68852ac95e73\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"1805132d23cbe5ffeee3c30de1dc08316ba394470a8488b50a6199ce3e755249\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"6db335f9831889ad203c9d99e2629e9ba9afd5407b492d1840842327f4f9603f\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"500fec9ca7e42200f1e8a460130e682c0261dac4956b25d88284997ff89e6921\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"0378f276f008196fcb02f17f246640a198fcb45cde56cb96697d3947a8637ad5\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"905605ade62ee7838d5e0e46f197c9d15017e09498c25a9276a35e6d12571f75\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"ba631705b7343396cd931f796dda0105cdef267c88767af208bc2ba71854d85f\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"4e399ca20a4404897316811f78e3912bdeb97901caff92313e69dc7c63048c6a\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"e7214197c2bd552ab0f6b5a2c4b2b46148c49bbf71b2cd410dcbecadb86bc011\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"7d2767aef26993d8db31adfb5f5d994746c1ee4275b146a4db63a10d92e1fdde\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"d35cade732189a676732653da7f7ad44060bcd49a302a7f7d7a40c8b67247b7d\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"76dbedb5bf10c4010859e3036b779b8ddda90b6cb2aec2f669e1fe3a1f344e46\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"2111c25f0a2c0d93d4e28d0c2a53451bc7d28cdfd3feaa506fca8948745bf6a9\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"9ff838ec1962fa65fe9e50aa39483f123f52e7a5b4ba39351a3fc8dc7cc4d4cf\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"77c240bf239eccdfeadb6540d8d6d4fd714401ce191fbf7a4c3838831d5f9a15\"]",
+          "[\"p8-evidence-v1\",\"C1001\",\"SO-2026-0002\",\"policy\",\"2026.09-v3\",\"bbfdd2fff88224f029e1494a86e471366dc4bf42e153416bd276739fe23e2c9a\"]"
+        ],
+        "confirmedFacts": [],
+        "unresolved": [
+          "facts 调查尚未确认",
+          "policy 调查尚未确认"
+        ],
+        "waitingReasons": [
+          "等待 facts",
+          "等待 policy"
+        ],
+        "branches": [
+          {
+            "role": "facts",
+            "taskId": "da10ede6-ad66-422e-af38-af9fba935037",
+            "status": "running"
+          },
+          {
+            "role": "policy",
+            "taskId": "91e0a263-5066-496d-964b-7d0b9f4a3dc0",
+            "status": "queued"
+          }
+        ],
+        "businessReferences": [],
+        "completedActions": [],
+        "unknownActions": []
+      },
+      "calls": [],
+      "scopeTotals": {
+        "committed": 0,
+        "active": 0
+      },
+      "metrics": {
+        "taskCompleted": false,
+        "investigationComplete": false,
+        "factsAndCitationsValid": false,
+        "unresolved": [
+          "facts 调查尚未确认",
+          "policy 调查尚未确认"
+        ],
+        "calls": 0,
+        "logicalCalls": 0,
+        "purposes": {
+          "main_agent": 0,
+          "sub_agent": 0
+        },
+        "settledMicroYuan": 0,
+        "unknownReservedMicroYuan": 0,
+        "heldReservedMicroYuan": 0,
+        "endToEndMs": null,
+        "investigationCriticalPathMs": null,
+        "failedBranches": 0,
+        "cancelledTasks": 0,
+        "realProviderCost": "not_measured"
+      }
+    }
+  ],
+  "protocol": []
+}

@@ -1,0 +1,66 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/eval
+
+ ❯ test/p9-judge.test.ts (8 tests | 7 failed) 12ms
+   × 不完整或非法 Judge 输出不得通过 [] 8ms
+     → expected [] to not deeply equal []
+   × 不完整或非法 Judge 输出不得通过 [{"rubric":"礼貌","passed":true}] 1ms
+     → expected [] to not deeply equal []
+   × 不完整或非法 Judge 输出不得通过 [{"rubric":"礼貌","passed":true},{"rubric":"礼貌","passed":true}] 0ms
+     → expected [] to not deeply equal []
+   × 不完整或非法 Judge 输出不得通过 [{"rubric":"礼貌","passed":true},{"rubric":"清晰","passed":"true"}] 1ms
+     → expected [] to not deeply equal []
+   × 不完整或非法 Judge 输出不得通过 [{"rubric":"礼貌","passed":true},{"rubric":"其他","passed":true}] 0ms
+     → expected [] to not deeply equal []
+   × 不完整或非法 Judge 输出不得通过 [{"rubric":"礼貌","passed":true,"reason":"非法"引号"},{"rubric":"清晰","passed":true}] 1ms
+     → expected [] to not deeply equal []
+   × 重复输入判据不得通过 0ms
+     → expected [] to not deeply equal []
+   ✓ 完整唯一判据允许主观项通过 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/p9-judge.test.ts > 不完整或非法 Judge 输出不得通过 []
+ FAIL  test/p9-judge.test.ts > 不完整或非法 Judge 输出不得通过 [{"rubric":"礼貌","passed":true}]
+ FAIL  test/p9-judge.test.ts > 不完整或非法 Judge 输出不得通过 [{"rubric":"礼貌","passed":true},{"rubric":"礼貌","passed":true}]
+ FAIL  test/p9-judge.test.ts > 不完整或非法 Judge 输出不得通过 [{"rubric":"礼貌","passed":true},{"rubric":"清晰","passed":"true"}]
+ FAIL  test/p9-judge.test.ts > 不完整或非法 Judge 输出不得通过 [{"rubric":"礼貌","passed":true},{"rubric":"其他","passed":true}]
+ FAIL  test/p9-judge.test.ts > 不完整或非法 Judge 输出不得通过 [{"rubric":"礼貌","passed":true,"reason":"非法"引号"},{"rubric":"清晰","passed":true}]
+AssertionError: expected [] to not deeply equal []
+
+Compared values have no visual difference.
+
+ ❯ test/p9-judge.test.ts:24:78
+     22|   '[{"rubric":"礼貌","passed":true,"reason":"非法"引号"},{"rubric":"清晰","pas…
+     23| ])('不完整或非法 Judge 输出不得通过 %s', async (raw) => {
+     24|   expect(await judgeTranscript({ model: model(raw) }, ['礼貌', '清晰'], []…
+       |                                                                              ^
+     25| })
+     26|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  test/p9-judge.test.ts > 重复输入判据不得通过
+AssertionError: expected [] to not deeply equal []
+
+Compared values have no visual difference.
+
+ ❯ test/p9-judge.test.ts:28:108
+     26|
+     27| it('重复输入判据不得通过', async () => {
+     28|   expect(await judgeTranscript({ model: model('[{"rubric":"礼貌","passed…
+       |                                                                                                            ^
+     29| })
+     30|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 1 passed (8)
+   Start at  15:34:12
+   Duration  864ms (transform 106ms, setup 0ms, collect 125ms, tests 12ms, environment 0ms, prepare 179ms)
+
+undefined
+D:\project\agent-new\aftersales\packages\eval:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run test/p9-judge.test.ts

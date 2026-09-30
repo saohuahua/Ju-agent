@@ -48,21 +48,25 @@ function computeRefundAmountCents(order: Order, itemIds: string[] | null): numbe
   if (!itemIds || itemIds.length === 0) {
     return order.totalAmountCents
   }
+  // 重复标识不重复计费 未命中的标识不会在此主动报错
+  // 这里也未处理优惠券和运费分摊 不等同于完整退款余额账本
   const wanted = new Set(itemIds)
   return order.items
     .filter((item) => wanted.has(item.itemId))
     .reduce((sum, item) => sum + item.unitPriceCents * item.quantity, 0)
 }
 
+/** 整数天数仅用于解释文案 资格判断使用精确时间差 */
 function daysBetween(from: Date, to: Date): number {
   return Math.floor((to.getTime() - from.getTime()) / (24 * 60 * 60 * 1000))
 }
 
-/** 窗口判断按毫秒精确比较 边界当天 24 点整才算超时 */
+/** 按签收后的精确毫秒差判断 恰好等于窗口仍允许 超过才拒绝 */
 function withinWindow(from: Date, to: Date, windowDays: number): boolean {
   return to.getTime() - from.getTime() <= windowDays * 24 * 60 * 60 * 1000
 }
 
+/** 拒绝结果仍带参考金额 是否预留退款由业务准备逻辑决定 */
 function deny(ruleId: string, explanation: string, amountCents: number): PolicyOutcome {
   return {
     outcome: 'deny',
@@ -89,8 +93,8 @@ function allow(
 }
 
 /**
- * 政策判定主函数 纯函数无副作用
- * 输出包含 命中规则 允许或拒绝 退款金额 运费承担方
+ * 基础规则判定不写数据库 不检查订单归属或历史售后占位
+ * 输出资格 金额和运费 后续还须通过完整入口叠加大额审批
  */
 export function evaluatePolicy(input: PolicyInput): PolicyOutcome {
   const { type, reason, order, shipment, itemIds, clock } = input
@@ -107,6 +111,7 @@ export function evaluatePolicy(input: PolicyInput): PolicyOutcome {
 
   // R2 物流丢件 仅退款 全额允许 运费商家承担
   if (type === 'refund_only' && reason === 'lost_package') {
+    // 没有物流记录或仍在途都不能代替明确丢件证据
     if (shipment && shipment.status === 'lost') {
       return allow('R2_lost_package', '物流确认丢件 支持全额仅退款', 'seller', amount)
     }
@@ -130,6 +135,7 @@ export function evaluatePolicy(input: PolicyInput): PolicyOutcome {
         amount,
       )
     }
+    // 质量问题只退钱需要人工确认 即使小额也不会自动通过
     if (type === 'refund_only') {
       return {
         outcome: 'needs_approval',
@@ -149,6 +155,7 @@ export function evaluatePolicy(input: PolicyInput): PolicyOutcome {
 
   // R4 七天无理由 仅支持退货退款 部分类目排除
   if (reason === 'no_reason' && type === 'return') {
+    // 当前按整张订单排除类目 不只检查本次选中的商品行
     const excluded = order.items.some((item) =>
       NO_REASON_EXCLUDED_CATEGORIES.includes(item.category),
     )
@@ -180,12 +187,14 @@ export function evaluatePolicy(input: PolicyInput): PolicyOutcome {
 
 /**
  * 金额阈值检查 允许的结果上叠加
- * 大额退款无论政策如何都必须人工审批
+ * 只将基础允许的大额方案转为审批 基础拒绝仍保持拒绝
  */
 export function applyLargeRefundThreshold(decision: PolicyOutcome): PolicyOutcome {
+  // 金额门槛不能把政策拒绝改造成可审批的方案
   if (decision.outcome !== 'allow') {
     return decision
   }
+  // 退款阈值的等号在审批侧 与补偿五十元的自动侧不同
   if (decision.refundAmountCents >= LARGE_REFUND_THRESHOLD_CENTS) {
     return {
       ...decision,

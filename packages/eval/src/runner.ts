@@ -16,6 +16,7 @@ import { FrozenClock, KeywordPolicyScorer } from '@aftersales/domain'
 import type { Actor } from '@aftersales/domain'
 import { BASELINE_FROZEN_TIME, composeSystem, type ComposedSystem } from '@aftersales/runtime'
 import type { CaseDetail, ToolExecution } from './types.js'
+import { captureBusinessEvidence } from './p9-evidence.js'
 import {
   checkStateAssertion,
   checkTrajectory,
@@ -79,6 +80,7 @@ export async function runCase(
   const faults = new FaultController((evalCase.faultPlan ?? []) as never)
 
   const failures: AssertionFailure[] = []
+  let businessRunId: string | undefined
 
   try {
     const run = await system.runService.start({
@@ -90,6 +92,7 @@ export async function runCase(
       source: 'sim',
     })
     const toolContext = { actor, runId: run.runId, faults }
+    businessRunId = run.runId
 
     // 会话开始前注入 首回合上下文即带出事件
     for (const event of (evalCase.logisticsEvents ?? []).filter(
@@ -171,7 +174,11 @@ export async function runCase(
   }
 
   const stateFailures = failures.filter((f) => f.kind === 'state' || f.kind === 'exception')
+  const evidence = captureBusinessEvidence(system, evalCase, businessRunId ?? '', 'L1')
+  system.db.close()
   return {
+    evidence,
+    runId: businessRunId,
     caseId: evalCase.id,
     category: evalCase.category,
     priority: evalCase.priority,

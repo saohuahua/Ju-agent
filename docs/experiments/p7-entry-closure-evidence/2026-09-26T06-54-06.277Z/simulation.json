@@ -1,0 +1,27 @@
+{
+  "mode": "simulation",
+  "directory": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\p7-entry-closure-00tqPw",
+  "probe": "",
+  "log": "已载入演示数据 客户令牌 cust-token-1001 cust-token-1002 cust-token-1003\n售后 API 已启动 http://127.0.0.1:50539\n模型 持久退款离线模拟\n健康检查 GET /api/health\n",
+  "result": {
+    "accepted": {
+      "runId": "run_0154d9b3-3d0f-4ac9-bc41-2fdc028b6ee5",
+      "commandId": "23e9547f-49d6-422f-bd06-1aa6880c40e3",
+      "taskId": "81061d30-58d4-4e29-848d-7660f3b29cb2",
+      "accepted": true
+    },
+    "calls": [
+      {
+        "purpose": "main_agent",
+        "status": "settled",
+        "actual": 0
+      },
+      {
+        "purpose": "main_agent",
+        "status": "settled",
+        "actual": 0
+      }
+    ],
+    "externalModelCalls": 0
+  }
+}

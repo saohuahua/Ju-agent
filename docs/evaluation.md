@@ -85,6 +85,20 @@ sim-hard 变体 17 条按主题归入上述九类 是 L2 的核心场景 人设�
 安全类用例刻意让脚本化模型扮演被误导的弱模型 验证系统层纵深防御
 这个设计的含义是 即使换一个更差的模型 系统依然不出资金事故
 
+## 坏例回流
+
+历史会话可转成 L1 草稿 不自动入库
+
+```bash
+pnpm trace:export -- --run <runId>            # OTLP JSON 导出并校验
+pnpm case:from-run -- --run <runId>           # 写 eval/traces/<runId>.draft.json
+pnpm case:adopt -- --draft <file> --id <id>   # 必须显式编号 写入 eval/cases/regression/
+pnpm eval -- --case <id>                      # 采纳后单用例重放
+```
+
+草稿默认 fixture=baseline frozenTime 取会话创建时刻 夹具差异与沟通断言必须人工核对
+category 为 regression 空目录不改变现有 124 条基数
+
 ## 运行方式
 
 ```bash

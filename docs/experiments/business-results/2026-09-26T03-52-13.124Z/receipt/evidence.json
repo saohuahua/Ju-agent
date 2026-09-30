@@ -1,0 +1,42 @@
+{
+  "fault": "receipt",
+  "tasks": [
+    {
+      "task_id": "647ed97e-f050-47e8-8d06-3c03b4ca8de6",
+      "status": "completed",
+      "attempt": 1
+    },
+    {
+      "task_id": "93aff378-c91e-46e8-8994-011ff5fdedff",
+      "status": "completed",
+      "attempt": 1
+    }
+  ],
+  "ownership": [
+    {
+      "business_key": "refund:RT1",
+      "owner": "p6",
+      "holder": "540522e7-865d-4d33-99eb-b53bec899b2e",
+      "state": "succeeded"
+    },
+    {
+      "business_key": "refund:RT-2026-0001",
+      "owner": "unassigned",
+      "holder": "",
+      "state": "succeeded"
+    }
+  ],
+  "channel": [
+    {
+      "business_key": "refund:RT1",
+      "submissions": 1,
+      "charges": 1
+    }
+  ],
+  "logs": [
+    "",
+    "",
+    "",
+    ""
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-09-28T15:48:41.064Z",
+  "browser": "Chromium via installed Chrome",
+  "reason": "CUA kernel sandbox initialization failed",
+  "typoraVerified": false,
+  "results": [
+    {
+      "id": "09-tool-loop",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-rGorG5\\09-tool-loop.png",
+      "issues": []
+    },
+    {
+      "id": "12-policy-retrieval",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-rGorG5\\12-policy-retrieval.png",
+      "issues": []
+    }
+  ]
+}

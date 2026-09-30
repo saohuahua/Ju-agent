@@ -1,7 +1,7 @@
 /**
  * 评测数据集
  *
- * 十二类风险面（调研风险面 + 补偿 价保 政策检索 人工接管等业务新能力）用例合集
+ * 十三类风险面（调研风险面 + 补偿 价保 政策检索 人工接管 + 会话回流）用例合集
  * 扩展指引见 docs/evaluation.md 每条用例必须满足任务契约完整性
  */
 
@@ -21,6 +21,7 @@ import { priceProtectionCases } from './cases/price-protection.js'
 import { policyRagCases } from './cases/policy-rag.js'
 import { handoverCases } from './cases/handover.js'
 import { simHardCases } from './cases/sim-hard.js'
+import { regressionCases } from './cases/regression.js'
 
 /** 全部用例 载入时做契约校验 数据不合法直接失败 */
 export const EVAL_CASES: EvalCase[] = validateCases([
@@ -38,6 +39,7 @@ export const EVAL_CASES: EvalCase[] = validateCases([
   ...policyRagCases,
   ...handoverCases,
   ...simHardCases,
+  ...regressionCases,
 ])
 
 /** 带 scenario 的用例 可执行 L2 用户模拟评测 */

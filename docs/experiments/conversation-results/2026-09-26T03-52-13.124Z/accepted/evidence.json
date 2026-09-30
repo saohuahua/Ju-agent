@@ -1,0 +1,68 @@
+{
+  "fault": "accepted",
+  "accepted": {
+    "runId": "run_c81990c5-3b52-4446-bef3-4e15f707f948",
+    "commandId": "ae1c9eaa-abb0-4778-a905-1bab508fad19",
+    "taskId": "064b35e3-15fc-4be4-a478-7b061dc82a73",
+    "accepted": true
+  },
+  "events": {
+    "events": [
+      {
+        "runId": "run_c81990c5-3b52-4446-bef3-4e15f707f948",
+        "sequence": 1,
+        "type": "run.started",
+        "createdAt": "2026-09-26T03:52:14.545Z",
+        "payload": {}
+      },
+      {
+        "runId": "run_c81990c5-3b52-4446-bef3-4e15f707f948",
+        "sequence": 2,
+        "type": "message.user",
+        "createdAt": "2026-09-26T03:52:14.545Z",
+        "payload": {
+          "text": "SO-2026-0003"
+        }
+      },
+      {
+        "runId": "run_c81990c5-3b52-4446-bef3-4e15f707f948",
+        "sequence": 7,
+        "type": "message.completed",
+        "createdAt": "2026-09-26T03:52:15.769Z",
+        "payload": {
+          "text": "演示查询已完成 请以订单记录为准"
+        }
+      },
+      {
+        "runId": "run_c81990c5-3b52-4446-bef3-4e15f707f948",
+        "sequence": 8,
+        "type": "run.completed",
+        "createdAt": "2026-09-26T03:52:15.770Z",
+        "payload": {}
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "task_id": "064b35e3-15fc-4be4-a478-7b061dc82a73",
+      "status": "completed",
+      "attempt": 1
+    }
+  ],
+  "calls": [
+    {
+      "operation_id": "[\"ae1c9eaa-abb0-4778-a905-1bab508fad19\",\"turn\",1,\"claim\",1]",
+      "status": "settled",
+      "actual": 0
+    },
+    {
+      "operation_id": "[\"ae1c9eaa-abb0-4778-a905-1bab508fad19\",\"turn\",2,\"claim\",1]",
+      "status": "settled",
+      "actual": 0
+    }
+  ],
+  "logs": [
+    "",
+    ""
+  ]
+}

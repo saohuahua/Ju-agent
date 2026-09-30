@@ -1,111 +1,73 @@
-/**
- * SSE 订阅 Hook
- *
- * 浏览器原生 EventSource 断线自动重连并携带 Last-Event-ID
- * 服务端从持久化事件表补发 时间线不丢不重
- */
-
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { API_BASE, currentToken } from './api'
+import { useEffect, useState } from 'react'
+import { API_BASE } from './api'
+import { subscribeEventStream } from './event-stream'
 import { initialViewState, reduceEvent, type RunViewState } from './runReducer'
 import type { AgentEvent } from './types'
+import { useIdentity } from './identity'
 
 export interface SseSession {
   state: RunViewState
   connected: boolean
-  /** 原始事件流 按序去重 供工具目录面板等需要逐事件的视图消费 */
+  complete: boolean
   events: AgentEvent[]
 }
 
+const emptySession = (): SseSession => ({
+  state: initialViewState(),
+  connected: false,
+  complete: false,
+  events: [],
+})
+
 /**
- * 订阅运行事件流
- *
- * 连接建立后先全量归约重建状态 再增量消费新事件
- * EventSource 断线由浏览器自动重连 序号去重在归约器中完成
+ * 每次订阅拥有独立归约状态 身份或案件变化立即返回空视图
+ * 清理连接后旧回调不能更新新会话 原序号去重保证重放不重复
+ * 只有收到服务端完成帧才停止重连 单独的业务终态事件不截断尾部消息
  */
 export function useRunEvents(runId: string | null): SseSession {
-  const [state, setState] = useState<RunViewState>(initialViewState)
-  const [connected, setConnected] = useState(false)
-  const [events, setEvents] = useState<AgentEvent[]>([])
-  const stateRef = useRef(state)
-  const eventsRef = useRef<AgentEvent[]>([])
+  const { token } = useIdentity()
+  const key = `${token}:${runId ?? ''}`
+  const [session, setSession] = useState<{ key: string; value: SseSession }>(() => ({
+    key,
+    value: emptySession(),
+  }))
 
   useEffect(() => {
-    if (!runId) {
-      setState(initialViewState())
-      setEvents([])
-      setConnected(false)
-      return
-    }
+    let value = emptySession()
+    const publish = () => setSession({ key, value })
+    publish()
 
-    setState(initialViewState())
-    stateRef.current = initialViewState()
-    eventsRef.current = []
-    setEvents([])
+    if (!runId) return
 
-    // EventSource 不支持自定义头 演示环境通过查询参数传递令牌
-    const source = new EventSource(
-      `${API_BASE}/api/runs/${runId}/events?token=${encodeURIComponent(currentToken())}`,
+    return subscribeEventStream(
+      `${API_BASE}/api/runs/${encodeURIComponent(runId)}/events?token=${encodeURIComponent(token)}`,
+      {
+        onEvent: (event) => {
+          if (event.runId !== runId || event.sequence <= value.state.lastSequence) return
+          value = {
+            ...value,
+            state: reduceEvent(value.state, event),
+            events: [...value.events, event],
+          }
+          publish()
+        },
+        onConnection: (connected) => {
+          value = { ...value, connected }
+          publish()
+        },
+        onComplete: (status) => {
+          value = {
+            ...value,
+            complete: true,
+            state: status ? { ...value.state, status } : value.state,
+          }
+          publish()
+        },
+      },
     )
+  }, [key, runId, token])
 
-    source.onopen = () => setConnected(true)
-    source.onerror = () => setConnected(false)
-
-    const handle = (raw: MessageEvent | Event) => {
-      const event = raw as MessageEvent
-      if (!event.data) return
-      try {
-        const parsed = JSON.parse(event.data as string) as AgentEvent
-        const reduced = reduceEvent(stateRef.current, parsed)
-        stateRef.current = reduced
-        setState(reduced)
-        // 原始事件按序号去重追加 重连补发与首连全量都可能重复
-        if (parsed.sequence > (eventsRef.current[eventsRef.current.length - 1]?.sequence ?? 0)) {
-          eventsRef.current = [...eventsRef.current, parsed]
-          setEvents(eventsRef.current)
-        }
-      } catch {
-        // 忽略无法解析的心跳注释
-      }
-    }
-
-    // 事件名区分监听 使用通配方式逐一注册协议事件
-    const eventTypes = [
-      'run.started',
-      'message.user',
-      'message.delta',
-      'message.completed',
-      'agent.turn',
-      'agent.tool_results',
-      'tool.input.delta',
-      'context.compacted',
-      'step.started',
-      'step.completed',
-      'tool.requested',
-      'tool.completed',
-      'approval.required',
-      'approval.decided',
-      'logistics.event',
-      'run.paused',
-      'run.resumed',
-      'run.failed',
-      'run.completed',
-      'run.escalated',
-      'run.handover',
-      'operator.message',
-      'run.resolved',
-    ]
-    for (const type of eventTypes) {
-      source.addEventListener(type, handle as EventListener)
-    }
-
-    return () => {
-      source.close()
-      setConnected(false)
-    }
-  }, [runId])
-
-  return { state, connected, events }
+  return session.key === key ? session.value : emptySession()
 }

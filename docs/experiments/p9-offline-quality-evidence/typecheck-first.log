@@ -1,0 +1,16 @@
+src/p9-report.ts(39,17): error TS7023: 'exportQualityBundle' implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.
+src/p9-report.ts(74,13): error TS2456: Type alias 'QualityBundle' circularly references itself.
+src/p9-report.ts(78,9): error TS7022: 'bundle' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+src/p9-report.ts(82,112): error TS7006: Parameter 'caseId' implicitly has an 'any' type.
+src/p9-report.ts(83,88): error TS7006: Parameter 'ref' implicitly has an 'any' type.
+src/p9-report.ts(84,40): error TS7006: Parameter 'ref' implicitly has an 'any' type.
+src/p9-report.ts(84,45): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/p9-report.ts(101,49): error TS7006: Parameter 'row' implicitly has an 'any' type.
+src/p9-report.ts(104,50): error TS7006: Parameter 'call' implicitly has an 'any' type.
+src/p9-report.ts(131,24): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/p9-report.ts(131,76): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/p9-report.ts(136,23): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/p9-report.ts(136,29): error TS7006: Parameter 'index' implicitly has an 'any' type.
+undefined
+D:\project\agent-new\aftersales\packages\eval:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 2: tsc --noEmit --incremental false

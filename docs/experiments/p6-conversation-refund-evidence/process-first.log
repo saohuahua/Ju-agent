@@ -1,0 +1,16 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/apps/api
+
+ ✓ test/conversation-refund-process.test.ts (6 tests) 14172ms
+   ✓ 客户正式 HTTP 发起 before-business-accept 强退与恢复 原调用最多投影一次且只有一笔退款  3688ms
+   ✓ 客户正式 HTTP 发起 after-business-accept 强退与恢复 原调用最多投影一次且只有一笔退款  1898ms
+   ✓ 客户正式 HTTP 发起 after-approval-accept 强退与恢复 原调用最多投影一次且只有一笔退款  2024ms
+   ✓ 客户正式 HTTP 发起 after-payment-response 强退与恢复 原调用最多投影一次且只有一笔退款  2541ms
+   ✓ 客户正式 HTTP 发起 before-business-projection 强退与恢复 原调用最多投影一次且只有一笔退款  1927ms
+   ✓ 客户正式 HTTP 发起 return-wait 强退与恢复 原调用最多投影一次且只有一笔退款  2092ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  11:10:35
+   Duration  15.90s (transform 401ms, setup 0ms, collect 980ms, tests 14.17s, environment 0ms, prepare 184ms)
+

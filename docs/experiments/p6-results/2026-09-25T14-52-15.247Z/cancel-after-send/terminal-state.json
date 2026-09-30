@@ -1,0 +1,122 @@
+{
+  "passed": true,
+  "p6_tasks": [
+    {
+      "task_id": "1a2c0a9b-e73f-4a87-b3ec-55992b121a04",
+      "command_id": "dbf9c5fe-059f-4a0a-bb4a-1d1a7e427639",
+      "run_id": "run_4e5335d3-8f56-4873-8844-67e5250082d4",
+      "customer_id": "C1001",
+      "provider": "scripted",
+      "tool": "compensation",
+      "approval_id": null,
+      "status": "cancelled",
+      "available_at": 1790347986774,
+      "owner": "worker-17404",
+      "generation": 1,
+      "lease_until": 0,
+      "attempt": 1,
+      "cancel_requested": 1,
+      "deadline": 1790348286774,
+      "error": "已核验资金后停止后续工作"
+    }
+  ],
+  "p6_commands": [
+    {
+      "command_id": "dbf9c5fe-059f-4a0a-bb4a-1d1a7e427639",
+      "customer_id": "C1001",
+      "request_key": "request-1",
+      "fingerprint": "d69f972b748475471a5a5711edd20df49918f4b0c16a9d44df5dbdc05e42dbd9",
+      "run_id": "run_4e5335d3-8f56-4873-8844-67e5250082d4",
+      "input_json": "{\"requestKey\":\"request-1\",\"customerId\":\"C1001\",\"kind\":\"start\",\"config\":{\"snapshotId\":\"scripted-frozen-v1\",\"provider\":\"scripted\",\"model\":\"scripted-v1\",\"promptVersion\":\"p6-v1\",\"value\":{\"scenario\":\"normal\",\"paid\":false}},\"source\":\"sim\",\"plan\":{\"input\":\"验证持久恢复\",\"tool\":\"compensation\",\"payment\":{\"businessKey\":\"compensation:CP-P6\",\"resourceId\":\"compensation:CP-P6\",\"amountCents\":1000,\"currency\":\"CNY\"}}}"
+    }
+  ],
+  "p6_steps": [
+    {
+      "task_id": "1a2c0a9b-e73f-4a87-b3ec-55992b121a04",
+      "step": "model",
+      "value_json": "{\"text\":\"脚本模型完整结果\",\"snapshotId\":\"scripted-frozen-v1\"}"
+    },
+    {
+      "task_id": "1a2c0a9b-e73f-4a87-b3ec-55992b121a04",
+      "step": "read",
+      "value_json": "{\"orderNo\":\"O-P6\",\"source\":\"local-script\"}"
+    },
+    {
+      "task_id": "1a2c0a9b-e73f-4a87-b3ec-55992b121a04",
+      "step": "payment",
+      "value_json": "{\"status\":\"succeeded\",\"transactionId\":\"7cae125b-a162-4d90-b5b2-0ce53396eae6\"}"
+    }
+  ],
+  "p6_effects": [
+    {
+      "business_key": "compensation:CP-P6",
+      "fingerprint": "5ef81b9177e699df9305ffee7f41d2cc21104ef7448a1e5acc0e8b69d358514a",
+      "payment_json": "{\"businessKey\":\"compensation:CP-P6\",\"resourceId\":\"compensation:CP-P6\",\"amountCents\":1000,\"currency\":\"CNY\"}",
+      "status": "succeeded",
+      "result_json": "{\"status\":\"succeeded\",\"transactionId\":\"7cae125b-a162-4d90-b5b2-0ce53396eae6\"}",
+      "task_id": "1a2c0a9b-e73f-4a87-b3ec-55992b121a04"
+    }
+  ],
+  "p6_events": [
+    {
+      "cursor": 1,
+      "task_id": "1a2c0a9b-e73f-4a87-b3ec-55992b121a04",
+      "event_key": "step:model",
+      "payload_json": "{\"text\":\"脚本模型完整结果\",\"snapshotId\":\"scripted-frozen-v1\"}"
+    },
+    {
+      "cursor": 2,
+      "task_id": "1a2c0a9b-e73f-4a87-b3ec-55992b121a04",
+      "event_key": "step:read",
+      "payload_json": "{\"orderNo\":\"O-P6\",\"source\":\"local-script\"}"
+    },
+    {
+      "cursor": 3,
+      "task_id": "1a2c0a9b-e73f-4a87-b3ec-55992b121a04",
+      "event_key": "step:payment",
+      "payload_json": "{\"status\":\"succeeded\",\"transactionId\":\"7cae125b-a162-4d90-b5b2-0ce53396eae6\"}"
+    },
+    {
+      "cursor": 4,
+      "task_id": "1a2c0a9b-e73f-4a87-b3ec-55992b121a04",
+      "event_key": "status:cancelled",
+      "payload_json": "{\"status\":\"cancelled\",\"error\":\"已核验资金后停止后续工作\"}"
+    }
+  ],
+  "compensations": [
+    {
+      "compensation_no": "CP-P6",
+      "order_no": "O-P6",
+      "customer_id": "C1001",
+      "reason": "logistics_delay",
+      "status": "succeeded",
+      "amount_cents": 1000,
+      "currency": "CNY",
+      "channel": "local-sim",
+      "requires_approval": 0,
+      "policy_version": "test",
+      "created_at": "2026-09-25T14:53:06.763Z",
+      "updated_at": "2026-09-25T14:53:07.402Z",
+      "version": 3
+    }
+  ],
+  "approval_execution_intents": [],
+  "idempotency_records": [
+    {
+      "key": "compensation:CP-P6",
+      "result_json": "{\"businessKey\":\"compensation:CP-P6\",\"resourceId\":\"compensation:CP-P6\",\"amountCents\":1000,\"currency\":\"CNY\",\"gatewayRefundId\":\"7cae125b-a162-4d90-b5b2-0ce53396eae6\"}",
+      "created_at": "2026-09-25T14:53:07.402Z"
+    }
+  ],
+  "channel": [
+    {
+      "business_key": "compensation:CP-P6",
+      "payment_json": "[\"compensation:CP-P6\",1000,\"CNY\"]",
+      "status": "succeeded",
+      "transaction_id": "7cae125b-a162-4d90-b5b2-0ce53396eae6",
+      "submissions": 1,
+      "charges": 1
+    }
+  ],
+  "channelQueries": []
+}

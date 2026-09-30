@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/apps/api
+
+ ✓ test/conversation-refund.test.ts (11 tests) 812ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  11:06:34
+   Duration  3.77s (transform 768ms, setup 0ms, collect 2.23s, tests 812ms, environment 0ms, prepare 184ms)
+

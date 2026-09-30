@@ -1,0 +1,7 @@
+TimeoutError: Waiting failed: 20000ms exceeded
+    at new WaitTask (file:///D:/project/agent-new/aftersales/node_modules/.pnpm/puppeteer-core@25.11.0/node_modules/puppeteer-core/lib/puppeteer/common/WaitTask.js:46:34)
+    at IsolatedWorld.waitForFunction (file:///D:/project/agent-new/aftersales/node_modules/.pnpm/puppeteer-core@25.11.0/node_modules/puppeteer-core/lib/puppeteer/api/Realm.js:49:26)
+    at CdpFrame.waitForFunction (file:///D:/project/agent-new/aftersales/node_modules/.pnpm/puppeteer-core@25.11.0/node_modules/puppeteer-core/lib/puppeteer/api/Frame.js:585:43)
+    at CdpFrame.<anonymous> (file:///D:/project/agent-new/aftersales/node_modules/.pnpm/puppeteer-core@25.11.0/node_modules/puppeteer-core/lib/puppeteer/util/decorators.js:101:27)
+    at CdpPage.waitForFunction (file:///D:/project/agent-new/aftersales/node_modules/.pnpm/puppeteer-core@25.11.0/node_modules/puppeteer-core/lib/puppeteer/api/Page.js:1537:37)
+    at file:///C:/Users/htlocal/AppData/Local/Temp/customer-return-ui-20260926-124648/browser-check.mjs:105:14

@@ -1,14 +1,18 @@
 # 依赖与产物
+/.p10-source.json
 node_modules/
 dist/
 .next/
+.next-offline/
 coverage/
 *.tsbuildinfo
+artifacts/
 
 # 本地数据与报告
 data/
 eval/reports/
 eval/failures/
+eval/traces/
 *.db
 *.db-journal
 
@@ -27,3 +31,30 @@ Thumbs.db
 
 # 会话级评测日志 临时分析文件
 eval-sim-*.log
+
+# 本地数据库旁文件与重复实验产物
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+/docs/experiments/*.zip
+/docs/experiments/**/start-status.txt
+/docs/experiments/**/resume-start-status.txt
+/docs/experiments/**/final-status.txt
+/docs/experiments/**/initial-worktree.txt
+/docs/experiments/**/final-worktree.txt
+/docs/experiments/**/l1-database-path.txt
+# 重复进程回归产物 保留已有跟踪证据
+/docs/experiments/business-results/*T*/
+/docs/experiments/conversation-results/*T*/
+/docs/experiments/p6-conversation-refund-evidence/*T*/
+/docs/experiments/p6-p7-results/*T*/
+/docs/experiments/p6-results/*T*/
+/docs/experiments/p6-sse-results/*T*/
+/docs/experiments/p7-entry-closure-evidence/*T*/
+/docs/experiments/p8-offline-investigation-evidence/matrix-*/
+/docs/experiments/p8-offline-investigation-evidence/process-*/
+
+# 完整评测包保留本地 精简日志按验收清单归档
+/docs/experiments/p9-*-evidence/

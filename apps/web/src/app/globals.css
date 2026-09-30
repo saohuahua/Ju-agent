@@ -1,339 +1,1056 @@
 @import 'tailwindcss';
+@import './staff-theme.css';
+@import './desk-workspace.css';
 
-/*
- * AfterSales Copilot 设计系统（双轨）
- *
- * 一个产品两个面（ADR-013）：同一 sage 色相，前台浅色后台深色。
- *
- * 前台轨（客户侧 /workbench /my）
- *   视觉方向：极简 editorial 浅色，暖白 monochrome（stone 系）
- *   主色：sage（唯一低饱和交互色，全站锁定）
- *   状态色：muted pastel（浅底 + 深字 + 细边）
- *
- * 控制台轨（运营侧与工程侧，根节点标注 data-theme="console"）
- *   视觉方向：近黑带绿调的深色控制台，暴露系统真相
- *   主色：sage 提亮到 400 档保证深底对比度
- *   对比度：全部组合过 WCAG AA，凭据见 scripts/check-console-contrast.mjs
- *
- * 用区域语义而非用户偏好：主题由路由决定，不用 Tailwind dark: 变体，
- * 也不提供用户切换开关——深浅交界本身就是「前台/后台」的视觉证据。
- *
- * 圆角体系：容器 10px / 控件 8px / 徽章 6px（两轨共用）
- * 动效：仅 200-300ms CSS 过渡，全部尊重 prefers-reduced-motion
- * 规则来源：docs/redesign-audit.md
- */
+/* 正式界面采用统一暖白主题 字体子集缺字时由系统中文字体补齐 */
+@font-face {
+  font-family: 'Noto Sans SC';
+  src: url('/fonts/noto-sans-sc-regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noto Sans SC';
+  src: url('/fonts/noto-sans-sc-semibold.ttf') format('truetype');
+  font-weight: 600 900;
+  font-display: swap;
+}
 
 @theme {
-  /* 字体：中文系统栈 + 等宽技术字段 */
-  --font-sans:
-    system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
-    sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+  --font-sans: 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-mono: 'Cascadia Code', Consolas, monospace;
+  --color-canvas: #fffdfb;
+  --color-surface: #ffffff;
+  --color-ink: #342c29;
+  --color-hairline: #eadfd7;
+  --color-background: #fffdfb;
+  --color-foreground: #342c29;
+  --color-card: #ffffff;
+  --color-card-foreground: #342c29;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #342c29;
+  --color-primary: #bf4726;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f5eee8;
+  --color-secondary-foreground: #614e43;
+  --color-muted: #f6f0eb;
+  --color-muted-foreground: #7b695d;
+  --color-accent: #fff0e7;
+  --color-accent-foreground: #a23e23;
+  --color-navigation-active: #fce7d9;
+  --color-destructive: #af352b;
+  --color-border: #eadfd7;
+  --color-input: #c7b5a9;
+  --color-ring: #bf4726;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-container: 12px;
+  --radius-control: 8px;
+  --radius-badge: 6px;
 
-  /* 中性色（暖白 stone 系） */
-  --color-canvas: #faf9f7; /* 页面底色 暖白 */
-  --color-surface: #ffffff; /* 卡片表面 */
-  --color-ink: #1c1917; /* 墨色正文 stone-900 */
-  --color-hairline: #e7e5e4; /* hairline 细边框 */
+  /* 旧页面仍使用的主题别名映射到同一珊瑚色系 */
+  --color-sage-50: #fff5ee;
+  --color-sage-100: #ffebdf;
+  --color-sage-200: #fbd2bd;
+  --color-sage-300: #f4b194;
+  --color-sage-400: #e98762;
+  --color-sage-500: #d55c36;
+  --color-sage-600: #bf4726;
+  --color-sage-700: #a23e23;
+  --color-sage-800: #813720;
+  --color-sage-900: #652d1e;
+  --color-console-canvas: #fffdfb;
+  --color-console-surface: #ffffff;
+  --color-console-raised: #f6f0eb;
+  --color-console-hairline: #eadfd7;
+  --color-console-border: #c7b5a9;
+  --color-console-ink: #342c29;
+  --color-console-muted: #7b695d;
+  --color-console-dim: #7b695d;
+  --color-console-accent: #bf4726;
+  --color-console-accent-dim: #a23e23;
+  --color-console-ok: #326346;
+  --color-console-warn: #8b5a16;
+  --color-console-danger: #af352b;
+  --color-console-info: #315e7c;
+}
 
-  /* 主色 sage 低饱和绿（交互色，全站唯一主色） */
-  --color-sage-50: #f4f7f4;
-  --color-sage-100: #e7eee7;
-  --color-sage-200: #d0ddd1;
-  --color-sage-300: #aec4b0;
-  --color-sage-400: #86a489;
-  --color-sage-500: #64876a;
-  --color-sage-600: #4c6c53;
-  --color-sage-700: #3d5743;
-  --color-sage-800: #334738;
-  --color-sage-900: #2b3b2f;
-
-  /* 圆角体系 */
-  --radius-container: 10px; /* 卡片 面板 气泡 */
-  --radius-control: 8px; /* 按钮 输入框 导航项 */
-  --radius-badge: 6px; /* 徽章 pill */
-
-  /*
-   * 控制台深色轨（后台专用）
-   *
-   * 三层背景递进 canvas 页面底 < surface 面板 < raised 浮起卡片与 hover
-   * 前景分三级 ink 正文 / muted 次要 / dim 禁用与装饰
-   * 对比度门槛与实测值由 scripts/check-console-contrast.mjs 守护 改色必须重跑
-   */
-  --color-console-canvas: #0d100e; /* 页面底 近黑带绿调 */
-  --color-console-surface: #151a17; /* 面板 */
-  --color-console-raised: #1d2420; /* 浮起卡片 / hover */
-
-  /* 两档边框：hairline 仅作装饰性分隔 border 用于控件边界需过 1.4.11 的 3:1 */
-  --color-console-hairline: #323b35;
-  --color-console-border: #6b756e;
-
-  --color-console-ink: #e6eae7; /* 主文本 对 raised 13.04:1 */
-  --color-console-muted: #8b948d; /* 次要文本 对 raised 5.07:1 */
-  --color-console-dim: #7a847d; /* 三级文本与禁用 大字档 对 raised 4.09:1 */
-
-  /* 深色下主交互色提亮到 sage-400 档 accent-dim 仅用于非文本描边与填充 */
-  --color-console-accent: #86a489;
-  --color-console-accent-dim: #5a7d62;
-
-  /* 状态色深色版 深底亮字 全部过 AA */
-  --color-console-ok: #6ee7a8;
-  --color-console-warn: #f5c563;
-  --color-console-danger: #f78a8a;
-  --color-console-info: #7fb4e8;
-
-  /* 评测进度呼吸圆点 1.6s 全局 reduced-motion 兜底降为瞬时 */
-  --animate-breathe: breathe 1.6s ease-in-out infinite;
-
-  @keyframes breathe {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.35;
-    }
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+  }
+  button,
+  select {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-ink);
   }
 }
 
+/* 滚动条沿用界面的暖灰色 透明轨道避免在卡片和输入区域增加深色槽线 */
+/* 标准属性覆盖 Firefox 等浏览器 横向表格和纵向会话使用同一套规则 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-console-border) transparent;
+}
+
+/* 支持伪元素的浏览器使用六像素轨道和圆角滑块 悬停只加深滑块本身 */
+/* 恢复标准属性的默认值 避免 Chromium 用标准样式覆盖伪元素的精确尺寸 */
+@supports selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    min-height: 24px;
+    border-radius: 999px;
+    background: var(--color-console-border);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-muted-foreground);
+  }
+}
+
+/* 高对比度模式使用系统颜色 保留滑块可见性 不影响原生滚动和键盘操作 */
+@media (forced-colors: active) {
+  * {
+    scrollbar-color: auto;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: CanvasText;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: Highlight;
+  }
+}
+
+/* 外壳保持固定导航 主内容允许长消息与宽表格独立滚动 */
+.youju-shell {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  min-height: 100dvh;
+}
+.youju-sidebar {
+  background: var(--staff-surface, #fff8f3);
+  border-right: 1px solid var(--color-border);
+  padding: 26px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow-y: auto;
+}
+.youju-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 10px;
+  font-size: 23px;
+  font-weight: 600;
+}
+.youju-brand small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--color-muted-foreground);
+}
+.youju-wordmark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 43px;
+  color: white;
+  background: var(--staff-strong, #d95d36);
+  border-radius: 11px 3px 11px 3px;
+  font-family: SimSun, serif;
+}
+.youju-team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 9px;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  font-size: 12px;
+}
+.youju-team > span {
+  background: var(--staff-selected, #f5e5d9);
+  padding: 5px 9px;
+  border-radius: 7px;
+}
+.youju-team small {
+  display: block;
+  margin-top: 3px;
+  color: var(--color-muted-foreground);
+  font-size: 10px;
+}
+.youju-nav-label,
+.youju-identity-label {
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+  margin: 0 8px;
+}
+.youju-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.youju-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--staff-secondary, #756151);
+}
+.youju-nav svg,
+.youju-entry svg {
+  width: 17px;
+  height: 17px;
+}
+.youju-nav:hover,
+.youju-nav.active,
+.youju-nav:has(.youju-navigation-feedback[data-pending='true']) {
+  background: var(--color-navigation-active);
+  color: var(--color-accent-foreground);
+}
+.youju-nav.active {
+  font-weight: 600;
+}
+/* 导航等待反馈不占据布局空间 避免点击后文本和图标跳动 */
+.youju-nav,
+.youju-entry,
+.youju-brand {
+  position: relative;
+}
+.youju-navigation-feedback {
+  position: absolute;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  pointer-events: none;
+}
+.youju-navigation-feedback[data-pending='true'] {
+  opacity: 1;
+}
+/* 正文链接参与顶部导航反馈 但不在链接边缘重复放置侧栏专用圆点 */
+.youju-content .youju-navigation-feedback {
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+}
+.youju-sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.youju-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  padding: 10px;
+}
+.youju-sidebar select {
+  background: white;
+  border: 1px solid var(--color-input);
+  border-radius: 8px;
+  padding: 9px;
+  font-size: 12px;
+  width: 100%;
+}
+.youju-environment {
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--color-muted-foreground);
+  padding: 0 8px;
+}
+.youju-main {
+  min-width: 0;
+}
+.youju-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 55px;
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 28px;
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+}
+.youju-topbar span {
+  margin: 0 12px;
+}
+.youju-topbar strong {
+  font-weight: 500;
+}
+.youju-local {
+  background: var(--color-accent);
+  color: var(--color-accent-foreground);
+  padding: 4px 9px;
+  border-radius: 5px;
+  font-size: 10px;
+}
+.youju-content {
+  min-width: 0;
+}
+.youju-skip {
+  position: fixed;
+  top: -100px;
+  left: 12px;
+  z-index: 100;
+  padding: 12px;
+  background: white;
+}
+.youju-skip:focus {
+  top: 8px;
+}
+
+/* 案件工作区按队列 会话 证据三列组织并保留独立滚动区域 */
+.youju-desk {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: calc(100dvh - 55px);
+  min-height: 0;
+  padding: 10px 16px 12px;
+}
+/* 标题统计与刷新共用一行 将剩余视口交给案件处理 */
+.youju-desk-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px 20px;
+  min-height: 34px;
+}
+.youju-desk-toolbar h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+.youju-desk-toolbar > button {
+  margin-left: auto;
+}
+.youju-desk-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  color: var(--color-muted-foreground);
+  font-size: 12px;
+}
+.youju-desk-counts strong {
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+.youju-page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 23px 0 18px;
+}
+.youju-page-heading h1 {
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  margin: 4px 0 8px;
+}
+.youju-page-heading p {
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+}
+.youju-page-heading .youju-eyebrow {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--staff-link, #a23e23);
+}
+.youju-overview {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 22px;
+  padding: 12px 0 19px;
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+}
+.youju-overview strong {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--staff-strong, #795440);
+  margin-right: 6px;
+}
+.youju-overview small {
+  margin-left: auto;
+  font-size: 10px;
+}
+.youju-workspace {
+  display: grid;
+  grid-template-columns: 270px minmax(300px, 1fr) 240px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  flex: 1;
+  min-height: 0;
+}
+.youju-queue {
+  min-width: 0;
+  overflow-y: auto;
+  background: var(--staff-muted, #fffcf8);
+  border-right: 1px solid var(--color-border);
+}
+.youju-queue-tools {
+  padding: 18px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.youju-queue-tools > p {
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+}
+.youju-case-row {
+  display: block;
+  width: 100%;
+  padding: 18px 15px;
+  text-align: left;
+  border-top: 1px solid var(--color-border);
+  border-left: 3px solid transparent;
+}
+.youju-case-row:hover {
+  background: var(--staff-selected, #fff6ed);
+}
+.youju-case-row.selected {
+  background: var(--staff-selected, #fff0e3);
+  border-left-color: var(--staff-strong, #d95d36);
+}
+.youju-case-row > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+}
+.youju-case-row h2 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 10px 0 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.youju-case-row p {
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.youju-case-row footer {
+  display: flex;
+  gap: 8px;
+  margin-top: 13px;
+}
+.youju-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+.youju-unselected {
+  grid-column: span 2;
+  align-self: center;
+}
+.youju-conversation {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.youju-case-heading {
+  padding: 12px 18px 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+.youju-case-heading h2 {
+  font-size: 17px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  margin-bottom: 8px;
+}
+.youju-case-heading > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  color: var(--color-muted-foreground);
+}
+.youju-case-heading > small {
+  display: block;
+  margin-top: 7px;
+  color: var(--color-muted-foreground);
+  font-size: 9px;
+  overflow-wrap: anywhere;
+}
+.youju-conversation-tabs {
+  min-height: 160px;
+  flex: 1;
+  overflow: hidden;
+}
+.youju-conversation-tabs > [data-slot='tabs-list'] {
+  margin: 8px 18px 0;
+}
+.youju-message-list {
+  padding: 18px 22px;
+  min-height: 0;
+  overflow-y: auto;
+}
+.youju-message {
+  margin-bottom: 22px;
+}
+.youju-message header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 9px;
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+}
+.youju-avatar {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  background: var(--staff-selected, #f3e8da);
+  border-radius: 8px;
+}
+.youju-message-assistant .youju-avatar {
+  background: var(--staff-selected, #ffeadb);
+  color: var(--staff-strong, #bf4726);
+}
+.youju-message > div {
+  font-size: 13px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--staff-muted, #faf6f0);
+  padding: 13px 16px;
+  border-radius: 0 10px 10px 10px;
+}
+.youju-message-assistant > div {
+  background: white;
+  border: 1px solid var(--color-border);
+}
+.youju-message-system > div {
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+}
+.youju-composer {
+  border-top: 1px solid var(--color-border);
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--staff-surface, #fffefa);
+}
+.youju-composer footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.youju-composer footer > span {
+  font-size: 10px;
+  color: var(--color-muted-foreground);
+}
+.youju-composer textarea {
+  max-height: 150px;
+}
+.youju-evidence {
+  padding: 23px 18px;
+  min-width: 0;
+  overflow-y: auto;
+  border-left: 1px solid var(--color-border);
+  background: var(--staff-surface, #fffdfa);
+}
+.youju-evidence h2 {
+  font-size: 14px;
+  font-weight: 600;
+}
+.youju-evidence h3 {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 25px 0 12px;
+}
+.youju-evidence p {
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 8px;
+  color: var(--color-muted-foreground);
+  overflow-wrap: anywhere;
+}
+.youju-evidence-card {
+  display: block;
+  border: 1px solid var(--color-border);
+  background: white;
+  border-radius: 9px;
+  padding: 13px;
+  margin-bottom: 10px;
+  text-align: left;
+  width: 100%;
+  overflow-wrap: anywhere;
+}
+.youju-evidence-card strong {
+  font-size: 12px;
+}
+.youju-evidence-card b {
+  display: block;
+  font-size: 19px;
+  margin-top: 10px;
+}
+.youju-policy-button svg {
+  width: 18px;
+  height: 18px;
+  color: var(--staff-strong, #bf4726);
+  margin-bottom: 9px;
+}
+.youju-policy-button span {
+  display: block;
+  margin-top: 12px;
+  font-size: 10px;
+  color: var(--staff-link, #a23e23);
+}
+.youju-policy-button:hover {
+  border-color: var(--staff-strong, #bf4726);
+}
+.youju-evidence-footnote {
+  border-top: 1px solid var(--color-border);
+  padding-top: 15px;
+  margin-top: 24px !important;
+}
+.youju-note,
+.youju-trace-item {
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+.youju-note header,
+.youju-trace-item p {
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+  margin-bottom: 8px;
+}
+.youju-note p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.youju-trace-item strong {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  margin-right: 8px;
+}
+.youju-policy-text {
+  white-space: pre-wrap;
+  font-size: 14px;
+  line-height: 2;
+  overflow-wrap: anywhere;
+}
+.youju-source {
+  color: var(--color-muted-foreground);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.youju-mobile-back {
+  display: none;
+}
+.youju-page {
+  padding: 0 28px 36px;
+  max-width: 1300px;
+  margin: auto;
+}
+.youju-document-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+.youju-document-grid .youju-evidence-card {
+  padding: 22px;
+}
+.youju-document-grid p {
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+  line-height: 1.9;
+}
+
+/* 中等屏幕让证据另起一行 避免将会话挤成狭窄文本列 */
+@media (max-width: 1200px) {
+  .youju-shell {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+  .youju-workspace {
+    grid-template-columns: 245px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 160px);
+  }
+  .youju-conversation {
+    min-height: 0;
+  }
+  .youju-evidence {
+    grid-column: 2;
+    border-top: 1px solid var(--color-border);
+  }
+  .youju-queue {
+    grid-row: span 2;
+    min-height: 0;
+  }
+  .youju-unselected {
+    grid-column: 2;
+  }
+}
+
+/* 窄屏按队列与案件详情分步显示 保留返回与身份切换 */
+@media (max-width: 760px) {
+  .youju-shell {
+    display: block;
+  }
+  .youju-sidebar {
+    position: static;
+    height: auto;
+    padding: 14px 16px;
+    gap: 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .youju-brand {
+    font-size: 19px;
+    padding: 0;
+  }
+  .youju-wordmark {
+    width: 32px;
+    height: 34px;
+  }
+  .youju-team,
+  .youju-nav-label,
+  .youju-environment,
+  .youju-topbar,
+  .youju-identity-label {
+    display: none;
+  }
+  .youju-sidebar nav {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .youju-nav {
+    white-space: nowrap;
+    padding: 9px;
+    font-size: 12px;
+  }
+  .youju-nav svg {
+    display: none;
+  }
+  .youju-sidebar-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .youju-sidebar select {
+    width: 145px;
+    padding: 6px;
+  }
+  .youju-entry {
+    padding: 0;
+  }
+  .youju-desk,
+  .youju-page {
+    padding: 0 12px 20px;
+  }
+  .youju-desk {
+    height: auto;
+    padding-top: 12px;
+  }
+  .youju-desk-counts {
+    order: 1;
+    flex-basis: 100%;
+  }
+  .youju-page-heading {
+    padding: 17px 2px;
+  }
+  .youju-page-heading h1 {
+    font-size: 23px;
+  }
+  .youju-page-heading p:not(.youju-eyebrow) {
+    display: none;
+  }
+  .youju-page-heading .youju-eyebrow {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  .youju-overview {
+    gap: 13px;
+    padding-top: 0;
+  }
+  .youju-overview strong {
+    font-size: 18px;
+  }
+  .youju-overview span {
+    font-size: 10px;
+  }
+  .youju-overview small {
+    display: none;
+  }
+  .youju-workspace {
+    display: block;
+    min-height: 350px;
+  }
+  .youju-queue {
+    border-right: 0;
+    max-height: 65dvh;
+  }
+  .youju-unselected {
+    display: none;
+  }
+  .youju-workspace.has-selection .youju-queue {
+    display: none;
+  }
+  .youju-conversation {
+    height: 75dvh;
+    min-height: 440px;
+  }
+  .youju-evidence {
+    border-left: 0;
+    max-height: 360px;
+  }
+  .youju-mobile-back {
+    display: inline-flex;
+    margin: -4px 0 12px -8px;
+  }
+  .youju-case-heading,
+  .youju-message-list {
+    padding: 16px;
+  }
+  .youju-composer {
+    padding: 14px;
+  }
+}
+
+/* 动效令牌统一交互节奏 只改变视觉反馈 不延迟数据更新和按钮解锁 */
 :root {
-  color-scheme: light;
+  --motion-fast: 120ms;
+  --motion-normal: 200ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-body {
-  background-color: var(--color-canvas);
-  color: var(--color-ink);
+/* 图标加载独立于页面轮询 只有明确处于操作中的控件才添加此类 */
+.youju-spin {
+  animation: youju-spin 900ms linear infinite;
+}
+@keyframes youju-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/*
- * 控制台作用域
- *
- * 后台页面在自己的根节点标注 data-theme="console" 即可切轨。
- *
- * 切轨方式是「重定义既有 token 的取值」而不是「给每个元素换类名」：
- * 页面里写的 text-stone-500 语义是「次要文本」，在深色轨它就该解析成
- * 一个亮的灰绿；bg-surface 语义是「面板」，深色轨解析成近黑。
- * Tailwind 4 的调色板本身就是 CSS 变量，因此这里改变量即可整轨生效，
- * 既有页面一行 JSX 都不用动——这也是 ADR-013「组件不得写死颜色」的兑现。
- *
- * 只有一类情况必须按工具类而非按变量覆盖：同一档色号既当文字又当背景。
- * 例如 emerald-700 既是 text-emerald-700（徽章文字 深色轨要提亮）
- * 又是 bg-emerald-700（通过按钮底色 深色轨要维持深底压白字）。
- * 这种冲突在下方用 .text-* 选择器单独处理 不动变量。
- */
-[data-theme='console'] {
-  color-scheme: dark;
-  background-color: var(--color-console-canvas);
-  color: var(--color-console-ink);
-
-  /* 语义中性色 直接指向控制台轨取值 */
-  --color-canvas: var(--color-console-canvas);
-  --color-surface: var(--color-console-surface);
-  --color-ink: var(--color-console-ink);
-  --color-hairline: var(--color-console-hairline);
-
-  /*
-   * 中性 ramp 反转：浅色轨「数字越大越深」在深色轨变成「数字越大越亮」。
-   * 语义不变——900 仍是主文本 500 仍是次要文本 100 仍是填充底。
-   */
-  --color-stone-50: #151a17;
-  --color-stone-100: #1d2420;
-  --color-stone-200: #323b35;
-  --color-stone-300: #6b756e;
-  --color-stone-400: #7a847d;
-  --color-stone-500: #8b948d;
-  --color-stone-600: #a2aba5;
-  --color-stone-700: #b9c1bc;
-  --color-stone-800: #d0d6d2;
-  --color-stone-900: #e6eae7;
-
-  --color-zinc-50: #151a17;
-  --color-zinc-100: #1d2420;
-  --color-zinc-200: #323b35;
-  --color-zinc-500: #8b948d;
-  --color-zinc-600: #a2aba5;
-
-  /*
-   * 状态徽章底与边：浅底深字反转为深底亮字。
-   * 只重定义 50/100/200 三档——这三档在本项目里只做徽章底与细边，
-   * 没有当文字用的场合 故可安全按变量整体替换。
-   * 对应的亮字色在下方按工具类覆盖 实测对比度见 scripts/check-console-contrast.mjs
-   */
-  --color-emerald-50: #102a1f;
-  --color-emerald-100: #16382a;
-  --color-emerald-200: #1f4e39;
-
-  --color-red-50: #2e1414;
-  --color-red-100: #3d1a1a;
-  --color-red-200: #552424;
-
-  --color-amber-50: #2d2310;
-  --color-amber-100: #3c2f15;
-  --color-amber-200: #54421d;
-
-  --color-orange-50: #2f1f12;
-  --color-orange-100: #3e2917;
-  --color-orange-200: #573920;
-
-  --color-sky-50: #10222e;
-  --color-sky-100: #162e3d;
-  --color-sky-200: #1f4055;
-
-  --color-blue-50: #121f33;
-  --color-blue-100: #182943;
-  --color-blue-200: #21395d;
-
-  --color-purple-50: #241a2e;
-  --color-purple-100: #30233d;
-  --color-purple-200: #433155;
-
-  --color-violet-50: #201a2e;
-  --color-violet-100: #2b233d;
-  --color-violet-200: #3c3155;
-
-  --color-sage-50: #141a15;
-  --color-sage-100: #1b231d;
-  --color-sage-200: #26332a;
+[data-slot='button'] {
+  position: relative;
+  transition-property: color, background-color, border-color, box-shadow, opacity;
+  transition-duration: var(--motion-fast);
+}
+.youju-button-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+}
+/* 内容和加载图标继承按钮前景色 不受外层提示文案样式影响 */
+[data-slot='button'] > .youju-button-content,
+[data-slot='button'] > .youju-button-loader {
+  color: inherit;
+  font: inherit;
+}
+[data-loading='true'] > .youju-button-content {
+  opacity: 0;
+}
+.youju-button-loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
 }
 
-/*
- * 深色轨的状态文字：浅色轨用 700-900 档表示「压在浅底上的深字」，
- * 深色轨需要反过来提亮。按 .text-* 选择器覆盖 不碰同名的 bg-* 工具类，
- * 因为 bg-emerald-700 这类实心按钮底色在深色轨本就合适（白字压饱和色）。
- */
-[data-theme='console']
-  :is(.text-emerald-600, .text-emerald-700, .text-emerald-800, .text-emerald-900) {
-  color: var(--color-console-ok);
+/* 两套历史骨架屏使用同一动画 首屏保留尺寸 再次查询不卸载已显示内容 */
+.youju-skeleton {
+  animation: youju-breathe 1600ms ease-in-out infinite;
+}
+@keyframes youju-breathe {
+  50% {
+    opacity: 0.5;
+  }
 }
 
-[data-theme='console'] :is(.text-red-600, .text-red-700, .text-red-800, .text-red-900) {
-  color: var(--color-console-danger);
+/* 思考与生成中的跳动指示点 客户思考气泡与工作台生成标签共用 */
+/* 三点依次上浮回落 降级环境下静止为半透明圆点 仍可辨识处理中状态 */
+.youju-thinking-dots {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 12px;
+}
+.youju-thinking-dots > i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: youju-thinking-bounce 1200ms ease-in-out infinite;
+}
+.youju-thinking-dots > i:nth-child(2) {
+  animation-delay: 160ms;
+}
+.youju-thinking-dots > i:nth-child(3) {
+  animation-delay: 320ms;
+}
+@keyframes youju-thinking-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
 }
 
-[data-theme='console']
-  :is(
-    .text-amber-600,
-    .text-amber-700,
-    .text-amber-800,
-    .text-amber-900,
-    .text-orange-600,
-    .text-orange-700,
-    .text-orange-800,
-    .text-orange-900
-  ) {
-  color: var(--color-console-warn);
+/* 工作台流式标签 跳点与文字同行居中 */
+.youju-streaming-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-[data-theme='console']
-  :is(
-    .text-sky-600,
-    .text-sky-700,
-    .text-sky-800,
-    .text-sky-900,
-    .text-blue-600,
-    .text-blue-700,
-    .text-blue-800,
-    .text-blue-900
-  ) {
-  color: var(--color-console-info);
+/* 框架的链接等待状态或路由占位存在时显示顶部不定进度条 */
+/* 延迟出现避免缓存命中的快速导航闪烁 状态结束即隐藏 不设置虚假完成定时器 */
+.youju-navigation-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 3px;
+  z-index: 100;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+}
+.youju-navigation-progress > span {
+  display: block;
+  width: 35%;
+  height: 100%;
+  background: var(--color-primary);
+}
+.youju-shell:has(.youju-navigation-feedback[data-pending='true'], [data-route-loading])
+  .youju-navigation-progress {
+  visibility: visible;
+  transition: visibility 0s 150ms;
+}
+.youju-shell:has(.youju-navigation-feedback[data-pending='true'], [data-route-loading])
+  .youju-navigation-progress
+  > span {
+  animation: youju-progress 1200ms ease-in-out infinite;
+}
+@keyframes youju-progress {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(390%);
+  }
 }
 
-[data-theme='console']
-  :is(
-    .text-purple-600,
-    .text-purple-700,
-    .text-purple-800,
-    .text-purple-900,
-    .text-violet-600,
-    .text-violet-700,
-    .text-violet-800,
-    .text-violet-900
-  ) {
-  color: #c4a5f0;
+/* 入场只在节点挂载时执行 流式文字更新和轮询不会重新触发 */
+.page-enter,
+.youju-page,
+.youju-desk,
+.youju-motion-enter,
+[data-slot='tabs-content'][data-state='active'],
+[data-slot='alert'] {
+  animation: youju-appear var(--motion-normal) var(--motion-ease);
 }
-
-[data-theme='console'] :is(.text-sage-600, .text-sage-700, .text-sage-800, .text-sage-900) {
-  color: var(--color-console-accent);
-}
-
-/* 300 档描边在深色轨降为可辨深边 同名的 bg-*-300 是进度条填充 保持原亮度 */
-[data-theme='console']
-  :is(.border-emerald-300, .border-amber-300, .border-blue-300, .border-sky-300, .border-red-300) {
-  border-color: var(--color-console-border);
-}
-
-/* 全局可见焦点环：组件不写 outline-none，键盘可达性由这里兜底 */
-:focus-visible {
-  outline: 2px solid var(--color-sage-600);
-  outline-offset: 2px;
-}
-
-/* 深色轨焦点环换用提亮后的 accent sage-600 在近黑底上不可见 */
-[data-theme='console'] :focus-visible {
-  outline-color: var(--color-console-accent);
-}
-
-/* 文本选中 */
-::selection {
-  background-color: var(--color-sage-100);
-  color: var(--color-ink);
-}
-
-[data-theme='console'] ::selection {
-  background-color: var(--color-console-accent-dim);
-  color: var(--color-console-ink);
-}
-
-/* 全局滚动条：浅色细滚动条 */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #d6d3d1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a29e;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-[data-theme='console'] ::-webkit-scrollbar-thumb {
-  background: var(--color-console-hairline);
-}
-
-[data-theme='console'] ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-console-border);
-}
-
-/*
- * 页面内容进入淡入：纯 CSS 250ms 一次播放
- * prefers-reduced-motion 由下方全局兜底降为瞬时
- */
-@keyframes fade-slide-in {
+@keyframes youju-appear {
   from {
     opacity: 0;
-    transform: translateY(4px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-.page-enter {
-  animation: fade-slide-in 250ms cubic-bezier(0.16, 1, 0.3, 1) both;
+/* 弹窗沿用 Radix 的打开关闭状态 关闭更快且不改变焦点管理 */
+[data-slot='dialog-overlay'][data-state='open'] {
+  animation: youju-appear var(--motion-normal) ease-out;
+}
+[data-slot='dialog-overlay'][data-state='closed'] {
+  animation: youju-disappear var(--motion-fast) ease-in;
+}
+[data-slot='dialog-content'][data-state='open'] {
+  animation: youju-dialog-in var(--motion-normal) var(--motion-ease);
+}
+[data-slot='dialog-content'][data-state='closed'] {
+  animation: youju-disappear var(--motion-fast) ease-in;
+}
+@keyframes youju-dialog-in {
+  from {
+    opacity: 0;
+    scale: 0.98;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@keyframes youju-disappear {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
-/*
- * 动效约束：只在 200-300ms 的 CSS 过渡内做交互反馈。
- * prefers-reduced-motion 下全部降级为瞬时（全局兜底）。
- */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -342,5 +1059,18 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* 无限循环不能缩短成极高速循环 减少动态效果时直接停止并保留静态状态反馈 */
+  .youju-spin,
+  .youju-skeleton,
+  .youju-navigation-progress > span {
+    animation: none !important;
+  }
+  .youju-navigation-progress > span {
+    width: 100%;
+    opacity: 0.65;
+  }
+  [data-slot='dialog-content'] {
+    scale: 1 !important;
   }
 }

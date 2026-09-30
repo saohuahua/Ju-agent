@@ -1,0 +1,44 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/apps/api
+
+ ❯ test/customer-progress.test.ts (8 tests | 1 failed | 7 skipped) 155ms
+   ↓ 空进度和本人权限 客户 DTO 严格白名单且只读
+   ↓ 主管审批到寄回收货退款 对照公开事实及幂等和渠道计数
+   ↓ 仅退款没有寄回权限 已确认成功才显示成功
+   ↓ 审批 rejected 时不能寄回
+   ↓ 审批 expired 时不能寄回
+   ↓ 资金未知优先于人工状态 不把接管或模型文字当成功
+   × 人工接管后拒绝结构化寄回且不写入 普通客户留言仍可发送 154ms
+     → expected 200 to be 409 // Object.is equality
+   ↓ 售后关联篡改返回可恢复错误 不泄漏诊断
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/customer-progress.test.ts > 人工接管后拒绝结构化寄回且不写入 普通客户留言仍可发送
+AssertionError: expected 200 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 200
+
+ ❯ test/customer-progress.test.ts:274:29
+    272|   for (let attempt = 0; attempt < 2; attempt++) {
+    273|     const response = await f.post(`/api/runs/${f.runId}/messages`, f.s…
+    274|     expect(response.status).toBe(409)
+       |                             ^
+    275|     expect(await response.json()).toEqual({
+    276|       error: 'CONFLICT',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  15:03:05
+   Duration  3.15s (transform 815ms, setup 0ms, collect 2.30s, tests 155ms, environment 0ms, prepare 182ms)
+
+undefined
+D:\project\agent-new\aftersales\apps\api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run test/customer-progress.test.ts -t "人工接管后"

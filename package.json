@@ -4,12 +4,16 @@
   "private": true,
   "description": "可评测 可恢复的电商售后 Agent 平台",
   "type": "module",
+  "packageManager": "pnpm@11.23.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "dev": "pnpm --filter @aftersales/api dev",
     "dev:web": "pnpm --filter web dev",
+    "dev:offline": "node --import tsx scripts/dev-offline.ts",
+    "data:backup:offline": "node --import tsx scripts/local-offline-data.ts backup",
+    "data:restore:offline": "node --import tsx scripts/local-offline-data.ts restore",
     "build": "pnpm --filter web build",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
@@ -20,6 +24,11 @@
     "db:reset": "tsx scripts/db-reset.ts",
     "eval": "tsx packages/eval/src/cli.ts",
     "eval:dataset": "tsx scripts/export-dataset.ts",
+    "trace:export": "tsx scripts/trace-export.ts",
+    "case:from-run": "tsx scripts/case-from-run.ts",
+    "case:adopt": "tsx scripts/case-adopt.ts",
+    "rag:check": "tsx scripts/rag-dataset-check.ts",
+    "rag:baseline": "tsx scripts/rag-baseline.ts",
     "demo": "tsx scripts/demo.ts",
     "eval:sim": "tsx packages/eval/src/sim-cli.ts"
   },
@@ -30,6 +39,7 @@
     "@aftersales/eval": "workspace:*",
     "@aftersales/persistence": "workspace:*",
     "@aftersales/runtime": "workspace:*",
+    "@aftersales/telemetry": "workspace:*",
     "@aftersales/tools": "workspace:*"
   },
   "devDependencies": {

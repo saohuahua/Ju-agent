@@ -26,16 +26,20 @@ export interface Customer {
   createdAt: string
 }
 
+/** 原交易事实是金额与归属依据 客户描述不能覆盖订单 */
 export interface Order {
   orderNo: string
   customerId: string
   status: 'paid' | 'shipped' | 'delivered' | 'completed' | 'cancelled'
+  /** 整单申请直接使用此金额 部分商品金额由规则另行计算 */
   totalAmountCents: number
   currency: string
   paymentChannel: string
   items: OrderItem[]
   paidAt: string | null
+  /** 未发货取消同时检查订单状态与发货时间 */
   shippedAt: string | null
+  /** 售后时间窗口读取订单签收时间 不直接采用物流描述 */
   deliveredAt: string | null
   createdAt: string
   updatedAt: string
@@ -50,6 +54,7 @@ export interface ShipmentEventEntry {
   eventId?: string
 }
 
+/** 正向配送事实与客户退货寄回登记分别保存 */
 export interface Shipment {
   shipmentId: string
   orderNo: string
@@ -70,16 +75,20 @@ export interface PolicyDecisionRecord {
   feeBearer: 'seller' | 'buyer' | null
 }
 
+/** 售后单固定本次申请方案 不表示关联退款已经执行 */
 export interface ReturnRequest {
   returnNo: string
   orderNo: string
   customerId: string
   type: ReturnType
   reason: ReturnReason
+  /** 同一个完成状态要结合售后类型解释 */
   status: ReturnStatus
+  /** 商品行范围为空时按整单处理 不表达同一行的部分数量 */
   itemIds: string[]
   refundAmountCents: number
   currency: string
+  /** 保存当时的判断依据 后续审批和执行核对原方案 */
   policyDecision: PolicyDecisionRecord
   policyVersion: string
   createdAt: string
@@ -87,6 +96,7 @@ export interface ReturnRequest {
   version: number
 }
 
+/** 原售后的资金记录 可以提前预留但尚未向渠道发送 */
 export interface Refund {
   refundNo: string
   returnNo: string
@@ -94,7 +104,9 @@ export interface Refund {
   amountCents: number
   currency: string
   channel: string
+  /** 资金未知由执行权和资金效果表达 不新增未知退款状态 */
   status: RefundStatus
+  /** 从原售后身份生成 重试和进程恢复不能换成新请求键 */
   idempotencyKey: string
   attempts: number
   lastError: string | null
@@ -103,6 +115,7 @@ export interface Refund {
   version: number
 }
 
+/** 审批绑定具体资源与金额 决定通过不代表资金已经成功 */
 export interface ApprovalRequest {
   approvalId: string
   runId: string | null
@@ -114,6 +127,7 @@ export interface ApprovalRequest {
   /** 一次性令牌 高风险工具执行时必须匹配且立即消费 */
   oneTimeToken: string
   requestedBy: string
+  /** 保存实际决定者 自动授权不伪造人工决定 */
   decidedBy: string | null
   decidedAt: string | null
   expiresAt: string

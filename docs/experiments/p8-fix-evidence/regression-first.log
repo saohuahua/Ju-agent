@@ -1,0 +1,114 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/runtime
+
+ ✓ test/p8-fixes.test.ts (7 tests) 349ms
+ ❯ test/p8-investigation.test.ts (23 tests | 3 failed) 6135ms
+   ✓ P8 离线调查和运行记忆 > 失败分支不能通过持久确认接口夹带成功事实 219ms
+   ✓ P8 离线调查和运行记忆 > 双分支使用共享账本并确认可追溯证据且无业务写入 222ms
+   ✓ P8 离线调查和运行记忆 > 串行与并行使用相同原文且得出兼容建议  432ms
+   ✓ P8 离线调查和运行记忆 > 分支 failure 不伪装为完整调查 202ms
+   ✓ P8 离线调查和运行记忆 > 分支 timeout 不伪装为完整调查  483ms
+   ✓ P8 离线调查和运行记忆 > 分支 missing-usage 不伪装为完整调查 224ms
+   ✓ P8 离线调查和运行记忆 > 分支 conflict 不伪装为完整调查 229ms
+   ✓ P8 离线调查和运行记忆 > 分支 foreign-ref 不伪装为完整调查 221ms
+   ✓ P8 离线调查和运行记忆 > 分支 money-tool 不伪装为完整调查 198ms
+   ✓ P8 离线调查和运行记忆 > 缺少物流关键证据保留补问 211ms
+   ✓ P8 离线调查和运行记忆 > 领域原文出现签收与丢件冲突时升级人工 242ms
+   ✓ P8 离线调查和运行记忆 > 父任务取消传递给在途分支且迟到结果不写回  422ms
+   ✓ P8 离线调查和运行记忆 > 重复受理派发完成通知只汇总一次 208ms
+   × P8 离线调查和运行记忆 > 跨客户订单和原文引用被拒绝 221ms
+     → expected [Function] to throw error including '归属' but got 'P8 受理身份内容冲突'
+   ✓ P8 离线调查和运行记忆 > 共享预算不足在传输前拒绝 不为分支建预算 211ms
+   ✓ P8 离线调查和运行记忆 > 失去租约的旧 Worker 无法确认结果 187ms
+   × P8 离线调查和运行记忆 > 保留原业务未知状态与客户原话 不提升权限 224ms
+     → expected [ { kind: 'refund', …(2) }, …(1) ] to deep equally contain { kind: 'approval', …(2) }
+   ✓ P8 离线调查和运行记忆 > 已确认分支恢复不重复调用且冻结配置不被当前对象替换  363ms
+   ✓ P8 离线调查和运行记忆 > 确定性调用的在途峰值串行为一并行为二  520ms
+   × P8 离线调查和运行记忆 > 即使重算引用哈希也不能把客户伪造内容升级为源事实 209ms
+     → expected [Function] to throw error including '源记录' but got 'P8 受理身份内容冲突'
+   ✓ P8 离线调查和运行记忆 > 受理事务失败不留下半套父子任务 221ms
+   ✓ P8 离线调查和运行记忆 > 子任务归属限定到指定父运行 不误消费另一实验 224ms
+   ✓ P8 离线调查和运行记忆 > 网关独占三次尝试 Worker 不叠加重试或变更逻辑身份 242ms
+ ✓ test/p8-process.test.ts (4 tests) 6474ms
+   ✓ P8 跨进程持久恢复 > 模型已记账但分支未确认时保守停止且不换号重发  1366ms
+   ✓ P8 跨进程持久恢复 > accepted 后真实退出再恢复  1701ms
+   ✓ P8 跨进程持久恢复 > one-confirmed 后真实退出再恢复  1747ms
+   ✓ P8 跨进程持久恢复 > both-confirmed 后真实退出再恢复  1659ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/p8-investigation.test.ts > P8 离线调查和运行记忆 > 跨客户订单和原文引用被拒绝
+AssertionError: expected [Function] to throw error including '归属' but got 'P8 受理身份内容冲突'
+
+Expected: "归属"
+Received: "P8 受理身份内容冲突"
+
+ ❯ test/p8-investigation.test.ts:273:47
+    271|       const altered = structuredClone(x.input)
+    272|       altered.evidence[0]![field] = 'foreign'
+    273|       expect(() => x.runtime.accept(altered)).toThrow('归属')
+       |                                               ^
+    274|     }
+    275|     const forged = structuredClone(x.input)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/p8-investigation.test.ts > P8 离线调查和运行记忆 > 保留原业务未知状态与客户原话 不提升权限
+AssertionError: expected [ { kind: 'refund', …(2) }, …(1) ] to deep equally contain { kind: 'approval', …(2) }
+
+- Expected: 
+{
+  "id": "AP-existing",
+  "kind": "approval",
+  "status": "pending",
+}
+
++ Received: 
+[
+  {
+    "id": "RF-existing",
+    "kind": "refund",
+    "status": "unknown",
+  },
+  {
+    "id": "RT-existing",
+    "kind": "return",
+    "status": "pending_approval",
+  },
+]
+
+ ❯ test/p8-investigation.test.ts:356:46
+    354|     expect(result.memory.completedActions).toEqual([])
+    355|     expect(result.recommendation).toBe('human_review')
+    356|     expect(result.memory.businessReferences).toContainEqual({
+       |                                              ^
+    357|       kind: 'approval',
+    358|       id: 'AP-existing',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/p8-investigation.test.ts > P8 离线调查和运行记忆 > 即使重算引用哈希也不能把客户伪造内容升级为源事实
+AssertionError: expected [Function] to throw error including '源记录' but got 'P8 受理身份内容冲突'
+
+Expected: "源记录"
+Received: "P8 受理身份内容冲突"
+
+ ❯ test/p8-investigation.test.ts:415:44
+    413|       p8EvidenceHash(item.data),
+    414|     ])
+    415|     expect(() => x.runtime.accept(forged)).toThrow('源记录')
+       |                                            ^
+    416|     const references = structuredClone(x.input)
+    417|     references.businessReferences.push({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  3 failed | 31 passed (34)
+   Start at  14:50:23
+   Duration  8.54s (transform 1.01s, setup 0ms, collect 3.66s, tests 12.96s, environment 1ms, prepare 748ms)
+
+undefined
+D:\project\agent-new\aftersales\packages\runtime:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run test/p8-fixes.test.ts test/p8-investigation.test.ts test/p8-process.test.ts

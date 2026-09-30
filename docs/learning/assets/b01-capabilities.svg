@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="750" viewBox="0 0 1120 750" role="img" aria-labelledby="title desc"><title id="title">业务能力与责任分工</title><desc id="desc">模型提出意图　领域确认方案　人工提供决定与事实　后台执行原业务</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L7 4L0 8" fill="#52758a"/></marker><style>text{font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#253b49}.title{font-size:25px;font-weight:700}.subtitle{font-size:16px;fill:#607581}.head{font-size:19px;font-weight:700}.body{font-size:16px}.label{font-size:14px;fill:#405e70}.group{font-size:16px;font-weight:700;fill:#4c6b7d}</style></defs><rect width="1120" height="750" fill="#f8fafb" rx="16"/>
+<text x="560" y="43" text-anchor="middle" class="title"><tspan x="560" dy="0">业务能力与责任分工</tspan></text>
+<text x="560" y="74" text-anchor="middle" class="subtitle"><tspan x="560" dy="0">模型提出意图　领域确认方案　人工提供决定与事实　后台执行原业务</tspan></text>
+<path d="M260 190H310" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M530 190H580" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M800 190H850" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M965 245V285H180V330" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="497" y="264" width="126" height="23" rx="4" fill="#f8fafb"/>
+<text x="560" y="280" text-anchor="middle" class="label"><tspan x="560" dy="0">按类型与授权分流</tspan></text>
+<path d="M560 285V330" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M965 245V330" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M800 390H700" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="710" y="354" width="84" height="23" rx="4" fill="#f8fafb"/>
+<text x="752" y="370" text-anchor="middle" class="label"><tspan x="752" dy="0">事实与决定</tspan></text>
+<rect x="40" y="135" width="220" height="110" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="150" y="172" text-anchor="middle" class="head"><tspan x="150" dy="0">客户</tspan></text>
+<text x="150" y="202" text-anchor="middle" class="body"><tspan x="150" dy="0">诉求与订单线索</tspan><tspan x="150" dy="23">确认商品与寄回</tspan></text>
+<rect x="310" y="135" width="220" height="110" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="420" y="172" text-anchor="middle" class="head"><tspan x="420" dy="0">Agent</tspan></text>
+<text x="420" y="202" text-anchor="middle" class="body"><tspan x="420" dy="0">查询与补问</tspan><tspan x="420" dy="23">提出受控申请</tspan></text>
+<rect x="580" y="135" width="220" height="110" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="690" y="172" text-anchor="middle" class="head"><tspan x="690" dy="0">领域判断</tspan></text>
+<text x="690" y="202" text-anchor="middle" class="body"><tspan x="690" dy="0">资格与金额</tspan><tspan x="690" dy="23">同订单重复限制</tspan></text>
+<rect x="850" y="135" width="230" height="110" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="965" y="172" text-anchor="middle" class="head"><tspan x="965" dy="0">业务方案</tspan></text>
+<text x="965" y="202" text-anchor="middle" class="body"><tspan x="965" dy="0">售后与预留退款</tspan><tspan x="965" dy="23">保存原调用关联</tspan></text>
+<rect x="40" y="330" width="280" height="120" rx="10" fill="#e5f1e9" stroke="#b8cbd7"/>
+<text x="180" y="372" text-anchor="middle" class="head"><tspan x="180" dy="0">仅退款主线</tspan></text>
+<text x="180" y="402" text-anchor="middle" class="body"><tspan x="180" dy="0">自动或人工授权</tspan><tspan x="180" dy="23">执行原退款</tspan></text>
+<rect x="420" y="330" width="280" height="120" rx="10" fill="#e5f1e9" stroke="#b8cbd7"/>
+<text x="560" y="372" text-anchor="middle" class="head"><tspan x="560" dy="0">退货后退款主线</tspan></text>
+<text x="560" y="402" text-anchor="middle" class="body"><tspan x="560" dy="0">客户寄回 → 操作员收货</tspan><tspan x="560" dy="23">再执行原退款</tspan></text>
+<rect x="800" y="330" width="280" height="120" rx="10" fill="#fff1d6" stroke="#b8cbd7"/>
+<text x="940" y="372" text-anchor="middle" class="head"><tspan x="940" dy="0">主管与操作员</tspan></text>
+<text x="940" y="402" text-anchor="middle" class="body"><tspan x="940" dy="0">主管审批具体方案</tspan><tspan x="940" dy="23">操作员确认物品事实</tspan></text>
+<rect x="50" y="535" width="470" height="125" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="285" y="579.5" text-anchor="middle" class="head"><tspan x="285" dy="0">已有领域与兼容能力</tspan></text>
+<text x="285" y="609.5" text-anchor="middle" class="body"><tspan x="285" dy="0">补偿　价保　换货</tspan><tspan x="285" dy="23">不等于默认客户持久入口已开放</tspan></text>
+<rect x="600" y="535" width="470" height="125" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="835" y="579.5" text-anchor="middle" class="head"><tspan x="835" dy="0">横向客户服务</tspan></text>
+<text x="835" y="609.5" text-anchor="middle" class="body"><tspan x="835" dy="0">物流查询　人工求助　评价</tspan><tspan x="835" dy="23">人工结案仍需核验本案资源</tspan></text>
+<text x="560" y="727" text-anchor="middle" class="label"><tspan x="560" dy="0">图中能力层次不同　不要用服务存在推断默认客户入口已接通</tspan></text>
+</svg>

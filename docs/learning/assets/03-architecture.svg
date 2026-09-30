@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1030" viewBox="0 0 1120 1030" role="img" aria-labelledby="title desc"><title id="title">当前架构：应用入口、双执行器与持久事实</title><desc id="desc">实线为主要调用与数据访问　虚线为兼容路径或共享契约　不是严格单向包依赖图</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L7 4L0 8" fill="#52758a"/></marker><style>text{font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#253b49}.title{font-size:25px;font-weight:700}.subtitle{font-size:16px;fill:#607581}.head{font-size:19px;font-weight:700}.body{font-size:16px}.label{font-size:14px;fill:#405e70}.group{font-size:16px;font-weight:700;fill:#4c6b7d}</style></defs><rect width="1120" height="1030" fill="#f8fafb" rx="16"/>
+<text x="560" y="43" text-anchor="middle" class="title"><tspan x="560" dy="0">当前架构：应用入口、双执行器与持久事实</tspan></text>
+<text x="560" y="74" text-anchor="middle" class="subtitle"><tspan x="560" dy="0">实线为主要调用与数据访问　虚线为兼容路径或共享契约　不是严格单向包依赖图</tspan></text>
+<rect x="30" y="100" width="1060" height="190" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="560" y="127" text-anchor="middle" class="group"><tspan x="560" dy="0">应用与装配</tspan></text>
+<rect x="30" y="330" width="1060" height="250" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="560" y="357" text-anchor="middle" class="group"><tspan x="560" dy="0">执行职责</tspan></text>
+<rect x="30" y="630" width="1060" height="310" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="560" y="657" text-anchor="middle" class="group"><tspan x="560" dy="0">业务规则、契约与持久化</tspan></text>
+<path d="M320 194H435" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M800 194H685" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<rect x="707" y="163" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="742" y="179" text-anchor="middle" class="label"><tspan x="742" dy="0">共享契约</tspan></text>
+<path d="M560 239V311H205V391" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 311H742V368H560V391" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 311H915V391" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<rect x="793" y="294" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="828" y="310" text-anchor="middle" class="label"><tspan x="828" dy="0">保留装配</tspan></text>
+<path d="M205 501V690" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 501V615H733V674H560V690" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M205 555H910V690" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="871" y="574" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="906" y="590" text-anchor="middle" class="label"><tspan x="906" dy="0">模型调用</tspan></text>
+<path d="M350 740H420" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="350" y="709" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="385" y="725" text-anchor="middle" class="label"><tspan x="385" dy="0">仓储接口</tspan></text>
+<path d="M770 740H700" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 790V836" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M415 448H382V875H350" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="350" y="807" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="385" y="823" text-anchor="middle" class="label"><tspan x="385" dy="0">资金调用</tspan></text>
+<path d="M915 501V600H210V690" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<rect x="312" y="582" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="347" y="598" text-anchor="middle" class="label"><tspan x="347" dy="0">领域规则</tspan></text>
+<rect x="70" y="149" width="250" height="90" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="195" y="187.5" text-anchor="middle" class="head"><tspan x="195" dy="0">Web / HTTP API</tspan></text>
+<text x="195" y="217.5" text-anchor="middle" class="body"><tspan x="195" dy="0">交互 · 身份 · 公开投影</tspan></text>
+<rect x="435" y="149" width="250" height="90" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="187.5" text-anchor="middle" class="head"><tspan x="560" dy="0">main 与组合根</tspan></text>
+<text x="560" y="217.5" text-anchor="middle" class="body"><tspan x="560" dy="0">显式 simulation 装配</tspan></text>
+<rect x="800" y="149" width="250" height="90" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="925" y="187.5" text-anchor="middle" class="head"><tspan x="925" dy="0">contracts</tspan></text>
+<text x="925" y="217.5" text-anchor="middle" class="body"><tspan x="925" dy="0">类型 · Schema · 事件</tspan></text>
+<rect x="60" y="391" width="290" height="110" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="205" y="428" text-anchor="middle" class="head"><tspan x="205" dy="0">DurableConversation</tspan></text>
+<text x="205" y="458" text-anchor="middle" class="body"><tspan x="205" dy="0">模型轮次与只读工具</tspan><tspan x="205" dy="23">退款交给持久受理</tspan></text>
+<rect x="415" y="391" width="290" height="110" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="428" text-anchor="middle" class="head"><tspan x="560" dy="0">DurableBusiness</tspan></text>
+<text x="560" y="458" text-anchor="middle" class="body"><tspan x="560" dy="0">授权计划与资金 Worker</tspan><tspan x="560" dy="23">业务结果投影</tspan></text>
+<rect x="770" y="391" width="290" height="110" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="915" y="428" text-anchor="middle" class="head"><tspan x="915" dy="0">兼容执行路径</tspan></text>
+<text x="915" y="458" text-anchor="middle" class="body"><tspan x="915" dy="0">AgentRunner 与旧工作流</tspan><tspan x="915" dy="23">不代替当前持久退款</tspan></text>
+<rect x="70" y="690" width="280" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="210" y="722" text-anchor="middle" class="head"><tspan x="210" dy="0">domain</tspan></text>
+<text x="210" y="752" text-anchor="middle" class="body"><tspan x="210" dy="0">资格 · 政策 · 金额</tspan><tspan x="210" dy="23">领域状态迁移</tspan></text>
+<rect x="420" y="690" width="280" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="722" text-anchor="middle" class="head"><tspan x="560" dy="0">persistence</tspan></text>
+<text x="560" y="752" text-anchor="middle" class="body"><tspan x="560" dy="0">任务 · 事件 · 业务映射</tspan><tspan x="560" dy="23">同连接事务</tspan></text>
+<rect x="770" y="690" width="280" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="910" y="733.5" text-anchor="middle" class="head"><tspan x="910" dy="0">P7 网关与费用账本</tspan></text>
+<text x="910" y="763.5" text-anchor="middle" class="body"><tspan x="910" dy="0">配置快照 · 预占 · 结算</tspan></text>
+<path d="M420 849C420 832 700 832 700 849V901C700 918 420 918 420 901Z" fill="#e5f0e9" stroke="#b8cbd7"/><ellipse cx="560" cy="849" rx="140" ry="13" fill="#e5f0e9" stroke="#b8cbd7"/>
+<text x="560" y="874.5" text-anchor="middle" class="head"><tspan x="560" dy="0">业务 SQLite</tspan></text>
+<text x="560" y="904.5" text-anchor="middle" class="body"><tspan x="560" dy="0">授权与执行依据</tspan></text>
+<path d="M70 849C70 832 350 832 350 849V901C350 918 70 918 70 901Z" fill="#e5f0e9" stroke="#b8cbd7"/><ellipse cx="210" cy="849" rx="140" ry="13" fill="#e5f0e9" stroke="#b8cbd7"/>
+<text x="210" y="874.5" text-anchor="middle" class="head"><tspan x="210" dy="0">独立模拟渠道库</tspan></text>
+<text x="210" y="904.5" text-anchor="middle" class="body"><tspan x="210" dy="0">原业务键与交易结果</tspan></text>
+<text x="560" y="1007" text-anchor="middle" class="label"><tspan x="560" dy="0">部分持久业务映射位于仓储层以保证共同提交　类存在不等于入口接入　正式 live 关闭</tspan></text>
+</svg>

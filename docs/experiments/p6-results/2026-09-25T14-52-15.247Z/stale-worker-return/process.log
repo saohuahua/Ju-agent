@@ -1,0 +1,13 @@
+{"pid":111940,"event":"ready","detail":{"url":"http://127.0.0.1:60327"},"time":"2026-09-25T14:52:58.735Z"}
+{"pid":146104,"event":"accepted","detail":{"taskId":"a8da2140-e801-4fa9-9807-7c94a70be0b4","runId":"run_b35fef95-3e95-44c6-813b-c56791d003ef"},"time":"2026-09-25T14:52:59.601Z"}
+{"pid":139796,"event":"old-claimed","detail":{"taskId":"a8da2140-e801-4fa9-9807-7c94a70be0b4","commandId":"1251e37e-39b3-4db8-9a4f-6e7212ccef43","runId":"run_b35fef95-3e95-44c6-813b-c56791d003ef","customerId":"C1001","provider":"scripted","tool":"compensation","approvalId":null,"status":"running","owner":"old-139796","generation":1,"leaseUntil":1790347980441,"attempt":1,"cancelRequested":0,"deadline":1790348279600,"error":null,"input":{"requestKey":"request-1","customerId":"C1001","kind":"start","config":{"snapshotId":"scripted-frozen-v1","provider":"scripted","model":"scripted-v1","promptVersion":"p6-v1","value":{"scenario":"normal","paid":false}},"source":"sim","plan":{"input":"验证持久恢复","tool":"compensation","payment":{"businessKey":"compensation:CP-P6","resourceId":"compensation:CP-P6","amountCents":1000,"currency":"CNY"}}}},"time":"2026-09-25T14:53:00.192Z"}
+{"pid":145412,"event":"claimed","detail":{"taskId":"a8da2140-e801-4fa9-9807-7c94a70be0b4","generation":2},"time":"2026-09-25T14:53:01.063Z"}
+{"pid":145412,"event":"before-model","detail":{"taskId":"a8da2140-e801-4fa9-9807-7c94a70be0b4","generation":2},"time":"2026-09-25T14:53:01.066Z"}
+{"pid":145412,"event":"model-called","detail":{"snapshot":{"snapshotId":"scripted-frozen-v1","provider":"scripted","model":"scripted-v1","promptVersion":"p6-v1","value":{"scenario":"normal","paid":false}}},"time":"2026-09-25T14:53:01.067Z"}
+{"pid":145412,"event":"after-model-checkpoint","detail":{"taskId":"a8da2140-e801-4fa9-9807-7c94a70be0b4","generation":2},"time":"2026-09-25T14:53:01.068Z"}
+{"pid":145412,"event":"read-called","detail":null,"time":"2026-09-25T14:53:01.068Z"}
+{"pid":145412,"event":"after-payment-intent","detail":{"taskId":"a8da2140-e801-4fa9-9807-7c94a70be0b4","generation":2},"time":"2026-09-25T14:53:01.079Z"}
+{"pid":145412,"event":"after-payment-response","detail":{"taskId":"a8da2140-e801-4fa9-9807-7c94a70be0b4","generation":2},"time":"2026-09-25T14:53:01.101Z"}
+{"pid":145412,"event":"after-payment-checkpoint","detail":{"taskId":"a8da2140-e801-4fa9-9807-7c94a70be0b4","generation":2},"time":"2026-09-25T14:53:01.103Z"}
+{"pid":145412,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-25T14:53:01.105Z"}
+{"pid":139796,"event":"old-returned","detail":{"rejected":true,"renewed":false},"time":"2026-09-25T14:53:01.133Z"}

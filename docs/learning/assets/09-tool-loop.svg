@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1120" viewBox="0 0 1120 1120" role="img" aria-labelledby="title desc"><title id="title">原生工具调用：请求、完整轮次与受控执行</title><desc id="desc">调用身份贯穿生成、执行与回填　完整协议通过后才形成可执行动作</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L7 4L0 8" fill="#52758a"/></marker><style>text{font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#253b49}.title{font-size:25px;font-weight:700}.subtitle{font-size:16px;fill:#607581}.head{font-size:19px;font-weight:700}.body{font-size:16px}.label{font-size:14px;fill:#405e70}.group{font-size:16px;font-weight:700;fill:#4c6b7d}</style></defs><rect width="1120" height="1120" fill="#f8fafb" rx="16"/>
+<text x="560" y="43" text-anchor="middle" class="title"><tspan x="560" dy="0">原生工具调用：请求、完整轮次与受控执行</tspan></text>
+<text x="560" y="74" text-anchor="middle" class="subtitle"><tspan x="560" dy="0">调用身份贯穿生成、执行与回填　完整协议通过后才形成可执行动作</tspan></text>
+<rect x="35" y="115" width="310" height="835" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="190" y="142" text-anchor="middle" class="group"><tspan x="190" dy="0">构造请求</tspan></text>
+<rect x="405" y="115" width="310" height="835" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="560" y="142" text-anchor="middle" class="group"><tspan x="560" dy="0">模型协议与确认</tspan></text>
+<rect x="775" y="115" width="310" height="835" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="930" y="142" text-anchor="middle" class="group"><tspan x="930" dy="0">宿主执行</tspan></text>
+<path d="M325 235H430" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 290V385" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 500V610" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="575" y="539" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="610" y="555" text-anchor="middle" class="label"><tspan x="610" dy="0">完整有效</tspan></text>
+<path d="M690 662H800" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 910V970H20V662H55" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<rect x="120" y="954" width="140" height="23" rx="4" fill="#f8fafb"/>
+<text x="190" y="970" text-anchor="middle" class="label"><tspan x="190" dy="0">只读结果确认后继续</tspan></text>
+<path d="M190 610V290" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<rect x="189" y="429" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="224" y="445" text-anchor="middle" class="label"><tspan x="224" dy="0">继续循环</tspan></text>
+<path d="M930 715V756H190V810" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M560 756V810" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M930 756V810" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M690 445H747V980H790V1037H770" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<rect x="712" y="957" width="70" height="23" rx="4" fill="#f8fafb"/>
+<text x="747" y="973" text-anchor="middle" class="label"><tspan x="747" dy="0">协议拒绝</tspan></text>
+<rect x="55" y="180" width="270" height="110" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="190" y="217" text-anchor="middle" class="head"><tspan x="190" dy="0">ModelRequest</tspan></text>
+<text x="190" y="247" text-anchor="middle" class="body"><tspan x="190" dy="0">system + messages</tspan><tspan x="190" dy="23">tools + inputSchema</tspan></text>
+<rect x="430" y="180" width="260" height="110" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="217" text-anchor="middle" class="head"><tspan x="560" dy="0">流式内容块</tspan></text>
+<text x="560" y="247" text-anchor="middle" class="body"><tspan x="560" dy="0">text_delta</tspan><tspan x="560" dy="23">tool_call 与参数增量</tspan></text>
+<rect x="430" y="385" width="260" height="115" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="424.5" text-anchor="middle" class="head"><tspan x="560" dy="0">协议校验</tspan></text>
+<text x="560" y="454.5" text-anchor="middle" class="body"><tspan x="560" dy="0">完整轮次与合法参数</tspan><tspan x="560" dy="23">调用 ID 不可重用</tspan></text>
+<rect x="430" y="610" width="260" height="105" rx="10" fill="#e5f0e9" stroke="#b8cbd7"/>
+<text x="560" y="644.5" text-anchor="middle" class="head"><tspan x="560" dy="0">持久确认</tspan></text>
+<text x="560" y="674.5" text-anchor="middle" class="body"><tspan x="560" dy="0">agent.turn 与步骤</tspan><tspan x="560" dy="23">同事务确认</tspan></text>
+<rect x="800" y="610" width="260" height="105" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="930" y="656" text-anchor="middle" class="head"><tspan x="930" dy="0">工具分派</tspan></text>
+<text x="930" y="686" text-anchor="middle" class="body"><tspan x="930" dy="0">只读 / 交互控制 / 退款</tspan></text>
+<rect x="55" y="610" width="270" height="105" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="190" y="644.5" text-anchor="middle" class="head"><tspan x="190" dy="0">下一轮消息</tspan></text>
+<text x="190" y="674.5" text-anchor="middle" class="body"><tspan x="190" dy="0">原 tool_result 配对</tspan><tspan x="190" dy="23">恢复不猜测调用身份</tspan></text>
+<rect x="55" y="810" width="270" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="190" y="842" text-anchor="middle" class="head"><tspan x="190" dy="0">ask_user / conclude</tspan></text>
+<text x="190" y="872" text-anchor="middle" class="body"><tspan x="190" dy="0">补问或结束本轮答复</tspan><tspan x="190" dy="23">会话终态取决于版本</tspan></text>
+<rect x="425" y="810" width="270" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="560" y="853.5" text-anchor="middle" class="head"><tspan x="560" dy="0">只读工具</tspan></text>
+<text x="560" y="883.5" text-anchor="middle" class="body"><tspan x="560" dy="0">查询后回填原 ID</tspan></text>
+<rect x="795" y="810" width="270" height="100" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="930" y="853.5" text-anchor="middle" class="head"><tspan x="930" dy="0">退款申请</tspan></text>
+<text x="930" y="883.5" text-anchor="middle" class="body"><tspan x="930" dy="0">单独一轮交给业务受理</tspan></text>
+<rect x="350" y="1000" width="420" height="75" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="560" y="1031" text-anchor="middle" class="head"><tspan x="560" dy="0">协议失败或半段中断</tspan></text>
+<text x="560" y="1061" text-anchor="middle" class="body"><tspan x="560" dy="0">停止并保留调用费用事实</tspan></text>
+<text x="560" y="1097" text-anchor="middle" class="label"><tspan x="560" dy="0">退款及交互控制工具独占一轮　新版咨询答复后仍可继续　目录不是数据库访问权</tspan></text>
+</svg>

@@ -13,6 +13,59 @@ function event(sequence: number, type: string, payload: Record<string, unknown>)
 }
 
 describe('事件归约', () => {
+  it('持久会话只有完成事件且没有执行编号时仍重建全部工具记录', () => {
+    // 持久会话直接投影已确认结果 同一工具在不同轮次允许多次执行
+    const events = [
+      event(5, 'tool.completed', {
+        toolName: 'get_order',
+        status: 'succeeded',
+        result: { orderNo: 'SO-test' },
+      }),
+      event(8, 'tool.completed', {
+        toolName: 'get_order',
+        status: 'succeeded',
+        result: { orderNo: 'SO-test' },
+      }),
+      event(14, 'tool.completed', {
+        toolName: 'request_refund',
+        status: 'failed',
+        result: { errorCode: 'POLICY_DENIED' },
+      }),
+    ]
+    const state = reduceEvents(initialViewState(), events)
+    expect(state.tools).toHaveLength(3)
+    expect(new Set(state.tools.map((tool) => tool.executionId)).size).toBe(3)
+    expect(state.tools[0]).toMatchObject({
+      toolName: 'get_order',
+      status: 'succeeded',
+      resultSummary: { orderNo: 'SO-test' },
+    })
+    expect(state.tools[0]?.latencyMs).toBeUndefined()
+    expect(state.tools[0]?.attempt).toBeUndefined()
+    expect(state.tools[2]?.status).toBe('failed')
+    expect(reduceEvent(state, events[2]!)).toBe(state)
+  })
+
+  it('带执行编号的独立完成事件能显示且后续同编号结果不会新增条目', () => {
+    const payload = {
+      executionId: 'orphan-1',
+      toolName: 'get_order',
+      status: 'succeeded',
+      latencyMs: 0,
+      resultSummary: { found: true },
+    }
+    const state = reduceEvents(initialViewState(), [
+      event(1, 'tool.completed', payload),
+      event(2, 'tool.completed', payload),
+    ])
+    expect(state.tools).toHaveLength(1)
+    expect(state.tools[0]).toMatchObject({
+      executionId: 'orphan-1',
+      latencyMs: 0,
+      resultSummary: { found: true },
+    })
+  })
+
   it('用户与助手消息按序进入列表', () => {
     let state = initialViewState()
     state = reduceEvent(state, event(1, 'message.user', { text: '查单' }))
@@ -71,6 +124,8 @@ describe('事件归约', () => {
     )
     expect(state.tools[0]?.status).toBe('succeeded')
     expect(state.tools[0]?.latencyMs).toBe(12)
+    expect(state.tools).toHaveLength(1)
+    expect(state.tools[0]?.attempt).toBe(1)
   })
 
   it('审批事件更新卡片状态', () => {

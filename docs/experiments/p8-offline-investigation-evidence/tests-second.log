@@ -1,0 +1,14 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/runtime
+
+ ✓ test/p8-investigation.test.ts (17 tests) 754ms
+ ✓ test/p8-process.test.ts (3 tests) 5593ms
+   ✓ P8 跨进程持久恢复 > accepted 后真实退出再恢复  2167ms
+   ✓ P8 跨进程持久恢复 > one-confirmed 后真实退出再恢复  1725ms
+   ✓ P8 跨进程持久恢复 > both-confirmed 后真实退出再恢复  1699ms
+
+ Test Files  2 passed (2)
+      Tests  20 passed (20)
+   Start at  13:04:17
+   Duration  7.70s (transform 793ms, setup 0ms, collect 2.47s, tests 6.35s, environment 0ms, prepare 444ms)
+

@@ -19,6 +19,8 @@ import type {
 import type { ApprovalService } from './approval-service.js'
 import type { AuditService } from './audit-service.js'
 import type { Clock } from '../clock.js'
+import type { LegacyExecutionOwnership } from '../../../contracts/src/execution-ownership-contract.js'
+import { LegacyExecutionGuard } from '../execution-ownership-guard.js'
 import { toIso } from '../clock.js'
 import { assertCompensationTransition } from '../state-machines.js'
 import { evaluateCompensationPolicy, POLICY_VERSION } from '../policy.js'
@@ -76,6 +78,8 @@ export class CompensationService {
     private readonly approvals: ApprovalService,
     private readonly audit: AuditService,
     private readonly clock: Clock,
+    // 未注入仅兼容旧模式 不具备持久执行权防线
+    private readonly executionOwnership?: LegacyExecutionOwnership,
   ) {}
 
   /** 带乐观锁的保存 本地对象在成功后同步递增版本 */
@@ -131,10 +135,14 @@ export class CompensationService {
     )
     if (occupied) {
       throw new DomainError(
-        createToolError('CONFLICT', `该订单已就同一原因补偿过 ${occupied.compensationNo} 不能重复发放`, {
-          resourceType: 'compensation',
-          resourceId: occupied.compensationNo,
-        }),
+        createToolError(
+          'CONFLICT',
+          `该订单已就同一原因补偿过 ${occupied.compensationNo} 不能重复发放`,
+          {
+            resourceType: 'compensation',
+            resourceId: occupied.compensationNo,
+          },
+        ),
       )
     }
 
@@ -161,6 +169,8 @@ export class CompensationService {
     assertCompensationTransition(record.status, targetStatus)
     record.status = targetStatus
     await this.compensationRepo.create(record)
+    // 新业务登记执行权 崩溃留下缺失登记时禁止自动补授权
+    this.executionOwnership?.registerNew(compensationIdempotencyKey(record.compensationNo))
 
     await this.audit.record(
       actor,
@@ -252,13 +262,20 @@ export class CompensationService {
 
     const key = compensationIdempotencyKey(input.compensationNo)
     const recorded = await this.idempotencyRepo.find(key)
-    if (recorded) {
+    if (recorded || compensation.status === 'succeeded') {
       // 第一道防线拦截 幂等键命中 重复请求短路返回首次结果 未触碰网关
-      await this.audit.record(actor, 'guard_idempotency_replay', 'compensation', input.compensationNo, {
-        layer: 'idempotency',
-        key,
-        action: 'execute_compensation',
-      }, runId)
+      await this.audit.record(
+        actor,
+        'guard_idempotency_replay',
+        'compensation',
+        input.compensationNo,
+        {
+          layer: 'idempotency',
+          key,
+          action: 'execute_compensation',
+        },
+        runId,
+      )
       return {
         compensationNo: input.compensationNo,
         status: 'succeeded',
@@ -272,14 +289,10 @@ export class CompensationService {
     const executable: Compensation['status'][] = ['auto_approved', 'approved', 'failed']
     if (!executable.includes(compensation.status)) {
       throw new DomainError(
-        createToolError(
-          'CONFLICT',
-          `补偿单当前状态 ${compensation.status} 不可执行发放`,
-          {
-            resourceType: 'compensation',
-            resourceId: input.compensationNo,
-          },
-        ),
+        createToolError('CONFLICT', `补偿单当前状态 ${compensation.status} 不可执行发放`, {
+          resourceType: 'compensation',
+          resourceId: input.compensationNo,
+        }),
       )
     }
 
@@ -303,18 +316,22 @@ export class CompensationService {
       }
     }
 
-    assertCompensationTransition(compensation.status, 'executing')
-    compensation.status = 'executing'
-    compensation.updatedAt = toIso(this.clock.now())
-    await this.saveCompensation(compensation)
+    // 发送许可与接管原子互斥 所有失败重试必须重新经过此闸门
+    const execution = new LegacyExecutionGuard(this.executionOwnership, key)
 
     try {
+      assertCompensationTransition(compensation.status, 'executing')
+      compensation.status = 'executing'
+      compensation.updatedAt = toIso(this.clock.now())
+      await this.saveCompensation(compensation)
+
       const gatewayResult = await this.gateway.withRefund(key, {
         refundNo: input.compensationNo,
         amountCents: compensation.amountCents,
         currency: compensation.currency,
         channel: compensation.channel,
       })
+      execution.succeeded(gatewayResult)
 
       // 幂等记录在副作用成功后立即落库 后续重试全部短路
       await this.idempotencyRepo.record(key, {
@@ -342,32 +359,45 @@ export class CompensationService {
       )
 
       // 第三道防线兜底 业务幂等记录丢失但网关按幂等键去重了 未产生重复扣款
-        if (gatewayResult.deduped) {
-          await this.audit.record(actor, 'guard_gateway_dedup', 'compensation', input.compensationNo, {
+      if (gatewayResult.deduped) {
+        await this.audit.record(
+          actor,
+          'guard_gateway_dedup',
+          'compensation',
+          input.compensationNo,
+          {
             layer: 'gateway',
             key,
             action: 'execute_compensation',
-          }, runId)
-        }
-        return {
-          compensationNo: input.compensationNo,
-          status: 'succeeded',
-          amountCents: compensation.amountCents,
-          idempotencyKey: key,
-          replayed: false,
-          gatewayDeduped: gatewayResult.deduped,
-        }
+          },
+          runId,
+        )
+      }
+      return {
+        compensationNo: input.compensationNo,
+        status: 'succeeded',
+        amountCents: compensation.amountCents,
+        idempotencyKey: key,
+        replayed: false,
+        gatewayDeduped: gatewayResult.deduped,
+      }
     } catch (error) {
-      // 网关失败回到可重试状态 重试走同一幂等键
+      // 成功后的本地失败不改写成功事实 未知许可持续阻止重发与接管
+      if (!execution.failed()) throw error
+      // 业务失败不等于渠道未支付 注入守卫后未知许可仍阻止重试
       assertCompensationTransition(compensation.status, 'failed')
       compensation.status = 'failed'
       compensation.updatedAt = toIso(this.clock.now())
       await this.saveCompensation(compensation)
       throw new DomainError(
-        createToolError('UPSTREAM_ERROR', `补偿发放失败 ${error instanceof Error ? error.message : String(error)}`, {
-          resourceType: 'compensation',
-          resourceId: input.compensationNo,
-        }),
+        createToolError(
+          'UPSTREAM_ERROR',
+          `补偿发放失败 ${error instanceof Error ? error.message : String(error)}`,
+          {
+            resourceType: 'compensation',
+            resourceId: input.compensationNo,
+          },
+        ),
       )
     }
   }

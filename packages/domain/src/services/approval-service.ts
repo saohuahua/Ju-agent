@@ -32,6 +32,7 @@ export type DecideResult =
   | { outcome: 'decided'; approval: ApprovalRequest }
   | { outcome: 'already_decided'; approval: ApprovalRequest }
   | { outcome: 'expired'; approval: ApprovalRequest }
+  | { outcome: 'conflict'; approval: ApprovalRequest }
 
 export class ApprovalService {
   constructor(
@@ -41,6 +42,13 @@ export class ApprovalService {
 
   /** 创建审批请求并生成一次性令牌 令牌只在服务端与审批记录中流转 */
   async create(input: CreateApprovalInput): Promise<ApprovalRequest> {
+    const approval = this.prepare(input)
+    await this.approvalRepo.create(approval)
+    return approval
+  }
+
+  /** 生成原审批契约 由持久受理事务同步保存 */
+  prepare(input: CreateApprovalInput): ApprovalRequest {
     const now = this.clock.now()
     const approval: ApprovalRequest = {
       approvalId: `apr_${randomUUID().slice(0, 8)}`,
@@ -57,7 +65,6 @@ export class ApprovalService {
       expiresAt: toIso(new Date(now.getTime() + APPROVAL_TTL_MS)),
       createdAt: toIso(now),
     }
-    await this.approvalRepo.create(approval)
     return approval
   }
 
@@ -69,13 +76,18 @@ export class ApprovalService {
   /**
    * 审批决定
    * 状态不是 pending 时返回 already_decided 不产生第二次副作用
-   * 过期由调用方通过 expireIfNeeded 处理
+   * 数据库条件更新同时检查有效期 避免读取之后状态被其他请求覆盖
    */
   async decide(
     actor: Actor,
     approvalId: string,
     decision: 'approved' | 'rejected',
+    runId?: string,
+    checkpointId?: number,
   ): Promise<DecideResult> {
+    if (actor.role !== 'supervisor') {
+      throw new DomainError(createToolError('AUTHORIZATION_DENIED', '审批决定仅限主管'))
+    }
     const approval = await this.approvalRepo.findById(approvalId)
     if (!approval) {
       throw new DomainError(createToolError('NOT_FOUND', `审批请求不存在 ${approvalId}`))
@@ -87,14 +99,25 @@ export class ApprovalService {
       return { outcome: 'already_decided', approval }
     }
     assertApprovalTransition(approval.status, decision)
-    const decided: ApprovalRequest = {
-      ...approval,
-      status: decision,
+    const decided = await this.approvalRepo.decidePending({
+      approvalId,
+      decision,
       decidedBy: actor.customerId ?? actor.role,
-      decidedAt: toIso(this.clock.now()),
+      now: toIso(this.clock.now()),
+      runId,
+      checkpointId,
+    })
+    if (decided) return { outcome: 'decided', approval: decided }
+
+    // 竞争失败后重读事实 决定已被处理与运行前置条件变化分别返回
+    const current = await this.approvalRepo.findById(approvalId)
+    if (!current) throw new DomainError(createToolError('NOT_FOUND', '审批请求已不存在'))
+    if (current.status === 'expired' || this.isExpired(current))
+      return { outcome: 'expired', approval: current }
+    return {
+      outcome: current.status === 'pending' ? 'conflict' : 'already_decided',
+      approval: current,
     }
-    await this.approvalRepo.update(decided)
-    return { outcome: 'decided', approval: decided }
   }
 
   /**
@@ -120,18 +143,57 @@ export class ApprovalService {
         error: new DomainError(createToolError('APPROVAL_EXPIRED', '审批已过期')),
       }
     }
-    if (approval.status !== 'approved' || approval.oneTimeToken !== token) {
+    if (!token || approval.status !== 'approved' || approval.oneTimeToken !== token) {
       return {
         ok: false,
         error: new DomainError(createToolError('APPROVAL_TOKEN_INVALID', '审批令牌无效或未批准')),
       }
     }
-    await this.approvalRepo.update({ ...approval, oneTimeToken: '' })
-    return { ok: true, approval }
+    const consumed = await this.approvalRepo.consumeToken(
+      approval.approvalId,
+      token,
+      resourceType,
+      resourceId,
+      toIso(this.clock.now()),
+    )
+    if (!consumed) {
+      return {
+        ok: false,
+        error: new DomainError(
+          createToolError('APPROVAL_TOKEN_INVALID', '审批令牌已消费或不再有效'),
+        ),
+      }
+    }
+    return { ok: true, approval: { ...approval, oneTimeToken: '' } }
   }
 
   /** 审批是否过期 供工作流在恢复时检查 */
   isExpired(approval: ApprovalRequest): boolean {
     return new Date(approval.expiresAt).getTime() <= this.clock.now().getTime()
+  }
+
+  /** 工作流只能应用与当前运行和资源一致的已存决定 */
+  async assertStoredDecision(
+    runId: string,
+    approvalId: string,
+    resourceType: string,
+    resourceId: string,
+    decision: 'approved' | 'rejected' | 'expired',
+  ): Promise<void> {
+    const approval = await this.approvalRepo.findById(approvalId)
+    if (
+      !approval ||
+      approval.runId !== runId ||
+      approval.resourceType !== resourceType ||
+      approval.resourceId !== resourceId
+    ) {
+      throw new DomainError(createToolError('CONFLICT', '审批与恢复资源不匹配'))
+    }
+    const expired = approval.status === 'expired' || this.isExpired(approval)
+    if (decision === 'expired' ? !expired : approval.status !== decision || expired) {
+      throw new DomainError(
+        createToolError(expired ? 'APPROVAL_EXPIRED' : 'CONFLICT', '恢复决定与审批事实不一致'),
+      )
+    }
   }
 }

@@ -5,7 +5,25 @@
 
 不是客服聊天机器人 副作用治理与评测闭环才是这个项目的主体
 
-## 核心能力
+## 操作手册
+
+[完整操作手册](docs/manual/README.md)按业务人员、管理员、开发运维三个目录组织，包含真实页面截图、完整退款演练和可复制接口示例。[评测操作专章](docs/manual/devops/evaluation.md)说明当前离线 L1/L2、指标分母、Judge、失败排查与报告比较；当前命令和数据集以该章及实际源码为准。复现完整审批与退货流程可运行 `node --import tsx docs/manual/devops/demo.ts`，使用独立临时双库，不默认 build。
+
+## 学习与当前实现入口
+
+2026-09-28 新增半自动售后引导：普通咨询连续追问、快捷说明、意图补问选项及可实际受理的人工入口；退款办理中通过关联咨询联系人工。已使用用户配置的 DeepSeek 完成有限真实模型及浏览器验收，旧快照保留原行为。启用方式、测试与费用边界见[售后引导交接](docs/handoffs/customer-guidance.md)。
+
+2026-09-28 客户消息与处理进度已修复：SSE 禁止代理压缩缓冲，默认持久智能会话发送即回显并按请求键确认，回复与订单选择卡片可恢复，进度只展示可核验动作。根因、接口兼容和验收范围见[消息与进度交接](docs/handoffs/customer-message-progress.md)。
+
+2026-09-28 新增最近订单查询与选单：默认 simulation 新会话无需手填订单号，可选择本人最近订单及商品，保留原始退货诉求，并识别“无法开机”等质量问题表述。旧会话保留冻结版本，需要新建咨询体验。实现、测试和已知边界见[最近订单选单交接](docs/handoffs/recent-order-selection.md)。
+
+完整材料从[导学：有据售后](docs/learning/导学-有据售后.md)开始，原 22 章按主题分层，新增[10 篇业务详解](docs/learning/03-业务逻辑详解/README.md)、10 张业务 SVG、[23 道业务练习与独立解析](docs/learning/09-练习与自测/业务流程练习.md)，建议先业务后机制阅读；[面经](docs/interview/面经-有据售后.md)提供主问与递进追问，配套[重建练习](docs/learning/09-练习与自测/渐进重建练习.md)、[技术自测](docs/learning/09-练习与自测/集中自测.md)和[证据索引](docs/learning/维护与证据/核心结论与证据索引.md)。精确复现命令见[本地离线演示](docs/runbooks/p11-local-offline-demo.md)，无需重复构建。
+
+当前默认持久入口使用完整模型轮次确认、冻结版本工具集合和字符政策检索；旧版逐 token 事件、动态查单门控及上下文压缩不能直接视为此入口已启用能力。两类退款通过业务授权、发送意图和原交易查询恢复，未知资金不自动重发。P8 双分支调查为独立模块，未接默认客户入口。真实模型、真实支付及 Docker 运行验收的限制见[当前证据索引](docs/learning/维护与证据/核心结论与证据索引.md)。
+
+## 历史能力与实验背景
+
+以下保留早期路径的能力描述与实验线索，不作为当前默认入口的功能清单。部分旧措辞包含强结论，引用前应核对具体源码、实验条件和上述现行说明；尤其不能把历史真实模型百分比作为当前质量，或将模拟资金防重写成全局绝对保证。
 
 - **原生 Agent 循环** 模型经原生 tool calling 决策（tool_use 块 + 工具参数流式增量） ask_user 协议工具承接多轮澄清 旧 JSON 协议已废除
 - **混合架构** 模型负责理解与决策 副作用路径固化为确定性工作流 资金动作永不直接经过模型
@@ -27,14 +45,20 @@
 
 ## 快速开始
 
-环境要求 Node 20+ pnpm 10+
+默认部署入口为根目录 `compose.yaml`，显式离线 simulation，无需模型密钥。需要可用的本机 Docker Engine 和 Compose v2。当前机器容器运行验收受阻，配置交付不等于容器实测通过。完整命令与边界见 [离线部署手册](docs/runbooks/offline-deployment.md)。
 
 ```bash
-pnpm install
-pnpm db:reset        # 重置数据库并载入演示数据
-pnpm dev             # 启动 API http://localhost:8787
-pnpm dev:web         # 启动工作台 http://localhost:8790 (另开终端)
+docker compose --env-file infra/docker/offline.env -p youju-p10 -f compose.yaml build
+docker compose --env-file infra/docker/offline.env -p youju-p10 -f compose.yaml up -d --wait
 ```
+
+浏览器访问 `http://127.0.0.1:18790/workbench`。默认不会占用原 8787/8790 服务，业务和渠道分别持久化。普通重启不运行 db:reset 或删除卷。镜像首次构建需要依赖下载或已有缓存，离线指运行期间不调用真实模型和资金，并非首次构建无需网络。
+
+本地离线开发只需运行 `pnpm dev:offline`，再打开终端打印的工作台地址。此入口与 Compose 使用相同的 simulation 业务模式和内嵌模拟渠道，网页同样经 `/api` 代理到 API；数据保存在独立的 `data/local-offline/`，不会读取 Docker 卷或原 `data/app.db`。完整用法与差异见[本地与容器一致性](docs/runbooks/local-offline.md)。旧的 `pnpm dev` / `pnpm dev:web` 保留为分别启动的开发入口，不自动启用完整离线业务。部署工具链固定 Node 22.23.2 与 pnpm 11.23.0，按锁文件安装。`infra/docker/docker-compose.yml` 仅保留历史 PostgreSQL/Redis 设施，当前运行时没有迁移到 PostgreSQL。
+
+本机需要真实模型时，可在 `.env` 填写模型配置、估算单价和 `MODEL_AUTO_ENABLE=1`。同一入口此时让新客户咨询调用真实模型，订单与支付仍使用本机模拟数据；配置缺项会阻止启动。设置弹窗读取非敏感配置，密钥只保存在服务端。操作与边界见[模型设置手册](docs/runbooks/model-settings.md)。
+
+换电脑保留当前本地数据时，先停止服务，运行 `pnpm data:backup:offline`，将打印的备份目录带到新电脑，在首次启动前运行 `pnpm data:restore:offline <备份目录>`。备份包含业务库和模拟渠道库，操作步骤见[本地与容器一致性](docs/runbooks/local-offline.md)。不迁移历史数据时，直接运行 `pnpm dev:offline` 会创建表和基础演示数据。
 
 演示令牌
 
@@ -45,7 +69,7 @@ pnpm dev:web         # 启动工作台 http://localhost:8790 (另开终端)
 | 售后专员  | operator-token   |
 | 主管 审批 | supervisor-token |
 
-未配置 ANTHROPIC_API_KEY 时对话能力返回 503 审批 运行记录 评测看板不受影响
+这些令牌仅用于本机离线演示，不是生产认证方案。业务与支付仍固定为 simulation；真实模型对话可在本机设置页经过连接测试后单独启用，见[模型设置手册](docs/runbooks/model-settings.md)。
 
 ## 常用命令
 
@@ -53,27 +77,25 @@ pnpm dev:web         # 启动工作台 http://localhost:8790 (另开终端)
 pnpm test            # 全部单元与契约测试
 pnpm typecheck       # 类型检查
 pnpm lint            # 静态检查
-pnpm eval            # L1 脚本化回归 单轮 111 条 零成本
+pnpm eval            # L1 脚本化回归 单轮 124 条 模拟成本
 pnpm eval -- --repeat 3     # L1 三轮 输出 Pass^3
-pnpm eval:sim        # L2 用户模拟评测 P0 全量 需要密钥
+pnpm eval:sim        # L2 显式离线模拟入口 真实模式仍禁用
 pnpm eval:sim -- --repeat 3       # L2 三轮 Pass^3
 pnpm eval:sim -- --case <id>      # 单用例调试
 pnpm demo            # 终端离线演示 五个核心场景
 pnpm eval:dataset    # 导出评测数据集 JSON
+pnpm trace:export -- --run <id>   # 将会话导出为 OTLP JSON 并校验
+pnpm case:from-run -- --run <id>  # 从会话生成 L1 用例草稿
+pnpm case:adopt -- --draft <file> --id <id>  # 显式采纳草稿为 regression 用例
 pnpm db:reset        # 重置数据库
 pnpm build           # 构建前端生产包
 ```
 
 ## 接入真实模型
 
-```bash
-cp .env.example .env
-# 填入 ANTHROPIC_API_KEY 可选调整 ANTHROPIC_MODEL
-# 用代理或中转站时同时设置 ANTHROPIC_BASE_URL 指向自定义地址
-```
+本机设置页支持 Anthropic Messages 与 OpenAI 兼容 Chat 协议的真实模型对话。API Key 只保存在服务端进程内存，连接测试和对话均须显式启用；模型调用费用按用户填写的单价估算，不代表供应商账单。订单与支付继续模拟，真实业务生产部署、Judge 校准与模型质量验证仍未完成。配置步骤和边界见[模型设置手册](docs/runbooks/model-settings.md)。
 
-配置后工作台对话走原生 tool calling 真流式
-L2 评测用 Haiku 扮演客户与被测模型多轮对话 模拟器与被测模型强制分离
+以下旧 L2 成绩属于历史实验记录，不代表当前部署的真实模型质量。当前阶段事实以 [IMPLEMENTATION](IMPLEMENTATION.md) 和 [P10 交接](docs/handoffs/p10-offline-deployment.md) 为准。
 
 ## 评测结果
 
@@ -91,7 +113,7 @@ L2 评测用 Haiku 扮演客户与被测模型多轮对话 模拟器与被测模
 L2 基线为 v2 提示词 105 条用例集全量单轮 迭代终值为 v2.3 提示词 111 条用例集全量单轮
 剔除代理 503 环境异常后模型行为口径 35.9% → 57.4% 提升约 21 个百分点
 三轮 p0 迭代曲线 54.1% → 73.0% → 67.6% 安全段回归在 v4 由安全分流修复 v2.4 实测回升至 36% 环境剔除口径 39.1% 未达 40% 简单档 v2.5 完整 L2 验证因中转站 token 配额耗尽未完成 如实标注 详见 LIMITATIONS
-两者必须分开表述 详见 [数字诚实声明](docs/interview/STAR.md)
+两者必须分开表述 详见 [简历事实与数字边界](docs/interview/简历事实摘要.md)
 
 ## 目录结构
 
@@ -115,12 +137,13 @@ infra/           PostgreSQL DDL Docker Compose 生产路径
 
 ## 文档索引
 
+- [P11 写作约定与章节规划](docs/learning/维护与证据/写作约定与章节规划.md) 已确认标准；22 章及配套材料从[导学](docs/learning/导学-有据售后.md)进入，检查范围见[编写与复核记录](docs/learning/维护与证据/编写与复核记录.md)
 - [架构设计](docs/architecture.md) 分层图 生命周期 退款安全链 事件协议
 - [业务背景](docs/business-context.md) 为什么做售后 Agent 人机分工边界
 - [术语表](docs/CONTEXT.md) 补偿与物流推送业务概念 词汇一致
 - [评测方法论](docs/evaluation.md) 用例契约 指标定义 Pass^k Badcase 回流
 - [架构决策记录](docs/adr/DECISIONS.md) 十一条关键决策与备选方案
-- [面试叙事](docs/interview/STAR.md) STAR 结构与高频追问 附 [ADR-004 追问稿](docs/interview/adr004-defense.md) 为什么不用 Mastra 与 MCP
+- [面试材料入口](docs/interview/README.md) 项目面经、40 题映射与简历事实；框架和 MCP 取舍见现行面经 Q21–Q22
 - [组件开发规范](apps/web/CONVENTIONS.md) 前端组件约定
 - [局限性](LIMITATIONS.md) 诚实边界
 

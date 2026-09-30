@@ -1,0 +1,58 @@
+{
+  "checkedAt": "2026-09-28T15:29:58.890Z",
+  "browser": "Chromium via installed Chrome",
+  "reason": "CUA kernel sandbox initialization failed",
+  "typoraVerified": false,
+  "results": [
+    {
+      "id": "b01-capabilities",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-e1bHz1\\b01-capabilities.png",
+      "issues": []
+    },
+    {
+      "id": "b02-objects",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-e1bHz1\\b02-objects.png",
+      "issues": []
+    },
+    {
+      "id": "b03-policy",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-e1bHz1\\b03-policy.png",
+      "issues": []
+    },
+    {
+      "id": "b04-refund",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-e1bHz1\\b04-refund.png",
+      "issues": []
+    },
+    {
+      "id": "b05-return",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-e1bHz1\\b05-return.png",
+      "issues": []
+    },
+    {
+      "id": "b06-approval",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-e1bHz1\\b06-approval.png",
+      "issues": []
+    },
+    {
+      "id": "b07-human-closure",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-e1bHz1\\b07-human-closure.png",
+      "issues": []
+    },
+    {
+      "id": "b08-other-business",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-e1bHz1\\b08-other-business.png",
+      "issues": []
+    },
+    {
+      "id": "b09-logistics-rating",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-e1bHz1\\b09-logistics-rating.png",
+      "issues": []
+    },
+    {
+      "id": "b10-customer-view",
+      "screenshot": "C:\\Users\\htlocal\\AppData\\Local\\Temp\\aftersales-learning-e1bHz1\\b10-customer-view.png",
+      "issues": []
+    }
+  ]
+}

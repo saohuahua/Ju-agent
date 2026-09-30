@@ -1,0 +1,15 @@
+{"pid":107984,"event":"ready","detail":{"url":"http://127.0.0.1:60153"},"time":"2026-09-25T14:53:11.197Z"}
+{"pid":120036,"event":"accepted","detail":{"taskId":"0259ae09-5637-477a-bde7-e8a91f6ecf42","runId":"run_15dbbbc9-a983-49a1-b180-340025532582"},"time":"2026-09-25T14:53:12.070Z"}
+{"pid":147292,"event":"claimed","detail":{"taskId":"0259ae09-5637-477a-bde7-e8a91f6ecf42","generation":1},"time":"2026-09-25T14:53:12.658Z"}
+{"pid":147292,"event":"before-model","detail":{"taskId":"0259ae09-5637-477a-bde7-e8a91f6ecf42","generation":1},"time":"2026-09-25T14:53:12.662Z"}
+{"pid":147292,"event":"model-called","detail":{"snapshot":{"snapshotId":"scripted-frozen-v1","provider":"scripted","model":"scripted-v1","promptVersion":"p6-v1","value":{"scenario":"normal","paid":false}}},"time":"2026-09-25T14:53:12.662Z"}
+{"pid":147292,"event":"after-model-checkpoint","detail":{"taskId":"0259ae09-5637-477a-bde7-e8a91f6ecf42","generation":1},"time":"2026-09-25T14:53:12.664Z"}
+{"pid":147292,"event":"read-called","detail":null,"time":"2026-09-25T14:53:12.664Z"}
+{"pid":147292,"event":"after-payment-intent","detail":{"taskId":"0259ae09-5637-477a-bde7-e8a91f6ecf42","generation":1},"time":"2026-09-25T14:53:12.675Z"}
+{"pid":147292,"event":"after-payment-response","detail":{"taskId":"0259ae09-5637-477a-bde7-e8a91f6ecf42","generation":1},"time":"2026-09-25T14:53:12.697Z"}
+{"pid":147292,"event":"after-payment-checkpoint","detail":{"taskId":"0259ae09-5637-477a-bde7-e8a91f6ecf42","generation":1},"time":"2026-09-25T14:53:12.698Z"}
+{"pid":147292,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-25T14:53:12.699Z"}
+{"pid":145420,"event":"ready","detail":{"url":"http://127.0.0.1:58162"},"time":"2026-09-25T14:53:13.466Z"}
+{"pid":78676,"event":"accepted","detail":{"taskId":"fade0f6d-a445-4131-8cec-98ff12242a61","runId":"run_9a0780b5-edc8-4f1f-992a-0e679297edd5"},"time":"2026-09-25T14:53:14.143Z"}
+{"pid":108108,"event":"claimed","detail":{"taskId":"fade0f6d-a445-4131-8cec-98ff12242a61","generation":1},"time":"2026-09-25T14:53:14.749Z"}
+{"pid":108108,"event":"worker-result","detail":{"claimed":true},"time":"2026-09-25T14:53:14.762Z"}

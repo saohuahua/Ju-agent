@@ -1,0 +1,119 @@
+
+ RUN  v3.2.7 D:/project/agent-new/aftersales/packages/runtime
+
+ ❯ test/p8-fixes.test.ts (7 tests | 6 failed) 311ms
+   × 真实 P6 未知资金进入 P8 记忆并保持人工核验和原发送许可 148ms
+     → expected [] to deeply equal [ ObjectContaining{…} ]
+   ✓ 已确认真实模拟退款保留成功事实 不误报为未知 44ms
+   × 旧执行器失败但许可未知仍须人工核验 39ms
+     → expected [] to deep equally contain ObjectContaining{…}
+   × 资金效果的任务归属被篡改时不归为已确认成功 41ms
+     → expected [] to deep equally contain ObjectContaining{…}
+   × queued 原任务在源记录更新后同参重放仍返回原身份 10ms
+     → P8 政策原文已变化
+   × facts 原任务在源记录更新后同参重放仍返回原身份 13ms
+     → P8 政策原文已变化
+   × completed 原任务在源记录更新后同参重放仍返回原身份 16ms
+     → P8 政策原文已变化
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/p8-fixes.test.ts > 真实 P6 未知资金进入 P8 记忆并保持人工核验和原发送许可
+AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+- [
+-   ObjectContaining {
+-     "execution": ObjectContaining {
+-       "bindingValid": true,
+-       "effectStatus": "unknown",
+-       "ownershipState": "sending",
+-       "taskStatus": "needs_confirmation",
+-     },
+-     "kind": "refund",
+-     "status": "executing",
+-   },
+- ]
++ []
+
+ ❯ test/p8-fixes.test.ts:50:40
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/p8-fixes.test.ts > 旧执行器失败但许可未知仍须人工核验
+AssertionError: expected [] to deep equally contain ObjectContaining{…}
+
+- Expected: 
+ObjectContaining {
+  "kind": "refund",
+  "status": "failed",
+}
+
++ Received: 
+[]
+
+ ❯ test/p8-fixes.test.ts:79:40
+     77|   await runtime.run(parent.taskId)
+     78|   const result = p8Report(runtime, parent.taskId)
+     79|   expect(result.memory.unknownActions).toContainEqual(expect.objectCon…
+       |                                        ^
+     80|   expect(result.conclusion?.recommendation).toBe('human_review')
+     81| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/p8-fixes.test.ts > 资金效果的任务归属被篡改时不归为已确认成功
+AssertionError: expected [] to deep equally contain ObjectContaining{…}
+
+- Expected: 
+ObjectContaining {
+  "execution": ObjectContaining {
+    "bindingValid": false,
+  },
+  "kind": "refund",
+  "status": "succeeded",
+}
+
++ Received: 
+[]
+
+ ❯ test/p8-fixes.test.ts:90:40
+     88|   await runtime.run(parent.taskId)
+     89|   const result = p8Report(runtime, parent.taskId)
+     90|   expect(result.memory.unknownActions).toContainEqual(expect.objectCon…
+       |                                        ^
+     91|   expect(result.memory.completedActions.some(item => item.kind === 're…
+     92|   expect(result.conclusion?.recommendation).toBe('human_review')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/p8-fixes.test.ts > queued 原任务在源记录更新后同参重放仍返回原身份
+ FAIL  test/p8-fixes.test.ts > facts 原任务在源记录更新后同参重放仍返回原身份
+ FAIL  test/p8-fixes.test.ts > completed 原任务在源记录更新后同参重放仍返回原身份
+Error: P8 政策原文已变化
+ ❯ P8Investigation.validateAndAccept src/p8-investigation.ts:134:13
+    132|       .all(input.policyVersion) as PolicyArticle[]
+    133|     if (buildKnowledgeSnapshot(policies).snapshotId !== input.knowledg…
+    134|       throw new Error('P8 政策原文已变化')
+       |             ^
+    135|     if (
+    136|       input.evidence.filter((item) => item.kind === 'order').length !=…
+ ❯ Function.<anonymous> src/p8-investigation.ts:103:43
+ ❯ Function.sqliteTransaction ../../node_modules/.pnpm/better-sqlite3@11.10.0/node_modules/better-sqlite3/lib/methods/transaction.js:65:24
+ ❯ P8Investigation.accept src/p8-investigation.ts:103:69
+ ❯ test/p8-fixes.test.ts:105:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 1 passed (7)
+   Start at  14:10:50
+   Duration  2.69s (transform 599ms, setup 0ms, collect 1.64s, tests 311ms, environment 0ms, prepare 194ms)
+
+undefined
+D:\project\agent-new\aftersales\packages\runtime:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run test/p8-fixes.test.ts

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1040" viewBox="0 0 1120 1040" role="img" aria-labelledby="title desc"><title id="title">设计取舍：每一项复杂度都对应一个实际约束</title><desc id="desc">从左到右阅读约束、当前机制与迁移触发条件　右列全部为扩展讨论</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L7 4L0 8" fill="#52758a"/></marker><style>text{font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;fill:#253b49}.title{font-size:25px;font-weight:700}.subtitle{font-size:16px;fill:#607581}.head{font-size:19px;font-weight:700}.body{font-size:16px}.label{font-size:14px;fill:#405e70}.group{font-size:16px;font-weight:700;fill:#4c6b7d}</style></defs><rect width="1120" height="1040" fill="#f8fafb" rx="16"/>
+<text x="560" y="43" text-anchor="middle" class="title"><tspan x="560" dy="0">设计取舍：每一项复杂度都对应一个实际约束</tspan></text>
+<text x="560" y="74" text-anchor="middle" class="subtitle"><tspan x="560" dy="0">从左到右阅读约束、当前机制与迁移触发条件　右列全部为扩展讨论</tspan></text>
+<rect x="35" y="110" width="300" height="850" rx="14" fill="#f0f4f7" stroke="#cfdae1"/>
+<text x="185" y="137" text-anchor="middle" class="group"><tspan x="185" dy="0">当前需要解决的约束</tspan></text>
+<rect x="410" y="110" width="300" height="850" rx="14" fill="#eef5f1" stroke="#cfdae1"/>
+<text x="560" y="137" text-anchor="middle" class="group"><tspan x="560" dy="0">已有机制</tspan></text>
+<rect x="785" y="110" width="300" height="850" rx="14" fill="#fff8ea" stroke="#cfdae1"/>
+<text x="935" y="137" text-anchor="middle" class="group"><tspan x="935" dy="0">何时需要新方案</tspan></text>
+<path d="M315 235H430" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M690 235H805" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<path d="M315 425H430" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M690 425H805" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<path d="M315 615H430" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M690 615H805" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<path d="M315 815H430" fill="none" stroke="#52758a" stroke-width="1.8"  marker-end="url(#arrow)"/>
+<path d="M690 815H805" fill="none" stroke="#52758a" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<rect x="55" y="175" width="260" height="120" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="185" y="228.5" text-anchor="middle" class="head"><tspan x="185" dy="0">本机可复现</tspan></text>
+<text x="185" y="258.5" text-anchor="middle" class="body"><tspan x="185" dy="0">降低外部设施依赖</tspan></text>
+<rect x="430" y="175" width="260" height="120" rx="10" fill="#e5f2ec" stroke="#b8cbd7"/>
+<text x="560" y="228.5" text-anchor="middle" class="head"><tspan x="560" dy="0">SQLite 与同库事务</tspan></text>
+<text x="560" y="258.5" text-anchor="middle" class="body"><tspan x="560" dy="0">命令和任务共同受理</tspan></text>
+<rect x="805" y="175" width="260" height="120" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="935" y="228.5" text-anchor="middle" class="head"><tspan x="935" dy="0">多节点与写入瓶颈</tspan></text>
+<text x="935" y="258.5" text-anchor="middle" class="body"><tspan x="935" dy="0">评估服务型数据库</tspan></text>
+<rect x="55" y="365" width="260" height="120" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="185" y="418.5" text-anchor="middle" class="head"><tspan x="185" dy="0">步骤跨越人工等待</tspan></text>
+<text x="185" y="448.5" text-anchor="middle" class="body"><tspan x="185" dy="0">进程内函数无法保存进度</tspan></text>
+<rect x="430" y="365" width="260" height="120" rx="10" fill="#e5f2ec" stroke="#b8cbd7"/>
+<text x="560" y="418.5" text-anchor="middle" class="head"><tspan x="560" dy="0">数据库任务与检查点</tspan></text>
+<text x="560" y="448.5" text-anchor="middle" class="body"><tspan x="560" dy="0">租约和代次保护写回</tspan></text>
+<rect x="805" y="365" width="260" height="120" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="935" y="418.5" text-anchor="middle" class="head"><tspan x="935" dy="0">复杂调度与独立伸缩</tspan></text>
+<text x="935" y="448.5" text-anchor="middle" class="body"><tspan x="935" dy="0">队列并保留可靠投递</tspan></text>
+<rect x="55" y="555" width="260" height="120" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="185" y="608.5" text-anchor="middle" class="head"><tspan x="185" dy="0">资金可能已执行</tspan></text>
+<text x="185" y="638.5" text-anchor="middle" class="body"><tspan x="185" dy="0">超时无法推出未退款</tspan></text>
+<rect x="430" y="555" width="260" height="120" rx="10" fill="#e5f2ec" stroke="#b8cbd7"/>
+<text x="560" y="608.5" text-anchor="middle" class="head"><tspan x="560" dy="0">发送意图与原交易查询</tspan></text>
+<text x="560" y="638.5" text-anchor="middle" class="body"><tspan x="560" dy="0">未知不自动重发</tspan></text>
+<rect x="805" y="555" width="260" height="120" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="935" y="608.5" text-anchor="middle" class="head"><tspan x="935" dy="0">需要主动对账</tspan></text>
+<text x="935" y="638.5" text-anchor="middle" class="body"><tspan x="935" dy="0">先取得权威渠道契约</tspan></text>
+<rect x="55" y="745" width="260" height="140" rx="10" fill="#e8eff5" stroke="#b8cbd7"/>
+<text x="185" y="808.5" text-anchor="middle" class="head"><tspan x="185" dy="0">政策解释需要证据</tspan></text>
+<text x="185" y="838.5" text-anchor="middle" class="body"><tspan x="185" dy="0">小语料与可定位来源</tspan></text>
+<rect x="430" y="745" width="260" height="140" rx="10" fill="#e5f2ec" stroke="#b8cbd7"/>
+<text x="560" y="808.5" text-anchor="middle" class="head"><tspan x="560" dy="0">字符检索与规则终判</tspan></text>
+<text x="560" y="838.5" text-anchor="middle" class="body"><tspan x="560" dy="0">BM25 保留实验对照</tspan></text>
+<rect x="805" y="745" width="260" height="140" rx="10" fill="#fff2d8" stroke="#b8cbd7"/>
+<text x="935" y="808.5" text-anchor="middle" class="head"><tspan x="935" dy="0">语义遗漏与规模增长</tspan></text>
+<text x="935" y="838.5" text-anchor="middle" class="body"><tspan x="935" dy="0">向量／融合／重排对照</tspan></text>
+<text x="560" y="1017" text-anchor="middle" class="label"><tspan x="560" dy="0">替换框架或基础设施后仍需重验原业务身份、授权、幂等、费用和证据协议</tspan></text>
+</svg>

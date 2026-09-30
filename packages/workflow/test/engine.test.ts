@@ -18,6 +18,46 @@ const customer = { role: 'customer' as const, customerId: 'C1001' }
 const supervisor = { role: 'supervisor' as const }
 
 describe('仅退款工作流', () => {
+  it('未批准或决定不一致时不能通过恢复参数伪造执行授权', async () => {
+    const system = composeWorkflowSystem()
+    seedLargeUnshippedOrder(system)
+    const { runId, toolContext } = await createTestRun(system, customer)
+    const paused = await system.engine.start(
+      runId,
+      'submit_refund_only',
+      {
+        orderNo: 'SO-2026-0001',
+        reason: 'unshipped_cancel',
+      },
+      toolContext,
+    )
+    if (paused.status !== 'paused') throw new Error('审批夹具没有暂停')
+
+    await expect(
+      system.engine.resumeAfterApproval(
+        runId,
+        paused.approvalId,
+        'approved',
+        'supervisor',
+        toolContext,
+      ),
+    ).rejects.toMatchObject({ shape: { code: 'CONFLICT' } })
+    await system.approvalService.decide(supervisor, paused.approvalId, 'rejected')
+    await expect(
+      system.engine.resumeAfterApproval(
+        runId,
+        paused.approvalId,
+        'approved',
+        'supervisor',
+        toolContext,
+      ),
+    ).rejects.toMatchObject({ shape: { code: 'CONFLICT' } })
+    expect(system.repos.gateway.totalSuccessfulCharges()).toBe(0)
+    expect((await system.repos.returnRepo.findByReturnNo('RT-2026-0001'))?.status).toBe(
+      'awaiting_approval',
+    )
+  })
+
   it('小额未发货退款自动完成 无需审批', async () => {
     const system = composeWorkflowSystem()
     const { runId, toolContext } = await createTestRun(system, customer)

@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-29T00:00:00+08:00",
+  "title": "Design System: 有据团队后台",
+  "extensions": {
+    "colorMeta": {
+      "surface": {
+        "role": "neutral",
+        "displayName": "主面板白",
+        "tonalRamp": [
+          "#20252b",
+          "#343d48",
+          "#454f5c",
+          "#626c78",
+          "#929ba7",
+          "#c7ced6",
+          "#e5e8ec",
+          "#f7f8fa"
+        ]
+      },
+      "canvas": {
+        "role": "neutral",
+        "displayName": "画布灰",
+        "tonalRamp": [
+          "#20252b",
+          "#343d48",
+          "#454f5c",
+          "#626c78",
+          "#929ba7",
+          "#c7ced6",
+          "#e5e8ec",
+          "#f7f8fa"
+        ]
+      },
+      "selected": {
+        "role": "neutral",
+        "displayName": "选中灰",
+        "tonalRamp": [
+          "#20252b",
+          "#343d48",
+          "#454f5c",
+          "#626c78",
+          "#929ba7",
+          "#c7ced6",
+          "#e5e8ec",
+          "#f7f8fa"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "分隔灰",
+        "tonalRamp": [
+          "#20252b",
+          "#343d48",
+          "#454f5c",
+          "#626c78",
+          "#929ba7",
+          "#c7ced6",
+          "#e5e8ec",
+          "#f7f8fa"
+        ]
+      },
+      "input": {
+        "role": "neutral",
+        "displayName": "输入边界灰",
+        "tonalRamp": [
+          "#20252b",
+          "#343d48",
+          "#454f5c",
+          "#626c78",
+          "#929ba7",
+          "#c7ced6",
+          "#e5e8ec",
+          "#f7f8fa"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "墨灰",
+        "tonalRamp": [
+          "#20252b",
+          "#343d48",
+          "#454f5c",
+          "#626c78",
+          "#929ba7",
+          "#c7ced6",
+          "#e5e8ec",
+          "#f7f8fa"
+        ]
+      },
+      "strong": {
+        "role": "neutral",
+        "displayName": "深灰",
+        "tonalRamp": [
+          "#20252b",
+          "#343d48",
+          "#454f5c",
+          "#626c78",
+          "#929ba7",
+          "#c7ced6",
+          "#e5e8ec",
+          "#f7f8fa"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "辅助灰",
+        "tonalRamp": [
+          "#20252b",
+          "#343d48",
+          "#454f5c",
+          "#626c78",
+          "#929ba7",
+          "#c7ced6",
+          "#e5e8ec",
+          "#f7f8fa"
+        ]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "克制蓝",
+        "tonalRamp": [
+          "oklch(15% 0.08 240)",
+          "oklch(26% 0.08 240)",
+          "oklch(38% 0.08 240)",
+          "oklch(49% 0.08 240)",
+          "oklch(61% 0.08 240)",
+          "oklch(72% 0.08 240)",
+          "oklch(84% 0.08 240)",
+          "oklch(95% 0.08 240)"
+        ]
+      },
+      "success": {
+        "role": "semantic",
+        "displayName": "成功绿",
+        "tonalRamp": [
+          "oklch(15% 0.07 145)",
+          "oklch(26% 0.07 145)",
+          "oklch(38% 0.07 145)",
+          "oklch(49% 0.07 145)",
+          "oklch(61% 0.07 145)",
+          "oklch(72% 0.07 145)",
+          "oklch(84% 0.07 145)",
+          "oklch(95% 0.07 145)"
+        ]
+      },
+      "success-background": {
+        "role": "semantic",
+        "displayName": "成功浅底",
+        "tonalRamp": [
+          "oklch(15% 0.02 145)",
+          "oklch(26% 0.02 145)",
+          "oklch(38% 0.02 145)",
+          "oklch(49% 0.02 145)",
+          "oklch(61% 0.02 145)",
+          "oklch(72% 0.02 145)",
+          "oklch(84% 0.02 145)",
+          "oklch(95% 0.02 145)"
+        ]
+      },
+      "warning": {
+        "role": "semantic",
+        "displayName": "等待赭色",
+        "tonalRamp": [
+          "oklch(15% 0.08 80)",
+          "oklch(26% 0.08 80)",
+          "oklch(38% 0.08 80)",
+          "oklch(49% 0.08 80)",
+          "oklch(61% 0.08 80)",
+          "oklch(72% 0.08 80)",
+          "oklch(84% 0.08 80)",
+          "oklch(95% 0.08 80)"
+        ]
+      },
+      "warning-background": {
+        "role": "semantic",
+        "displayName": "等待浅底",
+        "tonalRamp": [
+          "oklch(15% 0.03 80)",
+          "oklch(26% 0.03 80)",
+          "oklch(38% 0.03 80)",
+          "oklch(49% 0.03 80)",
+          "oklch(61% 0.03 80)",
+          "oklch(72% 0.03 80)",
+          "oklch(84% 0.03 80)",
+          "oklch(95% 0.03 80)"
+        ]
+      },
+      "danger": {
+        "role": "semantic",
+        "displayName": "失败红",
+        "tonalRamp": [
+          "oklch(15% 0.12 25)",
+          "oklch(26% 0.12 25)",
+          "oklch(38% 0.12 25)",
+          "oklch(49% 0.12 25)",
+          "oklch(61% 0.12 25)",
+          "oklch(72% 0.12 25)",
+          "oklch(84% 0.12 25)",
+          "oklch(95% 0.12 25)"
+        ]
+      },
+      "danger-background": {
+        "role": "semantic",
+        "displayName": "失败浅底",
+        "tonalRamp": [
+          "oklch(15% 0.02 25)",
+          "oklch(26% 0.02 25)",
+          "oklch(38% 0.02 25)",
+          "oklch(49% 0.02 25)",
+          "oklch(61% 0.02 25)",
+          "oklch(72% 0.02 25)",
+          "oklch(84% 0.02 25)",
+          "oklch(95% 0.02 25)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "title": {
+        "displayName": "会话标题",
+        "purpose": "完整显示当前工单标题"
+      },
+      "body": {
+        "displayName": "正文",
+        "purpose": "工作台消息与主体文字"
+      }
+    },
+    "shadows": [
+      {
+        "name": "queue-selected",
+        "value": "inset 0 0 0 1px var(--color-input)",
+        "purpose": "标识当前选中工单"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile-max",
+        "value": "760px"
+      },
+      {
+        "name": "stacked-agent-max",
+        "value": "1250px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "主按钮",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "提交或主要操作",
+      "html": "<button class=\"ds-primary\">提交</button>",
+      "css": ".ds-primary { display: inline-flex; align-items: center; justify-content: center; height: 36px; padding: 8px 16px; border: 0; border-radius: var(--radius-control,4px); background: var(--color-primary,#315f80); color: var(--color-primary-foreground,#fff); font: 500 14px var(--font-sans,sans-serif); cursor: pointer; } .ds-primary:hover { background: color-mix(in srgb,var(--color-primary,#315f80) 90%,transparent); } .ds-primary:focus-visible { outline: 3px solid color-mix(in srgb,var(--color-ring,#626c78) 50%,transparent); outline-offset: 2px; } .ds-primary:disabled { opacity: .5; cursor: not-allowed; }"
+    },
+    {
+      "name": "输入框",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "搜索与短文本输入",
+      "html": "<input class=\"ds-input\" aria-label=\"搜索工单\" placeholder=\"搜索工单\">",
+      "css": ".ds-input { height: 36px; padding: 4px 12px; border: 1px solid var(--color-input,#c7ced6); border-radius: var(--radius-control,4px); background: transparent; color: var(--color-ink,#20252b); font: 14px var(--font-sans,sans-serif); } .ds-input::placeholder { color: var(--color-muted-foreground,#626c78); } .ds-input:focus-visible { border-color: var(--color-ring,#626c78); outline: 3px solid color-mix(in srgb,var(--color-ring,#626c78) 50%,transparent); } .ds-input:disabled { opacity: .5; }"
+    },
+    {
+      "name": "选中导航",
+      "kind": "nav",
+      "refersTo": "navigation-active",
+      "description": "员工后台当前页面入口",
+      "html": "<nav><a class=\"ds-nav\" href=\"#workspace\" aria-current=\"page\">工单工作台</a></nav>",
+      "css": ".ds-nav { display: flex; padding: 12px; border-radius: 8px; background: var(--color-navigation-active,#f0f1f3); color: var(--color-ink,#20252b); font: 600 13px var(--font-sans,sans-serif); text-decoration: none; } .ds-nav:hover { background: var(--color-navigation-active,#f0f1f3); } .ds-nav:focus-visible { outline: 2px solid var(--color-ring,#626c78); outline-offset: 3px; }"
+    },
+    {
+      "name": "处理中状态",
+      "kind": "chip",
+      "refersTo": "status-neutral",
+      "description": "中性运行状态须同时提供文字",
+      "html": "<span class=\"ds-status\">执行中</span>",
+      "css": ".ds-status { display: inline-flex; padding: 2px 8px; border: 1px solid var(--color-border,#e5e8ec); border-radius: var(--radius-badge,3px); background: var(--color-secondary,#f0f1f3); color: var(--color-secondary-foreground,#454f5c); font: 500 11px var(--font-sans,sans-serif); }"
+    },
+    {
+      "name": "工作台依据条目",
+      "kind": "card",
+      "refersTo": "evidence-row",
+      "description": "紧凑工作台内的平面依据容器",
+      "html": "<article class=\"ds-evidence\"><strong>订单依据</strong><p>展示真实订单信息</p></article>",
+      "css": ".ds-evidence { padding: 10px 0; border-bottom: 1px solid var(--color-border,#e5e8ec); background: var(--color-surface,#fff); color: var(--color-ink,#20252b); font-family: var(--font-sans,sans-serif); } .ds-evidence strong { font-size: 12px; } .ds-evidence p { font-size: 13px; }"
+    }
+  ],
+  "narrative": {
+    "overview": "员工后台使用中性白灰主题。客户角色和客户入口 `/workbench` 不应用该覆盖。工作台采用 Operate 模式，以查阅、切换和处理工单为主要任务。三栏组成仅属于工单工作台，其他后台页面保留既有布局。",
+    "keyCharacteristics": [
+      "中性白灰与细线分区",
+      "紧凑排版和小圆角",
+      "真实状态与明确操作反馈"
+    ],
+    "rules": [],
+    "dos": [
+      "**Do** 用中性白灰、细线、字重和对齐建立层次。",
+      "**Do** 为状态与选择提供文字或形状反馈。"
+    ],
+    "donts": [
+      "**Don't** 增加大面积蓝背景、橘色品牌色、棕色正文、渐变或装饰性阴影。",
+      "**Don't** 将员工主题覆盖到客户角色或客户入口。",
+      "**Don't** 用虚构数据填充界面或将工具成功表述为业务完成。"
+    ]
+  }
+}

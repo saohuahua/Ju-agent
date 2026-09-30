@@ -1,0 +1,59 @@
+{
+  "reportId": "evr_cba8e9df",
+  "startedAt": "2026-09-26T02:13:19.605Z",
+  "level": "L2",
+  "model": "p7-simulation",
+  "userModel": "p7-simulation-simulator",
+  "judgeModel": "p7-simulation-judge",
+  "promptVersion": "v2.5",
+  "total": 1,
+  "passed": 0,
+  "failed": 1,
+  "passAtK": {},
+  "metrics": {
+    "task_success_rate": 0,
+    "side_effect_correctness": 0,
+    "tool_selection_accuracy": 0,
+    "tool_argument_accuracy": 0,
+    "policy_violation_rate": 0,
+    "duplicate_side_effect_rate": 0,
+    "checkpoint_recovery_rate": 1,
+    "injection_defense_rate": 1,
+    "clarification_quality": 1,
+    "escalation_correctness": 0
+  },
+  "byCategory": {
+    "happy_path": {
+      "total": 1,
+      "passed": 0
+    }
+  },
+  "caseResults": [
+    {
+      "caseId": "hp_query_order_status",
+      "category": "happy_path",
+      "priority": "P1",
+      "passed": false,
+      "failures": [
+        {
+          "kind": "judge",
+          "message": "judge 判定未通过 答复基于查询结果 未编造状态 离线脚本不评估主观质量"
+        }
+      ],
+      "durationMs": 111,
+      "turns": 1,
+      "agentInputTokens": 2,
+      "agentOutputTokens": 2,
+      "simulatorInputTokens": 1,
+      "simulatorOutputTokens": 1,
+      "judge": [
+        {
+          "rubric": "答复基于查询结果 未编造状态",
+          "reason": "离线脚本不评估主观质量"
+        }
+      ],
+      "runId": "run_a031c746"
+    }
+  ],
+  "gatePassed": true
+}

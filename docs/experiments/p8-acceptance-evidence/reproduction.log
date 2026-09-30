@@ -1,0 +1,48 @@
+{
+  "refund": {
+    "refund_no": "RF-2026-0002",
+    "status": "executing"
+  },
+  "effect": {
+    "status": "unknown"
+  },
+  "ownership": {
+    "owner": "p6",
+    "state": "sending"
+  },
+  "businessTask": {
+    "status": "needs_confirmation"
+  },
+  "channel": [
+    {
+      "status": "unknown",
+      "submissions": 1,
+      "charges": 0
+    }
+  ],
+  "memory": {
+    "businessReferences": [
+      {
+        "kind": "refund",
+        "id": "RF-2026-0002",
+        "status": "executing"
+      },
+      {
+        "kind": "return",
+        "id": "RT-2026-0002",
+        "status": "auto_approved"
+      }
+    ],
+    "unknownActions": []
+  },
+  "recommendation": "controlled_review",
+  "investigationComplete": true
+}
+{
+  "originalTaskId": "1c0bc2f7-0bd5-440a-8848-3d6ee056918f",
+  "originalStatus": "completed",
+  "sameOriginalInput": true,
+  "replay": {
+    "error": "P8 原文与源记录冲突"
+  }
+}

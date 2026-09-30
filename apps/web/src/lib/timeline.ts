@@ -56,6 +56,49 @@ export interface TimelineNode {
   inputFrames?: string[]
 }
 
+const TOOL_SUMMARY: Record<string, string> = {
+  lookup_customer: '查询客户信息',
+  list_my_orders: '查询最近订单',
+  get_order: '核对订单和商品',
+  get_shipment: '查询物流状态',
+  get_policy: '查询售后政策',
+  search_policy: '检索售后政策',
+  submit_return: '提交退货退款申请',
+  submit_refund_only: '提交仅退款申请',
+  escalate: '转交人工处理',
+  ask_user: '向客户补充提问',
+  conclude: '结束本轮处理',
+}
+
+/** 悬浮摘要只解释已记录的事件 不将工具请求说成已完成 */
+export function timelineHint(node: TimelineNode): string {
+  const event = node.events.at(-1)
+  if (!event) return node.label
+  const payload = event.payload
+  if (node.kind === 'user-message') return `客户说 ${String(payload.text ?? '').slice(0, 80)}`
+  if (node.kind === 'model-text')
+    return `助手回复 ${String(payload.text ?? node.label).slice(0, 80)}`
+  if (node.kind === 'model-turn')
+    return payload.stopReason === 'tool_use' ? '模型提出工具调用' : '模型完成一轮处理'
+  if (node.kind === 'tool-call' || node.kind === 'tool-result') {
+    const toolName = String(payload.toolName ?? node.events[0]?.payload.toolName ?? '')
+    const action = TOOL_SUMMARY[toolName] ?? '执行工具调用'
+    return node.status === 'failed'
+      ? `${action}失败`
+      : node.status === 'succeeded'
+        ? `${action}完成`
+        : node.kind === 'tool-result'
+          ? `${action}返回结果`
+          : `正在${action}`
+  }
+  if (node.kind === 'catalog') return '模型可调用的工具范围发生变化'
+  if (node.kind === 'guard') return '请求被安全规则拦截'
+  if (node.kind === 'approval') return node.label
+  if (node.kind === 'context') return '对话上下文已压缩'
+  if (node.kind === 'human-action') return node.label
+  return node.label
+}
+
 /** 事件到泳道的映射 不产生节点的事件返回 null */
 function laneOf(event: AgentEvent): Lane | null {
   switch (event.type) {
@@ -299,6 +342,12 @@ export function projectTimeline(events: AgentEvent[]): TimelineNode[] {
       label: labelOf(event),
       x: 0,
       events: [event],
+      ...(event.type === 'tool.completed'
+        ? {
+            status:
+              event.payload.status === 'succeeded' ? ('succeeded' as const) : ('failed' as const),
+          }
+        : {}),
     })
   }
 

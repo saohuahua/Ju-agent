@@ -10,6 +10,8 @@ import type { EvalCase, EvalReport } from '@aftersales/contracts'
 import type { CaseDetail } from './types.js'
 import {
   computeMetrics,
+  businessSuccessCount,
+  metricDenominators,
   computePassPowerK,
   gateCheck,
   summarizeByCategory,
@@ -33,8 +35,20 @@ export interface ReportInput {
 }
 
 export function buildReport(input: ReportInput): EvalReport {
-  const details = input.rounds[0] ?? []
+  const ids = input.cases.map((item) => item.id)
+  if (
+    !ids.length ||
+    new Set(ids).size !== ids.length ||
+    input.rounds.length !== input.repeat ||
+    input.rounds.some(
+      (round) =>
+        round.length !== ids.length || round.some((detail, index) => detail.caseId !== ids[index]),
+    )
+  )
+    throw new Error('报告轮次或样本顺序不完整 禁止合并不同分母')
+  const details = input.rounds.flat()
   const metrics = computeMetrics(details)
+  const denominators = metricDenominators(details)
   const byCategory = summarizeByCategory(details)
   const gate = gateCheck(details, input.cases)
   const passPowerK = input.rounds.length > 1 ? computePassPowerK(input.rounds) : undefined
@@ -43,10 +57,7 @@ export function buildReport(input: ReportInput): EvalReport {
   const confidenceIntervals =
     input.level === 'L2'
       ? {
-          task_success_rate: wilson95(
-            details.filter((d) => d.passed).length,
-            details.length,
-          ),
+          task_success_rate: wilson95(businessSuccessCount(details), details.length),
           ...(passPowerK !== undefined
             ? {
                 passPowerK: wilson95(
@@ -63,6 +74,8 @@ export function buildReport(input: ReportInput): EvalReport {
       : undefined
 
   const report: EvalReport = {
+    metricVersion: 'p9-v1',
+    metricDenominators: denominators,
     reportId: `evr_${randomUUID().slice(0, 8)}`,
     startedAt: new Date().toISOString(),
     level: input.level ?? 'L1',
@@ -76,9 +89,12 @@ export function buildReport(input: ReportInput): EvalReport {
     passAtK: passAtK(input.rounds),
     passPowerK,
     confidenceIntervals,
-    metrics: metrics as unknown as Record<string, number>,
+    metrics: Object.fromEntries(
+      Object.entries(metrics).filter(([key]) => denominators[key as keyof typeof denominators] > 0),
+    ),
     byCategory,
-    caseResults: details.map((d) => ({
+    caseResults: details.map((d, index) => ({
+      repeat: Math.floor(index / ids.length) + 1,
       caseId: d.caseId,
       category: d.category as never,
       priority: d.priority,
@@ -128,9 +144,7 @@ export function renderMarkdownReport(
   lines.push('')
   lines.push(`- 报告编号 ${report.reportId}`)
   lines.push(`- 生成时间 ${report.startedAt}`)
-  lines.push(
-    `- 层级 ${report.level} 模型 ${report.model} 提示词版本 ${report.promptVersion}`,
-  )
+  lines.push(`- 层级 ${report.level} 模型 ${report.model} 提示词版本 ${report.promptVersion}`)
   if (report.level === 'L2') {
     lines.push(`- 用户模拟器 ${report.userModel} judge ${report.judgeModel ?? '未启用'}`)
   }
@@ -158,15 +172,16 @@ export function renderMarkdownReport(
     }
     const pk = ci['passPowerK']
     if (pk) {
-      lines.push(`- Pass^${extra.repeat} 95% Wilson 区间 [${percent(pk.lower)}, ${percent(pk.upper)}]`)
+      lines.push(
+        `- Pass^${extra.repeat} 95% Wilson 区间 [${percent(pk.lower)}, ${percent(pk.upper)}]`,
+      )
     }
     lines.push(`- 置信区间仅 L2 抽样评测计算 L1 脚本回放无采样方差不计算`)
   }
   if (report.level === 'L2') {
     const withTurns = report.caseResults.filter((c) => c.turns !== undefined)
     if (withTurns.length > 0) {
-      const avgTurns =
-        withTurns.reduce((sum, c) => sum + (c.turns ?? 0), 0) / withTurns.length
+      const avgTurns = withTurns.reduce((sum, c) => sum + (c.turns ?? 0), 0) / withTurns.length
       const agentTokens = report.caseResults.reduce(
         (sum, c) => sum + (c.agentInputTokens ?? 0) + (c.agentOutputTokens ?? 0),
         0,
@@ -182,10 +197,12 @@ export function renderMarkdownReport(
   lines.push('')
   lines.push('## 核心指标')
   lines.push('')
-  lines.push('| 指标 | 数值 |')
-  lines.push('| --- | --- |')
+  lines.push('| 指标 | 数值 | 分母 |')
+  lines.push('| --- | --- | --- |')
   for (const [key, value] of Object.entries(report.metrics)) {
-    lines.push(`| ${key} | ${percent(value)} |`)
+    lines.push(
+      `| ${key} | ${percent(value)} | ${report.metricDenominators?.[key] ?? '旧格式未记录'} |`,
+    )
   }
   lines.push('')
   lines.push('## 分类结果')
@@ -202,7 +219,7 @@ export function renderMarkdownReport(
     lines.push('## 失败用例')
     lines.push('')
     for (const result of report.caseResults.filter((c) => !c.passed)) {
-      lines.push(`### ${result.caseId} [${result.priority}]`)
+      lines.push(`### ${result.caseId} 第 ${result.repeat ?? '未记录'} 轮 [${result.priority}]`)
       lines.push('')
       for (const failure of result.failures) {
         lines.push(`- [${failure.kind}] ${failure.message}`)

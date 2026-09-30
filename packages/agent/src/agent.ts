@@ -199,6 +199,16 @@ export class AgentRunner {
         error instanceof DomainError &&
         (error as DomainError & { shape?: { code?: string } }).shape?.code === 'NOT_FOUND'
       ) {
+        // 已落库动作没有检查点时仍需闭合原工具调用 不伪造业务成功或自动重发
+        const pending = await this.findPendingActionCall(runId)
+        if (pending)
+          await this.appendToolResults(runId, [
+            {
+              ...pending,
+              isError: true,
+              content: JSON.stringify({ error: '动作执行中断且没有可恢复断点 请依据业务状态核验' }),
+            },
+          ])
         outcome = 'continue'
       } else {
         throw error
@@ -266,7 +276,8 @@ export class AgentRunner {
       }
 
       const toolBlocks = turn.blocks.filter(
-        (block): block is Extract<AssistantBlock, { type: 'tool_use' }> => block.type === 'tool_use',
+        (block): block is Extract<AssistantBlock, { type: 'tool_use' }> =>
+          block.type === 'tool_use',
       )
 
       // 纯文本轮即等待用户回复 模型完成任务须显式调用 conclude
@@ -347,9 +358,7 @@ export class AgentRunner {
           code !== undefined &&
           TRANSIENT_MODEL_ERROR_CODES.has(code)
         ) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, MODEL_TURN_RETRY_BACKOFF_MS * attempt),
-          )
+          await new Promise((resolve) => setTimeout(resolve, MODEL_TURN_RETRY_BACKOFF_MS * attempt))
           continue
         }
         throw error
@@ -388,13 +397,9 @@ export class AgentRunner {
         })
         toolJson.set(event.toolCallId, '')
       } else if (event.type === 'tool_input_delta') {
-        toolJson.set(
-          event.toolCallId,
-          (toolJson.get(event.toolCallId) ?? '') + event.partialJson,
-        )
+        toolJson.set(event.toolCallId, (toolJson.get(event.toolCallId) ?? '') + event.partialJson)
         const block = toolBlocks.find(
-          (candidate) =>
-            candidate.type === 'tool_use' && candidate.toolCallId === event.toolCallId,
+          (candidate) => candidate.type === 'tool_use' && candidate.toolCallId === event.toolCallId,
         )
         await this.deps.eventRepo.append(runId, 'tool.input.delta', {
           toolCallId: event.toolCallId,
@@ -418,9 +423,7 @@ export class AgentRunner {
       }
     }
 
-    const blocks: AssistantBlock[] = text
-      ? [{ type: 'text', text }, ...toolBlocks]
-      : toolBlocks
+    const blocks: AssistantBlock[] = text ? [{ type: 'text', text }, ...toolBlocks] : toolBlocks
     return { blocks, text, stopReason }
   }
 
@@ -559,12 +562,7 @@ export class AgentRunner {
 
     await this.deps.runs.setIntent(runId, intent)
 
-    const result = await this.deps.workflow.start(
-      runId,
-      intent,
-      parsedSlots.data,
-      toolContext,
-    )
+    const result = await this.deps.workflow.start(runId, intent, parsedSlots.data, toolContext)
     return this.handleWorkflowResultForTool(runId, block.toolCallId, block.toolName, result)
   }
 
@@ -598,7 +596,12 @@ export class AgentRunner {
       return 'escalated'
     }
     await this.appendToolResults(runId, [
-      { toolCallId, toolName, content: JSON.stringify({ summary: result.summary }), isError: false },
+      {
+        toolCallId,
+        toolName,
+        content: JSON.stringify({ summary: result.summary }),
+        isError: false,
+      },
     ])
     return 'continue'
   }

@@ -27,6 +27,7 @@ import type {
 import type {
   AgentRunRepository,
   ApprovalRepository,
+  ApprovalDecisionWrite,
   AuditRepository,
   BusinessNoGenerator,
   CheckpointRepository,
@@ -169,6 +170,9 @@ export class InMemorySkuPriceRepository implements SkuPriceRepository {
 
 export class InMemoryApprovalRepository implements ApprovalRepository {
   readonly approvals = new Map<string, ApprovalRequest>()
+  readonly executionIntents = new Map<string, ApprovalDecisionWrite>()
+
+  constructor(private readonly runs?: InMemoryAgentRunRepository) {}
 
   async create(record: ApprovalRequest): Promise<void> {
     this.approvals.set(record.approvalId, { ...record })
@@ -186,8 +190,50 @@ export class InMemoryApprovalRepository implements ApprovalRepository {
   async listPending(): Promise<ApprovalRequest[]> {
     return [...this.approvals.values()].filter((a) => a.status === 'pending').map((a) => ({ ...a }))
   }
-  async update(record: ApprovalRequest): Promise<void> {
-    this.approvals.set(record.approvalId, { ...record })
+  async decidePending(input: ApprovalDecisionWrite): Promise<ApprovalRequest | null> {
+    // 内存仓储没有断点持久层 此类受理必须交给完整数据库实现
+    if (input.checkpointId !== undefined) return null
+    const current = this.approvals.get(input.approvalId)
+    if (!current || current.status !== 'pending' || current.expiresAt <= input.now) return null
+    if (
+      input.runId &&
+      (current.runId !== input.runId ||
+        this.runs?.runs.get(input.runId)?.status !== 'awaiting_approval')
+    )
+      return null
+
+    // 同步完成检查和写入以模拟数据库条件更新的原子边界
+    const decided = {
+      ...current,
+      status: input.decision,
+      decidedBy: input.decidedBy,
+      decidedAt: input.now,
+    }
+    this.approvals.set(input.approvalId, decided)
+    if (input.runId) this.executionIntents.set(input.approvalId, { ...input })
+    return { ...decided }
+  }
+
+  async consumeToken(
+    approvalId: string,
+    token: string,
+    resourceType: string,
+    resourceId: string,
+    now: string,
+  ): Promise<boolean> {
+    const current = this.approvals.get(approvalId)
+    if (
+      !token ||
+      !current ||
+      current.status !== 'approved' ||
+      current.oneTimeToken !== token ||
+      current.resourceType !== resourceType ||
+      current.resourceId !== resourceId ||
+      current.expiresAt <= now
+    )
+      return false
+    this.approvals.set(approvalId, { ...current, oneTimeToken: '' })
+    return true
   }
 }
 
@@ -300,6 +346,24 @@ export class InMemoryAgentRunRepository implements AgentRunRepository {
   async update(record: AgentRunRecord): Promise<void> {
     this.runs.set(record.runId, { ...record })
   }
+  async transition(
+    record: AgentRunRecord,
+    expectedStatus: AgentRunRecord['status'],
+  ): Promise<boolean> {
+    const current = this.runs.get(record.runId)
+    if (!current || current.status !== expectedStatus) return false
+    this.runs.set(record.runId, {
+      ...current,
+      status: record.status,
+      error: record.error,
+      updatedAt: record.updatedAt,
+    })
+    return true
+  }
+  async setIntent(runId: string, intent: string, updatedAt: string): Promise<void> {
+    const current = this.runs.get(runId)
+    if (current) this.runs.set(runId, { ...current, intent, updatedAt })
+  }
   async list(options?: {
     status?: string
     customerId?: string
@@ -388,6 +452,7 @@ export class InMemoryPaymentGateway implements PaymentGatewayPort {
 
 /** 组装一套完整的内存依赖 */
 export function createInMemoryRepositories() {
+  const runRepo = new InMemoryAgentRunRepository()
   return {
     customerRepo: new InMemoryCustomerRepository(),
     orderRepo: new InMemoryOrderRepository(),
@@ -397,7 +462,7 @@ export function createInMemoryRepositories() {
     compensationRepo: new InMemoryCompensationRepository(),
     protectionRepo: new InMemoryPriceProtectionRepository(),
     skuPriceRepo: new InMemorySkuPriceRepository(),
-    approvalRepo: new InMemoryApprovalRepository(),
+    approvalRepo: new InMemoryApprovalRepository(runRepo),
     policyRepo: new InMemoryPolicyRepository(),
     policyArticleRepo: new InMemoryPolicyArticleRepository(),
     auditRepo: new InMemoryAuditRepository(),
@@ -405,7 +470,7 @@ export function createInMemoryRepositories() {
     toolExecutionRepo: new InMemoryToolExecutionRepository(),
     checkpointRepo: new InMemoryCheckpointRepository(),
     idempotencyRepo: new InMemoryIdempotencyRepository(),
-    runRepo: new InMemoryAgentRunRepository(),
+    runRepo,
     ratingRepo: new InMemoryRatingRepository(),
     leaseRepo: new InMemoryLeaseRepository(),
     noGenerator: new InMemoryBusinessNoGenerator(),

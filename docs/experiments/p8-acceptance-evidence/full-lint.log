@@ -1,0 +1,46 @@
+$ eslint .
+
+D:\project\agent-new\aftersales\docs\experiments\customer-return-shipment-ui-evidence\browser-check.mjs
+   19:26  error  'fetch' is not defined       no-undef
+   23:55  error  'document' is not defined    no-undef
+   95:42  error  'document' is not defined    no-undef
+   95:82  error  'innerWidth' is not defined  no-undef
+   99:37  error  'document' is not defined    no-undef
+  100:45  error  'document' is not defined    no-undef
+  105:36  error  'document' is not defined    no-undef
+  105:80  error  'document' is not defined    no-undef
+  113:36  error  'document' is not defined    no-undef
+  116:36  error  'document' is not defined    no-undef
+
+D:\project\agent-new\aftersales\docs\experiments\customer-return-shipment-ui-evidence\final-ui-check.mjs
+  11:55   error  'document' is not defined    no-undef
+  13:40   error  'document' is not defined    no-undef
+  14:33   error  'document' is not defined    no-undef
+  26:36   error  'document' is not defined    no-undef
+  32:188  error  'document' is not defined    no-undef
+  32:227  error  'innerWidth' is not defined  no-undef
+  52:37   error  'document' is not defined    no-undef
+  53:45   error  'document' is not defined    no-undef
+  59:45   error  'document' is not defined    no-undef
+  64:36   error  'document' is not defined    no-undef
+  66:36   error  'document' is not defined    no-undef
+
+D:\project\agent-new\aftersales\docs\experiments\customer-return-shipment-ui-evidence\finish-check.mjs
+  22:26  error  'fetch' is not defined     no-undef
+  25:55  error  'document' is not defined  no-undef
+  32:40  error  'document' is not defined  no-undef
+  33:33  error  'document' is not defined  no-undef
+  57:36  error  'document' is not defined  no-undef
+  61:36  error  'document' is not defined  no-undef
+  64:36  error  'document' is not defined  no-undef
+
+D:\project\agent-new\aftersales\docs\experiments\customer-return-shipment-ui-evidence\pending-switch-check.mjs
+  17:55  error  'document' is not defined  no-undef
+  44:30  error  'fetch' is not defined     no-undef
+  55:37  error  'document' is not defined  no-undef
+  58:40  error  'document' is not defined  no-undef
+  59:33  error  'document' is not defined  no-undef
+
+✖ 33 problems (33 errors, 0 warnings)
+
+[ELIFECYCLE] Command failed with exit code 1.
