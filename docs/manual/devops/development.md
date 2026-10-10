@@ -7,18 +7,31 @@
 `package.json` 要求 Node >=22，锁定 pnpm 11.23.0。本轮验证使用 Node 22.23.2。先检查已有环境，缺依赖时才安装：
 
 ```powershell
-Set-Location 'D:\project\agent-new\aftersales'
+Set-Location 'D:\project\Ju-agent'
 node --version
 pnpm --version
 pnpm install --frozen-lockfile
 pnpm dev:offline
 ```
 
+Node 版本必须用 22。better-sqlite3 11.10.0 没有 Node 24 对应的预编译二进制，也只有 Node 22 的 ABI 127 在官方与镜像上都有现成包；用 Node 24 安装会跳过预编译包并回退到本地编译，要求 Visual Studio C++ 工具链。安装脚本 `scripts/ensure-native-deps.mjs` 会从 npmmirror 拉取与当前 Node ABI 匹配的预编译包，因此 `pnpm install` 与 `pnpm demo` 不需要 C++ 工具链；网络异常时可设置 `BETTER_SQLITE3_BINARY_HOST` 指向其他镜像。
+
 已安装依赖可跳过 install。首次安装需要网络或完整缓存；better-sqlite3 是原生依赖，不能直接复制另一操作系统的 node_modules。安装失败应先确认 Node 与依赖环境，不能通过重置数据库解决。
 
 启动器同时运行 API 与 Next 开发服务器，优先端口为 8787 和 8790，冲突时选空闲端口。等待终端打印工作台地址再打开；不要写死 8790。此命令不执行生产 build。它读取项目 `.env`，但真实模型仍需主管测试并显式启用。
 
 数据保存在 `data/local-offline/business/app.db` 与 `data/local-offline/channel/channel.db`。首次空库初始化演示数据，重启保留已有记录。部分有数据但缺基础表记录的库不会自动补齐夹具。
+
+## 两种演示入口
+
+| 入口 | 命令 | 是否需要浏览器 | 用途 |
+| --- | --- | --- | --- |
+| 终端离线演示 | `pnpm demo` | 不需要 | 脚本化模型与冻结时钟跑通查单、退货、大额审批、断点恢复、幂等拦截五个场景，全部走内存库，可重复 |
+| 网页离线演示 | `pnpm dev:offline` | 需要 | 启动 API 与 Next，打开终端打印的工作台地址，按演示令牌切换客户、售后专员与主管身份 |
+
+`pnpm demo` 退出码为零表示五个场景全部完成；它不启动服务、不写 `data/`，也不调用真实模型与支付。网页演示使用上表中的固定令牌，业务与支付仍为 simulation，重启保留数据。
+
+进入网页演示后，先访问 `/api/health` 确认 `conversationMode=durable_refund_simulation`，再打开工作台；左侧“当前身份”用于切换角色，不是注册登录。完整网页业务演练与判据见[业务案例](../business/examples.md)与[本地离线演示手册](../../runbooks/p11-local-offline-demo.md)。
 
 ## 就绪检查与配置
 
