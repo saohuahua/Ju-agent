@@ -2,5 +2,7 @@ packages:
   - "packages/*"
   - "apps/*"
 allowBuilds:
-  better-sqlite3: true
+  # better-sqlite3 的原生二进制由根 postinstall 脚本用 npmmirror 镜像安装
+  # 关闭其自带 install 脚本 避免直连 GitHub 超时后要求本地 C++ 工具链
+  better-sqlite3: false
   esbuild: true

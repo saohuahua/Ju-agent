@@ -75,6 +75,7 @@ node --import tsx scripts/p10-data.ts backup $manualBackup
 | health 正常但 ready 失败   | 查看 API 输出、基础数据和模拟渠道健康；旧库部分缺数据不会自动重播夹具     |
 | Cannot find package        | 确认工作目录及 workspace 依赖安装，不修改业务状态                         |
 | better-sqlite3 加载失败    | 核对 Node 版本、系统与原生依赖，不跨系统复制 node_modules                 |
+| install 报 node-gyp / find VS | 多半是 Node 版本不是 22；改回 Node 22 后重跑 `pnpm install`，预编译包由脚本自动补齐 |
 | 已发送却无新回复           | 查询原 runId 的 events/json、任务状态和代理 SSE；别用新请求键不断重复提交 |
 | 等待审批                   | 主管处理原申请，客户或专员不能越权批准                                    |
 | 等待收货                   | 查询原 returnNo 和寄回记录，由仓库确认后提交内部收货                      |

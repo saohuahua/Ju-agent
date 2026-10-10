@@ -1,6 +1,7 @@
 # 依赖与产物
 /.p10-source.json
 node_modules/
+/.tools/
 dist/
 .next/
 .next-offline/

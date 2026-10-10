@@ -11,9 +11,9 @@
   "scripts": {
     "dev": "pnpm --filter @aftersales/api dev",
     "dev:web": "pnpm --filter web dev",
-    "dev:offline": "node --import tsx scripts/dev-offline.ts",
-    "data:backup:offline": "node --import tsx scripts/local-offline-data.ts backup",
-    "data:restore:offline": "node --import tsx scripts/local-offline-data.ts restore",
+    "dev:offline": "node --import ./scripts/node-guard.mjs --import tsx scripts/dev-offline.ts",
+    "data:backup:offline": "node --import ./scripts/node-guard.mjs --import tsx scripts/local-offline-data.ts backup",
+    "data:restore:offline": "node --import ./scripts/node-guard.mjs --import tsx scripts/local-offline-data.ts restore",
     "build": "pnpm --filter web build",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
@@ -29,8 +29,9 @@
     "case:adopt": "tsx scripts/case-adopt.ts",
     "rag:check": "tsx scripts/rag-dataset-check.ts",
     "rag:baseline": "tsx scripts/rag-baseline.ts",
-    "demo": "tsx scripts/demo.ts",
-    "eval:sim": "tsx packages/eval/src/sim-cli.ts"
+    "demo": "tsx scripts/run-demo.ts",
+    "eval:sim": "tsx packages/eval/src/sim-cli.ts",
+    "postinstall": "node scripts/ensure-native-deps.mjs"
   },
   "dependencies": {
     "@aftersales/agent": "workspace:*",
