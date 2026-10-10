@@ -4,7 +4,7 @@
 
 本篇分两层：**先用最小机制让你真正学会一个 Agent Loop，再映射到 Ju-agent 的实现**。第一层是教学示意，不是仓库代码；第二层每一条都能落到真实的文件和函数。
 
-> **阅读前提**：先读[第 08 章](08-Agent与确定性工作流的分工.md)，理解异步函数和 JSON。本章解释消息角色与调用配对，不需要先使用某个 Agent 框架。
+> **阅读前提**：**建议先读**[第 08 章](08-Agent与确定性工作流的分工.md)，理解异步函数和 JSON。本章解释消息角色与调用配对，不需要先使用某个 Agent 框架。如果直接读本章：先记住第 08 章的结论"信息决定交给模型，业务决定和执行决定交给代码"，它在下面的"亮点 6：退款申请交给受控业务受理"有对应的真实代码；想弄清分工理由时再回读第 08 章。
 
 ## 第一层：最小 Agent Loop
 
@@ -22,7 +22,7 @@
 2. **收集一轮输出**：按 `toolCallId` 累积参数片段，区分"文本块"和"工具调用块"。**参数没收集完整就不能执行。**
 3. **校验完整协议**：必须拿到完整轮次；工具名必须在目录里；参数结构必须合法；新出现的调用标识不能和历史上用过的重复。
 4. **持久确认这一轮**：把完整轮次保存下来，作为"已经确认的事实"。
-5. **执行并回填结果**：只读工具的结果绑定回**原调用标识**；有副作用的动作交给受控业务受理，而不是适配器直接执行。
+5. **执行并回填结果**：依次执行本轮允许的工具，结果绑定回**原调用标识**；整轮结果合并成**同一条** `user` 消息的多个内容块。有副作用的动作交给受控业务受理，而不是适配器直接执行。
 6. **继续或停止**：有新的观察就进入下一轮；需要客户补充就暂停；达到上限或协议错误就停止。
 
 > 下面这段是**教学示意，不是项目原始代码**。它的作用是让你先看清数据怎么流动，真实实现见"第二层"。
@@ -38,15 +38,42 @@ async function agentLoop(request: ModelRequest): Promise<void> {
     saveConfirmedTurn(turn)                 // 4. 先确认，再执行
     const calls = turn.blocks.filter((b) => b.type === 'tool_use')
     if (calls.length === 0) return          // 纯文本轮次，按停止协议处理
+
+    // 5. 依次执行这一轮允许的工具，把结果收集到数组
+    const results: ContextBlock[] = []
     for (const call of calls) {
-      const result = await dispatch(call)   // 5. 宿主执行，模型不碰数据库
-      messages.push({ role: 'user', content: [
-        { type: 'tool_result', toolCallId: call.toolCallId, content: result },
-      ] })
+      const output = await dispatch(call)   // 宿主执行，模型不碰数据库
+      results.push({
+        type: 'tool_result',
+        toolCallId: call.toolCallId,        // 保留每个结果原有的调用标识
+        content: output,
+      })
     }
+    // 这一轮的全部结果放进同一条 user 消息，而不是每个调用各追加一条
+    if (results.length > 0) messages.push({ role: 'user', content: results })
   }
 }
 ```
+
+这段示意有两处要特别说明：
+
+1. **一条 `user` 消息承载整轮的 `tool_result`。** 每个结果各自保留 `toolCallId`，但它们属于同一条消息的多个内容块，而不是多条消息。
+2. **批量只是消息形状，不是并行执行。** 上面仍然是 `await` 逐个执行；项目当前也没有并行执行同一轮多个工具的能力，不要从这里推断它已经实现。
+
+这两点和项目真实的消息重建方式一致：`packages/agent/src/context.ts` 的 `rebuildMessages()` 用 `pendingResults` 累积结果，再由 `flushResults()` 一次性生成一条 `content` 为数组的 `user` 消息：
+
+```ts
+// packages/agent/src/context.ts 累积这一轮的结果 到边界时整批 flush
+let pendingResults: ContextBlock[] = []
+const flushResults = () => {
+  if (pendingResults.length > 0) {
+    messages.push({ role: 'user', content: pendingResults })
+    pendingResults = []
+  }
+}
+```
+
+而且落库时它们本来就是一批：`agent.tool_results` 事件的载荷是一个 `results` 数组，重建时逐个 `pendingResults.push({ type: 'tool_result', toolCallId, ... })`，再整批写入同一条 `user` 消息。**如果每个调用各追加一条 `user` 消息，连续多条 `user` 轮就不符合原生协议的期望形状。**
 
 ### 必须分清的五个协议概念
 
